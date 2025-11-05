@@ -8,17 +8,19 @@
 
 ## 📋 Pré-requisitos
 
-### 1. Execute o Instalador DEFINITIVO
+### 1. Execute o Instalador ULTIMATE
 
+**Windows (PowerShell):**
 ```powershell
-# USE SOMENTE ESTE INSTALADOR:
-.\Install-MagicSaaS-Enterprise-DEFINITIVE.ps1
+.\Install-MagicSaaS-ULTIMATE.ps1
 ```
 
-**❌ NÃO USE os outros instaladores:**
-- ❌ `scripts/Install-MagicSaaS-Enterprise.ps1` (versão antiga)
-- ❌ `Install-MagicSaaS-Complete.ps1` (versão antiga)
-- ❌ `Install-MagicSaaS-MEGA.ps1` (framework demo)
+**Linux/macOS (Bash):**
+```bash
+./install-magicsaas-ultimate.sh
+```
+
+Consulte o [INSTALLATION_GUIDE.md](INSTALLATION_GUIDE.md) para instruções completas.
 
 ### 2. Compre o Metronic 9
 

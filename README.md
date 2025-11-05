@@ -789,9 +789,9 @@ Lotus/
 ├── scripts/                   # Deployment scripts
 ├── docs/                      # Documentation
 │   ├── SOFIA_AI_V3_COMPLETE.md        # Sofia AI v3.0 complete docs
-│   ├── SOFIA_AI_ENTERPRISE_COMPLETE.md # Sofia AI v2.0 docs
-│   ├── NOTION_EXPORT.md               # Full system docs
-│   └── GUIA_METRONIC_INTEGRACAO.md    # Metronic integration guide
+│   ├── ARCHITECTURE.md                # System architecture
+│   ├── GUIA_METRONIC_INTEGRACAO.md    # Metronic integration guide
+│   └── INSTALLATION_GUIDE.md          # Complete installation guide
 └── tests/                     # Automated tests
 ```
 
@@ -874,14 +874,13 @@ MagicSaaS System-∞ is proprietary enterprise software. Contact Software Lotus 
 
 ### Sofia AI v3.0 Documentation
 - **Complete Guide:** [SOFIA_AI_V3_COMPLETE.md](SOFIA_AI_V3_COMPLETE.md) (100+ pages)
-- **v2.0 Documentation:** [SOFIA_AI_ENTERPRISE_COMPLETE.md](SOFIA_AI_ENTERPRISE_COMPLETE.md)
 - **Metronic Integration:** [GUIA_METRONIC_INTEGRACAO.md](GUIA_METRONIC_INTEGRACAO.md)
 
 ### General Documentation
 - **Getting Started:** [docs/getting-started/](docs/getting-started/)
 - **Architecture:** [ARCHITECTURE.md](ARCHITECTURE.md)
+- **Installation:** [INSTALLATION_GUIDE.md](INSTALLATION_GUIDE.md)
 - **API Reference:** [docs/api-reference/](docs/api-reference/)
-- **Full System Export:** [NOTION_EXPORT.md](NOTION_EXPORT.md)
 - **Mobile SDKs:** [docs/mobile-sdk/](docs/mobile-sdk/)
 - **Voice Assistant:** [docs/voice-assistant/](docs/voice-assistant/)
 - **Blockchain:** [docs/blockchain/](docs/blockchain/)

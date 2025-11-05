@@ -701,8 +701,8 @@ rm -rf Lotus/
 
 - **Sofia AI v3.0 Completo:** [SOFIA_AI_V3_COMPLETE.md](SOFIA_AI_V3_COMPLETE.md)
 - **README Principal:** [README.md](README.md)
+- **System Architecture:** [ARCHITECTURE.md](ARCHITECTURE.md)
 - **Guia Metronic:** [GUIA_METRONIC_INTEGRACAO.md](GUIA_METRONIC_INTEGRACAO.md)
-- **Notion Export:** [NOTION_EXPORT.md](NOTION_EXPORT.md)
 
 ---
 

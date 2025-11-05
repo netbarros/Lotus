@@ -655,8 +655,8 @@ services:
 
 | Endpoint | Description |
 |----------|-------------|
-| `http://localhost:3000/health` | Health check |
-| `http://localhost:3000/metrics` | Prometheus metrics |
+| `http://localhost:3003/health` | Health check |
+| `http://localhost:3003/metrics` | Prometheus metrics |
 
 ### Health Check Response
 
@@ -765,7 +765,7 @@ docker logs -f magicsaas-sofia-ai
 
 3. **Verify health**:
    ```bash
-   curl http://localhost:3000/health
+   curl http://localhost:3003/health
    ```
 
 ### Kubernetes
@@ -975,12 +975,13 @@ Sofia AI uses structured logging with Pino:
 
 ## 📚 Additional Resources
 
-- [Sofia AI v2 Documentation](SOFIA_AI_ENTERPRISE_COMPLETE.md)
-- [MagicSaaS System Documentation](NOTION_EXPORT.md)
+- [MagicSaaS System Documentation](README.md)
+- [System Architecture](ARCHITECTURE.md)
+- [Installation Guide](INSTALLATION_GUIDE.md)
 - [Metronic Integration Guide](GUIA_METRONIC_INTEGRACAO.md)
 - [API Reference (Directus)](http://localhost:8055/docs)
-- [Prometheus Metrics](http://localhost:3000/metrics)
-- [Health Endpoint](http://localhost:3000/health)
+- [Prometheus Metrics](http://localhost:3003/metrics)
+- [Health Endpoint](http://localhost:3003/health)
 
 ---
 
