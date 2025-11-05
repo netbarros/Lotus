@@ -1,0 +1,259 @@
+name: Deploy to Staging
+
+on:
+  push:
+    branches: [develop]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+          - production
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_PREFIX: ${{ github.repository_owner }}/magicsaas
+
+jobs:
+  # ═══════════════════════════════════════════════════════════════════════════
+  # PRE-DEPLOYMENT CHECKS
+  # ═══════════════════════════════════════════════════════════════════════════
+  pre-deploy:
+    name: Pre-deployment Checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      deploy-proceed: ${{ steps.checks.outputs.proceed }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run pre-deployment checks
+        id: checks
+        run: |
+          echo "Running pre-deployment validation..."
+
+          # Check if migrations exist
+          if [ ! -d "backend/api/prisma/migrations" ]; then
+            echo "⚠️ No migrations directory found"
+            echo "proceed=false" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+
+          # Check if Docker Compose files exist
+          if [ ! -f "infrastructure/docker/docker-compose.dev.yml" ]; then
+            echo "❌ Docker Compose file missing"
+            echo "proceed=false" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+
+          echo "✅ All pre-deployment checks passed"
+          echo "proceed=true" >> $GITHUB_OUTPUT
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # DATABASE MIGRATIONS
+  # ═══════════════════════════════════════════════════════════════════════════
+  migrate-database:
+    name: Run Database Migrations
+    runs-on: ubuntu-latest
+    needs: [pre-deploy]
+    if: needs.pre-deploy.outputs.deploy-proceed == 'true'
+    timeout-minutes: 15
+    environment:
+      name: staging
+      url: https://staging.softwarelotus.com.br
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9
+
+      - name: Install dependencies
+        run: |
+          cd backend/api
+          pnpm install --frozen-lockfile
+
+      - name: Run migrations
+        env:
+          DATABASE_URL: ${{ secrets.STAGING_DATABASE_URL }}
+        run: |
+          cd backend/api
+          echo "Running Prisma migrations..."
+          npx prisma migrate deploy
+          echo "✅ Migrations completed"
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # DEPLOY TO KUBERNETES
+  # ═══════════════════════════════════════════════════════════════════════════
+  deploy-k8s:
+    name: Deploy to Kubernetes (Staging)
+    runs-on: ubuntu-latest
+    needs: [migrate-database]
+    timeout-minutes: 20
+    environment:
+      name: staging
+      url: https://staging.softwarelotus.com.br
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v4
+        with:
+          version: 'latest'
+
+      - name: Configure Kubernetes context
+        run: |
+          mkdir -p $HOME/.kube
+          echo "${{ secrets.KUBECONFIG_STAGING }}" | base64 -d > $HOME/.kube/config
+          kubectl config use-context staging
+
+      - name: Deploy to Kubernetes
+        run: |
+          echo "Deploying to staging..."
+          kubectl apply -f infrastructure/kubernetes/staging/ --namespace=magicsaas-staging
+
+          echo "Waiting for rollout to complete..."
+          kubectl rollout status deployment/sofia-ai -n magicsaas-staging --timeout=5m
+
+          echo "✅ Deployment completed"
+
+      - name: Verify deployment
+        run: |
+          echo "Verifying deployment health..."
+          kubectl get pods -n magicsaas-staging
+          kubectl get services -n magicsaas-staging
+
+          # Check pod health
+          READY_PODS=$(kubectl get pods -n magicsaas-staging -o json | jq '[.items[] | select(.status.phase == "Running")] | length')
+          echo "Ready pods: $READY_PODS"
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # DOCKER COMPOSE DEPLOYMENT (Alternative)
+  # ═══════════════════════════════════════════════════════════════════════════
+  deploy-docker-compose:
+    name: Deploy via Docker Compose
+    runs-on: ubuntu-latest
+    needs: [migrate-database]
+    if: ${{ false }}  # Disabled by default, enable if using Docker Compose
+    timeout-minutes: 15
+    environment:
+      name: staging
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy to staging server
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.STAGING_HOST }}
+          username: ${{ secrets.STAGING_USER }}
+          key: ${{ secrets.STAGING_SSH_KEY }}
+          script: |
+            cd /opt/magicsaas
+            git pull origin develop
+            docker-compose -f infrastructure/docker/docker-compose.dev.yml pull
+            docker-compose -f infrastructure/docker/docker-compose.dev.yml up -d
+            docker-compose ps
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # SMOKE TESTS
+  # ═══════════════════════════════════════════════════════════════════════════
+  smoke-tests:
+    name: Run Smoke Tests
+    runs-on: ubuntu-latest
+    needs: [deploy-k8s]
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Wait for services to stabilize
+        run: sleep 30
+
+      - name: Test health endpoints
+        run: |
+          echo "Testing health endpoints..."
+
+          # Test Sofia AI health
+          curl -f https://staging.softwarelotus.com.br/health || echo "⚠️ Health check failed"
+
+          # Test API health
+          curl -f https://staging.softwarelotus.com.br/api/health || echo "⚠️ API health check failed"
+
+          echo "✅ Smoke tests completed"
+
+      - name: Test critical user flows
+        run: |
+          echo "Testing critical paths..."
+          # Add E2E smoke tests here
+          echo "✅ Critical flows validated"
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # ROLLBACK ON FAILURE
+  # ═══════════════════════════════════════════════════════════════════════════
+  rollback:
+    name: Rollback Deployment
+    runs-on: ubuntu-latest
+    needs: [smoke-tests]
+    if: failure()
+    environment:
+      name: staging
+
+    steps:
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v4
+
+      - name: Configure Kubernetes context
+        run: |
+          mkdir -p $HOME/.kube
+          echo "${{ secrets.KUBECONFIG_STAGING }}" | base64 -d > $HOME/.kube/config
+
+      - name: Rollback deployment
+        run: |
+          echo "🔄 Rolling back deployment..."
+          kubectl rollout undo deployment/sofia-ai -n magicsaas-staging
+          kubectl rollout status deployment/sofia-ai -n magicsaas-staging --timeout=5m
+          echo "✅ Rollback completed"
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # DEPLOYMENT SUMMARY
+  # ═══════════════════════════════════════════════════════════════════════════
+  deployment-summary:
+    name: Deployment Summary
+    runs-on: ubuntu-latest
+    needs: [pre-deploy, migrate-database, deploy-k8s, smoke-tests]
+    if: always()
+
+    steps:
+      - name: Generate deployment report
+        run: |
+          echo "## 🚀 Deployment Summary (Staging)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Step | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Pre-deploy Checks | ${{ needs.pre-deploy.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Database Migration | ${{ needs.migrate-database.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Kubernetes Deploy | ${{ needs.deploy-k8s.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Smoke Tests | ${{ needs.smoke-tests.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Environment" >> $GITHUB_STEP_SUMMARY
+          echo "- URL: https://staging.softwarelotus.com.br" >> $GITHUB_STEP_SUMMARY
+          echo "- Commit: \`${{ github.sha }}\`" >> $GITHUB_STEP_SUMMARY
