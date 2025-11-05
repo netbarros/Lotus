@@ -1,0 +1,228 @@
+groups:
+  # ═══════════════════════════════════════════════════════════════════════════
+  # APPLICATION ALERTS
+  # ═══════════════════════════════════════════════════════════════════════════
+  - name: application_alerts
+    interval: 30s
+    rules:
+      - alert: HighErrorRate
+        expr: |
+          (
+            sum(rate(http_requests_total{status=~"5.."}[5m]))
+            /
+            sum(rate(http_requests_total[5m]))
+          ) > 0.05
+        for: 5m
+        labels:
+          severity: critical
+          component: application
+        annotations:
+          summary: "High HTTP error rate detected"
+          description: "Error rate is {{ $value | humanizePercentage }} (threshold: 5%)"
+
+      - alert: HighLatency
+        expr: |
+          histogram_quantile(0.95,
+            rate(http_request_duration_ms_bucket[5m])
+          ) > 1000
+        for: 10m
+        labels:
+          severity: warning
+          component: application
+        annotations:
+          summary: "High API latency detected"
+          description: "p95 latency is {{ $value }}ms (threshold: 1000ms)"
+
+      - alert: ServiceDown
+        expr: up{job="sofia-ai"} == 0
+        for: 2m
+        labels:
+          severity: critical
+          component: sofia-ai
+        annotations:
+          summary: "Sofia AI service is down"
+          description: "Sofia AI has been down for more than 2 minutes"
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # DATABASE ALERTS
+  # ═══════════════════════════════════════════════════════════════════════════
+  - name: database_alerts
+    interval: 30s
+    rules:
+      - alert: DatabaseConnectionsHigh
+        expr: |
+          pg_stat_database_numbackends / pg_settings_max_connections > 0.8
+        for: 5m
+        labels:
+          severity: warning
+          component: database
+        annotations:
+          summary: "Database connections approaching limit"
+          description: "{{ $value | humanizePercentage }} of max connections in use"
+
+      - alert: DatabaseSlowQueries
+        expr: |
+          rate(pg_stat_statements_mean_exec_time_seconds[5m]) > 1
+        for: 10m
+        labels:
+          severity: warning
+          component: database
+        annotations:
+          summary: "Slow database queries detected"
+          description: "Average query time is {{ $value }}s"
+
+      - alert: DatabaseReplicationLag
+        expr: |
+          pg_replication_lag_seconds > 30
+        for: 5m
+        labels:
+          severity: critical
+          component: database
+        annotations:
+          summary: "Database replication lag detected"
+          description: "Replication lag is {{ $value }}s (threshold: 30s)"
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # REDIS ALERTS
+  # ═══════════════════════════════════════════════════════════════════════════
+  - name: redis_alerts
+    interval: 30s
+    rules:
+      - alert: RedisDown
+        expr: redis_up == 0
+        for: 2m
+        labels:
+          severity: critical
+          component: redis
+        annotations:
+          summary: "Redis is down"
+          description: "Redis has been unavailable for more than 2 minutes"
+
+      - alert: RedisMemoryHigh
+        expr: |
+          (redis_memory_used_bytes / redis_memory_max_bytes) > 0.9
+        for: 5m
+        labels:
+          severity: warning
+          component: redis
+        annotations:
+          summary: "Redis memory usage high"
+          description: "Memory usage is {{ $value | humanizePercentage }}"
+
+      - alert: RedisCacheHitRateLow
+        expr: |
+          (
+            rate(redis_keyspace_hits_total[5m])
+            /
+            (rate(redis_keyspace_hits_total[5m]) + rate(redis_keyspace_misses_total[5m]))
+          ) < 0.8
+        for: 10m
+        labels:
+          severity: warning
+          component: redis
+        annotations:
+          summary: "Redis cache hit rate low"
+          description: "Cache hit rate is {{ $value | humanizePercentage }} (threshold: 80%)"
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # RESOURCE ALERTS
+  # ═══════════════════════════════════════════════════════════════════════════
+  - name: resource_alerts
+    interval: 30s
+    rules:
+      - alert: HighCPUUsage
+        expr: |
+          (1 - avg(rate(node_cpu_seconds_total{mode="idle"}[5m]))) > 0.85
+        for: 10m
+        labels:
+          severity: warning
+          component: infrastructure
+        annotations:
+          summary: "High CPU usage detected"
+          description: "CPU usage is {{ $value | humanizePercentage }}"
+
+      - alert: HighMemoryUsage
+        expr: |
+          (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) > 0.9
+        for: 5m
+        labels:
+          severity: critical
+          component: infrastructure
+        annotations:
+          summary: "High memory usage detected"
+          description: "Memory usage is {{ $value | humanizePercentage }}"
+
+      - alert: DiskSpaceLow
+        expr: |
+          (
+            node_filesystem_avail_bytes{mountpoint="/"}
+            /
+            node_filesystem_size_bytes{mountpoint="/"}
+          ) < 0.1
+        for: 5m
+        labels:
+          severity: critical
+          component: infrastructure
+        annotations:
+          summary: "Disk space running low"
+          description: "Only {{ $value | humanizePercentage }} disk space remaining"
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # BUSINESS METRICS ALERTS
+  # ═══════════════════════════════════════════════════════════════════════════
+  - name: business_alerts
+    interval: 5m
+    rules:
+      - alert: LowSaaSGenerationRate
+        expr: |
+          rate(saas_generated_total[1h]) < 0.1
+        for: 30m
+        labels:
+          severity: warning
+          component: business
+        annotations:
+          summary: "Low SaaS generation rate"
+          description: "Only {{ $value }} SaaS generated per second in last hour"
+
+      - alert: HighIntentionFailureRate
+        expr: |
+          (
+            rate(intentions_failed_total[10m])
+            /
+            rate(intentions_total[10m])
+          ) > 0.1
+        for: 15m
+        labels:
+          severity: warning
+          component: business
+        annotations:
+          summary: "High intention failure rate"
+          description: "{{ $value | humanizePercentage }} of intentions are failing"
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # SECURITY ALERTS
+  # ═══════════════════════════════════════════════════════════════════════════
+  - name: security_alerts
+    interval: 1m
+    rules:
+      - alert: UnauthorizedAccessAttempts
+        expr: |
+          rate(http_requests_total{status="401"}[5m]) > 10
+        for: 5m
+        labels:
+          severity: warning
+          component: security
+        annotations:
+          summary: "High rate of unauthorized access attempts"
+          description: "{{ $value }} unauthorized attempts per second"
+
+      - alert: RateLimitExceeded
+        expr: |
+          rate(rate_limit_exceeded_total[5m]) > 50
+        for: 10m
+        labels:
+          severity: warning
+          component: security
+        annotations:
+          summary: "High rate of rate limit violations"
+          description: "{{ $value }} rate limit violations per second"
