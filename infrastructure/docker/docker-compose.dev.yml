@@ -201,17 +201,48 @@ services:
   # SOFIA AI - Intelligence Synthesis Layer (System 11 - Layer 10)
   # ============================================================================
 
+  # ============================================================================
+  # SOFIA AI v3.0 - THE BRAIN OF MAGICSAAS
+  # Complete Cognitive Mesh OS - System 11 - Enterprise State-of-the-Art
+  # ============================================================================
+
   sofia-ai:
     build:
       context: ../../backend/sofia-ai
       dockerfile: Dockerfile
     container_name: magicsaas-sofia-ai
+    ports:
+      - "3000:3000"  # Health & Metrics endpoint
     environment:
       NODE_ENV: development
+
+      # Redis Configuration
       REDIS_HOST: redis
       REDIS_PORT: 6379
+
+      # Anthropic Claude AI
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-your-api-key-here}
+
+      # Directus Central Hub
+      DIRECTUS_URL: http://directus:8055
+      DIRECTUS_TOKEN: ${DIRECTUS_ADMIN_TOKEN:-}
+
+      # Metronic Path
       METRONIC_PATH: /workspace/metronic
+
+      # Feature Flags (all enabled by default)
+      FEATURE_INTENTION_ENGINE: "true"
+      FEATURE_UX_VALIDATION: "true"
+      FEATURE_SEO_OPTIMIZATION: "true"
+      FEATURE_MARKETPLACE: "true"
+      FEATURE_META_ORCHESTRATION: "true"
+      FEATURE_ADAPTIVE_LEARNING: "true"
+
+      # Logging
       LOG_LEVEL: info
+
+      # HTTP Server
+      PORT: 3000
     volumes:
       - ../../backend/sofia-ai:/app
       - ../../metronic:/workspace/metronic
@@ -221,10 +252,18 @@ services:
     depends_on:
       redis:
         condition: service_healthy
+      directus:
+        condition: service_healthy
     networks:
       - magicsaas-network
     restart: unless-stopped
     command: pnpm dev
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
   # ============================================================================
   # OBSERVABILITY - Monitoring & Logging
