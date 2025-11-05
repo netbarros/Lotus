@@ -375,6 +375,7 @@ function Get-Configuration {
     $config.DirectusKey = Get-RandomPassword -Length 64
     $config.DirectusSecret = Get-RandomPassword -Length 64
     $config.JwtSecret = Get-RandomPassword -Length 64
+    $config.EncryptionKey = Get-RandomPassword -Length 64
     $config.PostgresPassword = Get-RandomPassword -Length 32
 
     Write-Host ""
@@ -415,7 +416,7 @@ FEATURE_META_ORCHESTRATION=true
 FEATURE_ADAPTIVE_LEARNING=true
 
 # Sofia AI HTTP Server
-SOFIA_PORT=3000
+SOFIA_PORT=3003
 
 # ═══════════════════════════════════════════════════════════════════════════
 # DIRECTUS - CENTRAL HUB
@@ -476,9 +477,10 @@ NODE_ENV=development
 APP_URL=http://localhost:3001
 API_URL=http://localhost:3001/api
 
-# JWT
+# JWT & Encryption
 JWT_SECRET=$($Config.JwtSecret)
 JWT_EXPIRATION=7d
+ENCRYPTION_KEY=$($Config.EncryptionKey)
 
 # ═══════════════════════════════════════════════════════════════════════════
 # METRONIC
@@ -712,7 +714,7 @@ function Start-DockerServices {
         $sofiaHealthy = $false
         for ($i = 1; $i -le 15; $i++) {
             try {
-                $response = Invoke-WebRequest -Uri "http://localhost:3000/health" -Method GET -TimeoutSec 2 -ErrorAction SilentlyContinue
+                $response = Invoke-WebRequest -Uri "http://localhost:3003/health" -Method GET -TimeoutSec 2 -ErrorAction SilentlyContinue
                 if ($response.StatusCode -eq 200) {
                     $sofiaHealthy = $true
                     break
@@ -746,7 +748,7 @@ function Test-Installation {
         @{ Name = "PostgreSQL"; Url = ""; Container = "magicsaas-postgres" }
         @{ Name = "Redis"; Url = ""; Container = "magicsaas-redis" }
         @{ Name = "Directus"; Url = "http://localhost:8055/server/health"; Container = "magicsaas-directus" }
-        @{ Name = "Sofia AI v3.0"; Url = "http://localhost:3000/health"; Container = "magicsaas-sofia-ai" }
+        @{ Name = "Sofia AI v3.0"; Url = "http://localhost:3003/health"; Container = "magicsaas-sofia-ai" }
     )
 
     $allHealthy = $true
@@ -830,9 +832,9 @@ function Show-CompletionSummary {
     Write-Host ""
     Write-Host "  🧠 Sofia AI v3.0 - THE BRAIN"
     Write-Host "     Health:  " -NoNewline
-    Write-Host "http://localhost:3000/health" -ForegroundColor $Colors.Highlight
+    Write-Host "http://localhost:3003/health" -ForegroundColor $Colors.Highlight
     Write-Host "     Metrics: " -NoNewline
-    Write-Host "http://localhost:3000/metrics" -ForegroundColor $Colors.Highlight
+    Write-Host "http://localhost:3003/metrics" -ForegroundColor $Colors.Highlight
     Write-Host ""
     Write-Host "  🎯 Directus CMS (Central Hub)"
     Write-Host "     URL:   " -NoNewline
@@ -864,7 +866,7 @@ function Show-CompletionSummary {
     Write-Host ""
     Write-Host "  1. " -NoNewline
     Write-Host "Acesse Sofia AI Health:" -ForegroundColor $Colors.Highlight
-    Write-Host "     curl http://localhost:3000/health"
+    Write-Host "     curl http://localhost:3003/health"
     Write-Host ""
     Write-Host "  2. " -NoNewline
     Write-Host "Acesse Directus:" -ForegroundColor $Colors.Highlight

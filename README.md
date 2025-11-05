@@ -296,25 +296,23 @@ docker logs -f magicsaas-sofia-ai
 
 ```bash
 # Check Sofia AI health
-curl http://localhost:3000/health
+curl http://localhost:3003/health
 
 # Check Directus
 curl http://localhost:8055/server/health
-
-# Check main API
-curl http://localhost:3001/health
 ```
 
 ### Access Points
 
 | Service | URL | Description |
 |---------|-----|-------------|
-| **Sofia AI Health** | http://localhost:3000/health | Sofia AI status & metrics |
-| **Sofia AI Metrics** | http://localhost:3000/metrics | Prometheus metrics |
-| **Admin Dashboard** | http://localhost:3001 | Main admin interface |
+| **Sofia AI Health** | http://localhost:3003/health | Sofia AI status & metrics |
+| **Sofia AI Metrics** | http://localhost:3003/metrics | Prometheus metrics |
 | **Directus CMS** | http://localhost:8055 | Content management hub |
-| **API Documentation** | http://localhost:3001/docs | OpenAPI/Swagger docs |
 | **Grafana Monitoring** | http://localhost:3002 | Observability dashboard |
+| **Prometheus** | http://localhost:9090 | Metrics database |
+| **Jaeger Tracing** | http://localhost:16686 | Distributed tracing |
+| **MailHog** | http://localhost:8025 | Email testing |
 
 ### Default Credentials
 
@@ -802,8 +800,8 @@ pnpm docker:prod                # Start Docker Compose prod env
 
 # Sofia AI specific
 docker logs -f magicsaas-sofia-ai    # Watch Sofia AI logs
-curl http://localhost:3000/health    # Check Sofia AI health
-curl http://localhost:3000/metrics   # Get Prometheus metrics
+curl http://localhost:3003/health    # Check Sofia AI health
+curl http://localhost:3003/metrics   # Get Prometheus metrics
 
 # Kubernetes
 pnpm k8s:deploy                 # Deploy to Kubernetes

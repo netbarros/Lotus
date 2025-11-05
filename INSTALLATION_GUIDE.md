@@ -74,7 +74,7 @@ cd Lotus
 # 3. Aguarde ~2-3 minutos para os serviços iniciarem
 
 # 4. Acesse Sofia AI
-curl http://localhost:3000/health
+curl http://localhost:3003/health
 ```
 
 ### Linux / macOS (Bash)
@@ -99,7 +99,7 @@ docker-compose -f docker-compose.dev.yml up -d
 # 4. Aguarde ~2-3 minutos
 
 # 5. Verifique
-curl http://localhost:3000/health
+curl http://localhost:3003/health
 ```
 
 ---
@@ -169,7 +169,7 @@ Os serviços levam ~2-3 minutos para inicializar completamente:
 
 ```bash
 # Verificar Sofia AI
-curl http://localhost:3000/health
+curl http://localhost:3003/health
 
 # Verificar Directus
 curl http://localhost:8055/server/health
@@ -185,8 +185,8 @@ docker exec magicsaas-redis redis-cli ping
 
 | Serviço | URL | Credenciais |
 |---------|-----|-------------|
-| **Sofia AI Health** | http://localhost:3000/health | N/A |
-| **Sofia AI Metrics** | http://localhost:3000/metrics | N/A |
+| **Sofia AI Health** | http://localhost:3003/health | N/A |
+| **Sofia AI Metrics** | http://localhost:3003/metrics | N/A |
 | **Directus CMS** | http://localhost:8055 | Email e senha configurados |
 | **Admin Dashboard** | http://localhost:3001 | admin@softwarelotus.com.br / Admin123! |
 | **Grafana** | http://localhost:3002 | admin / admin |
@@ -294,7 +294,7 @@ AWS_S3_BUCKET=magicsaas-storage
 
 ```bash
 # Health check
-curl http://localhost:3000/health
+curl http://localhost:3003/health
 
 # Resposta esperada:
 {
@@ -517,7 +517,7 @@ docker logs -f magicsaas-sofia-ai
 
 ### Sofia AI não inicia
 
-**Problema:** Sofia AI não responde em http://localhost:3000/health
+**Problema:** Sofia AI não responde em http://localhost:3003/health
 
 **Soluções:**
 

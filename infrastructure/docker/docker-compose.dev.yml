@@ -13,9 +13,9 @@ services:
     image: pgvector/pgvector:pg17
     container_name: magicsaas-postgres
     environment:
-      POSTGRES_DB: magicsaas
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: ${POSTGRES_DB:-magicsaas}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
       POSTGRES_INITDB_ARGS: "-E UTF8 --locale=en_US.UTF-8"
     ports:
       - "5432:5432"
@@ -81,9 +81,9 @@ services:
       DB_CLIENT: pg
       DB_HOST: postgres
       DB_PORT: 5432
-      DB_DATABASE: magicsaas
-      DB_USER: postgres
-      DB_PASSWORD: postgres
+      DB_DATABASE: ${POSTGRES_DB:-magicsaas}
+      DB_USER: ${POSTGRES_USER:-postgres}
+      DB_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
 
       CACHE_ENABLED: "true"
       CACHE_STORE: redis
@@ -120,66 +120,71 @@ services:
     restart: unless-stopped
 
   # ============================================================================
-  # BACKEND API
+  # BACKEND API (NOT YET IMPLEMENTED - COMMENTED OUT)
   # ============================================================================
+  # NOTE: Backend API is not yet implemented. Uncomment when ready.
+  # For now, Sofia AI v3.0 provides the core intelligence layer.
+  # Use Directus REST/GraphQL API at http://localhost:8055 for data access.
 
-  backend-api:
-    build:
-      context: ../../backend/api
-      dockerfile: Dockerfile
-    container_name: magicsaas-backend-api
-    ports:
-      - "3000:3000"
-    environment:
-      NODE_ENV: development
-      PORT: 3000
-      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/magicsaas?schema=public
-      REDIS_URL: redis://redis:6379
-      DIRECTUS_URL: http://directus:8055
-      JWT_SECRET: ${JWT_SECRET}
-      ENCRYPTION_KEY: ${ENCRYPTION_KEY}
-    volumes:
-      - ../../backend/api:/app
-      - /app/node_modules
-      - backend_logs:/app/logs
-    depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-      directus:
-        condition: service_healthy
-    networks:
-      - magicsaas-network
-    restart: unless-stopped
-    command: pnpm dev
+  # backend-api:
+  #   build:
+  #     context: ../../backend/api
+  #     dockerfile: Dockerfile
+  #   container_name: magicsaas-backend-api
+  #   ports:
+  #     - "3000:3000"
+  #   environment:
+  #     NODE_ENV: development
+  #     PORT: 3000
+  #     DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-magicsaas}?schema=public
+  #     REDIS_URL: redis://redis:6379
+  #     DIRECTUS_URL: http://directus:8055
+  #     JWT_SECRET: ${JWT_SECRET}
+  #     ENCRYPTION_KEY: ${ENCRYPTION_KEY}
+  #   volumes:
+  #     - ../../backend/api:/app
+  #     - /app/node_modules
+  #     - backend_logs:/app/logs
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
+  #     redis:
+  #       condition: service_healthy
+  #     directus:
+  #       condition: service_healthy
+  #   networks:
+  #     - magicsaas-network
+  #   restart: unless-stopped
+  #   command: pnpm dev
 
   # ============================================================================
-  # FRONTEND ADMIN
+  # FRONTEND ADMIN (NOT YET IMPLEMENTED - COMMENTED OUT)
   # ============================================================================
+  # NOTE: Frontend Admin is not yet implemented. Uncomment when ready.
+  # For now, use Directus admin interface at http://localhost:8055
 
-  frontend-admin:
-    build:
-      context: ../../frontend/admin
-      dockerfile: Dockerfile
-    container_name: magicsaas-frontend-admin
-    ports:
-      - "3001:3001"
-    environment:
-      NODE_ENV: development
-      PORT: 3001
-      NEXT_PUBLIC_API_URL: http://localhost:3000
-      NEXT_PUBLIC_DIRECTUS_URL: http://localhost:8055
-    volumes:
-      - ../../frontend/admin:/app
-      - /app/node_modules
-      - /app/.next
-    depends_on:
-      - backend-api
-    networks:
-      - magicsaas-network
-    restart: unless-stopped
-    command: pnpm dev
+  # frontend-admin:
+  #   build:
+  #     context: ../../frontend/admin
+  #     dockerfile: Dockerfile
+  #   container_name: magicsaas-frontend-admin
+  #   ports:
+  #     - "3001:3001"
+  #   environment:
+  #     NODE_ENV: development
+  #     PORT: 3001
+  #     NEXT_PUBLIC_API_URL: http://localhost:3000
+  #     NEXT_PUBLIC_DIRECTUS_URL: http://localhost:8055
+  #   volumes:
+  #     - ../../frontend/admin:/app
+  #     - /app/node_modules
+  #     - /app/.next
+  #   depends_on:
+  #     - backend-api
+  #   networks:
+  #     - magicsaas-network
+  #   restart: unless-stopped
+  #   command: pnpm dev
 
   # ============================================================================
   # INNGEST - Serverless Workflows
@@ -212,7 +217,7 @@ services:
       dockerfile: Dockerfile
     container_name: magicsaas-sofia-ai
     ports:
-      - "3000:3000"  # Health & Metrics endpoint
+      - "3003:3003"  # Health & Metrics endpoint
     environment:
       NODE_ENV: development
 
@@ -242,7 +247,7 @@ services:
       LOG_LEVEL: info
 
       # HTTP Server
-      PORT: 3000
+      PORT: 3003
     volumes:
       - ../../backend/sofia-ai:/app
       - ../../metronic:/workspace/metronic
@@ -259,7 +264,7 @@ services:
     restart: unless-stopped
     command: pnpm dev
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:3003/health"]
       interval: 30s
       timeout: 10s
       retries: 3
