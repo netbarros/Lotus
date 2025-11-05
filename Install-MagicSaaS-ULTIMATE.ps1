@@ -417,10 +417,14 @@ FEATURE_ADAPTIVE_LEARNING=true
 
 # Sofia AI HTTP Server
 SOFIA_PORT=3003
+PORT=3003
 
 # ═══════════════════════════════════════════════════════════════════════════
 # DIRECTUS - CENTRAL HUB
 # ═══════════════════════════════════════════════════════════════════════════
+
+# Directus Connection (for Sofia AI and other services)
+DIRECTUS_URL=http://localhost:8055
 
 # Directus Keys (Auto-generated - DO NOT SHARE)
 DIRECTUS_KEY=$($Config.DirectusKey)
