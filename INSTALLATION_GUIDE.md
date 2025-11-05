@@ -84,19 +84,22 @@ curl http://localhost:3003/health
 git clone https://github.com/netbarros/Lotus.git
 cd Lotus
 
-# 2. Torne o instalador executável e execute
-chmod +x Install-MagicSaaS-ULTIMATE.ps1
-pwsh Install-MagicSaaS-ULTIMATE.ps1
+# 2. Execute o instalador ULTIMATE (nativo para Linux/macOS)
+chmod +x install-magicsaas-ultimate.sh
+./install-magicsaas-ultimate.sh
 
-# Ou use Docker Compose diretamente:
-cp .env.example .env
-nano .env  # Configure ANTHROPIC_API_KEY e outras variáveis
+# O instalador irá:
+# ✅ Verificar dependências
+# ✅ Coletar configuração (API keys, senhas)
+# ✅ Criar .env automaticamente
+# ✅ Instalar dependências Node.js
+# ✅ Iniciar todos os serviços Docker
+# ✅ Verificar que tudo está funcionando
 
-# 3. Inicie os serviços
-cd infrastructure/docker
-docker-compose -f docker-compose.dev.yml up -d
+# 3. Aguarde ~2-3 minutos para os serviços iniciarem
 
-# 4. Aguarde ~2-3 minutos
+# 4. Acesse Sofia AI
+curl http://localhost:3003/health
 
 # 5. Verifique
 curl http://localhost:3003/health

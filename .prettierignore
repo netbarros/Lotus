@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build outputs
+dist/
+build/
+.next/
+out/
+
+# Lockfiles
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
+
+# Logs
+*.log
+
+# Cache
+.turbo/
+.cache/
+
+# Misc
+.DS_Store
+*.pem
+
+# Generated files
+*.generated.ts
+*.generated.js

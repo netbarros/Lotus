@@ -160,7 +160,7 @@ async function bootstrap() {
       }
     });
 
-    const PORT = parseInt(process.env.PORT || '3000', 10);
+    const PORT = parseInt(process.env.PORT || '3003', 10);
     server.listen(PORT, () => {
       logger.info(`🌐 HTTP server listening on port ${PORT}`);
       logger.info(`   Health: http://localhost:${PORT}/health`);

@@ -27,6 +27,15 @@ yarn-error.log*
 lerna-debug.log*
 pnpm-debug.log*
 *.log
+logs/
+
+# Installation logs and backups
+installation-*.log
+*.backup
+.env.backup.*
+
+# Data directories
+data/
 
 # OS
 .DS_Store

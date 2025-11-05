@@ -1,39 +1,72 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "globalDependencies": [
-    "**/.env.*local"
-  ],
+  "globalDependencies": [".env", ".env.local", "tsconfig.json"],
   "pipeline": {
     "build": {
-      "dependsOn": [
-        "^build"
-      ],
-      "outputs": [
-        "dist/**",
-        ".next/**",
-        "!.next/cache/**",
-        "build/**"
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**", ".next/**", "!.next/cache/**", "build/**", "out/**"],
+      "env": [
+        "NODE_ENV",
+        "ANTHROPIC_API_KEY",
+        "DIRECTUS_URL",
+        "DATABASE_URL",
+        "REDIS_HOST",
+        "REDIS_PORT"
       ]
     },
     "dev": {
       "cache": false,
-      "persistent": true
-    },
-    "test": {
-      "dependsOn": [
-        "^build"
-      ],
-      "outputs": [
-        "coverage/**"
+      "persistent": true,
+      "env": [
+        "NODE_ENV",
+        "PORT",
+        "ANTHROPIC_API_KEY",
+        "DIRECTUS_URL",
+        "DIRECTUS_ADMIN_EMAIL",
+        "DIRECTUS_ADMIN_PASSWORD",
+        "DATABASE_URL",
+        "REDIS_HOST",
+        "REDIS_PORT",
+        "METRONIC_PATH",
+        "FEATURE_INTENTION_ENGINE",
+        "FEATURE_UX_VALIDATION",
+        "FEATURE_SEO_OPTIMIZATION",
+        "FEATURE_MARKETPLACE",
+        "FEATURE_META_ORCHESTRATION",
+        "FEATURE_ADAPTIVE_LEARNING"
       ]
     },
     "lint": {
-      "dependsOn": [
-        "^build"
-      ]
+      "outputs": []
+    },
+    "test": {
+      "dependsOn": ["^build"],
+      "outputs": ["coverage/**"],
+      "env": ["NODE_ENV"]
+    },
+    "test:unit": {
+      "outputs": ["coverage/**"],
+      "env": ["NODE_ENV"]
+    },
+    "test:integration": {
+      "dependsOn": ["build"],
+      "outputs": ["coverage/**"],
+      "env": ["NODE_ENV", "DATABASE_URL", "REDIS_URL"]
+    },
+    "test:e2e": {
+      "dependsOn": ["build"],
+      "outputs": ["coverage/**"],
+      "env": ["NODE_ENV", "DATABASE_URL", "REDIS_URL", "DIRECTUS_URL"]
     },
     "clean": {
       "cache": false
+    },
+    "format": {
+      "outputs": []
+    },
+    "deploy": {
+      "dependsOn": ["build", "test"],
+      "outputs": []
     }
   }
 }
