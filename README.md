@@ -247,6 +247,22 @@ The **definitive way** to install MagicSaaS with Sofia AI v3.0 - THE BRAIN:
   -AutoApprove
 ```
 
+**Linux / macOS (Bash):**
+```bash
+# Make executable (first time only)
+chmod +x install-magicsaas-ultimate.sh
+
+# Run installer
+./install-magicsaas-ultimate.sh
+
+# Or with parameters:
+./install-magicsaas-ultimate.sh \
+  --mode full \
+  --api-key "sk-ant-your-key" \
+  --email "admin@yourcompany.com" \
+  --yes
+```
+
 **What the installer does:**
 - ✅ Verifies all dependencies (Docker, Node.js, pnpm, Git)
 - ✅ Collects configuration (API keys, passwords)
