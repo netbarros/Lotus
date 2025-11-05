@@ -230,7 +230,40 @@ await decisionLogger.validateSuggestion(suggestionId, {
 - **Git** 2.40+
 - **Anthropic API Key** (for Sofia AI)
 
-### Installation (5 Minutes)
+### 🎯 Ultimate Installer (Recommended)
+
+The **definitive way** to install MagicSaaS with Sofia AI v3.0 - THE BRAIN:
+
+**Windows (PowerShell):**
+```powershell
+# Run as Administrator
+.\Install-MagicSaaS-ULTIMATE.ps1
+
+# Or with parameters:
+.\Install-MagicSaaS-ULTIMATE.ps1 `
+  -Mode Full `
+  -AnthropicApiKey "sk-ant-your-key" `
+  -DirectusAdminEmail "admin@yourcompany.com" `
+  -AutoApprove
+```
+
+**What the installer does:**
+- ✅ Verifies all dependencies (Docker, Node.js, pnpm, Git)
+- ✅ Collects configuration (API keys, passwords)
+- ✅ Generates complete `.env` file automatically
+- ✅ Creates directory structure
+- ✅ Installs all Node.js dependencies
+- ✅ Starts Docker services with health checks
+- ✅ Verifies installation
+- ✅ Displays comprehensive completion summary
+
+**Installation time:** 5-10 minutes (fully automated)
+
+**[📖 Read Complete Installation Guide →](INSTALLATION_GUIDE.md)**
+
+---
+
+### Installation (Manual - 5 Minutes)
 
 ```bash
 # 1. Clone the repository
