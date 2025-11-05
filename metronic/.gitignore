@@ -1,0 +1,22 @@
+# Metronic Framework - Git Ignore
+
+# NÃO ignorar as demos (queremos versionar)
+# !demos/
+
+# Ignorar node_modules dentro das demos
+demos/*/node_modules/
+demos/*/.next/
+demos/*/dist/
+demos/*/build/
+demos/*/.cache/
+
+# Ignorar arquivos gerados
+components/
+assets/shared/
+docs/
+
+# Manter apenas sofia-catalog.json
+!components/sofia-catalog.json
+
+# Logs
+*.log
