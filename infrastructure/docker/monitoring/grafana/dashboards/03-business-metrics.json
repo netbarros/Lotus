@@ -1,0 +1,410 @@
+{
+  "dashboard": {
+    "title": "MagicSaaS System-∞ - Business Metrics & KPIs",
+    "uid": "magicsaas-business-metrics",
+    "version": 1,
+    "tags": ["magicsaas", "business", "kpis", "revenue"],
+    "timezone": "browser",
+    "editable": true,
+    "time": {
+      "from": "now-30d",
+      "to": "now"
+    },
+    "refresh": "5m",
+    "panels": [
+      {
+        "id": 1,
+        "title": "Monthly Recurring Revenue (MRR)",
+        "type": "stat",
+        "gridPos": {"x": 0, "y": 0, "w": 6, "h": 6},
+        "targets": [
+          {
+            "expr": "sum(magicsaas_mrr_total)",
+            "legendFormat": "Total MRR",
+            "refId": "A"
+          }
+        ],
+        "options": {
+          "colorMode": "background",
+          "graphMode": "area",
+          "reduceOptions": {
+            "calcs": ["lastNotNull"]
+          }
+        },
+        "fieldConfig": {
+          "defaults": {
+            "unit": "currencyUSD",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"value": 0, "color": "red"},
+                {"value": 10000, "color": "yellow"},
+                {"value": 50000, "color": "green"}
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 2,
+        "title": "Annual Recurring Revenue (ARR)",
+        "type": "stat",
+        "gridPos": {"x": 6, "y": 0, "w": 6, "h": 6},
+        "targets": [
+          {
+            "expr": "sum(magicsaas_mrr_total) * 12",
+            "legendFormat": "ARR",
+            "refId": "A"
+          }
+        ],
+        "options": {
+          "colorMode": "background",
+          "graphMode": "area",
+          "reduceOptions": {
+            "calcs": ["lastNotNull"]
+          }
+        },
+        "fieldConfig": {
+          "defaults": {
+            "unit": "currencyUSD",
+            "decimals": 0
+          }
+        }
+      },
+      {
+        "id": 3,
+        "title": "Active Tenants",
+        "type": "stat",
+        "gridPos": {"x": 12, "y": 0, "w": 6, "h": 6},
+        "targets": [
+          {
+            "expr": "count(magicsaas_tenant_active{status=\"active\"})",
+            "legendFormat": "Active Tenants",
+            "refId": "A"
+          }
+        ],
+        "options": {
+          "colorMode": "value",
+          "graphMode": "area",
+          "reduceOptions": {
+            "calcs": ["lastNotNull"]
+          }
+        },
+        "fieldConfig": {
+          "defaults": {
+            "unit": "short"
+          }
+        }
+      },
+      {
+        "id": 4,
+        "title": "Total Users",
+        "type": "stat",
+        "gridPos": {"x": 18, "y": 0, "w": 6, "h": 6},
+        "targets": [
+          {
+            "expr": "sum(magicsaas_users_total)",
+            "legendFormat": "Total Users",
+            "refId": "A"
+          }
+        ],
+        "options": {
+          "colorMode": "value",
+          "graphMode": "area",
+          "reduceOptions": {
+            "calcs": ["lastNotNull"]
+          }
+        },
+        "fieldConfig": {
+          "defaults": {
+            "unit": "short"
+          }
+        }
+      },
+      {
+        "id": 5,
+        "title": "Revenue Growth (30d)",
+        "type": "graph",
+        "gridPos": {"x": 0, "y": 6, "w": 12, "h": 8},
+        "targets": [
+          {
+            "expr": "sum(rate(magicsaas_revenue_total[30d]))",
+            "legendFormat": "Revenue Growth Rate",
+            "refId": "A"
+          },
+          {
+            "expr": "sum(magicsaas_mrr_total)",
+            "legendFormat": "Current MRR",
+            "refId": "B"
+          }
+        ],
+        "yaxes": [
+          {"format": "currencyUSD", "label": "Revenue"},
+          {"format": "percentunit", "label": "Growth Rate"}
+        ]
+      },
+      {
+        "id": 6,
+        "title": "User Growth (30d)",
+        "type": "graph",
+        "gridPos": {"x": 12, "y": 6, "w": 12, "h": 8},
+        "targets": [
+          {
+            "expr": "sum(magicsaas_users_total)",
+            "legendFormat": "Total Users",
+            "refId": "A"
+          },
+          {
+            "expr": "sum(rate(magicsaas_users_registered_total[24h]))",
+            "legendFormat": "New Users (24h rate)",
+            "refId": "B"
+          }
+        ],
+        "yaxes": [
+          {"format": "short", "label": "Users"},
+          {"format": "short", "label": "New Users/day"}
+        ]
+      },
+      {
+        "id": 7,
+        "title": "Conversion Funnel - Sofia AI Generations",
+        "type": "graph",
+        "gridPos": {"x": 0, "y": 14, "w": 12, "h": 8},
+        "targets": [
+          {
+            "expr": "rate(sofia_intentions_received_total[5m])",
+            "legendFormat": "1. Intentions Received",
+            "refId": "A"
+          },
+          {
+            "expr": "rate(sofia_intentions_processed_total[5m])",
+            "legendFormat": "2. Intentions Processed",
+            "refId": "B"
+          },
+          {
+            "expr": "rate(sofia_generations_started_total[5m])",
+            "legendFormat": "3. Generations Started",
+            "refId": "C"
+          },
+          {
+            "expr": "rate(sofia_generations_success_total[5m])",
+            "legendFormat": "4. Generations Completed",
+            "refId": "D"
+          },
+          {
+            "expr": "rate(sofia_deployments_success_total[5m])",
+            "legendFormat": "5. Deployments Success",
+            "refId": "E"
+          }
+        ],
+        "yaxes": [
+          {"format": "ops", "label": "Operations/sec"},
+          {"format": "short"}
+        ]
+      },
+      {
+        "id": 8,
+        "title": "Customer Churn Rate (30d)",
+        "type": "gauge",
+        "gridPos": {"x": 12, "y": 14, "w": 6, "h": 8},
+        "targets": [
+          {
+            "expr": "(sum(increase(magicsaas_tenants_cancelled_total[30d])) / sum(magicsaas_tenant_active{status=\"active\"})) * 100",
+            "legendFormat": "Churn Rate %",
+            "refId": "A"
+          }
+        ],
+        "options": {
+          "showThresholdLabels": true,
+          "showThresholdMarkers": true
+        },
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percent",
+            "min": 0,
+            "max": 100,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"value": 0, "color": "green"},
+                {"value": 5, "color": "yellow"},
+                {"value": 10, "color": "red"}
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 9,
+        "title": "Customer Lifetime Value (LTV)",
+        "type": "stat",
+        "gridPos": {"x": 18, "y": 14, "w": 6, "h": 8},
+        "targets": [
+          {
+            "expr": "avg(magicsaas_customer_ltv)",
+            "legendFormat": "Average LTV",
+            "refId": "A"
+          }
+        ],
+        "options": {
+          "colorMode": "background",
+          "graphMode": "area"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "unit": "currencyUSD",
+            "decimals": 2
+          }
+        }
+      },
+      {
+        "id": 10,
+        "title": "Revenue by Tier",
+        "type": "pie",
+        "gridPos": {"x": 0, "y": 22, "w": 8, "h": 8},
+        "targets": [
+          {
+            "expr": "sum by (tier) (magicsaas_mrr_by_tier)",
+            "legendFormat": "{{tier}}",
+            "refId": "A"
+          }
+        ],
+        "options": {
+          "legend": {
+            "displayMode": "table",
+            "placement": "right",
+            "values": ["value", "percent"]
+          }
+        }
+      },
+      {
+        "id": 11,
+        "title": "Active Users (Daily, Weekly, Monthly)",
+        "type": "graph",
+        "gridPos": {"x": 8, "y": 22, "w": 16, "h": 8},
+        "targets": [
+          {
+            "expr": "sum(magicsaas_active_users_daily)",
+            "legendFormat": "DAU (Daily Active Users)",
+            "refId": "A"
+          },
+          {
+            "expr": "sum(magicsaas_active_users_weekly)",
+            "legendFormat": "WAU (Weekly Active Users)",
+            "refId": "B"
+          },
+          {
+            "expr": "sum(magicsaas_active_users_monthly)",
+            "legendFormat": "MAU (Monthly Active Users)",
+            "refId": "C"
+          }
+        ],
+        "yaxes": [
+          {"format": "short", "label": "Active Users"},
+          {"format": "short"}
+        ]
+      },
+      {
+        "id": 12,
+        "title": "Customer Acquisition Cost (CAC)",
+        "type": "stat",
+        "gridPos": {"x": 0, "y": 30, "w": 6, "h": 6},
+        "targets": [
+          {
+            "expr": "sum(magicsaas_marketing_spend_total) / sum(increase(magicsaas_tenants_total[30d]))",
+            "legendFormat": "CAC (30d)",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "currencyUSD",
+            "decimals": 2
+          }
+        }
+      },
+      {
+        "id": 13,
+        "title": "LTV:CAC Ratio",
+        "type": "gauge",
+        "gridPos": {"x": 6, "y": 30, "w": 6, "h": 6},
+        "targets": [
+          {
+            "expr": "avg(magicsaas_customer_ltv) / (sum(magicsaas_marketing_spend_total) / sum(increase(magicsaas_tenants_total[30d])))",
+            "legendFormat": "LTV:CAC Ratio",
+            "refId": "A"
+          }
+        ],
+        "options": {
+          "showThresholdLabels": true,
+          "showThresholdMarkers": true
+        },
+        "fieldConfig": {
+          "defaults": {
+            "unit": "short",
+            "decimals": 2,
+            "min": 0,
+            "max": 10,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"value": 0, "color": "red"},
+                {"value": 3, "color": "green"}
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 14,
+        "title": "Net Promoter Score (NPS)",
+        "type": "gauge",
+        "gridPos": {"x": 12, "y": 30, "w": 6, "h": 6},
+        "targets": [
+          {
+            "expr": "avg(magicsaas_nps_score)",
+            "legendFormat": "NPS",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "short",
+            "min": -100,
+            "max": 100,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"value": -100, "color": "red"},
+                {"value": 0, "color": "yellow"},
+                {"value": 50, "color": "green"}
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 15,
+        "title": "Support Ticket Volume",
+        "type": "graph",
+        "gridPos": {"x": 18, "y": 30, "w": 6, "h": 6},
+        "targets": [
+          {
+            "expr": "sum(rate(magicsaas_support_tickets_created_total[1h]))",
+            "legendFormat": "Tickets Created/hour",
+            "refId": "A"
+          },
+          {
+            "expr": "sum(rate(magicsaas_support_tickets_resolved_total[1h]))",
+            "legendFormat": "Tickets Resolved/hour",
+            "refId": "B"
+          }
+        ],
+        "yaxes": [
+          {"format": "short", "label": "Tickets/hour"},
+          {"format": "short"}
+        ]
+      }
+    ]
+  }
+}

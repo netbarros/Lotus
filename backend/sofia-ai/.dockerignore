@@ -1,0 +1,65 @@
+# ═══════════════════════════════════════════════════════════════════════════
+# DOCKERIGNORE - Sofia AI
+# Optimizes build context by excluding unnecessary files
+# ═══════════════════════════════════════════════════════════════════════════
+
+# Dependencies
+node_modules
+npm-debug.log
+yarn-error.log
+pnpm-debug.log
+.pnpm-store
+
+# Build artifacts
+dist
+build
+.next
+out
+.turbo
+
+# Environment files
+.env
+.env.local
+.env.*.local
+.env.backup.*
+
+# Tests
+coverage
+*.test.ts
+*.spec.ts
+__tests__
+.nyc_output
+
+# Documentation
+*.md
+!README.md
+docs/
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+logs
+*.log
+
+# Misc
+.editorconfig
+.prettierrc
+.prettierignore
+.eslintrc*
+.eslintignore
+tsconfig.json
+vitest.config.ts

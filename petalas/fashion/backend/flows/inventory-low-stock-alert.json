@@ -1,0 +1,101 @@
+{
+  "id": "flow-fashion-low-stock-alert",
+  "name": "Fashion - Low Stock Alert",
+  "icon": "inventory_2",
+  "color": "#F59E0B",
+  "description": "Alert admins when product inventory falls below threshold",
+  "status": "active",
+  "trigger": "event",
+  "accountability": "all",
+  "options": {
+    "type": "action",
+    "scope": ["items.update"],
+    "collections": ["products"]
+  },
+  "operation": "6l5p8k2o-3m1n-4p9l-k8o7-2n4m9p1o6l3m",
+  "operations": [
+    {
+      "id": "6l5p8k2o-3m1n-4p9l-k8o7-2n4m9p1o6l3m",
+      "name": "Check If Low Stock",
+      "key": "check_low_stock",
+      "type": "condition",
+      "options": {
+        "filter": {
+          "_and": [
+            {
+              "$trigger": {
+                "payload": {
+                  "track_inventory": {
+                    "_eq": true
+                  }
+                }
+              }
+            },
+            {
+              "$trigger": {
+                "payload": {
+                  "inventory_quantity": {
+                    "_lte": "{{$trigger.payload.low_stock_threshold}}"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "resolve": "7m6q9l3p-4n2o-5q0m-l9p8-3o5n0q2p7m4n",
+      "reject": null,
+      "flow": "flow-fashion-low-stock-alert"
+    },
+    {
+      "id": "7m6q9l3p-4n2o-5q0m-l9p8-3o5n0q2p7m4n",
+      "name": "Send Low Stock Alert Email",
+      "key": "send_alert_email",
+      "type": "mail",
+      "options": {
+        "to": ["inventory@softwarelotus.com.br"],
+        "subject": "⚠️ Low Stock Alert: {{$trigger.payload.name}}",
+        "type": "template",
+        "template": "low-stock-alert",
+        "data": {
+          "product_id": "{{$trigger.payload.id}}",
+          "product_name": "{{$trigger.payload.name}}",
+          "sku": "{{$trigger.payload.sku}}",
+          "current_quantity": "{{$trigger.payload.inventory_quantity}}",
+          "threshold": "{{$trigger.payload.low_stock_threshold}}",
+          "product_url": "https://admin.softwarelotus.com.br/admin/content/products/{{$trigger.payload.id}}"
+        }
+      },
+      "resolve": "8n7r0m4q-5o3p-6r1n-m0q9-4p6o1r3q8n5o",
+      "flow": "flow-fashion-low-stock-alert"
+    },
+    {
+      "id": "8n7r0m4q-5o3p-6r1n-m0q9-4p6o1r3q8n5o",
+      "name": "Emit Low Stock Event",
+      "key": "emit_low_stock_event",
+      "type": "webhook",
+      "options": {
+        "method": "POST",
+        "url": "http://localhost:8055/events",
+        "body": {
+          "type": "petala.fashion.inventory.low_stock",
+          "aggregateId": "{{$trigger.payload.id}}",
+          "tenantId": "{{$trigger.payload.tenant_id}}",
+          "data": {
+            "product_name": "{{$trigger.payload.name}}",
+            "sku": "{{$trigger.payload.sku}}",
+            "quantity": "{{$trigger.payload.inventory_quantity}}",
+            "threshold": "{{$trigger.payload.low_stock_threshold}}"
+          },
+          "metadata": {
+            "timestamp": "{{$now}}",
+            "version": 1,
+            "source": "flow-fashion-low-stock-alert"
+          }
+        }
+      },
+      "resolve": null,
+      "flow": "flow-fashion-low-stock-alert"
+    }
+  ]
+}

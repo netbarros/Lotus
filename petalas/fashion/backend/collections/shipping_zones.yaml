@@ -1,0 +1,82 @@
+collection: shipping_zones
+meta:
+  collection: shipping_zones
+  icon: truck
+  display_template: "{{name}}"
+  note: "Shipping zones and rates"
+
+schema:
+  name: shipping_zones
+
+fields:
+  - field: id
+    type: uuid
+    schema:
+      is_primary_key: true
+    meta:
+      readonly: true
+      hidden: true
+
+  - field: tenant_id
+    type: uuid
+    schema:
+      is_nullable: false
+      foreign_key_table: tenants
+    meta:
+      required: true
+
+  - field: name
+    type: string
+    schema:
+      max_length: 255
+      is_nullable: false
+    meta:
+      required: true
+      note: "e.g., 'Domestic USA', 'Europe', 'Brazil - São Paulo'"
+
+  - field: countries
+    type: json
+    meta:
+      note: "Array of ISO country codes (e.g., ['US', 'CA'])"
+
+  - field: states
+    type: json
+    meta:
+      note: "Array of state/province codes (e.g., ['CA', 'NY'])"
+
+  - field: postal_codes
+    type: json
+    meta:
+      note: "Array or patterns (e.g., ['90*', '91*'] for California ZIP)"
+
+  - field: rates
+    type: json
+    meta:
+      note: "Array of {name, price, min_days, max_days, carrier}"
+
+  - field: free_shipping_threshold
+    type: decimal
+    schema:
+      numeric_precision: 10
+      numeric_scale: 2
+    meta:
+      note: "Free shipping if order total exceeds this amount"
+
+  - field: status
+    type: string
+    schema:
+      default_value: active
+
+  - field: created_at
+    type: timestamp
+    schema:
+      default_value: now()
+    meta:
+      special: [date-created]
+
+  - field: updated_at
+    type: timestamp
+    schema:
+      default_value: now()
+    meta:
+      special: [date-updated]

@@ -1,0 +1,36 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: magicsaas-ingress
+  namespace: magicsaas-staging
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "50m"
+    nginx.ingress.kubernetes.io/rate-limit: "100"
+    nginx.ingress.kubernetes.io/limit-rps: "10"
+spec:
+  tls:
+    - hosts:
+        - staging.softwarelotus.com.br
+      secretName: magicsaas-tls
+  rules:
+    - host: staging.softwarelotus.com.br
+      http:
+        paths:
+          - path: /api/sofia
+            pathType: Prefix
+            backend:
+              service:
+                name: sofia-ai
+                port:
+                  number: 3003
+          - path: /health
+            pathType: Prefix
+            backend:
+              service:
+                name: sofia-ai
+                port:
+                  number: 3003

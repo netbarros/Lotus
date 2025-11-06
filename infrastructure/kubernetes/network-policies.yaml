@@ -1,0 +1,545 @@
+# ═══════════════════════════════════════════════════════════════════════════
+# MAGICSAAS SYSTEM-∞ - KUBERNETES NETWORK POLICIES (ZERO-TRUST)
+# Version: 1.0.0
+# Security Model: Zero-Trust - Deny all by default, explicit allow
+# ═══════════════════════════════════════════════════════════════════════════
+
+---
+# ═══════════════════════════════════════════════════════════════════════════
+# DEFAULT DENY ALL INGRESS & EGRESS
+# ═══════════════════════════════════════════════════════════════════════════
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-all
+  namespace: magicsaas-staging
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+    - Egress
+
+---
+# ═══════════════════════════════════════════════════════════════════════════
+# ALLOW DNS (CoreDNS) - Required for all pods
+# ═══════════════════════════════════════════════════════════════════════════
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-dns
+  namespace: magicsaas-staging
+spec:
+  podSelector: {}
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              name: kube-system
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
+
+---
+# ═══════════════════════════════════════════════════════════════════════════
+# SOFIA AI - INGRESS POLICY
+# ═══════════════════════════════════════════════════════════════════════════
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: sofia-ai-ingress
+  namespace: magicsaas-staging
+spec:
+  podSelector:
+    matchLabels:
+      app: sofia-ai
+  policyTypes:
+    - Ingress
+  ingress:
+    # Allow from Ingress Controller
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              name: ingress-nginx
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: ingress-nginx
+      ports:
+        - protocol: TCP
+          port: 3003
+
+    # Allow from API Gateway (if exists)
+    - from:
+        - podSelector:
+            matchLabels:
+              app: api-gateway
+      ports:
+        - protocol: TCP
+          port: 3003
+
+    # Allow from Prometheus (metrics scraping)
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              name: monitoring
+        - podSelector:
+            matchLabels:
+              app: prometheus
+      ports:
+        - protocol: TCP
+          port: 3003  # /metrics endpoint
+
+---
+# ═══════════════════════════════════════════════════════════════════════════
+# SOFIA AI - EGRESS POLICY
+# ═══════════════════════════════════════════════════════════════════════════
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: sofia-ai-egress
+  namespace: magicsaas-staging
+spec:
+  podSelector:
+    matchLabels:
+      app: sofia-ai
+  policyTypes:
+    - Egress
+  egress:
+    # Allow to PostgreSQL
+    - to:
+        - podSelector:
+            matchLabels:
+              app: postgres
+      ports:
+        - protocol: TCP
+          port: 5432
+
+    # Allow to Redis
+    - to:
+        - podSelector:
+            matchLabels:
+              app: redis
+      ports:
+        - protocol: TCP
+          port: 6379
+
+    # Allow to Directus
+    - to:
+        - podSelector:
+            matchLabels:
+              app: directus
+      ports:
+        - protocol: TCP
+          port: 8055
+
+    # Allow to Anthropic API (Claude AI) - HTTPS
+    - to:
+        - namespaceSelector: {}
+      ports:
+        - protocol: TCP
+          port: 443
+      # Note: In production, use egress gateway with allowlist
+
+    # Allow to DNS (inherit from allow-dns policy)
+
+---
+# ═══════════════════════════════════════════════════════════════════════════
+# DIRECTUS - INGRESS POLICY
+# ═══════════════════════════════════════════════════════════════════════════
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: directus-ingress
+  namespace: magicsaas-staging
+spec:
+  podSelector:
+    matchLabels:
+      app: directus
+  policyTypes:
+    - Ingress
+  ingress:
+    # Allow from Ingress Controller
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              name: ingress-nginx
+      ports:
+        - protocol: TCP
+          port: 8055
+
+    # Allow from Sofia AI
+    - from:
+        - podSelector:
+            matchLabels:
+              app: sofia-ai
+      ports:
+        - protocol: TCP
+          port: 8055
+
+    # Allow from Admin Frontend
+    - from:
+        - podSelector:
+            matchLabels:
+              app: admin-frontend
+      ports:
+        - protocol: TCP
+          port: 8055
+
+---
+# ═══════════════════════════════════════════════════════════════════════════
+# DIRECTUS - EGRESS POLICY
+# ═══════════════════════════════════════════════════════════════════════════
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: directus-egress
+  namespace: magicsaas-staging
+spec:
+  podSelector:
+    matchLabels:
+      app: directus
+  policyTypes:
+    - Egress
+  egress:
+    # Allow to PostgreSQL
+    - to:
+        - podSelector:
+            matchLabels:
+              app: postgres
+      ports:
+        - protocol: TCP
+          port: 5432
+
+    # Allow to Redis
+    - to:
+        - podSelector:
+            matchLabels:
+              app: redis
+      ports:
+        - protocol: TCP
+          port: 6379
+
+    # Allow to S3 (AWS) for file uploads - HTTPS
+    - to:
+        - namespaceSelector: {}
+      ports:
+        - protocol: TCP
+          port: 443
+
+---
+# ═══════════════════════════════════════════════════════════════════════════
+# POSTGRESQL - INGRESS POLICY
+# ═══════════════════════════════════════════════════════════════════════════
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: postgres-ingress
+  namespace: magicsaas-staging
+spec:
+  podSelector:
+    matchLabels:
+      app: postgres
+  policyTypes:
+    - Ingress
+  ingress:
+    # Allow from Sofia AI
+    - from:
+        - podSelector:
+            matchLabels:
+              app: sofia-ai
+      ports:
+        - protocol: TCP
+          port: 5432
+
+    # Allow from Directus
+    - from:
+        - podSelector:
+            matchLabels:
+              app: directus
+      ports:
+        - protocol: TCP
+          port: 5432
+
+    # Allow from API Backend
+    - from:
+        - podSelector:
+            matchLabels:
+              app: api-backend
+      ports:
+        - protocol: TCP
+          port: 5432
+
+    # Allow from Backup CronJob
+    - from:
+        - podSelector:
+            matchLabels:
+              app: postgres-backup
+      ports:
+        - protocol: TCP
+          port: 5432
+
+    # Allow from Prometheus PostgreSQL Exporter
+    - from:
+        - podSelector:
+            matchLabels:
+              app: postgres-exporter
+      ports:
+        - protocol: TCP
+          port: 5432
+
+---
+# ═══════════════════════════════════════════════════════════════════════════
+# POSTGRESQL - EGRESS POLICY
+# ═══════════════════════════════════════════════════════════════════════════
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: postgres-egress
+  namespace: magicsaas-staging
+spec:
+  podSelector:
+    matchLabels:
+      app: postgres
+  policyTypes:
+    - Egress
+  egress:
+    # PostgreSQL typically doesn't need egress except for replication
+    # If using external WAL archiving (S3), add HTTPS egress
+    - to:
+        - namespaceSelector: {}
+      ports:
+        - protocol: TCP
+          port: 443
+
+---
+# ═══════════════════════════════════════════════════════════════════════════
+# REDIS - INGRESS POLICY
+# ═══════════════════════════════════════════════════════════════════════════
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: redis-ingress
+  namespace: magicsaas-staging
+spec:
+  podSelector:
+    matchLabels:
+      app: redis
+  policyTypes:
+    - Ingress
+  ingress:
+    # Allow from Sofia AI
+    - from:
+        - podSelector:
+            matchLabels:
+              app: sofia-ai
+      ports:
+        - protocol: TCP
+          port: 6379
+
+    # Allow from Directus
+    - from:
+        - podSelector:
+            matchLabels:
+              app: directus
+      ports:
+        - protocol: TCP
+          port: 6379
+
+    # Allow from API Backend
+    - from:
+        - podSelector:
+            matchLabels:
+              app: api-backend
+      ports:
+        - protocol: TCP
+          port: 6379
+
+    # Allow from Prometheus Redis Exporter
+    - from:
+        - podSelector:
+            matchLabels:
+              app: redis-exporter
+      ports:
+        - protocol: TCP
+          port: 6379
+
+---
+# ═══════════════════════════════════════════════════════════════════════════
+# REDIS - EGRESS POLICY
+# ═══════════════════════════════════════════════════════════════════════════
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: redis-egress
+  namespace: magicsaas-staging
+spec:
+  podSelector:
+    matchLabels:
+      app: redis
+  policyTypes:
+    - Egress
+  egress:
+    # Redis typically doesn't need egress
+    # If using Redis Sentinel or Redis Cluster, configure here
+    []
+
+---
+# ═══════════════════════════════════════════════════════════════════════════
+# PROMETHEUS - INGRESS POLICY
+# ═══════════════════════════════════════════════════════════════════════════
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: prometheus-ingress
+  namespace: monitoring
+spec:
+  podSelector:
+    matchLabels:
+      app: prometheus
+  policyTypes:
+    - Ingress
+  ingress:
+    # Allow from Grafana
+    - from:
+        - podSelector:
+            matchLabels:
+              app: grafana
+      ports:
+        - protocol: TCP
+          port: 9090
+
+    # Allow from Ingress Controller (for dashboards)
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              name: ingress-nginx
+      ports:
+        - protocol: TCP
+          port: 9090
+
+---
+# ═══════════════════════════════════════════════════════════════════════════
+# PROMETHEUS - EGRESS POLICY (Scraping targets)
+# ═══════════════════════════════════════════════════════════════════════════
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: prometheus-egress
+  namespace: monitoring
+spec:
+  podSelector:
+    matchLabels:
+      app: prometheus
+  policyTypes:
+    - Egress
+  egress:
+    # Allow scraping all namespaces (for /metrics endpoints)
+    - to:
+        - namespaceSelector: {}
+      ports:
+        - protocol: TCP
+          port: 3003  # Sofia AI metrics
+        - protocol: TCP
+          port: 8055  # Directus metrics
+        - protocol: TCP
+          port: 9187  # PostgreSQL exporter
+        - protocol: TCP
+          port: 9121  # Redis exporter
+
+    # Allow to Alertmanager
+    - to:
+        - podSelector:
+            matchLabels:
+              app: alertmanager
+      ports:
+        - protocol: TCP
+          port: 9093
+
+---
+# ═══════════════════════════════════════════════════════════════════════════
+# GRAFANA - INGRESS POLICY
+# ═══════════════════════════════════════════════════════════════════════════
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: grafana-ingress
+  namespace: monitoring
+spec:
+  podSelector:
+    matchLabels:
+      app: grafana
+  policyTypes:
+    - Ingress
+  ingress:
+    # Allow from Ingress Controller
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              name: ingress-nginx
+      ports:
+        - protocol: TCP
+          port: 3000
+
+---
+# ═══════════════════════════════════════════════════════════════════════════
+# GRAFANA - EGRESS POLICY
+# ═══════════════════════════════════════════════════════════════════════════
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: grafana-egress
+  namespace: monitoring
+spec:
+  podSelector:
+    matchLabels:
+      app: grafana
+  policyTypes:
+    - Egress
+  egress:
+    # Allow to Prometheus
+    - to:
+        - podSelector:
+            matchLabels:
+              app: prometheus
+      ports:
+        - protocol: TCP
+          port: 9090
+
+    # Allow to Jaeger (for tracing)
+    - to:
+        - podSelector:
+            matchLabels:
+              app: jaeger
+      ports:
+        - protocol: TCP
+          port: 16686
+
+---
+# ═══════════════════════════════════════════════════════════════════════════
+# NOTES
+# ═══════════════════════════════════════════════════════════════════════════
+#
+# Apply these policies with:
+#   kubectl apply -f network-policies.yaml
+#
+# Verify policies:
+#   kubectl get networkpolicies -n magicsaas-staging
+#   kubectl describe networkpolicy <policy-name> -n magicsaas-staging
+#
+# Test connectivity:
+#   kubectl run test-pod --rm -it --image=busybox -n magicsaas-staging -- sh
+#   wget -O- http://sofia-ai:3003/health
+#
+# Security Best Practices:
+#   1. Default deny all traffic
+#   2. Explicitly allow only required connections
+#   3. Use pod selectors for precision
+#   4. Separate ingress and egress policies
+#   5. Regular audit of policies
+#   6. Monitor policy violations
+#   7. Use namespace isolation
+#   8. Implement egress gateway for external traffic
+#

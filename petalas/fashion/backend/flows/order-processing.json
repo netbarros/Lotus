@@ -1,0 +1,183 @@
+{
+  "id": "flow-fashion-order-processing",
+  "name": "Fashion - Order Processing",
+  "icon": "shopping_cart",
+  "color": "#6366F1",
+  "description": "Complete order processing flow: payment verification, inventory update, notifications, event emission",
+  "status": "active",
+  "trigger": "event",
+  "accountability": "all",
+  "options": {
+    "type": "action",
+    "scope": ["items.create"],
+    "collections": ["orders"]
+  },
+  "operation": "6b5f8a2e-3c1d-4f9b-a8e7-2d4c9f1e6a3b",
+  "date_created": "2025-11-06T00:00:00Z",
+  "user_created": null,
+  "operations": [
+    {
+      "id": "6b5f8a2e-3c1d-4f9b-a8e7-2d4c9f1e6a3b",
+      "name": "Verify Payment Status",
+      "key": "verify_payment",
+      "type": "condition",
+      "position_x": 10,
+      "position_y": 10,
+      "options": {
+        "filter": {
+          "$trigger": {
+            "payload": {
+              "payment_status": {
+                "_eq": "paid"
+              }
+            }
+          }
+        }
+      },
+      "resolve": "7c6g9b3f-4d2e-5g0c-b9f8-3e5d0g2f7b4c",
+      "reject": null,
+      "flow": "flow-fashion-order-processing",
+      "date_created": "2025-11-06T00:00:00Z",
+      "user_created": null
+    },
+    {
+      "id": "7c6g9b3f-4d2e-5g0c-b9f8-3e5d0g2f7b4c",
+      "name": "Update Inventory",
+      "key": "update_inventory",
+      "type": "operation",
+      "position_x": 10,
+      "position_y": 30,
+      "options": {
+        "method": "POST",
+        "url": "http://localhost:8055/petalas/fashion/inventory/decrement",
+        "headers": [
+          {
+            "header": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "order_id": "{{$trigger.payload.id}}",
+          "items": "{{$trigger.payload.items}}"
+        }
+      },
+      "resolve": "8d7h0c4g-5e3f-6h1d-c0g9-4f6e1h3g8c5d",
+      "reject": null,
+      "flow": "flow-fashion-order-processing",
+      "date_created": "2025-11-06T00:00:00Z",
+      "user_created": null
+    },
+    {
+      "id": "8d7h0c4g-5e3f-6h1d-c0g9-4f6e1h3g8c5d",
+      "name": "Send Order Confirmation Email",
+      "key": "send_confirmation",
+      "type": "mail",
+      "position_x": 10,
+      "position_y": 50,
+      "options": {
+        "to": "{{$trigger.payload.email}}",
+        "subject": "Order Confirmation #{{$trigger.payload.order_number}}",
+        "type": "template",
+        "template": "order-confirmation",
+        "data": {
+          "order_number": "{{$trigger.payload.order_number}}",
+          "customer_name": "{{$trigger.payload.billing_address.first_name}}",
+          "items": "{{$trigger.payload.items}}",
+          "total": "{{$trigger.payload.total}}",
+          "currency": "{{$trigger.payload.currency}}",
+          "tracking_url": "{{$trigger.payload.tracking_url}}"
+        }
+      },
+      "resolve": "9e8i1d5h-6f4g-7i2e-d1h0-5g7f2i4h9d6e",
+      "reject": null,
+      "flow": "flow-fashion-order-processing",
+      "date_created": "2025-11-06T00:00:00Z",
+      "user_created": null
+    },
+    {
+      "id": "9e8i1d5h-6f4g-7i2e-d1h0-5g7f2i4h9d6e",
+      "name": "Update Customer Stats",
+      "key": "update_customer_stats",
+      "type": "operation",
+      "position_x": 10,
+      "position_y": 70,
+      "options": {
+        "method": "POST",
+        "url": "http://localhost:8055/petalas/fashion/customers/update-stats",
+        "body": {
+          "customer_id": "{{$trigger.payload.customer_id}}",
+          "order_total": "{{$trigger.payload.total}}",
+          "order_count_increment": 1
+        }
+      },
+      "resolve": "0f9j2e6i-7g5h-8j3f-e2i1-6h8g3j5i0e7f",
+      "reject": null,
+      "flow": "flow-fashion-order-processing",
+      "date_created": "2025-11-06T00:00:00Z",
+      "user_created": null
+    },
+    {
+      "id": "0f9j2e6i-7g5h-8j3f-e2i1-6h8g3j5i0e7f",
+      "name": "Emit Order Created Event",
+      "key": "emit_event",
+      "type": "webhook",
+      "position_x": 10,
+      "position_y": 90,
+      "options": {
+        "method": "POST",
+        "url": "http://localhost:8055/events",
+        "headers": [
+          {
+            "header": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "type": "petala.fashion.order.created",
+          "aggregateId": "{{$trigger.payload.id}}",
+          "tenantId": "{{$trigger.payload.tenant_id}}",
+          "userId": "{{$trigger.payload.customer_id}}",
+          "data": {
+            "order_number": "{{$trigger.payload.order_number}}",
+            "total": "{{$trigger.payload.total}}",
+            "currency": "{{$trigger.payload.currency}}",
+            "items_count": "{{$trigger.payload.items.length}}",
+            "payment_method": "{{$trigger.payload.payment_method}}"
+          },
+          "metadata": {
+            "timestamp": "{{$now}}",
+            "version": 1,
+            "source": "flow-fashion-order-processing"
+          }
+        }
+      },
+      "resolve": "1g0k3f7j-8h6i-9k4g-f3j2-7i9h4k6j1f8g",
+      "reject": null,
+      "flow": "flow-fashion-order-processing",
+      "date_created": "2025-11-06T00:00:00Z",
+      "user_created": null
+    },
+    {
+      "id": "1g0k3f7j-8h6i-9k4g-f3j2-7i9h4k6j1f8g",
+      "name": "Award Loyalty Points",
+      "key": "award_loyalty_points",
+      "type": "operation",
+      "position_x": 10,
+      "position_y": 110,
+      "options": {
+        "method": "POST",
+        "url": "http://localhost:8055/petalas/fashion/loyalty/award-points",
+        "body": {
+          "customer_id": "{{$trigger.payload.customer_id}}",
+          "order_total": "{{$trigger.payload.total}}",
+          "points": "{{Math.floor($trigger.payload.total * 0.1)}}"
+        }
+      },
+      "resolve": null,
+      "reject": null,
+      "flow": "flow-fashion-order-processing",
+      "date_created": "2025-11-06T00:00:00Z",
+      "user_created": null
+    }
+  ]
+}

@@ -1,0 +1,147 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:17-alpine
+    container_name: petala-fashion-db
+    environment:
+      POSTGRES_DB: petala_fashion
+      POSTGRES_USER: directus
+      POSTGRES_PASSWORD: directus_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U directus"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis Cache
+  redis:
+    image: redis:8-alpine
+    container_name: petala-fashion-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  # Directus CMS (Backend)
+  directus:
+    image: directus/directus:10-latest
+    container_name: petala-fashion-directus
+    ports:
+      - "8055:8055"
+    volumes:
+      - ./backend/uploads:/directus/uploads
+      - ./backend/extensions:/directus/extensions
+      - ./backend/collections:/directus/collections
+      - ./backend/endpoints:/directus/endpoints
+      - ./backend/hooks:/directus/hooks
+      - ./backend/flows:/directus/flows
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      # General
+      KEY: '255d861b-5ea1-5996-9aa3-922530ec40b1'
+      SECRET: '6116487b-cda1-52c2-b5b5-c8022c45e263'
+
+      # Database
+      DB_CLIENT: 'pg'
+      DB_HOST: 'postgres'
+      DB_PORT: '5432'
+      DB_DATABASE: 'petala_fashion'
+      DB_USER: 'directus'
+      DB_PASSWORD: 'directus_password'
+
+      # Cache & Rate Limiting
+      CACHE_ENABLED: 'true'
+      CACHE_STORE: 'redis'
+      CACHE_REDIS: 'redis://redis:6379'
+      RATE_LIMITER_ENABLED: 'true'
+      RATE_LIMITER_STORE: 'redis'
+      RATE_LIMITER_REDIS: 'redis://redis:6379'
+
+      # Admin
+      ADMIN_EMAIL: 'admin@petala-fashion.local'
+      ADMIN_PASSWORD: 'admin123'
+
+      # CORS
+      CORS_ENABLED: 'true'
+      CORS_ORIGIN: 'http://localhost:5173'
+
+      # File Storage
+      STORAGE_LOCATIONS: 'local'
+      STORAGE_LOCAL_ROOT: './uploads'
+
+      # Extensions
+      EXTENSIONS_PATH: './extensions'
+
+      # Public URL
+      PUBLIC_URL: 'http://localhost:8055'
+
+  # Frontend (Vue 3 + Vite)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: petala-fashion-frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - VITE_API_URL=http://localhost:8055
+      - VITE_TENANT_ID=default
+    depends_on:
+      - directus
+    command: npm run dev
+
+  # Prometheus (Metrics)
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: petala-fashion-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./infrastructure/monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+
+  # Grafana (Dashboards)
+  grafana:
+    image: grafana/grafana:latest
+    container_name: petala-fashion-grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./infrastructure/monitoring:/etc/grafana/provisioning
+      - grafana_data:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    depends_on:
+      - prometheus
+
+volumes:
+  postgres_data:
+  redis_data:
+  prometheus_data:
+  grafana_data:
+
+networks:
+  default:
+    name: petala-fashion-network

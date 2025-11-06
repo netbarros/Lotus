@@ -4,10 +4,11 @@
 -- ═══════════════════════════════════════════════════════════════════════════
 
 -- Enable required extensions
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-CREATE EXTENSION IF NOT EXISTS "pg_trgm";
-CREATE EXTENSION IF NOT EXISTS "btree_gist";
-CREATE EXTENSION IF NOT EXISTS "vector";  -- pgVector for embeddings
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";      -- UUID generation
+CREATE EXTENSION IF NOT EXISTS "pg_trgm";        -- Fuzzy text search
+CREATE EXTENSION IF NOT EXISTS "btree_gist";     -- Advanced indexing
+CREATE EXTENSION IF NOT EXISTS "vector";         -- pgVector for AI embeddings
+CREATE EXTENSION IF NOT EXISTS "timescaledb";    -- Time-series optimization for metrics/logs
 
 -- Create schemas (if needed beyond public)
 -- CREATE SCHEMA IF NOT EXISTS magicsaas;

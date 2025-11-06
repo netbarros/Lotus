@@ -1,0 +1,78 @@
+collection: order_items
+meta:
+  collection: order_items
+  icon: list
+  display_template: "{{product_name}} x {{quantity}}"
+  note: "Order line items"
+
+schema:
+  name: order_items
+
+fields:
+  - field: id
+    type: uuid
+    schema:
+      is_primary_key: true
+    meta:
+      readonly: true
+      hidden: true
+
+  - field: order_id
+    type: uuid
+    schema:
+      is_nullable: false
+      foreign_key_table: orders
+    meta:
+      required: true
+
+  - field: product_id
+    type: uuid
+    schema:
+      foreign_key_table: products
+
+  - field: product_name
+    type: string
+    schema:
+      max_length: 255
+      is_nullable: false
+
+  - field: product_sku
+    type: string
+    schema:
+      max_length: 100
+
+  - field: variant_name
+    type: string
+    schema:
+      max_length: 255
+    meta:
+      note: "e.g., 'Size: M, Color: Blue'"
+
+  - field: quantity
+    type: integer
+    schema:
+      is_nullable: false
+      default_value: 1
+
+  - field: price
+    type: decimal
+    schema:
+      numeric_precision: 10
+      numeric_scale: 2
+      is_nullable: false
+
+  - field: total
+    type: decimal
+    schema:
+      numeric_precision: 10
+      numeric_scale: 2
+      is_nullable: false
+    meta:
+      note: "price * quantity"
+
+  - field: created_at
+    type: timestamp
+    schema:
+      default_value: now()
+    meta:
+      special: [date-created]

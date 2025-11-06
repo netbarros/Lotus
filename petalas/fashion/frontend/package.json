@@ -1,0 +1,56 @@
+{
+  "name": "@petala/fashion",
+  "version": "1.0.0",
+  "description": "Pétala Fashion - Complete E-commerce Solution",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc && vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "test:e2e": "playwright test",
+    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
+    "format": "prettier --write src/"
+  },
+  "dependencies": {
+    "vue": "^3.4.21",
+    "vue-router": "^4.3.0",
+    "pinia": "^2.1.7",
+    "axios": "^1.6.7",
+    "vue-i18n": "^9.10.1",
+    "vee-validate": "^4.12.5",
+    "zod": "^3.22.4",
+    "apexcharts": "^3.47.0",
+    "vue3-apexcharts": "^1.5.2",
+    "date-fns": "^3.3.1",
+    "swiper": "^11.0.7",
+    "@vueuse/core": "^10.9.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.25",
+    "@vitejs/plugin-vue": "^5.0.4",
+    "@vue/test-utils": "^2.4.4",
+    "typescript": "^5.4.2",
+    "vite": "^5.1.5",
+    "vue-tsc": "^2.0.6",
+    "vitest": "^1.3.1",
+    "@vitest/coverage-v8": "^1.3.1",
+    "jsdom": "^24.0.0",
+    "sass": "^1.71.1",
+    "autoprefixer": "^10.4.18",
+    "tailwindcss": "^3.4.1",
+    "postcss": "^8.4.35",
+    "eslint": "^8.57.0",
+    "eslint-plugin-vue": "^9.22.0",
+    "@typescript-eslint/eslint-plugin": "^7.1.1",
+    "@typescript-eslint/parser": "^7.1.1",
+    "prettier": "^3.2.5",
+    "@playwright/test": "^1.42.1"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=8.0.0"
+  }
+}
