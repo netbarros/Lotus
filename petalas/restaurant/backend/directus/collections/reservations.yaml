@@ -1,0 +1,231 @@
+# Pétala Restaurant - Reservations Collection
+# Table reservations with confirmation and reminder system
+
+collections:
+  - collection: reservations
+    meta:
+      group: petala_restaurant
+      icon: event_seat
+      note: Table reservations with automated confirmation and reminders
+      display_template: "{{customer_name}} - {{reservation_date}} {{reservation_time}}"
+      sort: 4
+
+    schema:
+      schema:
+        name: reservations
+        comment: Restaurant table reservations
+
+      fields:
+        - field: id
+          type: uuid
+          schema:
+            is_primary_key: true
+
+        - field: status
+          type: string
+          schema:
+            default_value: pending
+          meta:
+            interface: select-dropdown
+            options:
+              choices:
+                - { text: Pending, value: pending }
+                - { text: Confirmed, value: confirmed }
+                - { text: Seated, value: seated }
+                - { text: Completed, value: completed }
+                - { text: Cancelled, value: cancelled }
+                - { text: No Show, value: no_show }
+            display: labels
+
+        - field: tenant_id
+          type: uuid
+          schema:
+            is_nullable: false
+
+        - field: restaurant_id
+          type: uuid
+          schema:
+            is_nullable: false
+          meta:
+            interface: select-dropdown-m2o
+            required: true
+
+        - field: table_id
+          type: uuid
+          meta:
+            interface: select-dropdown-m2o
+            note: Assigned table (can be null until seated)
+
+        - field: customer_id
+          type: uuid
+          meta:
+            interface: select-dropdown-m2o
+
+        # Customer Information (for walk-ins without account)
+        - field: customer_name
+          type: string
+          schema:
+            is_nullable: false
+            max_length: 200
+          meta:
+            required: true
+
+        - field: customer_email
+          type: string
+          schema:
+            max_length: 255
+
+        - field: customer_phone
+          type: string
+          schema:
+            is_nullable: false
+            max_length: 50
+          meta:
+            required: true
+
+        # Reservation Details
+        - field: reservation_date
+          type: date
+          schema:
+            is_nullable: false
+          meta:
+            interface: datetime
+            required: true
+
+        - field: reservation_time
+          type: time
+          schema:
+            is_nullable: false
+          meta:
+            interface: datetime
+            required: true
+
+        - field: party_size
+          type: integer
+          schema:
+            is_nullable: false
+            default_value: 2
+          meta:
+            interface: input
+            options:
+              min: 1
+              max: 20
+
+        - field: duration_minutes
+          type: integer
+          schema:
+            default_value: 90
+          meta:
+            note: Expected dining duration
+
+        - field: special_requests
+          type: text
+          meta:
+            interface: input-multiline
+            note: Dietary restrictions, occasion, seating preferences
+
+        - field: occasion
+          type: string
+          meta:
+            interface: select-dropdown
+            options:
+              choices:
+                - { text: Birthday, value: birthday }
+                - { text: Anniversary, value: anniversary }
+                - { text: Business Meeting, value: business }
+                - { text: Date, value: date }
+                - { text: Family Gathering, value: family }
+                - { text: Other, value: other }
+
+        # Confirmation
+        - field: confirmation_code
+          type: string
+          schema:
+            max_length: 20
+          meta:
+            readonly: true
+            note: Auto-generated confirmation code
+
+        - field: confirmation_sent_at
+          type: timestamp
+          meta:
+            readonly: true
+
+        - field: reminder_sent_at
+          type: timestamp
+          meta:
+            readonly: true
+
+        # Check-in
+        - field: checked_in_at
+          type: timestamp
+          meta:
+            note: When the party arrived
+
+        - field: seated_at
+          type: timestamp
+          meta:
+            note: When the party was seated
+
+        - field: completed_at
+          type: timestamp
+          meta:
+            note: When the party left
+
+        # Cancellation
+        - field: cancelled_at
+          type: timestamp
+
+        - field: cancellation_reason
+          type: text
+
+        # Deposit (for large parties or special events)
+        - field: requires_deposit
+          type: boolean
+          schema:
+            default_value: false
+
+        - field: deposit_amount
+          type: decimal
+          schema:
+            numeric_precision: 10
+            numeric_scale: 2
+
+        - field: deposit_paid
+          type: boolean
+          schema:
+            default_value: false
+
+        - field: deposit_paid_at
+          type: timestamp
+
+        # Internal Notes
+        - field: internal_notes
+          type: text
+          meta:
+            interface: input-multiline
+            note: Staff notes (not visible to customer)
+
+        - field: date_created
+          type: timestamp
+          meta:
+            special: [date-created]
+            readonly: true
+
+        - field: date_updated
+          type: timestamp
+          meta:
+            special: [date-updated]
+            readonly: true
+
+        - field: user_created
+          type: uuid
+          meta:
+            special: [user-created]
+            readonly: true
+
+        - field: user_updated
+          type: uuid
+          meta:
+            special: [user-updated]
+            readonly: true
