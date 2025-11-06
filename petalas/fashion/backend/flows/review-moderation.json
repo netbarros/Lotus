@@ -1,0 +1,113 @@
+{
+  "id": "flow-fashion-review-moderation",
+  "name": "Fashion - Review Auto-Moderation",
+  "icon": "rate_review",
+  "color": "#8B5CF6",
+  "description": "Auto-approve reviews from verified purchases, flag suspicious reviews for manual moderation",
+  "status": "active",
+  "trigger": "event",
+  "accountability": "all",
+  "options": {
+    "type": "action",
+    "scope": ["items.create"],
+    "collections": ["reviews"]
+  },
+  "operation": "9o8s1n5r-6p4q-7s2o-n1r0-5q7p2s4r9o6p",
+  "operations": [
+    {
+      "id": "9o8s1n5r-6p4q-7s2o-n1r0-5q7p2s4r9o6p",
+      "name": "Check If Verified Purchase",
+      "key": "check_verified_purchase",
+      "type": "condition",
+      "options": {
+        "filter": {
+          "$trigger": {
+            "payload": {
+              "order_id": {
+                "_nnull": true
+              }
+            }
+          }
+        }
+      },
+      "resolve": "0p9t2o6s-7q5r-8t3p-o2s1-6r8q3t5s0p7q",
+      "reject": "1q0u3p7t-8r6s-9u4q-p3t2-7s9r4u6t1q8r",
+      "flow": "flow-fashion-review-moderation"
+    },
+    {
+      "id": "0p9t2o6s-7q5r-8t3p-o2s1-6r8q3t5s0p7q",
+      "name": "Auto-Approve Verified Review",
+      "key": "auto_approve",
+      "type": "request",
+      "options": {
+        "method": "PATCH",
+        "url": "http://localhost:8055/items/reviews/{{$trigger.payload.id}}",
+        "body": {
+          "status": "approved",
+          "verified_purchase": true,
+          "moderated_at": "{{$now}}"
+        }
+      },
+      "resolve": "2r1v4q8u-9s7t-0v5r-q4u3-8t0s5v7u2r9s",
+      "flow": "flow-fashion-review-moderation"
+    },
+    {
+      "id": "1q0u3p7t-8r6s-9u4q-p3t2-7s9r4u6t1q8r",
+      "name": "Flag For Manual Moderation",
+      "key": "flag_moderation",
+      "type": "request",
+      "options": {
+        "method": "PATCH",
+        "url": "http://localhost:8055/items/reviews/{{$trigger.payload.id}}",
+        "body": {
+          "status": "pending",
+          "verified_purchase": false
+        }
+      },
+      "resolve": "2r1v4q8u-9s7t-0v5r-q4u3-8t0s5v7u2r9s",
+      "flow": "flow-fashion-review-moderation"
+    },
+    {
+      "id": "2r1v4q8u-9s7t-0v5r-q4u3-8t0s5v7u2r9s",
+      "name": "Update Product Review Stats",
+      "key": "update_product_stats",
+      "type": "request",
+      "options": {
+        "method": "POST",
+        "url": "http://localhost:8055/petalas/fashion/products/update-review-stats",
+        "body": {
+          "product_id": "{{$trigger.payload.product_id}}"
+        }
+      },
+      "resolve": "3s2w5r9v-0t8u-1w6s-r5v4-9u1t6w8v3s0t",
+      "flow": "flow-fashion-review-moderation"
+    },
+    {
+      "id": "3s2w5r9v-0t8u-1w6s-r5v4-9u1t6w8v3s0t",
+      "name": "Emit Review Created Event",
+      "key": "emit_review_event",
+      "type": "webhook",
+      "options": {
+        "method": "POST",
+        "url": "http://localhost:8055/events",
+        "body": {
+          "type": "petala.fashion.review.created",
+          "aggregateId": "{{$trigger.payload.id}}",
+          "tenantId": "{{$trigger.payload.tenant_id}}",
+          "data": {
+            "product_id": "{{$trigger.payload.product_id}}",
+            "rating": "{{$trigger.payload.rating}}",
+            "verified_purchase": "{{$trigger.payload.verified_purchase}}",
+            "status": "{{$trigger.payload.status}}"
+          },
+          "metadata": {
+            "timestamp": "{{$now}}",
+            "version": 1
+          }
+        }
+      },
+      "resolve": null,
+      "flow": "flow-fashion-review-moderation"
+    }
+  ]
+}
