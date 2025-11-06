@@ -21,8 +21,9 @@ global:
 #           - alertmanager:9093
 
 # Load rules once and periodically evaluate them
-# rule_files:
-#   - "alert_rules.yml"
+rule_files:
+  - "/etc/prometheus/slo-rules.yml"
+  - "/etc/prometheus/alerts.yml"
 
 # Scrape configurations
 scrape_configs:
@@ -71,24 +72,24 @@ scrape_configs:
   # ===========================================================================
   # POSTGRESQL DATABASE
   # ===========================================================================
-  # Note: Requires postgres_exporter sidecar
-  # - job_name: 'postgres'
-  #   static_configs:
-  #     - targets: ['postgres-exporter:9187']
-  #       labels:
-  #         service: 'postgres'
-  #         layer: 'data'
+  - job_name: 'postgres'
+    static_configs:
+      - targets: ['postgres-exporter:9187']
+        labels:
+          service: 'postgres'
+          layer: 'layer-03-data'
+          component: 'database'
 
   # ===========================================================================
   # REDIS CACHE
   # ===========================================================================
-  # Note: Requires redis_exporter sidecar
-  # - job_name: 'redis'
-  #   static_configs:
-  #     - targets: ['redis-exporter:9121']
-  #       labels:
-  #         service: 'redis'
-  #         layer: 'cache'
+  - job_name: 'redis'
+    static_configs:
+      - targets: ['redis-exporter:9121']
+        labels:
+          service: 'redis'
+          layer: 'layer-03-cache'
+          component: 'cache'
 
   # ===========================================================================
   # INNGEST - SERVERLESS WORKFLOWS

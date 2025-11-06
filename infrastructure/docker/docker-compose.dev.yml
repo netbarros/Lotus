@@ -63,6 +63,38 @@ services:
     restart: unless-stopped
 
   # ============================================================================
+  # METRICS EXPORTERS - For Prometheus Monitoring
+  # ============================================================================
+
+  postgres-exporter:
+    image: prometheuscommunity/postgres-exporter:latest
+    container_name: magicsaas-postgres-exporter
+    ports:
+      - "9187:9187"
+    environment:
+      DATA_SOURCE_NAME: "postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-magicsaas}?sslmode=disable"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - magicsaas-network
+    restart: unless-stopped
+
+  redis-exporter:
+    image: oliver006/redis_exporter:latest
+    container_name: magicsaas-redis-exporter
+    ports:
+      - "9121:9121"
+    environment:
+      REDIS_ADDR: "redis:6379"
+    depends_on:
+      redis:
+        condition: service_healthy
+    networks:
+      - magicsaas-network
+    restart: unless-stopped
+
+  # ============================================================================
   # DIRECTUS - Headless CMS & API Hub
   # ============================================================================
 
@@ -105,6 +137,9 @@ services:
     volumes:
       - directus_uploads:/directus/uploads
       - directus_extensions:/directus/extensions
+      - ../../backend/directus/extensions:/directus/extensions/custom
+      - ../../backend/directus/flows:/directus/flows
+      - ../../backend/directus/insights:/directus/insights
     depends_on:
       postgres:
         condition: service_healthy
@@ -287,6 +322,8 @@ services:
       - "9090:9090"
     volumes:
       - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./monitoring/slo-rules.yml:/etc/prometheus/slo-rules.yml
+      - ../../infrastructure/monitoring/prometheus/alerts.yml:/etc/prometheus/alerts.yml
       - prometheus_data:/prometheus
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'

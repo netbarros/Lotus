@@ -1,0 +1,195 @@
+{
+  "name": "Revenue & Growth Analytics",
+  "icon": "payments",
+  "color": "#00C897",
+  "note": "Comprehensive revenue analytics with MRR, ARR, churn, and cohort analysis",
+  "panels": [
+    {
+      "name": "MRR Trend (90 days)",
+      "type": "metric",
+      "width": "half",
+      "height": 8,
+      "position_x": 1,
+      "position_y": 1,
+      "options": {
+        "collection": "subscriptions",
+        "field": "amount",
+        "function": "sum",
+        "filter": {
+          "status": {
+            "_eq": "active"
+          },
+          "created_at": {
+            "_gte": "$NOW(-90 days)"
+          }
+        },
+        "sortField": "created_at",
+        "decimals": 2,
+        "prefix": "$",
+        "conditionalFormatting": [
+          {
+            "operator": ">=",
+            "value": 50000,
+            "color": "#00C897"
+          },
+          {
+            "operator": ">=",
+            "value": 10000,
+            "color": "#FFC23B"
+          },
+          {
+            "operator": "<",
+            "value": 10000,
+            "color": "#E35169"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ARR (Annual Recurring Revenue)",
+      "type": "metric",
+      "width": "half",
+      "height": 8,
+      "position_x": 13,
+      "position_y": 1,
+      "options": {
+        "collection": "subscriptions",
+        "field": "amount",
+        "function": "sum",
+        "filter": {
+          "status": {
+            "_eq": "active"
+          }
+        },
+        "multiplier": 12,
+        "decimals": 0,
+        "prefix": "$",
+        "suffix": " ARR"
+      }
+    },
+    {
+      "name": "Revenue by Tier",
+      "type": "list",
+      "width": "full",
+      "height": 12,
+      "position_x": 1,
+      "position_y": 9,
+      "options": {
+        "collection": "subscriptions",
+        "fields": ["tier", "amount"],
+        "groupBy": "tier",
+        "aggregate": {
+          "function": "sum",
+          "field": "amount"
+        },
+        "filter": {
+          "status": {
+            "_eq": "active"
+          }
+        },
+        "sortField": "amount",
+        "sortDirection": "desc",
+        "limit": 10,
+        "template": "{{tier}}: ${{amount}}"
+      }
+    },
+    {
+      "name": "New MRR by Month",
+      "type": "time-series",
+      "width": "full",
+      "height": 16,
+      "position_x": 1,
+      "position_y": 21,
+      "options": {
+        "collection": "subscriptions",
+        "dateField": "created_at",
+        "valueField": "amount",
+        "function": "sum",
+        "range": "6 months",
+        "precision": "month",
+        "fillArea": true,
+        "curveType": "smooth",
+        "color": "#6644FF",
+        "filter": {
+          "status": {
+            "_eq": "active"
+          }
+        }
+      }
+    },
+    {
+      "name": "Churn Rate Trend",
+      "type": "time-series",
+      "width": "half",
+      "height": 16,
+      "position_x": 1,
+      "position_y": 37,
+      "options": {
+        "collection": "subscriptions",
+        "dateField": "cancelled_at",
+        "valueField": "id",
+        "function": "count",
+        "range": "3 months",
+        "precision": "week",
+        "fillArea": false,
+        "curveType": "stepline",
+        "color": "#E35169",
+        "filter": {
+          "status": {
+            "_eq": "cancelled"
+          },
+          "cancelled_at": {
+            "_nnull": true
+          }
+        }
+      }
+    },
+    {
+      "name": "Average Revenue Per User (ARPU)",
+      "type": "metric",
+      "width": "half",
+      "height": 8,
+      "position_x": 13,
+      "position_y": 37,
+      "options": {
+        "collection": "subscriptions",
+        "field": "amount",
+        "function": "avg",
+        "filter": {
+          "status": {
+            "_eq": "active"
+          }
+        },
+        "decimals": 2,
+        "prefix": "$",
+        "suffix": " ARPU"
+      }
+    },
+    {
+      "name": "Revenue Cohort Analysis",
+      "type": "table",
+      "width": "full",
+      "height": 20,
+      "position_x": 1,
+      "position_y": 53,
+      "options": {
+        "collection": "subscriptions",
+        "fields": [
+          "created_at",
+          "amount",
+          "tier",
+          "status",
+          "user_id.email"
+        ],
+        "filter": {
+          "status": {
+            "_eq": "active"
+          }
+        },
+        "sortField": "created_at",
+        "sortDirection": "desc",
+        "limit": 50
+      }
+    }
+  ]
+}

@@ -1,0 +1,331 @@
+# ═══════════════════════════════════════════════════════════════════════════
+# MAGICSAAS SYSTEM-∞ - PROMETHEUS SLO RECORDING RULES & ALERTS
+# Based on Google SRE Book and infrastructure/monitoring/slis-slos-slas.yaml
+# ═══════════════════════════════════════════════════════════════════════════
+
+groups:
+  # ═══════════════════════════════════════════════════════════════════════════
+  # SLI RECORDING RULES - Pre-calculate SLI values
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  - name: sli_recording_rules
+    interval: 30s
+    rules:
+      # -------------------------------------------------------------------------
+      # System Availability SLI
+      # -------------------------------------------------------------------------
+      - record: sli:system_availability:ratio_rate5m
+        expr: |
+          avg(up{job="sofia-ai"})
+
+      - record: sli:system_availability:ratio_rate30m
+        expr: |
+          avg_over_time(sli:system_availability:ratio_rate5m[30m])
+
+      - record: sli:system_availability:ratio_rate1h
+        expr: |
+          avg_over_time(sli:system_availability:ratio_rate5m[1h])
+
+      - record: sli:system_availability:ratio_rate6h
+        expr: |
+          avg_over_time(sli:system_availability:ratio_rate5m[6h])
+
+      - record: sli:system_availability:ratio_rate30d
+        expr: |
+          avg_over_time(sli:system_availability:ratio_rate5m[30d])
+
+      # -------------------------------------------------------------------------
+      # API Success Rate SLI (non-5xx responses)
+      # -------------------------------------------------------------------------
+      - record: sli:api_success_rate:ratio_rate5m
+        expr: |
+          sum(rate(http_requests_total{status!~"5.."}[5m]))
+          /
+          sum(rate(http_requests_total[5m]))
+
+      - record: sli:api_success_rate:ratio_rate30m
+        expr: |
+          sum(rate(http_requests_total{status!~"5.."}[30m]))
+          /
+          sum(rate(http_requests_total[30m]))
+
+      - record: sli:api_success_rate:ratio_rate1h
+        expr: |
+          sum(rate(http_requests_total{status!~"5.."}[1h]))
+          /
+          sum(rate(http_requests_total[1h]))
+
+      - record: sli:api_success_rate:ratio_rate6h
+        expr: |
+          sum(rate(http_requests_total{status!~"5.."}[6h]))
+          /
+          sum(rate(http_requests_total[6h]))
+
+      - record: sli:api_success_rate:ratio_rate30d
+        expr: |
+          sum(rate(http_requests_total{status!~"5.."}[30d]))
+          /
+          sum(rate(http_requests_total[30d]))
+
+      # -------------------------------------------------------------------------
+      # API Latency SLI (p95 < 200ms)
+      # -------------------------------------------------------------------------
+      - record: sli:api_latency_p95:seconds:rate5m
+        expr: |
+          histogram_quantile(0.95, rate(http_request_duration_seconds_bucket{job="sofia-ai"}[5m]))
+
+      - record: sli:api_latency_p99:seconds:rate5m
+        expr: |
+          histogram_quantile(0.99, rate(http_request_duration_seconds_bucket{job="sofia-ai"}[5m]))
+
+      # -------------------------------------------------------------------------
+      # Sofia AI Processing Time SLI
+      # -------------------------------------------------------------------------
+      - record: sli:sofia_processing_p95:seconds:rate5m
+        expr: |
+          histogram_quantile(0.95, rate(sofia_intention_processing_duration_seconds_bucket[5m]))
+
+      - record: sli:sofia_processing_p99:seconds:rate5m
+        expr: |
+          histogram_quantile(0.99, rate(sofia_intention_processing_duration_seconds_bucket[5m]))
+
+      # -------------------------------------------------------------------------
+      # Database Query Performance SLI
+      # -------------------------------------------------------------------------
+      - record: sli:db_query_p95:seconds:rate5m
+        expr: |
+          histogram_quantile(0.95, rate(pg_stat_statements_mean_time_seconds_bucket[5m]))
+
+      # -------------------------------------------------------------------------
+      # Cache Hit Ratio SLI
+      # -------------------------------------------------------------------------
+      - record: sli:cache_hit_ratio:ratio_rate5m
+        expr: |
+          rate(redis_keyspace_hits_total[5m])
+          /
+          (rate(redis_keyspace_hits_total[5m]) + rate(redis_keyspace_misses_total[5m]))
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # SLO ERROR BUDGET RECORDING RULES
+  # ═════════════════════════════════════════════════════════════════════════════
+
+  - name: slo_error_budget_rules
+    interval: 1m
+    rules:
+      # -------------------------------------------------------------------------
+      # System Uptime Error Budget (Target: 99.95%, Budget: 0.05%)
+      # -------------------------------------------------------------------------
+      - record: slo:system_uptime:error_budget_remaining:ratio_rate30d
+        expr: |
+          1 - ((1 - sli:system_availability:ratio_rate30d) / 0.0005)
+
+      # Error budget burn rate (how fast we're consuming budget)
+      - record: slo:system_uptime:burn_rate:ratio_rate1h
+        expr: |
+          (1 - sli:system_availability:ratio_rate1h) / 0.0005
+
+      - record: slo:system_uptime:burn_rate:ratio_rate6h
+        expr: |
+          (1 - sli:system_availability:ratio_rate6h) / 0.0005
+
+      # -------------------------------------------------------------------------
+      # API Success Rate Error Budget (Target: 99.9%, Budget: 0.1%)
+      # -------------------------------------------------------------------------
+      - record: slo:api_success:error_budget_remaining:ratio_rate30d
+        expr: |
+          1 - ((1 - sli:api_success_rate:ratio_rate30d) / 0.001)
+
+      - record: slo:api_success:burn_rate:ratio_rate1h
+        expr: |
+          (1 - sli:api_success_rate:ratio_rate1h) / 0.001
+
+      - record: slo:api_success:burn_rate:ratio_rate6h
+        expr: |
+          (1 - sli:api_success_rate:ratio_rate6h) / 0.001
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # SLO ALERTING RULES - Multi-window, multi-burn-rate alerts
+  # Based on Google SRE Workbook Chapter 5
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  - name: slo_alerts
+    interval: 30s
+    rules:
+      # -------------------------------------------------------------------------
+      # CRITICAL: Fast burn rate (14.4x) - will exhaust 30d budget in 50 hours
+      # -------------------------------------------------------------------------
+      - alert: ErrorBudgetBurnRateCritical
+        expr: |
+          (
+            slo:system_uptime:burn_rate:ratio_rate1h > 14.4
+            and
+            slo:system_uptime:burn_rate:ratio_rate6h > 14.4
+          )
+          or
+          (
+            slo:api_success:burn_rate:ratio_rate1h > 14.4
+            and
+            slo:api_success:burn_rate:ratio_rate6h > 14.4
+          )
+        for: 2m
+        labels:
+          severity: critical
+          slo_type: availability
+        annotations:
+          summary: "CRITICAL: Error budget burning at 14.4x rate"
+          description: "Error budget will be exhausted in ~50 hours at current rate. Immediate action required!"
+          impact: "30-day error budget will be consumed in 2 days"
+          action: "1. Stop all feature launches 2. All hands on reliability 3. Page on-call engineer"
+
+      # -------------------------------------------------------------------------
+      # HIGH: Moderate burn rate (6x) - will exhaust budget in 5 days
+      # -------------------------------------------------------------------------
+      - alert: ErrorBudgetBurnRateHigh
+        expr: |
+          (
+            slo:system_uptime:burn_rate:ratio_rate6h > 6
+            and
+            slo:system_uptime:burn_rate:ratio_rate30m > 6
+          )
+          or
+          (
+            slo:api_success:burn_rate:ratio_rate6h > 6
+            and
+            slo:api_success:burn_rate:ratio_rate30m > 6
+          )
+        for: 15m
+        labels:
+          severity: high
+          slo_type: availability
+        annotations:
+          summary: "HIGH: Error budget burning at 6x rate"
+          description: "Error budget will be exhausted in ~5 days at current rate"
+          impact: "Increased risk of SLO violation"
+          action: "1. Investigate root cause 2. Consider pausing risky deployments 3. Notify engineering leadership"
+
+      # -------------------------------------------------------------------------
+      # WARNING: Slow burn (3x) - will exhaust budget in 10 days
+      # -------------------------------------------------------------------------
+      - alert: ErrorBudgetBurnRateWarning
+        expr: |
+          (
+            slo:system_uptime:burn_rate:ratio_rate30m > 3
+            and
+            slo:system_uptime:burn_rate:ratio_rate6h > 3
+          )
+          or
+          (
+            slo:api_success:burn_rate:ratio_rate30m > 3
+            and
+            slo:api_success:burn_rate:ratio_rate6h > 3
+          )
+        for: 1h
+        labels:
+          severity: warning
+          slo_type: availability
+        annotations:
+          summary: "Warning: Error budget burning faster than normal"
+          description: "Error budget will be exhausted in ~10 days at current rate"
+          impact: "Elevated error rate detected"
+          action: "1. Review recent changes 2. Monitor closely 3. Prepare rollback plan"
+
+      # -------------------------------------------------------------------------
+      # API Latency SLO Alerts (p95 < 200ms)
+      # -------------------------------------------------------------------------
+      - alert: APILatencySLOViolation
+        expr: |
+          sli:api_latency_p95:seconds:rate5m > 0.2
+        for: 10m
+        labels:
+          severity: high
+          slo_type: latency
+        annotations:
+          summary: "API latency p95 exceeds SLO target (200ms)"
+          description: "Current p95 latency: {{ $value | humanizeDuration }}"
+          impact: "User experience degradation"
+          action: "1. Check Sofia AI performance 2. Review database queries 3. Check external dependencies"
+
+      - alert: APILatencyCritical
+        expr: |
+          sli:api_latency_p99:seconds:rate5m > 0.5
+        for: 5m
+        labels:
+          severity: critical
+          slo_type: latency
+        annotations:
+          summary: "CRITICAL: API latency p99 exceeds 500ms"
+          description: "Current p99 latency: {{ $value | humanizeDuration }}"
+          impact: "Severe user experience degradation"
+          action: "1. Immediate investigation 2. Consider circuit breakers 3. Scale resources if needed"
+
+      # -------------------------------------------------------------------------
+      # Sofia AI Processing Time SLO Alerts (p95 < 300s)
+      # -------------------------------------------------------------------------
+      - alert: SofiaProcessingTimeSLOViolation
+        expr: |
+          sli:sofia_processing_p95:seconds:rate5m > 300
+        for: 15m
+        labels:
+          severity: high
+          slo_type: processing_time
+          component: sofia-ai
+        annotations:
+          summary: "Sofia AI processing time p95 exceeds SLO target (5 minutes)"
+          description: "Current p95 processing time: {{ $value | humanizeDuration }}"
+          impact: "Delayed SaaS generation for users"
+          action: "1. Check Anthropic API latency 2. Review Claude AI rate limits 3. Check resource utilization"
+
+      # -------------------------------------------------------------------------
+      # Cache Hit Ratio SLO Alerts (target > 95%)
+      # -------------------------------------------------------------------------
+      - alert: CacheHitRatioLow
+        expr: |
+          sli:cache_hit_ratio:ratio_rate5m < 0.95
+        for: 30m
+        labels:
+          severity: warning
+          slo_type: cache_performance
+        annotations:
+          summary: "Redis cache hit ratio below target (95%)"
+          description: "Current hit ratio: {{ $value | humanizePercentage }}"
+          impact: "Increased database load and latency"
+          action: "1. Review caching strategy 2. Check cache TTLs 3. Consider cache warming"
+
+      # -------------------------------------------------------------------------
+      # Error Budget Exhaustion Alerts
+      # -------------------------------------------------------------------------
+      - alert: ErrorBudgetExhausted
+        expr: |
+          slo:system_uptime:error_budget_remaining:ratio_rate30d < 0
+          or
+          slo:api_success:error_budget_remaining:ratio_rate30d < 0
+        labels:
+          severity: critical
+          slo_type: error_budget
+        annotations:
+          summary: "CRITICAL: Error budget EXHAUSTED for this month"
+          description: "Error budget has been fully consumed. SLO violation!"
+          impact: "SLA breach - potential customer credits/refunds"
+          action: "1. STOP all feature releases 2. Focus 100% on reliability 3. Executive escalation 4. Customer communication"
+
+      - alert: ErrorBudgetCriticallyLow
+        expr: |
+          (
+            slo:system_uptime:error_budget_remaining:ratio_rate30d < 0.25
+            and
+            slo:system_uptime:error_budget_remaining:ratio_rate30d > 0
+          )
+          or
+          (
+            slo:api_success:error_budget_remaining:ratio_rate30d < 0.25
+            and
+            slo:api_success:error_budget_remaining:ratio_rate30d > 0
+          )
+        labels:
+          severity: high
+          slo_type: error_budget
+        annotations:
+          summary: "Error budget critically low (<25% remaining)"
+          description: "Only {{ $value | humanizePercentage }} of error budget remains for this month"
+          impact: "High risk of SLO violation"
+          action: "1. Freeze non-critical deployments 2. Increase monitoring 3. Prepare incident response"

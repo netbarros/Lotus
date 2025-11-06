@@ -1,0 +1,191 @@
+{
+  "name": "MagicSaaS Metrics Collection & Alerting",
+  "icon": "analytics",
+  "color": "#6644FF",
+  "description": "Automated collection of metrics from Sofia AI, system health, and security events with intelligent alerting",
+  "status": "active",
+  "trigger": "schedule",
+  "accountability": "all",
+  "options": {
+    "schedule": "*/5 * * * *",
+    "timezone": "UTC"
+  },
+  "operations": [
+    {
+      "id": "collect_sofia_metrics",
+      "name": "Collect Sofia AI Metrics",
+      "key": "collect_sofia_metrics",
+      "type": "exec",
+      "position_x": 20,
+      "position_y": 1,
+      "options": {
+        "code": "module.exports = async function({ data }, { services, database, getSchema }) {\n  const { ItemsService } = services;\n  const schema = await getSchema();\n  \n  // Collect from Sofia AI metrics table\n  const sofiaMetricsService = new ItemsService('sofia_metrics', { schema });\n  const metricsData = await sofiaMetricsService.readByQuery({\n    filter: {\n      created_at: {\n        _gte: new Date(Date.now() - 5 * 60 * 1000).toISOString()\n      }\n    },\n    aggregate: {\n      avg: ['processing_time'],\n      sum: ['intentions_processed', 'deployments_success'],\n      count: ['id']\n    }\n  });\n  \n  // Store in Redis via custom endpoint\n  const redis = require('ioredis');\n  const client = new redis({\n    host: process.env.REDIS_HOST || 'localhost',\n    port: parseInt(process.env.REDIS_PORT || '6379')\n  });\n  \n  const metrics = metricsData[0] || {};\n  await client.mset(\n    'sofia:metrics:processing_time:avg', metrics.avg?.processing_time || 0,\n    'sofia:metrics:intentions:total', metrics.sum?.intentions_processed || 0,\n    'sofia:metrics:deployments:success', metrics.sum?.deployments_success || 0\n  );\n  \n  await client.quit();\n  \n  return { success: true, metrics };\n}"
+      },
+      "resolve": "check_thresholds"
+    },
+    {
+      "id": "check_thresholds",
+      "name": "Check Alert Thresholds",
+      "key": "check_thresholds",
+      "type": "condition",
+      "position_x": 20,
+      "position_y": 2,
+      "options": {
+        "filter": {
+          "$trigger.metrics.avg.processing_time": {
+            "_gt": 300
+          }
+        }
+      },
+      "resolve": "send_alert",
+      "reject": "collect_security_metrics"
+    },
+    {
+      "id": "send_alert",
+      "name": "Send Performance Alert",
+      "key": "send_alert",
+      "type": "webhook",
+      "position_x": 5,
+      "position_y": 3,
+      "options": {
+        "method": "POST",
+        "url": "{{$env.WEBHOOK_SLACK_URL}}",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "text": "🚨 Sofia AI Performance Alert",
+          "blocks": [
+            {
+              "type": "section",
+              "text": {
+                "type": "mrkdwn",
+                "text": "*Sofia AI processing time exceeded threshold*\n\n• Current: {{$trigger.metrics.avg.processing_time}}s\n• Threshold: 300s\n• Timestamp: {{$now}}"
+              }
+            }
+          ]
+        }
+      },
+      "resolve": "log_alert"
+    },
+    {
+      "id": "log_alert",
+      "name": "Log Alert to Database",
+      "key": "log_alert",
+      "type": "item-create",
+      "position_x": 5,
+      "position_y": 4,
+      "options": {
+        "collection": "alerts",
+        "payload": {
+          "type": "performance",
+          "severity": "warning",
+          "title": "Sofia AI High Processing Time",
+          "description": "Processing time: {{$trigger.metrics.avg.processing_time}}s (threshold: 300s)",
+          "metric_value": "{{$trigger.metrics.avg.processing_time}}",
+          "created_at": "{{$now}}"
+        }
+      },
+      "resolve": "collect_security_metrics"
+    },
+    {
+      "id": "collect_security_metrics",
+      "name": "Collect Security Events",
+      "key": "collect_security_metrics",
+      "type": "exec",
+      "position_x": 35,
+      "position_y": 3,
+      "options": {
+        "code": "module.exports = async function({ data }, { services, database, getSchema }) {\n  const { ItemsService } = services;\n  const schema = await getSchema();\n  \n  // Check for critical security events in last 5 minutes\n  const securityService = new ItemsService('security_events', { schema });\n  const criticalEvents = await securityService.readByQuery({\n    filter: {\n      severity: { _eq: 'critical' },\n      created_at: {\n        _gte: new Date(Date.now() - 5 * 60 * 1000).toISOString()\n      },\n      alerted: { _null: true }\n    }\n  });\n  \n  return { \n    success: true, \n    criticalEvents,\n    count: criticalEvents.length \n  };\n}"
+      },
+      "resolve": "check_security_alerts"
+    },
+    {
+      "id": "check_security_alerts",
+      "name": "Check for Critical Security Events",
+      "key": "check_security_alerts",
+      "type": "condition",
+      "position_x": 35,
+      "position_y": 4,
+      "options": {
+        "filter": {
+          "$trigger.count": {
+            "_gt": 0
+          }
+        }
+      },
+      "resolve": "send_security_alert",
+      "reject": "update_prometheus_metrics"
+    },
+    {
+      "id": "send_security_alert",
+      "name": "Send Critical Security Alert",
+      "key": "send_security_alert",
+      "type": "webhook",
+      "position_x": 35,
+      "position_y": 5,
+      "options": {
+        "method": "POST",
+        "url": "{{$env.WEBHOOK_PAGERDUTY_URL}}",
+        "headers": {
+          "Content-Type": "application/json",
+          "Authorization": "Token token={{$env.PAGERDUTY_TOKEN}}"
+        },
+        "body": {
+          "routing_key": "{{$env.PAGERDUTY_ROUTING_KEY}}",
+          "event_action": "trigger",
+          "payload": {
+            "summary": "{{$trigger.count}} critical security events detected",
+            "severity": "critical",
+            "source": "MagicSaaS Security Monitor",
+            "timestamp": "{{$now}}",
+            "custom_details": {
+              "event_count": "{{$trigger.count}}",
+              "events": "{{$trigger.criticalEvents}}"
+            }
+          }
+        }
+      },
+      "resolve": "mark_events_alerted"
+    },
+    {
+      "id": "mark_events_alerted",
+      "name": "Mark Events as Alerted",
+      "key": "mark_events_alerted",
+      "type": "exec",
+      "position_x": 35,
+      "position_y": 6,
+      "options": {
+        "code": "module.exports = async function({ data, $trigger }, { services, getSchema }) {\n  const { ItemsService } = services;\n  const schema = await getSchema();\n  const securityService = new ItemsService('security_events', { schema });\n  \n  const eventIds = $trigger.criticalEvents.map(e => e.id);\n  \n  for (const id of eventIds) {\n    await securityService.updateOne(id, {\n      alerted: true,\n      alerted_at: new Date().toISOString()\n    });\n  }\n  \n  return { success: true };\n}"
+      },
+      "resolve": "update_prometheus_metrics"
+    },
+    {
+      "id": "update_prometheus_metrics",
+      "name": "Update Prometheus Metrics Cache",
+      "key": "update_prometheus_metrics",
+      "type": "webhook",
+      "position_x": 50,
+      "position_y": 5,
+      "options": {
+        "method": "GET",
+        "url": "http://prometheus:9090/api/v1/query",
+        "headers": {
+          "Accept": "application/json"
+        }
+      },
+      "resolve": "cache_prometheus_data"
+    },
+    {
+      "id": "cache_prometheus_data",
+      "name": "Cache Prometheus Data in Redis",
+      "key": "cache_prometheus_data",
+      "type": "exec",
+      "position_x": 50,
+      "position_y": 6,
+      "options": {
+        "code": "module.exports = async function({ data, $trigger }, { env }) {\n  const redis = require('ioredis');\n  const client = new redis({\n    host: env.REDIS_HOST || 'localhost',\n    port: parseInt(env.REDIS_PORT || '6379')\n  });\n  \n  // Query Prometheus metrics and cache in Redis\n  const queries = {\n    uptime: 'avg(up{job=\"sofia-ai\"}) * 100',\n    api_latency_p95: 'histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m])) * 1000',\n    error_rate: '(sum(rate(http_requests_total{status=~\"5..\"}[5m])) / sum(rate(http_requests_total[5m]))) * 100'\n  };\n  \n  for (const [key, query] of Object.entries(queries)) {\n    const response = await fetch(`http://prometheus:9090/api/v1/query?query=${encodeURIComponent(query)}`);\n    const data = await response.json();\n    const value = data?.data?.result?.[0]?.value?.[1] || '0';\n    await client.set(`prometheus:${key}`, value, 'EX', 300);\n  }\n  \n  await client.quit();\n  return { success: true };\n}"
+      }
+    }
+  ]
+}
