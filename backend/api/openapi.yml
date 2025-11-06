@@ -1,0 +1,63 @@
+openapi: 3.0.0
+info:
+  title: MagicSaaS System-∞ API
+  version: ∞.2026.1.0
+  description: |
+    Complete REST API for MagicSaaS System-∞ Cognitive Mesh OS
+
+    Powered by Sofia AI v3.0 - The Brain
+  contact:
+    name: Software Lotus
+    email: contato@softwarelotus.com.br
+    url: https://softwarelotus.com.br
+  license:
+    name: Proprietary
+
+servers:
+  - url: http://localhost:3001/api
+    description: Development
+  - url: https://staging.softwarelotus.com.br/api
+    description: Staging
+  - url: https://api.softwarelotus.com.br
+    description: Production
+
+tags:
+  - name: Health
+    description: System health and metrics
+  - name: Authentication
+    description: User authentication
+  - name: Sofia AI
+    description: AI-powered intention processing
+  - name: Tenants
+    description: Multi-tenancy management
+  - name: Users
+    description: User management
+  - name: Marketplace
+    description: Plugin marketplace
+  - name: Compliance
+    description: GDPR/LGPD data export
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    HealthResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: ok
+        timestamp:
+          type: string
+          format: date-time
+        uptime:
+          type: number
+        version:
+          type: string
+
+security:
+  - bearerAuth: []
