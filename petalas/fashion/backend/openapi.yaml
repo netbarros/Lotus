@@ -1,0 +1,597 @@
+openapi: 3.0.3
+info:
+  title: Pétala Fashion API
+  description: |
+    Complete e-commerce API for fashion vertical with AI-powered features.
+
+    ## Features
+    - Product catalog with variants
+    - Shopping cart management
+    - Multi-step checkout
+    - Order tracking
+    - Customer accounts
+    - Reviews and ratings
+    - Loyalty program
+    - Sofia AI Assistant integration
+    - AR try-on capabilities
+
+    ## Authentication
+    All endpoints require Bearer token authentication except public product listing.
+
+    ## Base URL
+    - Production: `https://fashion.magicsaas.io/api`
+    - Development: `http://localhost:8055`
+
+  version: 1.0.0
+  contact:
+    name: MagicSaaS Support
+    email: support@magicsaas.io
+  license:
+    name: Proprietary
+
+servers:
+  - url: https://fashion.magicsaas.io/api
+    description: Production server
+  - url: http://localhost:8055
+    description: Development server
+
+tags:
+  - name: Products
+    description: Product catalog operations
+  - name: Cart
+    description: Shopping cart management
+  - name: Checkout
+    description: Checkout and order processing
+  - name: Orders
+    description: Order management and tracking
+  - name: Reviews
+    description: Product reviews and ratings
+  - name: Recommendations
+    description: AI-powered product recommendations
+  - name: Sofia AI
+    description: Sofia AI Assistant endpoints
+  - name: Customers
+    description: Customer account management
+  - name: Loyalty
+    description: Loyalty program
+  - name: AR
+    description: AR try-on features
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    Product:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        slug:
+          type: string
+        description:
+          type: string
+        short_description:
+          type: string
+        price:
+          type: number
+          format: float
+        compare_at_price:
+          type: number
+          format: float
+        sku:
+          type: string
+        category_id:
+          type: string
+        brand:
+          type: string
+        status:
+          type: string
+          enum: [draft, published, archived]
+        featured_image:
+          type: string
+          format: uri
+        images:
+          type: array
+          items:
+            type: string
+            format: uri
+        has_variants:
+          type: boolean
+        variants:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductVariant'
+        inventory_quantity:
+          type: integer
+        reviews_count:
+          type: integer
+        reviews_average:
+          type: number
+          format: float
+        popularity_score:
+          type: integer
+        ar_enabled:
+          type: boolean
+        tags:
+          type: array
+          items:
+            type: string
+        created_at:
+          type: string
+          format: date-time
+
+    ProductVariant:
+      type: object
+      properties:
+        id:
+          type: string
+        sku:
+          type: string
+        size:
+          type: string
+        color:
+          type: string
+        material:
+          type: string
+        price_adjustment:
+          type: number
+          format: float
+        inventory_quantity:
+          type: integer
+
+    CartItem:
+      type: object
+      properties:
+        id:
+          type: string
+        product_id:
+          type: string
+        product_name:
+          type: string
+        product_image:
+          type: string
+        variant_id:
+          type: string
+        quantity:
+          type: integer
+        price:
+          type: number
+        subtotal:
+          type: number
+
+    Cart:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/CartItem'
+        totals:
+          type: object
+          properties:
+            subtotal:
+              type: number
+            tax:
+              type: number
+            shipping:
+              type: number
+            discount:
+              type: number
+            total:
+              type: number
+
+    Order:
+      type: object
+      properties:
+        id:
+          type: string
+        order_number:
+          type: string
+        status:
+          type: string
+          enum: [pending, confirmed, processing, shipped, delivered, cancelled]
+        customer_email:
+          type: string
+        customer_name:
+          type: string
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderItem'
+        subtotal:
+          type: number
+        tax:
+          type: number
+        shipping_cost:
+          type: number
+        final_price:
+          type: number
+        billing_address:
+          $ref: '#/components/schemas/Address'
+        shipping_address:
+          $ref: '#/components/schemas/Address'
+        tracking_number:
+          type: string
+        estimated_delivery_date:
+          type: string
+          format: date
+        created_at:
+          type: string
+          format: date-time
+
+    OrderItem:
+      type: object
+      properties:
+        product_id:
+          type: string
+        product_name:
+          type: string
+        variant_id:
+          type: string
+        quantity:
+          type: integer
+        price:
+          type: number
+        subtotal:
+          type: number
+
+    Address:
+      type: object
+      properties:
+        street:
+          type: string
+        number:
+          type: string
+        complement:
+          type: string
+        neighborhood:
+          type: string
+        city:
+          type: string
+        state:
+          type: string
+        country:
+          type: string
+        postal_code:
+          type: string
+
+    Review:
+      type: object
+      properties:
+        id:
+          type: string
+        product_id:
+          type: string
+        customer_name:
+          type: string
+        rating:
+          type: integer
+          minimum: 1
+          maximum: 5
+        title:
+          type: string
+        comment:
+          type: string
+        images:
+          type: array
+          items:
+            type: string
+        verified_purchase:
+          type: boolean
+        helpful_count:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+
+    SofiaMessage:
+      type: object
+      properties:
+        conversation_id:
+          type: string
+        message:
+          type: string
+        context:
+          type: object
+
+    SofiaResponse:
+      type: object
+      properties:
+        message_id:
+          type: string
+        message:
+          type: string
+        intent:
+          type: object
+          properties:
+            intent:
+              type: string
+            confidence:
+              type: number
+            entities:
+              type: object
+        actions:
+          type: array
+          items:
+            type: object
+        suggestions:
+          type: array
+          items:
+            type: string
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+        code:
+          type: string
+
+paths:
+  /petalas/fashion/products:
+    get:
+      tags: [Products]
+      summary: List all products
+      description: Returns paginated list of products with optional filtering
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            default: 0
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [published, draft, archived]
+        - name: search
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Product'
+                  meta:
+                    type: object
+                    properties:
+                      total_count:
+                        type: integer
+                      filter_count:
+                        type: integer
+
+  /petalas/fashion/products/{id}:
+    get:
+      tags: [Products]
+      summary: Get product by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Product'
+        '404':
+          description: Product not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /petalas/fashion/cart:
+    get:
+      tags: [Cart]
+      summary: Get current cart
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Cart'
+
+    delete:
+      tags: [Cart]
+      summary: Clear cart
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Cart cleared
+
+  /petalas/fashion/cart/add:
+    post:
+      tags: [Cart]
+      summary: Add product to cart
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [product_id, quantity]
+              properties:
+                product_id:
+                  type: string
+                quantity:
+                  type: integer
+                  minimum: 1
+                variant_id:
+                  type: string
+      responses:
+        '200':
+          description: Product added
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      cart_item_id:
+                        type: string
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /petalas/fashion/sofia/session:
+    post:
+      tags: [Sofia AI]
+      summary: Initialize Sofia AI session
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [tenant_id]
+              properties:
+                tenant_id:
+                  type: string
+                user_id:
+                  type: string
+      responses:
+        '200':
+          description: Session initialized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  conversation_id:
+                    type: string
+                  context:
+                    type: object
+                  message:
+                    type: string
+
+  /petalas/fashion/sofia/message:
+    post:
+      tags: [Sofia AI]
+      summary: Send message to Sofia
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SofiaMessage'
+      responses:
+        '200':
+          description: Sofia response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SofiaResponse'
+
+  /petalas/fashion/orders/{id}:
+    get:
+      tags: [Orders]
+      summary: Get order by ID
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Order details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Order'
+
+  /petalas/fashion/reviews:
+    post:
+      tags: [Reviews]
+      summary: Create product review
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [product_id, rating]
+              properties:
+                product_id:
+                  type: string
+                rating:
+                  type: integer
+                  minimum: 1
+                  maximum: 5
+                title:
+                  type: string
+                comment:
+                  type: string
+                images:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        '201':
+          description: Review created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Review'
+
+security:
+  - BearerAuth: []
