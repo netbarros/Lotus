@@ -255,10 +255,10 @@
       "provider": "Hostinger",
       "plan": "KVM8",
       "specs": {
-        "ram": "8GB",
+        "ram": "32GB",
         "vcpus": 8,
-        "storage": "200GB NVMe SSD",
-        "bandwidth": "8TB",
+        "storage": "400GB NVMe SSD",
+        "bandwidth": "32TB",
         "ipv4": "Dedicated"
       },
       "os": "Ubuntu 22.04 LTS",

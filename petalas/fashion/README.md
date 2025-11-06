@@ -324,10 +324,10 @@ pnpm test:coverage
 **Provider:** Hostinger
 **Plan:** KVM8
 **Specs:**
-- 8GB RAM
+- 32GB RAM
 - 8 vCPUs
-- 200GB NVMe SSD
-- 8TB bandwidth
+- 400GB NVMe SSD
+- 32TB bandwidth
 - Dedicated IPv4
 **OS:** Ubuntu 22.04 LTS
 **Domain:** `dev-{tenant}.softwarelotus.com.br`

@@ -1056,7 +1056,7 @@ Every Pétala MUST have:
 ### VPS (Development):
 - **Provider:** Hostinger
 - **Plan:** KVM8
-- **Specs:** 8GB RAM, 8 vCPUs, 200GB NVMe SSD, 8TB bandwidth, Dedicated IPv4
+- **Specs:** 32GB RAM, 8 vCPUs, 400GB NVMe SSD, 32TB bandwidth, Dedicated IPv4
 - **OS:** Ubuntu 22.04 LTS
 - **Stack:** Docker Compose (all services in containers)
 - **Domain:** `dev-{tenant}.softwarelotus.com.br`

@@ -623,10 +623,10 @@ Mesmo que seja possível acessar Directus diretamente (`http://directus.software
 **Provider:** Hostinger
 **Plan:** KVM8
 **Specs:**
-- 8GB RAM
+- 32GB RAM
 - 8 vCPUs
-- 200GB NVMe SSD
-- 8TB bandwidth/mês
+- 400GB NVMe SSD
+- 32TB bandwidth/mês
 - Dedicated IPv4
 - Ubuntu 22.04 LTS
 
