@@ -310,14 +310,27 @@
       <p class="text-gray-600 mb-6">Sorry, we couldn't find the product you're looking for.</p>
       <router-link to="/products" class="btn btn-primary">Browse Products</router-link>
     </div>
+
+    <!-- Sofia AI Assistant -->
+    <SofiaFloatingButton
+      petala="fashion"
+      :messages="sofia.state.value.messages"
+      :quick-actions="sofia.state.value.quickActions"
+      :voice-enabled="true"
+      :sofia-status="sofiaStatus"
+      @send-message="handleSofiaMessage"
+      @action="handleSofiaAction"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useProductsStore } from '@/stores/products'
 import { useCartStore } from '@/stores/cart'
+import { useSofia } from '@/composables/useSofia'
+import SofiaFloatingButton from '@/../../shared/sofia/components/SofiaFloatingButton.vue'
 import type { Product } from '@/types'
 
 const route = useRoute()
@@ -332,12 +345,41 @@ const selectedColor = ref('')
 const activeTab = ref('Description')
 const tabs = ['Description', 'Reviews', 'Shipping']
 
+// Initialize Sofia
+const sofia = useSofia()
+
+// Sofia status
+const sofiaStatus = computed(() => {
+  if (sofia.state.value.listening) return 'listening'
+  if (sofia.state.value.loading) return 'thinking'
+  return 'idle'
+})
+
 onMounted(async () => {
   loading.value = true
   const slug = route.params.slug as string
   await productsStore.fetchProductBySlug(slug)
   product.value = productsStore.currentProduct
   loading.value = false
+
+  // Update Sofia context with product details
+  if (product.value) {
+    sofia.updateContext({
+      current_view: 'product_detail',
+      current_product_id: product.value.id,
+      current_category: product.value.category_id
+    })
+  }
+})
+
+// Watch product changes to update Sofia context
+watch(product, (newProduct) => {
+  if (newProduct) {
+    sofia.updateContext({
+      current_product_id: newProduct.id,
+      current_category: newProduct.category_id
+    })
+  }
 })
 
 async function addToCart() {
@@ -346,5 +388,15 @@ async function addToCart() {
     // Show success toast/notification
     alert('Product added to cart!')
   }
+}
+
+// Sofia message handler
+const handleSofiaMessage = async (message: string) => {
+  await sofia.sendMessage(message)
+}
+
+// Sofia action handler
+const handleSofiaAction = async (action: string) => {
+  await sofia.executeAction(action)
 }
 </script>

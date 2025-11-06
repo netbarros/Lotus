@@ -22,29 +22,33 @@
 
 ### ⭐ Key Features
 
-1. ✅ **Product Catalog** - Collections, categories, tags, variants (size, color, material)
-2. ✅ **AR Try-On** - Augmented reality virtual try-on powered by 8th Wall
-3. ✅ **Advanced Filters** - Size, color, price, brand, season, style
-4. ✅ **Size Guide** - Dynamic size recommendations per product
-5. ✅ **Lookbook** - Curated seasonal collections
-6. ✅ **Shopping Cart** - Persistent cart with saved items
-7. ✅ **Multi-Step Checkout** - Optimized conversion flow with guest checkout
-8. ✅ **Payment Gateway** - Stripe, Mercado Pago, PIX
-9. ✅ **Order Tracking** - Real-time status updates with carrier integration
-10. ✅ **Customer Accounts** - Profiles, order history, addresses
-11. ✅ **Wishlist** - Save for later
-12. ✅ **Product Reviews** - Star ratings with photos
-13. ✅ **Loyalty Program** - Points, rewards, exclusive access
-14. ✅ **Discount Coupons** - Percentage, fixed amount, free shipping
-15. ✅ **Abandoned Cart Recovery** - Automated email campaigns
-16. ✅ **Inventory Management** - Real-time tracking with low-stock alerts
-17. ✅ **Shipping Calculator** - Real-time rates from multiple carriers
-18. ✅ **Multi-Language** - English, Portuguese (BR), Spanish
-19. ✅ **Multi-Currency** - USD, BRL, EUR (auto-conversion)
-20. ✅ **Instagram Integration** - Product feed, shopping tags
-21. ✅ **Email Marketing** - Mailchimp/SendGrid integration
-22. ✅ **Analytics Dashboard** - Sales, top products, conversions, LTV
-23. ✅ **Mobile App (PWA)** - Installable progressive web app
+1. ✅ **Sofia AI Assistant** - Conversational shopping with natural language search, personalized recommendations, and voice commands ([See Integration Guide](./SOFIA-INTEGRATION.md))
+2. ✅ **Product Catalog** - Collections, categories, tags, variants (size, color, material)
+3. ✅ **AR Try-On** - Augmented reality virtual try-on powered by 8th Wall
+4. ✅ **Advanced Filters** - Size, color, price, brand, season, style
+5. ✅ **AI-Powered Recommendations** - Personalized product suggestions based on browsing behavior
+6. ✅ **Natural Language Search** - "Show me red dresses under $100" - Sofia understands
+7. ✅ **Size Guide** - Dynamic size recommendations per product
+8. ✅ **Lookbook** - Curated seasonal collections
+9. ✅ **Shopping Cart** - Persistent cart with saved items
+10. ✅ **Multi-Step Checkout** - Optimized conversion flow with guest checkout
+11. ✅ **Payment Gateway** - Stripe, Mercado Pago, PIX
+12. ✅ **Order Tracking** - Real-time status updates with carrier integration (Sofia-assisted)
+13. ✅ **Customer Accounts** - Profiles, order history, addresses
+14. ✅ **Wishlist** - Save for later
+15. ✅ **Product Reviews** - Star ratings with photos
+16. ✅ **Loyalty Program** - Points, rewards, exclusive access
+17. ✅ **Discount Coupons** - Percentage, fixed amount, free shipping
+18. ✅ **Abandoned Cart Recovery** - Automated email campaigns
+19. ✅ **Inventory Management** - Real-time tracking with low-stock alerts
+20. ✅ **Shipping Calculator** - Real-time rates from multiple carriers
+21. ✅ **Multi-Language** - English, Portuguese (BR), Spanish
+22. ✅ **Multi-Currency** - USD, BRL, EUR (auto-conversion)
+23. ✅ **Instagram Integration** - Product feed, shopping tags
+24. ✅ **Email Marketing** - Mailchimp/SendGrid integration
+25. ✅ **Analytics Dashboard** - Sales, top products, conversions, LTV
+26. ✅ **Mobile App (PWA)** - Installable progressive web app
+27. ✅ **Voice Shopping** - Hands-free browsing and ordering with Sofia
 
 ---
 
