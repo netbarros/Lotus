@@ -1,0 +1,275 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: directus
+  namespace: petala-fashion
+  labels:
+    app: directus
+    tier: backend
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: directus
+  template:
+    metadata:
+      labels:
+        app: directus
+        tier: backend
+    spec:
+      initContainers:
+      - name: wait-for-postgres
+        image: busybox:1.36
+        command: ['sh', '-c', 'until nc -z postgres-service 5432; do echo waiting for postgres; sleep 2; done;']
+      - name: wait-for-redis
+        image: busybox:1.36
+        command: ['sh', '-c', 'until nc -z redis-service 6379; do echo waiting for redis; sleep 2; done;']
+      containers:
+      - name: directus
+        image: directus/directus:10-latest
+        ports:
+        - containerPort: 8055
+          name: http
+        env:
+        # Database
+        - name: DB_CLIENT
+          value: "pg"
+        - name: DB_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: fashion-config
+              key: POSTGRES_HOST
+        - name: DB_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: fashion-config
+              key: POSTGRES_PORT
+        - name: DB_DATABASE
+          valueFrom:
+            configMapKeyRef:
+              name: fashion-config
+              key: POSTGRES_DB
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: fashion-secrets
+              key: POSTGRES_USER
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: fashion-secrets
+              key: POSTGRES_PASSWORD
+
+        # Redis Cache
+        - name: CACHE_ENABLED
+          valueFrom:
+            configMapKeyRef:
+              name: fashion-config
+              key: DIRECTUS_CACHE_ENABLED
+        - name: CACHE_STORE
+          valueFrom:
+            configMapKeyRef:
+              name: fashion-config
+              key: DIRECTUS_CACHE_STORE
+        - name: REDIS
+          value: "redis://:$(REDIS_PASSWORD)@redis-service:6379"
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: fashion-secrets
+              key: REDIS_PASSWORD
+
+        # Security
+        - name: KEY
+          valueFrom:
+            secretKeyRef:
+              name: fashion-secrets
+              key: KEY
+        - name: SECRET
+          valueFrom:
+            secretKeyRef:
+              name: fashion-secrets
+              key: SECRET
+        - name: ACCESS_TOKEN_TTL
+          valueFrom:
+            secretKeyRef:
+              name: fashion-secrets
+              key: ACCESS_TOKEN_TTL
+        - name: REFRESH_TOKEN_TTL
+          valueFrom:
+            secretKeyRef:
+              name: fashion-secrets
+              key: REFRESH_TOKEN_TTL
+
+        # Admin
+        - name: ADMIN_EMAIL
+          valueFrom:
+            secretKeyRef:
+              name: fashion-secrets
+              key: ADMIN_EMAIL
+        - name: ADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: fashion-secrets
+              key: ADMIN_PASSWORD
+
+        # Public URL
+        - name: PUBLIC_URL
+          valueFrom:
+            configMapKeyRef:
+              name: fashion-config
+              key: DIRECTUS_PUBLIC_URL
+
+        # Rate Limiting
+        - name: RATE_LIMITER_ENABLED
+          valueFrom:
+            configMapKeyRef:
+              name: fashion-config
+              key: DIRECTUS_RATE_LIMITER_ENABLED
+        - name: RATE_LIMITER_POINTS
+          valueFrom:
+            configMapKeyRef:
+              name: fashion-config
+              key: DIRECTUS_RATE_LIMITER_POINTS
+        - name: RATE_LIMITER_DURATION
+          valueFrom:
+            configMapKeyRef:
+              name: fashion-config
+              key: DIRECTUS_RATE_LIMITER_DURATION
+
+        # Email
+        - name: EMAIL_FROM
+          valueFrom:
+            configMapKeyRef:
+              name: fashion-config
+              key: EMAIL_FROM
+        - name: EMAIL_TRANSPORT
+          valueFrom:
+            configMapKeyRef:
+              name: fashion-config
+              key: EMAIL_TRANSPORT
+        - name: EMAIL_SMTP_HOST
+          valueFrom:
+            secretKeyRef:
+              name: fashion-secrets
+              key: EMAIL_SMTP_HOST
+        - name: EMAIL_SMTP_PORT
+          valueFrom:
+            secretKeyRef:
+              name: fashion-secrets
+              key: EMAIL_SMTP_PORT
+        - name: EMAIL_SMTP_USER
+          valueFrom:
+            secretKeyRef:
+              name: fashion-secrets
+              key: EMAIL_SMTP_USER
+        - name: EMAIL_SMTP_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: fashion-secrets
+              key: EMAIL_SMTP_PASSWORD
+
+        # Storage
+        - name: STORAGE_LOCATIONS
+          value: "s3"
+        - name: STORAGE_S3_DRIVER
+          value: "s3"
+        - name: STORAGE_S3_KEY
+          valueFrom:
+            secretKeyRef:
+              name: fashion-secrets
+              key: STORAGE_S3_KEY
+        - name: STORAGE_S3_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: fashion-secrets
+              key: STORAGE_S3_SECRET
+        - name: STORAGE_S3_BUCKET
+          valueFrom:
+            secretKeyRef:
+              name: fashion-secrets
+              key: STORAGE_S3_BUCKET
+        - name: STORAGE_S3_REGION
+          valueFrom:
+            secretKeyRef:
+              name: fashion-secrets
+              key: STORAGE_S3_REGION
+
+        volumeMounts:
+        - name: directus-uploads
+          mountPath: /directus/uploads
+        - name: directus-extensions
+          mountPath: /directus/extensions
+
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "2Gi"
+            cpu: "2000m"
+
+        livenessProbe:
+          httpGet:
+            path: /server/health
+            port: 8055
+          initialDelaySeconds: 60
+          periodSeconds: 10
+
+        readinessProbe:
+          httpGet:
+            path: /server/health
+            port: 8055
+          initialDelaySeconds: 30
+          periodSeconds: 5
+
+      volumes:
+      - name: directus-uploads
+        persistentVolumeClaim:
+          claimName: directus-uploads-pvc
+      - name: directus-extensions
+        persistentVolumeClaim:
+          claimName: directus-extensions-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: directus-service
+  namespace: petala-fashion
+  labels:
+    app: directus
+spec:
+  type: ClusterIP
+  ports:
+  - port: 8055
+    targetPort: 8055
+    protocol: TCP
+    name: http
+  selector:
+    app: directus
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: directus-uploads-pvc
+  namespace: petala-fashion
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 50Gi
+  storageClassName: efs
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: directus-extensions-pvc
+  namespace: petala-fashion
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: efs
