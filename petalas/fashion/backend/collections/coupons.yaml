@@ -1,0 +1,145 @@
+collection: coupons
+meta:
+  collection: coupons
+  icon: ticket
+  display_template: "{{code}} - {{discount_value}}{{discount_type}}"
+  note: "Discount coupons"
+
+schema:
+  name: coupons
+
+fields:
+  - field: id
+    type: uuid
+    schema:
+      is_primary_key: true
+    meta:
+      readonly: true
+      hidden: true
+
+  - field: tenant_id
+    type: uuid
+    schema:
+      is_nullable: false
+      foreign_key_table: tenants
+    meta:
+      required: true
+
+  - field: code
+    type: string
+    schema:
+      max_length: 50
+      is_unique: true
+      is_nullable: false
+    meta:
+      required: true
+      note: "e.g., SUMMER25, WELCOME10"
+
+  - field: description
+    type: text
+
+  - field: discount_type
+    type: string
+    schema:
+      max_length: 20
+      is_nullable: false
+    meta:
+      required: true
+      options:
+        choices:
+          - {value: percentage, text: Percentage}
+          - {value: fixed, text: Fixed Amount}
+          - {value: free_shipping, text: Free Shipping}
+
+  - field: discount_value
+    type: decimal
+    schema:
+      numeric_precision: 10
+      numeric_scale: 2
+      is_nullable: false
+    meta:
+      note: "Percentage (e.g., 25) or fixed amount (e.g., 10.00)"
+
+  - field: minimum_order_amount
+    type: decimal
+    schema:
+      numeric_precision: 10
+      numeric_scale: 2
+
+  - field: maximum_discount_amount
+    type: decimal
+    schema:
+      numeric_precision: 10
+      numeric_scale: 2
+    meta:
+      note: "Cap for percentage discounts"
+
+  - field: usage_limit
+    type: integer
+    meta:
+      note: "Total times coupon can be used (null = unlimited)"
+
+  - field: usage_limit_per_customer
+    type: integer
+    meta:
+      note: "Times per customer (null = unlimited)"
+
+  - field: usage_count
+    type: integer
+    schema:
+      default_value: 0
+    meta:
+      readonly: true
+
+  - field: applies_to
+    type: string
+    schema:
+      max_length: 20
+      default_value: all
+    meta:
+      options:
+        choices:
+          - {value: all, text: All Products}
+          - {value: categories, text: Specific Categories}
+          - {value: products, text: Specific Products}
+
+  - field: categories
+    type: json
+    meta:
+      note: "Array of category IDs (if applies_to=categories)"
+
+  - field: products
+    type: json
+    meta:
+      note: "Array of product IDs (if applies_to=products)"
+
+  - field: valid_from
+    type: timestamp
+
+  - field: valid_until
+    type: timestamp
+
+  - field: status
+    type: string
+    schema:
+      default_value: active
+    meta:
+      options:
+        choices:
+          - {value: active, text: Active}
+          - {value: inactive, text: Inactive}
+          - {value: expired, text: Expired}
+
+  - field: created_at
+    type: timestamp
+    schema:
+      default_value: now()
+    meta:
+      special: [date-created]
+
+  - field: updated_at
+    type: timestamp
+    schema:
+      default_value: now()
+    meta:
+      special: [date-updated]

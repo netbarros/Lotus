@@ -1,0 +1,125 @@
+collection: reviews
+meta:
+  collection: reviews
+  icon: star
+  display_template: "{{rating}}★ - {{product_name}}"
+  note: "Product reviews and ratings"
+
+schema:
+  name: reviews
+
+fields:
+  - field: id
+    type: uuid
+    schema:
+      is_primary_key: true
+    meta:
+      readonly: true
+      hidden: true
+
+  - field: tenant_id
+    type: uuid
+    schema:
+      is_nullable: false
+      foreign_key_table: tenants
+    meta:
+      required: true
+
+  - field: product_id
+    type: uuid
+    schema:
+      is_nullable: false
+      foreign_key_table: products
+    meta:
+      required: true
+
+  - field: customer_id
+    type: uuid
+    schema:
+      foreign_key_table: customers
+
+  - field: order_id
+    type: uuid
+    schema:
+      foreign_key_table: orders
+    meta:
+      note: "Verified purchase if order_id exists"
+
+  - field: rating
+    type: integer
+    schema:
+      is_nullable: false
+    meta:
+      required: true
+      note: "1-5 stars"
+      validation:
+        rating:
+          _gte: 1
+          _lte: 5
+
+  - field: title
+    type: string
+    schema:
+      max_length: 255
+
+  - field: comment
+    type: text
+
+  - field: pros
+    type: text
+
+  - field: cons
+    type: text
+
+  - field: images
+    type: json
+    meta:
+      note: "Array of image URLs"
+
+  - field: verified_purchase
+    type: boolean
+    schema:
+      default_value: false
+
+  - field: helpful_count
+    type: integer
+    schema:
+      default_value: 0
+
+  - field: unhelpful_count
+    type: integer
+    schema:
+      default_value: 0
+
+  - field: status
+    type: string
+    schema:
+      default_value: pending
+    meta:
+      options:
+        choices:
+          - {value: pending, text: Pending Moderation}
+          - {value: approved, text: Approved}
+          - {value: rejected, text: Rejected}
+
+  - field: moderated_by
+    type: uuid
+    schema:
+      foreign_key_table: directus_users
+
+  - field: moderated_at
+    type: timestamp
+
+  - field: created_at
+    type: timestamp
+    schema:
+      default_value: now()
+    meta:
+      special: [date-created]
+
+  - field: updated_at
+    type: timestamp
+    schema:
+      default_value: now()
+    meta:
+      special: [date-updated]

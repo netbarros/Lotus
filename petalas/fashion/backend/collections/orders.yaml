@@ -1,0 +1,220 @@
+collection: orders
+meta:
+  collection: orders
+  icon: shopping-cart
+  display_template: "Order #{{order_number}}"
+  note: "Customer orders with full order management"
+
+schema:
+  name: orders
+
+fields:
+  - field: id
+    type: uuid
+    schema:
+      is_primary_key: true
+    meta:
+      readonly: true
+      hidden: true
+
+  - field: tenant_id
+    type: uuid
+    schema:
+      is_nullable: false
+      foreign_key_table: tenants
+    meta:
+      required: true
+
+  - field: order_number
+    type: string
+    schema:
+      max_length: 50
+      is_unique: true
+      is_nullable: false
+    meta:
+      required: true
+      note: "Unique order number (e.g., ORD-2025-001234)"
+
+  - field: customer_id
+    type: uuid
+    schema:
+      foreign_key_table: customers
+    meta:
+      interface: select-dropdown-m2o
+
+  - field: email
+    type: string
+    schema:
+      max_length: 255
+      is_nullable: false
+    meta:
+      required: true
+
+  - field: phone
+    type: string
+    schema:
+      max_length: 50
+
+  - field: billing_address
+    type: json
+    meta:
+      interface: input-code
+      note: "{street, city, state, zip, country}"
+
+  - field: shipping_address
+    type: json
+    meta:
+      interface: input-code
+      note: "{street, city, state, zip, country}"
+
+  - field: subtotal
+    type: decimal
+    schema:
+      numeric_precision: 10
+      numeric_scale: 2
+      is_nullable: false
+    meta:
+      note: "Sum of all items"
+
+  - field: shipping_cost
+    type: decimal
+    schema:
+      numeric_precision: 10
+      numeric_scale: 2
+      default_value: 0
+
+  - field: tax_amount
+    type: decimal
+    schema:
+      numeric_precision: 10
+      numeric_scale: 2
+      default_value: 0
+
+  - field: discount_amount
+    type: decimal
+    schema:
+      numeric_precision: 10
+      numeric_scale: 2
+      default_value: 0
+
+  - field: total
+    type: decimal
+    schema:
+      numeric_precision: 10
+      numeric_scale: 2
+      is_nullable: false
+    meta:
+      note: "subtotal + shipping + tax - discount"
+
+  - field: currency
+    type: string
+    schema:
+      max_length: 3
+      default_value: USD
+    meta:
+      note: "ISO 4217 currency code"
+
+  - field: payment_method
+    type: string
+    schema:
+      max_length: 50
+    meta:
+      note: "stripe, mercadopago, pix"
+
+  - field: payment_status
+    type: string
+    schema:
+      max_length: 20
+      default_value: pending
+    meta:
+      interface: select-dropdown
+      options:
+        choices:
+          - {value: pending, text: Pending}
+          - {value: paid, text: Paid}
+          - {value: failed, text: Failed}
+          - {value: refunded, text: Refunded}
+
+  - field: payment_intent_id
+    type: string
+    schema:
+      max_length: 255
+    meta:
+      note: "Stripe/MercadoPago payment ID"
+
+  - field: fulfillment_status
+    type: string
+    schema:
+      max_length: 20
+      default_value: unfulfilled
+    meta:
+      interface: select-dropdown
+      options:
+        choices:
+          - {value: unfulfilled, text: Unfulfilled}
+          - {value: processing, text: Processing}
+          - {value: shipped, text: Shipped}
+          - {value: delivered, text: Delivered}
+          - {value: cancelled, text: Cancelled}
+
+  - field: tracking_number
+    type: string
+    schema:
+      max_length: 100
+
+  - field: tracking_url
+    type: string
+    schema:
+      max_length: 500
+
+  - field: carrier
+    type: string
+    schema:
+      max_length: 100
+
+  - field: coupon_code
+    type: string
+    schema:
+      max_length: 50
+
+  - field: notes
+    type: text
+
+  - field: ip_address
+    type: string
+    schema:
+      max_length: 45
+
+  - field: user_agent
+    type: text
+
+  - field: status
+    type: string
+    schema:
+      default_value: active
+
+  - field: paid_at
+    type: timestamp
+
+  - field: shipped_at
+    type: timestamp
+
+  - field: delivered_at
+    type: timestamp
+
+  - field: cancelled_at
+    type: timestamp
+
+  - field: created_at
+    type: timestamp
+    schema:
+      default_value: now()
+    meta:
+      special: [date-created]
+
+  - field: updated_at
+    type: timestamp
+    schema:
+      default_value: now()
+    meta:
+      special: [date-updated]

@@ -1,0 +1,85 @@
+collection: brands
+meta:
+  collection: brands
+  icon: award
+  display_template: "{{name}}"
+  note: "Fashion brands"
+
+schema:
+  name: brands
+
+fields:
+  - field: id
+    type: uuid
+    schema:
+      is_primary_key: true
+    meta:
+      readonly: true
+      hidden: true
+
+  - field: tenant_id
+    type: uuid
+    schema:
+      is_nullable: false
+      foreign_key_table: tenants
+    meta:
+      required: true
+
+  - field: name
+    type: string
+    schema:
+      max_length: 255
+      is_nullable: false
+    meta:
+      required: true
+
+  - field: slug
+    type: string
+    schema:
+      max_length: 255
+      is_unique: true
+    meta:
+      required: true
+
+  - field: description
+    type: text
+    meta:
+      interface: input-rich-text-html
+
+  - field: logo
+    type: string
+    schema:
+      max_length: 500
+    meta:
+      interface: file-image
+
+  - field: website
+    type: string
+    schema:
+      max_length: 500
+
+  - field: products_count
+    type: integer
+    schema:
+      default_value: 0
+    meta:
+      readonly: true
+
+  - field: status
+    type: string
+    schema:
+      default_value: active
+
+  - field: created_at
+    type: timestamp
+    schema:
+      default_value: now()
+    meta:
+      special: [date-created]
+
+  - field: updated_at
+    type: timestamp
+    schema:
+      default_value: now()
+    meta:
+      special: [date-updated]

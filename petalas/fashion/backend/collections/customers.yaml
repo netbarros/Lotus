@@ -1,0 +1,149 @@
+collection: customers
+meta:
+  collection: customers
+  icon: users
+  display_template: "{{first_name}} {{last_name}}"
+  note: "Customer accounts (RLS enforced)"
+
+schema:
+  name: customers
+
+fields:
+  - field: id
+    type: uuid
+    schema:
+      is_primary_key: true
+    meta:
+      readonly: true
+      hidden: true
+
+  - field: tenant_id
+    type: uuid
+    schema:
+      is_nullable: false
+      foreign_key_table: tenants
+    meta:
+      required: true
+
+  - field: user_id
+    type: uuid
+    schema:
+      foreign_key_table: directus_users
+    meta:
+      note: "Link to Directus user (for authentication)"
+
+  - field: email
+    type: string
+    schema:
+      max_length: 255
+      is_unique: true
+      is_nullable: false
+    meta:
+      required: true
+
+  - field: first_name
+    type: string
+    schema:
+      max_length: 100
+
+  - field: last_name
+    type: string
+    schema:
+      max_length: 100
+
+  - field: phone
+    type: string
+    schema:
+      max_length: 50
+
+  - field: avatar
+    type: string
+    schema:
+      max_length: 500
+    meta:
+      interface: file-image
+
+  - field: addresses
+    type: json
+    meta:
+      note: "Array of {type, street, city, state, zip, country, is_default}"
+
+  - field: default_billing_address_id
+    type: integer
+
+  - field: default_shipping_address_id
+    type: integer
+
+  - field: orders_count
+    type: integer
+    schema:
+      default_value: 0
+    meta:
+      readonly: true
+
+  - field: total_spent
+    type: decimal
+    schema:
+      numeric_precision: 10
+      numeric_scale: 2
+      default_value: 0
+    meta:
+      readonly: true
+
+  - field: loyalty_points
+    type: integer
+    schema:
+      default_value: 0
+
+  - field: loyalty_tier
+    type: string
+    schema:
+      max_length: 20
+      default_value: bronze
+    meta:
+      options:
+        choices:
+          - {value: bronze, text: Bronze}
+          - {value: silver, text: Silver}
+          - {value: gold, text: Gold}
+          - {value: platinum, text: Platinum}
+
+  - field: newsletter_subscribed
+    type: boolean
+    schema:
+      default_value: false
+
+  - field: accepts_marketing
+    type: boolean
+    schema:
+      default_value: false
+
+  - field: tags
+    type: json
+    meta:
+      interface: tags
+
+  - field: notes
+    type: text
+
+  - field: status
+    type: string
+    schema:
+      default_value: active
+
+  - field: last_order_at
+    type: timestamp
+
+  - field: created_at
+    type: timestamp
+    schema:
+      default_value: now()
+    meta:
+      special: [date-created]
+
+  - field: updated_at
+    type: timestamp
+    schema:
+      default_value: now()
+    meta:
+      special: [date-updated]
