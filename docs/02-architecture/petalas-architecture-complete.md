@@ -1054,8 +1054,9 @@ Every Pétala MUST have:
 ## 🚀 DEPLOYMENT (ALL PÉTALAS)
 
 ### VPS (Development):
-- **Provider:** DigitalOcean or Hetzner Cloud
-- **Specs:** 4GB RAM, 2 vCPUs, 80GB SSD
+- **Provider:** Hostinger
+- **Plan:** KVM8
+- **Specs:** 8GB RAM, 8 vCPUs, 200GB NVMe SSD, 8TB bandwidth, Dedicated IPv4
 - **OS:** Ubuntu 22.04 LTS
 - **Stack:** Docker Compose (all services in containers)
 - **Domain:** `dev-{tenant}.softwarelotus.com.br`

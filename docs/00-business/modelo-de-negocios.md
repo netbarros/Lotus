@@ -620,21 +620,31 @@ Mesmo que seja possível acessar Directus diretamente (`http://directus.software
 
 ### Fase 1: VPS (Q1-Q2 2026)
 
-**Provider:** DigitalOcean/Hetzner/Contabo
+**Provider:** Hostinger
+**Plan:** KVM8
+**Specs:**
+- 8GB RAM
+- 8 vCPUs
+- 200GB NVMe SSD
+- 8TB bandwidth/mês
+- Dedicated IPv4
+- Ubuntu 22.04 LTS
+
 **Stack:**
-- 1 VPS (8 vCPU, 16GB RAM, 320GB SSD)
-- Docker Compose
+- Docker Compose (containerized services)
 - Nginx reverse proxy
-- SSL: Let's Encrypt (certbot)
+- SSL: Let's Encrypt (certbot auto-renewal)
 - Backup: Diário para S3
+- Monitoring: Prometheus + Grafana
 
 **Domínios:**
 - `softwarelotus.com.br` → Landing page
 - `app.softwarelotus.com.br` → Sofia AI Dashboard
 - `marketplace.softwarelotus.com.br` → Marketplace
 - `directus.softwarelotus.com.br` → Directus (acesso admin)
+- `*.softwarelotus.com.br` → Pétalas (multi-tenant)
 
-**Custo:** ~$80-150/mês
+**Custo:** R$119,99/mês (≈$24/mês) - Hostinger KVM8
 
 ---
 
