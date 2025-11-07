@@ -1,0 +1,108 @@
+# Pétala Healthcare - Lab Results Collection
+# Laboratory test results
+
+collections:
+  - collection: lab_results
+    meta:
+      group: petala_healthcare
+      icon: science
+      note: Laboratory test results
+      display_template: "{{test_name}} - {{patient.first_name}} {{patient.last_name}}"
+      sort: 6
+
+    schema:
+      schema:
+        name: lab_results
+        comment: Laboratory test results
+
+      fields:
+        - field: id
+          type: uuid
+          schema:
+            is_primary_key: true
+
+        - field: status
+          type: string
+          schema:
+            default_value: pending
+          meta:
+            interface: select-dropdown
+            options:
+              choices:
+                - { text: Pending, value: pending }
+                - { text: In Progress, value: in_progress }
+                - { text: Completed, value: completed }
+                - { text: Reviewed, value: reviewed }
+
+        - field: tenant_id
+          type: uuid
+          schema:
+            is_nullable: false
+
+        - field: patient_id
+          type: uuid
+          schema:
+            is_nullable: false
+          meta:
+            interface: select-dropdown-m2o
+
+        - field: provider_id
+          type: uuid
+          meta:
+            interface: select-dropdown-m2o
+
+        - field: test_name
+          type: string
+          schema:
+            is_nullable: false
+            max_length: 200
+
+        - field: test_code
+          type: string
+          schema:
+            max_length: 50
+          meta:
+            note: LOINC code
+
+        - field: result_value
+          type: string
+          schema:
+            max_length: 500
+
+        - field: result_unit
+          type: string
+          schema:
+            max_length: 50
+
+        - field: reference_range
+          type: string
+          schema:
+            max_length: 200
+
+        - field: is_abnormal
+          type: boolean
+          schema:
+            default_value: false
+
+        - field: interpretation
+          type: text
+          meta:
+            interface: input-multiline
+
+        - field: ordered_date
+          type: date
+
+        - field: collected_date
+          type: date
+
+        - field: completed_date
+          type: date
+
+        - field: reviewed_date
+          type: date
+
+        - field: date_created
+          type: timestamp
+          meta:
+            special: [date-created]
+            readonly: true

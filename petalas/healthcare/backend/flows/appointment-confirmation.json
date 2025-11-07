@@ -1,0 +1,218 @@
+{
+  "id": "flow-healthcare-appointment-confirmation",
+  "name": "Healthcare - Appointment Confirmation",
+  "icon": "event",
+  "color": "#3B82F6",
+  "description": "Complete appointment confirmation flow: generate confirmation code, send notifications, set reminders, verify insurance",
+  "status": "active",
+  "trigger": "event",
+  "accountability": "all",
+  "options": {
+    "type": "action",
+    "scope": ["items.create"],
+    "collections": ["appointments"]
+  },
+  "operation": "apt-1a2b3c4d-5e6f-7g8h-9i0j-1k2l3m4n5o6p",
+  "date_created": "2025-11-07T00:00:00Z",
+  "user_created": null,
+  "operations": [
+    {
+      "id": "apt-1a2b3c4d-5e6f-7g8h-9i0j-1k2l3m4n5o6p",
+      "name": "Generate Confirmation Code",
+      "key": "generate_code",
+      "type": "operation",
+      "position_x": 10,
+      "position_y": 10,
+      "options": {
+        "method": "POST",
+        "url": "http://localhost:8055/petalas/healthcare/appointments/generate-code",
+        "body": {
+          "appointment_id": "{{$trigger.payload.id}}"
+        }
+      },
+      "resolve": "apt-2b3c4d5e-6f7g-8h9i-0j1k-2l3m4n5o6p7q",
+      "reject": null,
+      "flow": "flow-healthcare-appointment-confirmation",
+      "date_created": "2025-11-07T00:00:00Z",
+      "user_created": null
+    },
+    {
+      "id": "apt-2b3c4d5e-6f7g-8h9i-0j1k-2l3m4n5o6p7q",
+      "name": "Verify Provider Availability",
+      "key": "verify_provider",
+      "type": "operation",
+      "position_x": 10,
+      "position_y": 30,
+      "options": {
+        "method": "POST",
+        "url": "http://localhost:8055/petalas/healthcare/providers/check-availability",
+        "body": {
+          "provider_id": "{{$trigger.payload.provider_id}}",
+          "appointment_date": "{{$trigger.payload.appointment_date}}",
+          "appointment_time": "{{$trigger.payload.appointment_time}}",
+          "duration": "{{$trigger.payload.duration_minutes}}"
+        }
+      },
+      "resolve": "apt-3c4d5e6f-7g8h-9i0j-1k2l-3m4n5o6p7q8r",
+      "reject": "apt-fail-1",
+      "flow": "flow-healthcare-appointment-confirmation",
+      "date_created": "2025-11-07T00:00:00Z",
+      "user_created": null
+    },
+    {
+      "id": "apt-3c4d5e6f-7g8h-9i0j-1k2l-3m4n5o6p7q8r",
+      "name": "Send Email Confirmation",
+      "key": "send_email",
+      "type": "mail",
+      "position_x": 10,
+      "position_y": 50,
+      "options": {
+        "to": "{{$trigger.payload.patient.email}}",
+        "subject": "Appointment Confirmed - {{$trigger.payload.provider.first_name}} {{$trigger.payload.provider.last_name}}",
+        "type": "template",
+        "template": "appointment-confirmation",
+        "data": {
+          "confirmation_code": "{{$last.confirmation_code}}",
+          "patient_name": "{{$trigger.payload.patient.first_name}} {{$trigger.payload.patient.last_name}}",
+          "provider_name": "Dr. {{$trigger.payload.provider.first_name}} {{$trigger.payload.provider.last_name}}",
+          "appointment_date": "{{$trigger.payload.appointment_date}}",
+          "appointment_time": "{{$trigger.payload.appointment_time}}",
+          "appointment_type": "{{$trigger.payload.appointment_type}}",
+          "office_location": "{{$trigger.payload.provider.office_location}}"
+        }
+      },
+      "resolve": "apt-4d5e6f7g-8h9i-0j1k-2l3m-4n5o6p7q8r9s",
+      "reject": null,
+      "flow": "flow-healthcare-appointment-confirmation",
+      "date_created": "2025-11-07T00:00:00Z",
+      "user_created": null
+    },
+    {
+      "id": "apt-4d5e6f7g-8h9i-0j1k-2l3m-4n5o6p7q8r9s",
+      "name": "Send SMS Confirmation",
+      "key": "send_sms",
+      "type": "webhook",
+      "position_x": 10,
+      "position_y": 70,
+      "options": {
+        "method": "POST",
+        "url": "http://localhost:8055/petalas/healthcare/notifications/sms",
+        "body": {
+          "to": "{{$trigger.payload.patient.phone}}",
+          "message": "Appointment confirmed! Code: {{$last.confirmation_code}}. Dr. {{$trigger.payload.provider.last_name}} on {{$trigger.payload.appointment_date}} at {{$trigger.payload.appointment_time}}."
+        }
+      },
+      "resolve": "apt-5e6f7g8h-9i0j-1k2l-3m4n-5o6p7q8r9s0t",
+      "reject": null,
+      "flow": "flow-healthcare-appointment-confirmation",
+      "date_created": "2025-11-07T00:00:00Z",
+      "user_created": null
+    },
+    {
+      "id": "apt-5e6f7g8h-9i0j-1k2l-3m4n-5o6p7q8r9s0t",
+      "name": "Schedule 24h Reminder",
+      "key": "schedule_reminder",
+      "type": "operation",
+      "position_x": 10,
+      "position_y": 90,
+      "options": {
+        "method": "POST",
+        "url": "http://localhost:8055/petalas/healthcare/scheduler/create",
+        "body": {
+          "type": "appointment_reminder",
+          "appointment_id": "{{$trigger.payload.id}}",
+          "execute_at": "{{$trigger.payload.appointment_date - 86400000}}",
+          "data": {
+            "patient_email": "{{$trigger.payload.patient.email}}",
+            "patient_phone": "{{$trigger.payload.patient.phone}}"
+          }
+        }
+      },
+      "resolve": "apt-6f7g8h9i-0j1k-2l3m-4n5o-6p7q8r9s0t1u",
+      "reject": null,
+      "flow": "flow-healthcare-appointment-confirmation",
+      "date_created": "2025-11-07T00:00:00Z",
+      "user_created": null
+    },
+    {
+      "id": "apt-6f7g8h9i-0j1k-2l3m-4n5o-6p7q8r9s0t1u",
+      "name": "Update Appointment Status",
+      "key": "update_status",
+      "type": "operation",
+      "position_x": 10,
+      "position_y": 110,
+      "options": {
+        "method": "PATCH",
+        "url": "http://localhost:8055/items/appointments/{{$trigger.payload.id}}",
+        "body": {
+          "status": "confirmed"
+        }
+      },
+      "resolve": "apt-7g8h9i0j-1k2l-3m4n-5o6p-7q8r9s0t1u2v",
+      "reject": null,
+      "flow": "flow-healthcare-appointment-confirmation",
+      "date_created": "2025-11-07T00:00:00Z",
+      "user_created": null
+    },
+    {
+      "id": "apt-7g8h9i0j-1k2l-3m4n-5o6p-7q8r9s0t1u2v",
+      "name": "Emit Appointment Confirmed Event",
+      "key": "emit_event",
+      "type": "webhook",
+      "position_x": 10,
+      "position_y": 130,
+      "options": {
+        "method": "POST",
+        "url": "http://localhost:8055/events",
+        "body": {
+          "type": "petala.healthcare.appointment.confirmed",
+          "aggregateId": "{{$trigger.payload.id}}",
+          "tenantId": "{{$trigger.payload.tenant_id}}",
+          "userId": "{{$trigger.payload.patient_id}}",
+          "data": {
+            "confirmation_code": "{{$last.confirmation_code}}",
+            "provider_id": "{{$trigger.payload.provider_id}}",
+            "appointment_date": "{{$trigger.payload.appointment_date}}",
+            "appointment_time": "{{$trigger.payload.appointment_time}}",
+            "appointment_type": "{{$trigger.payload.appointment_type}}"
+          },
+          "metadata": {
+            "timestamp": "{{$now}}",
+            "version": 1,
+            "source": "flow-healthcare-appointment-confirmation"
+          }
+        }
+      },
+      "resolve": null,
+      "reject": null,
+      "flow": "flow-healthcare-appointment-confirmation",
+      "date_created": "2025-11-07T00:00:00Z",
+      "user_created": null
+    },
+    {
+      "id": "apt-fail-1",
+      "name": "Send Provider Unavailable Notice",
+      "key": "send_unavailable",
+      "type": "mail",
+      "position_x": 30,
+      "position_y": 30,
+      "options": {
+        "to": "{{$trigger.payload.patient.email}}",
+        "subject": "Appointment Scheduling Issue",
+        "type": "template",
+        "template": "appointment-unavailable",
+        "data": {
+          "patient_name": "{{$trigger.payload.patient.first_name}}",
+          "provider_name": "Dr. {{$trigger.payload.provider.last_name}}",
+          "requested_date": "{{$trigger.payload.appointment_date}}",
+          "requested_time": "{{$trigger.payload.appointment_time}}"
+        }
+      },
+      "resolve": null,
+      "reject": null,
+      "flow": "flow-healthcare-appointment-confirmation",
+      "date_created": "2025-11-07T00:00:00Z",
+      "user_created": null
+    }
+  ]
+}

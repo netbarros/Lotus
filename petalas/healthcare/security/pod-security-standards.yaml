@@ -1,0 +1,50 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: petala-fashion
+  labels:
+    # Enforce restricted Pod Security Standard
+    pod-security.kubernetes.io/enforce: restricted
+    pod-security.kubernetes.io/enforce-version: latest
+    pod-security.kubernetes.io/audit: restricted
+    pod-security.kubernetes.io/audit-version: latest
+    pod-security.kubernetes.io/warn: restricted
+    pod-security.kubernetes.io/warn-version: latest
+---
+# Security Context for Directus
+apiVersion: v1
+kind: SecurityContext
+metadata:
+  name: directus-security-context
+spec:
+  runAsNonRoot: true
+  runAsUser: 1000
+  runAsGroup: 1000
+  fsGroup: 1000
+  seccompProfile:
+    type: RuntimeDefault
+  capabilities:
+    drop:
+    - ALL
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: false  # Directus needs write access to /directus/uploads
+---
+# Security Context for Frontend
+apiVersion: v1
+kind: SecurityContext
+metadata:
+  name: frontend-security-context
+spec:
+  runAsNonRoot: true
+  runAsUser: 101  # nginx user
+  runAsGroup: 101
+  fsGroup: 101
+  seccompProfile:
+    type: RuntimeDefault
+  capabilities:
+    drop:
+    - ALL
+    add:
+    - NET_BIND_SERVICE  # Required for nginx to bind to port 80
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
