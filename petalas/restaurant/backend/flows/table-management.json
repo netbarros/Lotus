@@ -1,0 +1,305 @@
+{
+  "id": "flow-restaurant-table-management",
+  "name": "Restaurant - Table Management",
+  "icon": "table_restaurant",
+  "color": "#8B5CF6",
+  "description": "Automated table management: seating assignments, table turnover, availability updates, cleaning notifications",
+  "status": "active",
+  "trigger": "event",
+  "accountability": "all",
+  "options": {
+    "type": "action",
+    "scope": ["items.update"],
+    "collections": ["tables"]
+  },
+  "operation": "tbl-1a2b3c4d-5e6f-7g8h-9i0j-1k2l3m4n5o6p",
+  "date_created": "2025-11-07T00:00:00Z",
+  "user_created": null,
+  "operations": [
+    {
+      "id": "tbl-1a2b3c4d-5e6f-7g8h-9i0j-1k2l3m4n5o6p",
+      "name": "Check Table Status Change",
+      "key": "check_status",
+      "type": "condition",
+      "position_x": 10,
+      "position_y": 10,
+      "options": {
+        "filter": {
+          "$trigger": {
+            "payload": {
+              "status": {
+                "_neq": "{{$trigger.payload._old.status}}"
+              }
+            }
+          }
+        }
+      },
+      "resolve": "tbl-2b3c4d5e-6f7g-8h9i-0j1k-2l3m4n5o6p7q",
+      "reject": null,
+      "flow": "flow-restaurant-table-management",
+      "date_created": "2025-11-07T00:00:00Z",
+      "user_created": null
+    },
+    {
+      "id": "tbl-2b3c4d5e-6f7g-8h9i-0j1k-2l3m4n5o6p7q",
+      "name": "Is Table Being Occupied?",
+      "key": "is_occupied",
+      "type": "condition",
+      "position_x": 10,
+      "position_y": 30,
+      "options": {
+        "filter": {
+          "$trigger": {
+            "payload": {
+              "status": {
+                "_eq": "occupied"
+              }
+            }
+          }
+        }
+      },
+      "resolve": "tbl-3c4d5e6f-7g8h-9i0j-1k2l-3m4n5o6p7q8r",
+      "reject": "tbl-6f7g8h9i-0j1k-2l3m-4n5o-6p7q8r9s0t1u",
+      "flow": "flow-restaurant-table-management",
+      "date_created": "2025-11-07T00:00:00Z",
+      "user_created": null
+    },
+    {
+      "id": "tbl-3c4d5e6f-7g8h-9i0j-1k2l-3m4n5o6p7q8r",
+      "name": "Seat Reservation (if exists)",
+      "key": "seat_reservation",
+      "type": "operation",
+      "position_x": 30,
+      "position_y": 50,
+      "options": {
+        "method": "POST",
+        "url": "http://localhost:8055/petalas/restaurant/reservations/seat",
+        "body": {
+          "table_id": "{{$trigger.payload.id}}",
+          "reservation_id": "{{$trigger.payload.current_reservation_id}}"
+        }
+      },
+      "resolve": "tbl-4d5e6f7g-8h9i-0j1k-2l3m-4n5o6p7q8r9s",
+      "reject": null,
+      "flow": "flow-restaurant-table-management",
+      "date_created": "2025-11-07T00:00:00Z",
+      "user_created": null
+    },
+    {
+      "id": "tbl-4d5e6f7g-8h9i-0j1k-2l3m-4n5o6p7q8r9s",
+      "name": "Record Seat Time",
+      "key": "record_seat_time",
+      "type": "operation",
+      "position_x": 30,
+      "position_y": 70,
+      "options": {
+        "method": "PATCH",
+        "url": "http://localhost:8055/items/tables/{{$trigger.payload.id}}",
+        "body": {
+          "seated_at": "{{$now}}",
+          "expected_vacate_at": "{{$now + ($trigger.payload.expected_duration * 60000)}}"
+        }
+      },
+      "resolve": "tbl-5e6f7g8h-9i0j-1k2l-3m4n-5o6p7q8r9s0t",
+      "reject": null,
+      "flow": "flow-restaurant-table-management",
+      "date_created": "2025-11-07T00:00:00Z",
+      "user_created": null
+    },
+    {
+      "id": "tbl-5e6f7g8h-9i0j-1k2l-3m4n-5o6p7q8r9s0t",
+      "name": "Notify Host Stand",
+      "key": "notify_host",
+      "type": "webhook",
+      "position_x": 30,
+      "position_y": 90,
+      "options": {
+        "method": "POST",
+        "url": "http://localhost:8055/petalas/restaurant/notifications/staff",
+        "body": {
+          "type": "table_seated",
+          "table_number": "{{$trigger.payload.number}}",
+          "party_size": "{{$trigger.payload.current_party_size}}",
+          "message": "Mesa {{$trigger.payload.number}} ocupada"
+        }
+      },
+      "resolve": "tbl-end",
+      "reject": null,
+      "flow": "flow-restaurant-table-management",
+      "date_created": "2025-11-07T00:00:00Z",
+      "user_created": null
+    },
+    {
+      "id": "tbl-6f7g8h9i-0j1k-2l3m-4n5o-6p7q8r9s0t1u",
+      "name": "Is Table Becoming Available?",
+      "key": "is_available",
+      "type": "condition",
+      "position_x": 10,
+      "position_y": 50,
+      "options": {
+        "filter": {
+          "$trigger": {
+            "payload": {
+              "status": {
+                "_eq": "available"
+              }
+            }
+          }
+        }
+      },
+      "resolve": "tbl-7g8h9i0j-1k2l-3m4n-5o6p-7q8r9s0t1u2v",
+      "reject": "tbl-9i0j1k2l-3m4n-5o6p-7q8r-9s0t1u2v3w4x",
+      "flow": "flow-restaurant-table-management",
+      "date_created": "2025-11-07T00:00:00Z",
+      "user_created": null
+    },
+    {
+      "id": "tbl-7g8h9i0j-1k2l-3m4n-5o6p-7q8r9s0t1u2v",
+      "name": "Calculate Table Turnover Time",
+      "key": "calculate_turnover",
+      "type": "operation",
+      "position_x": 30,
+      "position_y": 70,
+      "options": {
+        "method": "POST",
+        "url": "http://localhost:8055/petalas/restaurant/analytics/table-turnover",
+        "body": {
+          "table_id": "{{$trigger.payload.id}}",
+          "seated_at": "{{$trigger.payload.seated_at}}",
+          "vacated_at": "{{$now}}",
+          "duration_minutes": "{{($now - $trigger.payload.seated_at) / 60000}}"
+        }
+      },
+      "resolve": "tbl-8h9i0j1k-2l3m-4n5o-6p7q-8r9s0t1u2v3w",
+      "reject": null,
+      "flow": "flow-restaurant-table-management",
+      "date_created": "2025-11-07T00:00:00Z",
+      "user_created": null
+    },
+    {
+      "id": "tbl-8h9i0j1k-2l3m-4n5o-6p7q-8r9s0t1u2v3w",
+      "name": "Check Next Reservation",
+      "key": "check_next",
+      "type": "operation",
+      "position_x": 30,
+      "position_y": 90,
+      "options": {
+        "method": "GET",
+        "url": "http://localhost:8055/petalas/restaurant/reservations/next-for-table/{{$trigger.payload.id}}"
+      },
+      "resolve": "tbl-waitlist",
+      "reject": "tbl-waitlist",
+      "flow": "flow-restaurant-table-management",
+      "date_created": "2025-11-07T00:00:00Z",
+      "user_created": null
+    },
+    {
+      "id": "tbl-waitlist",
+      "name": "Check Waitlist",
+      "key": "check_waitlist",
+      "type": "operation",
+      "position_x": 30,
+      "position_y": 110,
+      "options": {
+        "method": "POST",
+        "url": "http://localhost:8055/petalas/restaurant/waitlist/match-table",
+        "body": {
+          "table_id": "{{$trigger.payload.id}}",
+          "capacity": "{{$trigger.payload.capacity}}",
+          "restaurant_id": "{{$trigger.payload.restaurant_id}}"
+        }
+      },
+      "resolve": "tbl-end",
+      "reject": "tbl-end",
+      "flow": "flow-restaurant-table-management",
+      "date_created": "2025-11-07T00:00:00Z",
+      "user_created": null
+    },
+    {
+      "id": "tbl-9i0j1k2l-3m4n-5o6p-7q8r-9s0t1u2v3w4x",
+      "name": "Needs Cleaning?",
+      "key": "needs_cleaning",
+      "type": "condition",
+      "position_x": 10,
+      "position_y": 70,
+      "options": {
+        "filter": {
+          "$trigger": {
+            "payload": {
+              "status": {
+                "_eq": "cleaning"
+              }
+            }
+          }
+        }
+      },
+      "resolve": "tbl-clean-1",
+      "reject": "tbl-end",
+      "flow": "flow-restaurant-table-management",
+      "date_created": "2025-11-07T00:00:00Z",
+      "user_created": null
+    },
+    {
+      "id": "tbl-clean-1",
+      "name": "Notify Cleaning Staff",
+      "key": "notify_cleaning",
+      "type": "webhook",
+      "position_x": 30,
+      "position_y": 90,
+      "options": {
+        "method": "POST",
+        "url": "http://localhost:8055/petalas/restaurant/notifications/staff",
+        "body": {
+          "type": "table_needs_cleaning",
+          "table_number": "{{$trigger.payload.number}}",
+          "priority": "{{$trigger.payload.priority}}",
+          "message": "Mesa {{$trigger.payload.number}} precisa de limpeza"
+        }
+      },
+      "resolve": "tbl-end",
+      "reject": null,
+      "flow": "flow-restaurant-table-management",
+      "date_created": "2025-11-07T00:00:00Z",
+      "user_created": null
+    },
+    {
+      "id": "tbl-end",
+      "name": "Emit Table Status Changed Event",
+      "key": "emit_event",
+      "type": "webhook",
+      "position_x": 10,
+      "position_y": 150,
+      "options": {
+        "method": "POST",
+        "url": "http://localhost:8055/events",
+        "headers": [
+          {
+            "header": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "type": "petala.restaurant.table.status_changed",
+          "aggregateId": "{{$trigger.payload.id}}",
+          "tenantId": "{{$trigger.payload.tenant_id}}",
+          "data": {
+            "table_number": "{{$trigger.payload.number}}",
+            "old_status": "{{$trigger.payload._old.status}}",
+            "new_status": "{{$trigger.payload.status}}",
+            "capacity": "{{$trigger.payload.capacity}}"
+          },
+          "metadata": {
+            "timestamp": "{{$now}}",
+            "version": 1,
+            "source": "flow-restaurant-table-management"
+          }
+        }
+      },
+      "resolve": null,
+      "reject": null,
+      "flow": "flow-restaurant-table-management",
+      "date_created": "2025-11-07T00:00:00Z",
+      "user_created": null
+    }
+  ]
+}
