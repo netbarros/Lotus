@@ -1,5 +1,5 @@
 /**
- * useSofia Composable for Restaurant
+ * useSofia Composable
  * Vue 3 composable for integrating Sofia AI assistant
  */
 
@@ -10,8 +10,9 @@ import type {
   SofiaMessage,
   SofiaState,
   SofiaResponse,
-  RestaurantSofiaContext,
-  SofiaEventPayload
+  FashionSofiaContext,
+  SofiaEventPayload,
+  FashionIntent
 } from '../types/sofia'
 
 export function useSofia(userId?: string) {
@@ -55,7 +56,7 @@ export function useSofia(userId?: string) {
       state.value.messages.push({
         id: 'welcome',
         role: 'sofia',
-        content: 'Olá! Sou a Sofia, sua assistente pessoal do restaurante. Como posso ajudar você hoje?',
+        content: 'Olá! Sou a Sofia, sua assistente pessoal de moda. Como posso ajudar você hoje?',
         timestamp: new Date(),
         suggestions: state.value.suggestions
       })
@@ -129,57 +130,6 @@ export function useSofia(userId?: string) {
   }
 
   /**
-   * Make a reservation via Sofia
-   */
-  const makeReservation = async (details?: any) => {
-    try {
-      state.value.loading = true
-      const result = await sofiaService.makeReservation(details)
-      emitEvent('reservation_made', result)
-      return result
-    } catch (error: any) {
-      state.value.error = error.message
-      emitEvent('error', { error: state.value.error })
-      return null
-    } finally {
-      state.value.loading = false
-    }
-  }
-
-  /**
-   * Place order via Sofia
-   */
-  const placeOrder = async (orderType: 'dine-in' | 'takeout' | 'delivery') => {
-    try {
-      state.value.loading = true
-      const result = await sofiaService.placeOrder(orderType)
-      emitEvent('order_placed', result)
-      return result
-    } catch (error: any) {
-      state.value.error = error.message
-      emitEvent('error', { error: state.value.error })
-      return null
-    } finally {
-      state.value.loading = false
-    }
-  }
-
-  /**
-   * Get menu recommendations
-   */
-  const getMenuRecommendations = async (preferences?: any) => {
-    try {
-      state.value.loading = true
-      return await sofiaService.getMenuRecommendations(preferences)
-    } catch (error: any) {
-      state.value.error = error.message
-      return []
-    } finally {
-      state.value.loading = false
-    }
-  }
-
-  /**
    * Execute action from Sofia
    */
   const executeAction = async (actionType: string, payload?: any) => {
@@ -187,36 +137,39 @@ export function useSofia(userId?: string) {
       state.value.loading = true
       state.value.error = null
 
-      // Handle specific restaurant actions
+      const result = await sofiaService.executeAction(actionType, payload)
+
+      emitEvent('action_executed', { actionType, result })
+
+      // Handle specific actions
       switch (actionType) {
-        case 'make_reservation':
-          return await makeReservation(payload)
-
-        case 'view_menu':
-          router.push('/menu')
-          break
-
-        case 'place_order':
-          return await placeOrder(payload?.order_type || 'dine-in')
-
-        case 'check_availability':
-          if (payload) {
-            return await sofiaService.checkTableAvailability(
-              payload.date,
-              payload.time,
-              payload.party_size
-            )
+        case 'navigate':
+          if (result.path) {
+            router.push(result.path)
           }
           break
 
-        case 'get_recommendations':
-          return await getMenuRecommendations(payload)
+        case 'add_to_cart':
+          // Handled by cart store
+          break
+
+        case 'apply_coupon':
+          // Handled by checkout flow
+          break
+
+        case 'search_products':
+          router.push({ name: 'catalog', query: { q: result.query } })
+          break
+
+        case 'view_product':
+          router.push({ name: 'product-detail', params: { id: result.product_id } })
+          break
 
         default:
-          console.log('Unhandled action:', actionType, payload)
+          console.log('Unhandled action:', actionType, result)
       }
 
-      emitEvent('action_executed', { actionType, payload })
+      return result
     } catch (error: any) {
       console.error('Failed to execute action:', error)
       state.value.error = error.message || 'Falha ao executar ação'
@@ -254,7 +207,7 @@ export function useSofia(userId?: string) {
   /**
    * Update context when user navigates or performs actions
    */
-  const updateContext = (newContext: Partial<RestaurantSofiaContext>) => {
+  const updateContext = (newContext: Partial<FashionSofiaContext>) => {
     sofiaService.updateContext(newContext)
     state.value.context = sofiaService.getContext()
     state.value.quickActions = sofiaService.getQuickActions()
@@ -277,6 +230,7 @@ export function useSofia(userId?: string) {
   const executeUIUpdates = (updates: any[]) => {
     updates.forEach(update => {
       console.log('Executing UI update:', update)
+      // Emit event for components to handle
       window.dispatchEvent(new CustomEvent('sofia:ui-update', { detail: update }))
     })
   }
@@ -302,9 +256,10 @@ export function useSofia(userId?: string) {
 
     const viewMap: Record<string, string> = {
       '/': 'home',
-      '/menu': 'menu',
-      '/reservation': 'reservation',
-      '/order': 'order',
+      '/catalog': 'catalog',
+      '/product': 'product_detail',
+      '/cart': 'cart',
+      '/checkout': 'checkout',
       '/account': 'account'
     }
 
@@ -342,9 +297,6 @@ export function useSofia(userId?: string) {
     // Methods
     initialize,
     sendMessage,
-    makeReservation,
-    placeOrder,
-    getMenuRecommendations,
     executeAction,
     startListening,
     stopListening,
