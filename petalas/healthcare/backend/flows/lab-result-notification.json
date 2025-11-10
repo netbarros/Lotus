@@ -1,0 +1,112 @@
+{
+  "id": "flow-healthcare-lab-result-notification",
+  "name": "Healthcare - Lab Result Notification",
+  "icon": "science",
+  "color": "#8B5CF6",
+  "description": "Lab results workflow: notify patient, flag abnormal results, provider review",
+  "status": "active",
+  "trigger": "event",
+  "accountability": "all",
+  "options": {
+    "type": "action",
+    "scope": ["items.update"],
+    "collections": ["lab_results"]
+  },
+  "operation": "lab-1a2b3c4d-5e6f-7g8h-9i0j-1k2l3m4n5o6p",
+  "date_created": "2025-11-07T00:00:00Z",
+  "operations": [
+    {
+      "id": "lab-1a2b3c4d-5e6f-7g8h-9i0j-1k2l3m4n5o6p",
+      "name": "Check if Completed",
+      "key": "check_completed",
+      "type": "condition",
+      "position_x": 10,
+      "position_y": 10,
+      "options": {
+        "filter": {
+          "$trigger": {
+            "payload": {
+              "status": { "_eq": "completed" }
+            }
+          }
+        }
+      },
+      "resolve": "lab-2b3c4d5e-6f7g-8h9i-0j1k-2l3m4n5o6p7q",
+      "reject": null,
+      "flow": "flow-healthcare-lab-result-notification"
+    },
+    {
+      "id": "lab-2b3c4d5e-6f7g-8h9i-0j1k-2l3m4n5o6p7q",
+      "name": "Is Abnormal?",
+      "key": "check_abnormal",
+      "type": "condition",
+      "position_x": 10,
+      "position_y": 30,
+      "options": {
+        "filter": {
+          "$trigger": {
+            "payload": {
+              "is_abnormal": { "_eq": true }
+            }
+          }
+        }
+      },
+      "resolve": "lab-alert",
+      "reject": "lab-normal",
+      "flow": "flow-healthcare-lab-result-notification"
+    },
+    {
+      "id": "lab-alert",
+      "name": "Alert Provider - Abnormal",
+      "key": "alert_provider",
+      "type": "mail",
+      "position_x": 30,
+      "position_y": 50,
+      "options": {
+        "to": "{{$trigger.payload.provider.email}}",
+        "subject": "URGENT: Abnormal Lab Result",
+        "template": "abnormal-lab-alert",
+        "data": {
+          "patient_name": "{{$trigger.payload.patient.first_name}} {{$trigger.payload.patient.last_name}}",
+          "test_name": "{{$trigger.payload.test_name}}",
+          "result": "{{$trigger.payload.result_value}}"
+        }
+      },
+      "resolve": "lab-notify-patient",
+      "reject": null,
+      "flow": "flow-healthcare-lab-result-notification"
+    },
+    {
+      "id": "lab-normal",
+      "name": "Standard Patient Notification",
+      "key": "notify_patient_normal",
+      "type": "mail",
+      "position_x": 10,
+      "position_y": 50,
+      "options": {
+        "to": "{{$trigger.payload.patient.email}}",
+        "subject": "Lab Results Available",
+        "template": "lab-result-available"
+      },
+      "resolve": null,
+      "reject": null,
+      "flow": "flow-healthcare-lab-result-notification"
+    },
+    {
+      "id": "lab-notify-patient",
+      "name": "Patient Notification with Follow-up",
+      "key": "notify_patient_followup",
+      "type": "mail",
+      "position_x": 30,
+      "position_y": 70,
+      "options": {
+        "to": "{{$trigger.payload.patient.email}}",
+        "subject": "Lab Results - Follow-up Required",
+        "template": "lab-result-followup"
+      },
+      "resolve": null,
+      "reject": null,
+      "flow": "flow-healthcare-lab-result-notification"
+    }
+  ]
+}

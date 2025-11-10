@@ -1,0 +1,253 @@
+{
+  "id": "flow-restaurant-order-processing",
+  "name": "Restaurant - Order Processing",
+  "icon": "restaurant",
+  "color": "#10B981",
+  "description": "Complete order processing flow: kitchen notification, table service, payment processing, order completion",
+  "status": "active",
+  "trigger": "event",
+  "accountability": "all",
+  "options": {
+    "type": "action",
+    "scope": ["items.create", "items.update"],
+    "collections": ["orders"]
+  },
+  "operation": "ord-1a2b3c4d-5e6f-7g8h-9i0j-1k2l3m4n5o6p",
+  "date_created": "2025-11-07T00:00:00Z",
+  "user_created": null,
+  "operations": [
+    {
+      "id": "ord-1a2b3c4d-5e6f-7g8h-9i0j-1k2l3m4n5o6p",
+      "name": "Check Order Type",
+      "key": "check_order_type",
+      "type": "condition",
+      "position_x": 10,
+      "position_y": 10,
+      "options": {
+        "filter": {
+          "$trigger": {
+            "payload": {
+              "status": {
+                "_eq": "confirmed"
+              }
+            }
+          }
+        }
+      },
+      "resolve": "ord-2b3c4d5e-6f7g-8h9i-0j1k-2l3m4n5o6p7q",
+      "reject": null,
+      "flow": "flow-restaurant-order-processing",
+      "date_created": "2025-11-07T00:00:00Z",
+      "user_created": null
+    },
+    {
+      "id": "ord-2b3c4d5e-6f7g-8h9i-0j1k-2l3m4n5o6p7q",
+      "name": "Send to Kitchen Display System",
+      "key": "send_to_kitchen",
+      "type": "webhook",
+      "position_x": 10,
+      "position_y": 30,
+      "options": {
+        "method": "POST",
+        "url": "http://localhost:8055/petalas/restaurant/kitchen/new-order",
+        "headers": [
+          {
+            "header": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "order_id": "{{$trigger.payload.id}}",
+          "table_number": "{{$trigger.payload.table.number}}",
+          "items": "{{$trigger.payload.items}}",
+          "priority": "{{$trigger.payload.priority}}",
+          "special_instructions": "{{$trigger.payload.notes}}",
+          "timestamp": "{{$now}}"
+        }
+      },
+      "resolve": "ord-3c4d5e6f-7g8h-9i0j-1k2l-3m4n5o6p7q8r",
+      "reject": null,
+      "flow": "flow-restaurant-order-processing",
+      "date_created": "2025-11-07T00:00:00Z",
+      "user_created": null
+    },
+    {
+      "id": "ord-3c4d5e6f-7g8h-9i0j-1k2l-3m4n5o6p7q8r",
+      "name": "Notify Waitstaff",
+      "key": "notify_waitstaff",
+      "type": "webhook",
+      "position_x": 10,
+      "position_y": 50,
+      "options": {
+        "method": "POST",
+        "url": "http://localhost:8055/petalas/restaurant/notifications/staff",
+        "body": {
+          "type": "order_confirmed",
+          "table_id": "{{$trigger.payload.table_id}}",
+          "server_id": "{{$trigger.payload.server_id}}",
+          "message": "Nova order confirmada - Mesa {{$trigger.payload.table.number}}"
+        }
+      },
+      "resolve": "ord-4d5e6f7g-8h9i-0j1k-2l3m-4n5o6p7q8r9s",
+      "reject": null,
+      "flow": "flow-restaurant-order-processing",
+      "date_created": "2025-11-07T00:00:00Z",
+      "user_created": null
+    },
+    {
+      "id": "ord-4d5e6f7g-8h9i-0j1k-2l3m-4n5o6p7q8r9s",
+      "name": "Update Inventory",
+      "key": "update_inventory",
+      "type": "operation",
+      "position_x": 10,
+      "position_y": 70,
+      "options": {
+        "method": "POST",
+        "url": "http://localhost:8055/petalas/restaurant/inventory/decrement",
+        "body": {
+          "order_id": "{{$trigger.payload.id}}",
+          "items": "{{$trigger.payload.items}}",
+          "restaurant_id": "{{$trigger.payload.restaurant_id}}"
+        }
+      },
+      "resolve": "ord-5e6f7g8h-9i0j-1k2l-3m4n-5o6p7q8r9s0t",
+      "reject": null,
+      "flow": "flow-restaurant-order-processing",
+      "date_created": "2025-11-07T00:00:00Z",
+      "user_created": null
+    },
+    {
+      "id": "ord-5e6f7g8h-9i0j-1k2l-3m4n-5o6p7q8r9s0t",
+      "name": "Check for Delivery/Takeout",
+      "key": "check_delivery",
+      "type": "condition",
+      "position_x": 10,
+      "position_y": 90,
+      "options": {
+        "filter": {
+          "$trigger": {
+            "payload": {
+              "order_type": {
+                "_in": ["delivery", "takeout"]
+              }
+            }
+          }
+        }
+      },
+      "resolve": "ord-6f7g8h9i-0j1k-2l3m-4n5o-6p7q8r9s0t1u",
+      "reject": "ord-8h9i0j1k-2l3m-4n5o-6p7q-8r9s0t1u2v3w",
+      "flow": "flow-restaurant-order-processing",
+      "date_created": "2025-11-07T00:00:00Z",
+      "user_created": null
+    },
+    {
+      "id": "ord-6f7g8h9i-0j1k-2l3m-4n5o-6p7q8r9s0t1u",
+      "name": "Assign Delivery Driver",
+      "key": "assign_driver",
+      "type": "operation",
+      "position_x": 30,
+      "position_y": 110,
+      "options": {
+        "method": "POST",
+        "url": "http://localhost:8055/petalas/restaurant/delivery/assign",
+        "body": {
+          "order_id": "{{$trigger.payload.id}}",
+          "delivery_address": "{{$trigger.payload.delivery_address}}",
+          "customer_phone": "{{$trigger.payload.customer_phone}}"
+        }
+      },
+      "resolve": "ord-7g8h9i0j-1k2l-3m4n-5o6p-7q8r9s0t1u2v",
+      "reject": null,
+      "flow": "flow-restaurant-order-processing",
+      "date_created": "2025-11-07T00:00:00Z",
+      "user_created": null
+    },
+    {
+      "id": "ord-7g8h9i0j-1k2l-3m4n-5o6p-7q8r9s0t1u2v",
+      "name": "Send Delivery Tracking Link",
+      "key": "send_tracking",
+      "type": "mail",
+      "position_x": 30,
+      "position_y": 130,
+      "options": {
+        "to": "{{$trigger.payload.customer_email}}",
+        "subject": "Seu pedido está a caminho!",
+        "type": "template",
+        "template": "delivery-tracking",
+        "data": {
+          "order_id": "{{$trigger.payload.id}}",
+          "tracking_url": "{{$last.tracking_url}}",
+          "driver_name": "{{$last.driver_name}}",
+          "estimated_time": "{{$last.estimated_time}}"
+        }
+      },
+      "resolve": "ord-9i0j1k2l-3m4n-5o6p-7q8r-9s0t1u2v3w4x",
+      "reject": null,
+      "flow": "flow-restaurant-order-processing",
+      "date_created": "2025-11-07T00:00:00Z",
+      "user_created": null
+    },
+    {
+      "id": "ord-8h9i0j1k-2l3m-4n5o-6p7q-8r9s0t1u2v3w",
+      "name": "Update Table Status",
+      "key": "update_table",
+      "position_x": 10,
+      "position_y": 110,
+      "type": "operation",
+      "options": {
+        "method": "PATCH",
+        "url": "http://localhost:8055/items/tables/{{$trigger.payload.table_id}}",
+        "body": {
+          "status": "occupied",
+          "current_order_id": "{{$trigger.payload.id}}"
+        }
+      },
+      "resolve": "ord-9i0j1k2l-3m4n-5o6p-7q8r-9s0t1u2v3w4x",
+      "reject": null,
+      "flow": "flow-restaurant-order-processing",
+      "date_created": "2025-11-07T00:00:00Z",
+      "user_created": null
+    },
+    {
+      "id": "ord-9i0j1k2l-3m4n-5o6p-7q8r-9s0t1u2v3w4x",
+      "name": "Emit Order Created Event",
+      "key": "emit_event",
+      "type": "webhook",
+      "position_x": 10,
+      "position_y": 150,
+      "options": {
+        "method": "POST",
+        "url": "http://localhost:8055/events",
+        "headers": [
+          {
+            "header": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "type": "petala.restaurant.order.created",
+          "aggregateId": "{{$trigger.payload.id}}",
+          "tenantId": "{{$trigger.payload.tenant_id}}",
+          "userId": "{{$trigger.payload.customer_id}}",
+          "data": {
+            "order_type": "{{$trigger.payload.order_type}}",
+            "table_id": "{{$trigger.payload.table_id}}",
+            "total": "{{$trigger.payload.total}}",
+            "items_count": "{{$trigger.payload.items.length}}",
+            "payment_method": "{{$trigger.payload.payment_method}}"
+          },
+          "metadata": {
+            "timestamp": "{{$now}}",
+            "version": 1,
+            "source": "flow-restaurant-order-processing"
+          }
+        }
+      },
+      "resolve": null,
+      "reject": null,
+      "flow": "flow-restaurant-order-processing",
+      "date_created": "2025-11-07T00:00:00Z",
+      "user_created": null
+    }
+  ]
+}

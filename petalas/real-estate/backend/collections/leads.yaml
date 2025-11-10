@@ -1,0 +1,176 @@
+collection: leads
+meta:
+  collection: leads
+  icon: person_add
+  note: Property inquiry leads
+  display_template: "{{name}} - {{email}}"
+  hidden: false
+  singleton: false
+
+schema:
+  name: leads
+  comment: Lead capture and management
+
+fields:
+  - field: id
+    type: uuid
+    schema:
+      is_primary_key: true
+      is_nullable: false
+    meta:
+      hidden: true
+      readonly: true
+      interface: input
+      special:
+        - uuid
+
+  - field: tenant_id
+    type: uuid
+    schema:
+      is_nullable: false
+      foreign_key_table: tenants
+      foreign_key_column: id
+    meta:
+      interface: select-dropdown-m2o
+      required: true
+
+  - field: property_id
+    type: uuid
+    schema:
+      is_nullable: true
+      foreign_key_table: properties
+      foreign_key_column: id
+    meta:
+      interface: select-dropdown-m2o
+      width: full
+
+  - field: name
+    type: string
+    schema:
+      max_length: 255
+      is_nullable: false
+    meta:
+      interface: input
+      required: true
+      width: half
+
+  - field: email
+    type: string
+    schema:
+      max_length: 255
+      is_nullable: false
+    meta:
+      interface: input
+      required: true
+      width: half
+
+  - field: phone
+    type: string
+    schema:
+      max_length: 50
+      is_nullable: true
+    meta:
+      interface: input
+      width: half
+
+  - field: message
+    type: text
+    schema:
+      is_nullable: true
+    meta:
+      interface: input-multiline
+      width: full
+
+  - field: lead_type
+    type: string
+    schema:
+      is_nullable: false
+      default_value: inquiry
+    meta:
+      interface: select-dropdown
+      width: half
+      options:
+        choices:
+          - text: General Inquiry
+            value: inquiry
+          - text: Schedule Viewing
+            value: viewing
+          - text: Make Offer
+            value: offer
+          - text: Request Info
+            value: info
+          - text: Virtual Tour Request
+            value: virtual_tour
+
+  - field: lead_source
+    type: string
+    schema:
+      is_nullable: true
+    meta:
+      interface: input
+      width: half
+      note: "e.g., website, facebook, zillow"
+
+  - field: status
+    type: string
+    schema:
+      is_nullable: false
+      default_value: new
+    meta:
+      interface: select-dropdown
+      width: half
+      options:
+        choices:
+          - text: New
+            value: new
+          - text: Contacted
+            value: contacted
+          - text: Qualified
+            value: qualified
+          - text: Showing Scheduled
+            value: showing_scheduled
+          - text: Converted
+            value: converted
+          - text: Lost
+            value: lost
+
+  - field: assigned_to
+    type: uuid
+    schema:
+      is_nullable: true
+      foreign_key_table: agents
+      foreign_key_column: id
+    meta:
+      interface: select-dropdown-m2o
+      width: half
+
+  - field: notes
+    type: text
+    schema:
+      is_nullable: true
+    meta:
+      interface: input-rich-text-html
+      width: full
+
+  - field: created_at
+    type: timestamp
+    schema:
+      is_nullable: false
+      default_value: CURRENT_TIMESTAMP
+    meta:
+      interface: datetime
+      readonly: true
+      special:
+        - date-created
+
+  - field: updated_at
+    type: timestamp
+    schema:
+      is_nullable: false
+      default_value: CURRENT_TIMESTAMP
+      on_update: CURRENT_TIMESTAMP
+    meta:
+      interface: datetime
+      readonly: true
+      special:
+        - date-updated

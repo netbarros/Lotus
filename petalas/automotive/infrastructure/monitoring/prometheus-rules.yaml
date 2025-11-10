@@ -1,0 +1,20 @@
+{
+  "groups": [
+    {
+      "name": "petala_automotive",
+      "rules": [
+        {
+          "alert": "PetalaPétalaAutomotiveDown",
+          "expr": "up{job=\"petala-automotive\"} == 0",
+          "for": "5m",
+          "labels": {
+            "severity": "critical"
+          },
+          "annotations": {
+            "summary": "Pétala Pétala Automotive is down"
+          }
+        }
+      ]
+    }
+  ]
+}

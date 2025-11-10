@@ -1,0 +1,116 @@
+{
+  "name": "education",
+  "displayName": "Pétala Education",
+  "version": "1.0.0",
+  "description": "Complete Learning Management System (LMS) with video lessons, quizzes, certificates, and gamification",
+  "category": "education",
+  "icon": "🎓",
+  "pricing": {
+    "starter": {
+      "price": 79,
+      "features": [
+        "Up to 10 courses",
+        "Unlimited students",
+        "Video hosting",
+        "Basic quizzes",
+        "Email support"
+      ]
+    },
+    "professional": {
+      "price": 149,
+      "features": [
+        "Unlimited courses",
+        "Advanced quizzes",
+        "Certificates",
+        "Gamification",
+        "Live classes",
+        "Analytics",
+        "Priority support"
+      ]
+    },
+    "enterprise": {
+      "price": 399,
+      "features": [
+        "Everything in Professional",
+        "White-label",
+        "API access",
+        "Custom integrations",
+        "SCORM support",
+        "Dedicated support"
+      ]
+    }
+  },
+  "techStack": {
+    "frontend": "Vue 3 + Vite + Metronic demo10 (LMS)",
+    "backend": "Directus + PostgreSQL + Redis",
+    "other": {
+      "video": "Vimeo API / AWS S3",
+      "live": "Zoom API / Jitsi",
+      "payment": "Stripe"
+    }
+  },
+  "microPetalas": [
+    "auth-basic",
+    "auth-social",
+    "payment-stripe",
+    "subscriptions",
+    "email-templates",
+    "video-player",
+    "pdf-generator",
+    "analytics-google"
+  ],
+  "collections": [
+    "courses",
+    "lessons",
+    "quizzes",
+    "enrollments",
+    "certificates",
+    "progress",
+    "instructors",
+    "categories"
+  ],
+  "features": [
+    "Course creation and management",
+    "Video lessons with progress tracking",
+    "Interactive quizzes and assessments",
+    "Automated certificate generation",
+    "Gamification (points, badges, leaderboards)",
+    "Live virtual classrooms",
+    "Discussion forums",
+    "Assignment submission and grading",
+    "Student progress tracking",
+    "Course marketplace",
+    "Drip content scheduling",
+    "Multi-language support",
+    "Mobile app (PWA)"
+  ],
+  "integrations": {
+    "video": [
+      "Vimeo",
+      "YouTube",
+      "Wistia"
+    ],
+    "live": [
+      "Zoom",
+      "Google Meet",
+      "Jitsi"
+    ],
+    "payment": [
+      "Stripe",
+      "PayPal"
+    ],
+    "lms": [
+      "SCORM",
+      "xAPI",
+      "LTI"
+    ]
+  },
+  "compliance": [
+    "GDPR",
+    "COPPA",
+    "FERPA"
+  ],
+  "status": "production-ready",
+  "createdAt": "2025-11-10",
+  "updatedAt": "2025-11-10"
+}

@@ -97,25 +97,66 @@
         </router-link>
       </div>
     </section>
+
+    <!-- Sofia AI Assistant -->
+    <SofiaFloatingButton
+      petala="fashion"
+      :messages="sofia.state.value.messages"
+      :quick-actions="sofia.state.value.quickActions"
+      :voice-enabled="true"
+      :sofia-status="sofiaStatus"
+      @send-message="handleSofiaMessage"
+      @action="handleSofiaAction"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useProductsStore } from '@/stores/products'
+import { useSofia } from '@/composables/useSofia'
+import SofiaFloatingButton from '@/../../shared/sofia/components/SofiaFloatingButton.vue'
 
 const productsStore = useProductsStore()
 const loading = ref(false)
 const featuresSection = ref<HTMLElement>()
 
+// Initialize Sofia
+const sofia = useSofia()
+
+// Sofia status
+const sofiaStatus = computed(() => {
+  if (sofia.state.value.listening) return 'listening'
+  if (sofia.state.value.loading) return 'thinking'
+  return 'idle'
+})
+
 onMounted(async () => {
   loading.value = true
+
   // Load featured products
   await productsStore.fetchProducts({ limit: 4 })
+
+  // Update Sofia context
+  sofia.updateContext({
+    current_view: 'home',
+    session_start: new Date().toISOString()
+  })
+
   loading.value = false
 })
 
 function scrollToFeatures() {
   featuresSection.value?.scrollIntoView({ behavior: 'smooth' })
+}
+
+// Sofia message handler
+const handleSofiaMessage = async (message: string) => {
+  await sofia.sendMessage(message)
+}
+
+// Sofia action handler
+const handleSofiaAction = async (action: string) => {
+  await sofia.executeAction(action)
 }
 </script>

@@ -1,0 +1,27 @@
+groups:
+  - name: petala_restaurant
+    rules:
+      - alert: PetalaRestaurantDown
+        expr: up{job="petala-restaurant"} == 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Pétala Restaurant is down"
+          description: "Restaurant service has been down for more than 5 minutes"
+
+      - alert: HighOrderFailureRate
+        expr: rate(petala_restaurant_orders_failed_total[5m]) > 0.05
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High order failure rate detected"
+
+      - alert: HighAPILatency
+        expr: histogram_quantile(0.95, petala_restaurant_request_duration_seconds) > 1
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High API latency detected (p95 > 1s)"

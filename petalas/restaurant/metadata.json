@@ -1,0 +1,108 @@
+{
+  "name": "restaurant",
+  "displayName": "Pétala Restaurant",
+  "version": "1.0.0",
+  "description": "Complete restaurant solution with food delivery, reservations, QR menu, and kitchen display system",
+  "category": "food-tech",
+  "icon": "🍽️",
+  "pricing": {
+    "starter": {
+      "price": 79,
+      "currency": "USD",
+      "period": "month",
+      "features": [
+        "Up to 100 orders/month",
+        "Digital menu with QR codes",
+        "Table reservations",
+        "Email support"
+      ]
+    },
+    "professional": {
+      "price": 149,
+      "currency": "USD",
+      "period": "month",
+      "features": [
+        "Unlimited orders",
+        "Kitchen Display System",
+        "Delivery management",
+        "WhatsApp integration",
+        "Analytics dashboard",
+        "Priority support"
+      ]
+    },
+    "enterprise": {
+      "price": 349,
+      "currency": "USD",
+      "period": "month",
+      "features": [
+        "Everything in Professional",
+        "Multi-location support",
+        "White-label solution",
+        "API access",
+        "Custom integrations",
+        "Dedicated account manager"
+      ]
+    }
+  },
+  "techStack": {
+    "frontend": "Vue 3 + Vite + Metronic demo6",
+    "backend": "Directus + PostgreSQL + Redis",
+    "maps": "Google Maps API",
+    "qr": "QRCode.js",
+    "payment": "Stripe + Mercado Pago + PIX"
+  },
+  "microPetalas": [
+    "auth-basic",
+    "auth-social",
+    "payment-stripe",
+    "payment-mercadopago",
+    "payment-pix",
+    "email-templates",
+    "notifications-sms",
+    "notifications-whatsapp",
+    "analytics-google",
+    "file-upload",
+    "menu-qr",
+    "table-reservations",
+    "pos-integration"
+  ],
+  "collections": [
+    "menu_items",
+    "menu_categories",
+    "orders",
+    "order_items",
+    "reservations",
+    "tables",
+    "delivery_zones",
+    "customers",
+    "reviews",
+    "coupons",
+    "restaurants"
+  ],
+  "features": [
+    "Digital menu with QR codes",
+    "Table reservations",
+    "Online ordering (delivery/pickup/dine-in)",
+    "Kitchen Display System (KDS)",
+    "Real-time order tracking",
+    "Delivery driver app",
+    "Customer portal",
+    "Reviews and ratings",
+    "Loyalty program",
+    "Discount coupons",
+    "Multi-location support",
+    "WhatsApp ordering",
+    "Analytics dashboard",
+    "Mobile app (PWA)"
+  ],
+  "integrations": {
+    "payment": ["Stripe", "Mercado Pago", "PIX"],
+    "maps": ["Google Maps"],
+    "communication": ["WhatsApp Business", "Twilio"],
+    "qr": ["QRCode.js"]
+  },
+  "compliance": ["GDPR", "LGPD", "Food Safety Standards"],
+  "status": "production-ready",
+  "createdAt": "2025-11-10",
+  "updatedAt": "2025-11-10"
+}

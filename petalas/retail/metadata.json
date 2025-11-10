@@ -1,0 +1,95 @@
+{
+  "name": "retail",
+  "displayName": "Pétala Retail",
+  "version": "1.0.0",
+  "description": "Complete omnichannel retail platform with POS, inventory, e-commerce, and analytics",
+  "category": "retail",
+  "icon": "🏪",
+  "pricing": {
+    "starter": {
+      "price": 89,
+      "features": [
+        "1 POS terminal",
+        "Basic inventory",
+        "Online store",
+        "Email support"
+      ]
+    },
+    "professional": {
+      "price": 179,
+      "features": [
+        "Unlimited POS",
+        "Advanced inventory",
+        "Omnichannel",
+        "Analytics",
+        "Priority support"
+      ]
+    },
+    "enterprise": {
+      "price": 449,
+      "features": [
+        "Everything in Professional",
+        "Multi-location",
+        "White-label",
+        "API access",
+        "Dedicated support"
+      ]
+    }
+  },
+  "techStack": {
+    "frontend": "Vue 3 + Vite + Metronic demo1 (E-commerce)",
+    "backend": "Directus + PostgreSQL + Redis",
+    "other": {
+      "payment": "Stripe Terminal",
+      "pos": "Custom POS"
+    }
+  },
+  "microPetalas": [
+    "auth-basic",
+    "payment-stripe",
+    "pos-integration",
+    "inventory-sync",
+    "omnichannel-orders",
+    "analytics-google"
+  ],
+  "collections": [
+    "products",
+    "orders",
+    "customers",
+    "inventory",
+    "stores",
+    "transactions",
+    "employees"
+  ],
+  "features": [
+    "Point of Sale (POS)",
+    "Inventory management",
+    "E-commerce integration",
+    "Omnichannel (online + offline)",
+    "Customer loyalty program",
+    "Employee management",
+    "Analytics dashboard",
+    "Multi-location support"
+  ],
+  "integrations": {
+    "payment": [
+      "Stripe",
+      "Square"
+    ],
+    "pos": [
+      "Square",
+      "Clover"
+    ],
+    "ecommerce": [
+      "Shopify",
+      "WooCommerce"
+    ]
+  },
+  "compliance": [
+    "GDPR",
+    "PCI DSS"
+  ],
+  "status": "production-ready",
+  "createdAt": "2025-11-10",
+  "updatedAt": "2025-11-10"
+}

@@ -1,0 +1,40 @@
+{
+  "id": "flow-healthcare-medical-record-audit",
+  "name": "Healthcare - Medical Record Audit",
+  "icon": "security",
+  "color": "#EF4444",
+  "description": "HIPAA audit trail: log all record access, flag suspicious activity",
+  "status": "active",
+  "trigger": "event",
+  "accountability": "all",
+  "options": {
+    "type": "action",
+    "scope": ["items.read"],
+    "collections": ["medical_records"]
+  },
+  "operation": "aud-1a2b3c4d-5e6f-7g8h-9i0j-1k2l3m4n5o6p",
+  "date_created": "2025-11-07T00:00:00Z",
+  "operations": [
+    {
+      "id": "aud-1a2b3c4d-5e6f-7g8h-9i0j-1k2l3m4n5o6p",
+      "name": "Log Access",
+      "key": "log_access",
+      "type": "operation",
+      "position_x": 10,
+      "position_y": 10,
+      "options": {
+        "method": "POST",
+        "url": "http://localhost:8055/petalas/healthcare/audit/log",
+        "body": {
+          "record_id": "{{$trigger.payload.id}}",
+          "accessed_by": "{{$accountability.user}}",
+          "access_type": "read",
+          "timestamp": "{{$now}}"
+        }
+      },
+      "resolve": null,
+      "reject": null,
+      "flow": "flow-healthcare-medical-record-audit"
+    }
+  ]
+}

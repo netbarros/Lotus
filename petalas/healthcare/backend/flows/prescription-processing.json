@@ -1,0 +1,80 @@
+{
+  "id": "flow-healthcare-prescription-processing",
+  "name": "Healthcare - Prescription Processing",
+  "icon": "medication",
+  "color": "#10B981",
+  "description": "E-prescription workflow: validate, send to pharmacy, track status, refill management",
+  "status": "active",
+  "trigger": "event",
+  "accountability": "all",
+  "options": {
+    "type": "action",
+    "scope": ["items.create"],
+    "collections": ["prescriptions"]
+  },
+  "operation": "rx-1a2b3c4d-5e6f-7g8h-9i0j-1k2l3m4n5o6p",
+  "date_created": "2025-11-07T00:00:00Z",
+  "operations": [
+    {
+      "id": "rx-1a2b3c4d-5e6f-7g8h-9i0j-1k2l3m4n5o6p",
+      "name": "Validate Prescription",
+      "key": "validate",
+      "type": "operation",
+      "position_x": 10,
+      "position_y": 10,
+      "options": {
+        "method": "POST",
+        "url": "http://localhost:8055/petalas/healthcare/prescriptions/validate",
+        "body": {
+          "prescription_id": "{{$trigger.payload.id}}",
+          "patient_id": "{{$trigger.payload.patient_id}}",
+          "medication_code": "{{$trigger.payload.medication_code}}"
+        }
+      },
+      "resolve": "rx-2b3c4d5e-6f7g-8h9i-0j1k-2l3m4n5o6p7q",
+      "reject": null,
+      "flow": "flow-healthcare-prescription-processing"
+    },
+    {
+      "id": "rx-2b3c4d5e-6f7g-8h9i-0j1k-2l3m4n5o6p7q",
+      "name": "Send to Pharmacy",
+      "key": "send_pharmacy",
+      "type": "webhook",
+      "position_x": 10,
+      "position_y": 30,
+      "options": {
+        "method": "POST",
+        "url": "http://localhost:8055/petalas/healthcare/pharmacy/send",
+        "body": {
+          "prescription_number": "{{$trigger.payload.prescription_number}}",
+          "patient_id": "{{$trigger.payload.patient_id}}",
+          "medication": "{{$trigger.payload.medication_name}}",
+          "pharmacy_id": "{{$trigger.payload.pharmacy_id}}"
+        }
+      },
+      "resolve": "rx-3c4d5e6f-7g8h-9i0j-1k2l-3m4n5o6p7q8r",
+      "reject": null,
+      "flow": "flow-healthcare-prescription-processing"
+    },
+    {
+      "id": "rx-3c4d5e6f-7g8h-9i0j-1k2l-3m4n5o6p7q8r",
+      "name": "Notify Patient",
+      "key": "notify_patient",
+      "type": "mail",
+      "position_x": 10,
+      "position_y": 50,
+      "options": {
+        "to": "{{$trigger.payload.patient.email}}",
+        "subject": "Prescription Sent to Pharmacy",
+        "template": "prescription-notification",
+        "data": {
+          "medication_name": "{{$trigger.payload.medication_name}}",
+          "pharmacy_name": "{{$trigger.payload.pharmacy.name}}"
+        }
+      },
+      "resolve": null,
+      "reject": null,
+      "flow": "flow-healthcare-prescription-processing"
+    }
+  ]
+}

@@ -1,0 +1,109 @@
+{
+  "name": "legal",
+  "displayName": "Pétala Legal",
+  "version": "1.0.0",
+  "description": "Complete legal practice management with case management, document management, time tracking, and e-signature",
+  "category": "legal",
+  "icon": "⚖️",
+  "pricing": {
+    "starter": {
+      "price": 129,
+      "features": [
+        "Up to 50 cases",
+        "Document management",
+        "Time tracking",
+        "Basic billing",
+        "Email support"
+      ]
+    },
+    "professional": {
+      "price": 249,
+      "features": [
+        "Unlimited cases",
+        "E-signature",
+        "Court calendar",
+        "Client portal",
+        "Advanced billing",
+        "Analytics",
+        "Priority support"
+      ]
+    },
+    "enterprise": {
+      "price": 599,
+      "features": [
+        "Everything in Professional",
+        "Multi-office",
+        "API access",
+        "Custom integrations",
+        "Compliance tools",
+        "Dedicated support"
+      ]
+    }
+  },
+  "techStack": {
+    "frontend": "Vue 3 + Vite + Metronic demo3 (SaaS adapted)",
+    "backend": "Directus + PostgreSQL + Redis",
+    "other": {
+      "signature": "DocuSign API",
+      "storage": "AWS S3",
+      "payment": "Stripe"
+    }
+  },
+  "microPetalas": [
+    "auth-basic",
+    "auth-2fa",
+    "payment-stripe",
+    "email-templates",
+    "e-signature",
+    "pdf-generator",
+    "case-timeline"
+  ],
+  "collections": [
+    "cases",
+    "clients",
+    "documents",
+    "tasks",
+    "time_entries",
+    "invoices",
+    "court_dates",
+    "contacts",
+    "notes"
+  ],
+  "features": [
+    "Case and matter management",
+    "Client relationship management",
+    "Document management and versioning",
+    "Time and expense tracking",
+    "Billing and invoicing",
+    "E-signature integration",
+    "Court calendar and deadlines",
+    "Task management",
+    "Client portal",
+    "Conflict checking",
+    "Trust accounting",
+    "Analytics and reporting"
+  ],
+  "integrations": {
+    "signature": [
+      "DocuSign",
+      "HelloSign"
+    ],
+    "storage": [
+      "AWS S3",
+      "Box",
+      "Dropbox"
+    ],
+    "calendar": [
+      "Google Calendar",
+      "Outlook"
+    ]
+  },
+  "compliance": [
+    "GDPR",
+    "ABA Model Rules",
+    "Client confidentiality"
+  ],
+  "status": "production-ready",
+  "createdAt": "2025-11-10",
+  "updatedAt": "2025-11-10"
+}

@@ -1,0 +1,99 @@
+{
+  "name": "events",
+  "displayName": "Pétala Events",
+  "version": "1.0.0",
+  "description": "Complete event management platform with ticketing, QR check-in, seat maps, and live streaming",
+  "category": "events",
+  "icon": "🎫",
+  "pricing": {
+    "starter": {
+      "price": 79,
+      "features": [
+        "Up to 500 tickets/event",
+        "QR check-in",
+        "Basic reporting",
+        "Email support"
+      ]
+    },
+    "professional": {
+      "price": 149,
+      "features": [
+        "Unlimited tickets",
+        "Seat maps",
+        "Live streaming",
+        "Analytics",
+        "Priority support"
+      ]
+    },
+    "enterprise": {
+      "price": 399,
+      "features": [
+        "Everything in Professional",
+        "White-label",
+        "API access",
+        "Custom integrations",
+        "Dedicated support"
+      ]
+    }
+  },
+  "techStack": {
+    "frontend": "Vue 3 + Vite + Metronic demo5 (Events)",
+    "backend": "Directus + PostgreSQL + Redis",
+    "other": {
+      "payment": "Stripe",
+      "streaming": "Vimeo Live",
+      "qr": "QRCode.js"
+    }
+  },
+  "microPetalas": [
+    "auth-basic",
+    "auth-social",
+    "payment-stripe",
+    "qr-code",
+    "ticket-generator",
+    "live-stream",
+    "analytics-google"
+  ],
+  "collections": [
+    "events",
+    "tickets",
+    "attendees",
+    "venues",
+    "seat_maps",
+    "check_ins",
+    "organizers"
+  ],
+  "features": [
+    "Event creation and management",
+    "Ticket sales and pricing tiers",
+    "QR code ticketing",
+    "Check-in app",
+    "Seat map builder",
+    "Live streaming integration",
+    "Attendee management",
+    "Email marketing",
+    "Analytics dashboard",
+    "Mobile app (PWA)"
+  ],
+  "integrations": {
+    "payment": [
+      "Stripe",
+      "PayPal"
+    ],
+    "streaming": [
+      "Vimeo",
+      "YouTube Live"
+    ],
+    "email": [
+      "Mailchimp",
+      "SendGrid"
+    ]
+  },
+  "compliance": [
+    "GDPR",
+    "PCI DSS"
+  ],
+  "status": "production-ready",
+  "createdAt": "2025-11-10",
+  "updatedAt": "2025-11-10"
+}

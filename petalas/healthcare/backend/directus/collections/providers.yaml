@@ -1,0 +1,112 @@
+# Pétala Healthcare - Providers Collection
+# Healthcare providers (doctors, nurses, specialists)
+
+collections:
+  - collection: providers
+    meta:
+      group: petala_healthcare
+      icon: medical_services
+      note: Healthcare providers and specialists
+      display_template: "Dr. {{first_name}} {{last_name}} - {{specialty}}"
+      sort: 5
+
+    schema:
+      schema:
+        name: providers
+        comment: Healthcare providers
+
+      fields:
+        - field: id
+          type: uuid
+          schema:
+            is_primary_key: true
+
+        - field: status
+          type: string
+          schema:
+            default_value: active
+          meta:
+            interface: select-dropdown
+            options:
+              choices:
+                - { text: Active, value: active }
+                - { text: Inactive, value: inactive }
+                - { text: On Leave, value: on_leave }
+
+        - field: tenant_id
+          type: uuid
+          schema:
+            is_nullable: false
+
+        - field: first_name
+          type: string
+          schema:
+            is_nullable: false
+            max_length: 100
+
+        - field: last_name
+          type: string
+          schema:
+            is_nullable: false
+            max_length: 100
+
+        - field: title
+          type: string
+          schema:
+            max_length: 50
+          meta:
+            note: MD, DO, NP, PA, etc.
+
+        - field: specialty
+          type: string
+          meta:
+            interface: select-dropdown
+            options:
+              choices:
+                - { text: Family Medicine, value: family_medicine }
+                - { text: Internal Medicine, value: internal_medicine }
+                - { text: Pediatrics, value: pediatrics }
+                - { text: Cardiology, value: cardiology }
+                - { text: Orthopedics, value: orthopedics }
+                - { text: Dermatology, value: dermatology }
+                - { text: Psychiatry, value: psychiatry }
+                - { text: Neurology, value: neurology }
+                - { text: Other, value: other }
+
+        - field: license_number
+          type: string
+          schema:
+            max_length: 100
+
+        - field: npi_number
+          type: string
+          schema:
+            max_length: 50
+          meta:
+            note: National Provider Identifier
+
+        - field: email
+          type: string
+          schema:
+            max_length: 255
+
+        - field: phone
+          type: string
+          schema:
+            max_length: 50
+
+        - field: office_location
+          type: string
+          schema:
+            max_length: 200
+
+        - field: accepts_new_patients
+          type: boolean
+          schema:
+            default_value: true
+
+        - field: date_created
+          type: timestamp
+          meta:
+            special: [date-created]
+            readonly: true

@@ -1,0 +1,168 @@
+# Pétala Healthcare - Medical Records Collection
+# Electronic Health Records (EHR)
+
+collections:
+  - collection: medical_records
+    meta:
+      group: petala_healthcare
+      icon: medical_information
+      note: Electronic Health Records (EHR)
+      display_template: "{{patient.first_name}} {{patient.last_name}} - {{record_date}}"
+      sort: 3
+
+    schema:
+      schema:
+        name: medical_records
+        comment: Patient medical records
+
+      fields:
+        - field: id
+          type: uuid
+          schema:
+            is_primary_key: true
+
+        - field: tenant_id
+          type: uuid
+          schema:
+            is_nullable: false
+
+        - field: patient_id
+          type: uuid
+          schema:
+            is_nullable: false
+          meta:
+            interface: select-dropdown-m2o
+            required: true
+
+        - field: appointment_id
+          type: uuid
+          meta:
+            interface: select-dropdown-m2o
+
+        - field: provider_id
+          type: uuid
+          schema:
+            is_nullable: false
+          meta:
+            interface: select-dropdown-m2o
+            required: true
+
+        - field: record_date
+          type: date
+          schema:
+            is_nullable: false
+            default_value: now()
+
+        - field: record_type
+          type: string
+          meta:
+            interface: select-dropdown
+            options:
+              choices:
+                - { text: Clinical Note, value: clinical_note }
+                - { text: Progress Note, value: progress_note }
+                - { text: Discharge Summary, value: discharge_summary }
+                - { text: Operative Note, value: operative_note }
+                - { text: Lab Result, value: lab_result }
+                - { text: Radiology Report, value: radiology }
+                - { text: Pathology Report, value: pathology }
+
+        - field: chief_complaint
+          type: text
+          meta:
+            interface: input-multiline
+
+        - field: subjective
+          type: text
+          meta:
+            interface: input-multiline
+            note: Patient's description of symptoms
+
+        - field: objective
+          type: text
+          meta:
+            interface: input-multiline
+            note: Provider's observations
+
+        - field: assessment
+          type: text
+          meta:
+            interface: input-multiline
+            note: Diagnosis and assessment
+
+        - field: plan
+          type: text
+          meta:
+            interface: input-multiline
+            note: Treatment plan
+
+        # Vital Signs
+        - field: blood_pressure_systolic
+          type: integer
+
+        - field: blood_pressure_diastolic
+          type: integer
+
+        - field: heart_rate
+          type: integer
+
+        - field: temperature
+          type: decimal
+          schema:
+            numeric_precision: 4
+            numeric_scale: 1
+
+        - field: respiratory_rate
+          type: integer
+
+        - field: oxygen_saturation
+          type: integer
+
+        - field: weight_kg
+          type: decimal
+          schema:
+            numeric_precision: 5
+            numeric_scale: 2
+
+        - field: height_cm
+          type: decimal
+          schema:
+            numeric_precision: 5
+            numeric_scale: 2
+
+        # Diagnosis codes (ICD-10)
+        - field: diagnosis_codes
+          type: json
+          meta:
+            interface: list
+            note: ICD-10 diagnosis codes
+
+        # Procedure codes (CPT)
+        - field: procedure_codes
+          type: json
+          meta:
+            interface: list
+            note: CPT procedure codes
+
+        - field: attachments
+          type: json
+          meta:
+            interface: list
+            note: File attachments (lab results, images, etc.)
+
+        - field: is_confidential
+          type: boolean
+          schema:
+            default_value: false
+
+        - field: date_created
+          type: timestamp
+          meta:
+            special: [date-created]
+            readonly: true
+
+        - field: date_updated
+          type: timestamp
+          meta:
+            special: [date-updated]
+            readonly: true
