@@ -1,0 +1,20 @@
+{
+  "groups": [
+    {
+      "name": "petala_travel",
+      "rules": [
+        {
+          "alert": "PetalaPétalaTravelDown",
+          "expr": "up{job=\"petala-travel\"} == 0",
+          "for": "5m",
+          "labels": {
+            "severity": "critical"
+          },
+          "annotations": {
+            "summary": "Pétala Pétala Travel is down"
+          }
+        }
+      ]
+    }
+  ]
+}

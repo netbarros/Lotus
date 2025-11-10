@@ -1,0 +1,20 @@
+{
+  "groups": [
+    {
+      "name": "petala_events",
+      "rules": [
+        {
+          "alert": "PetalaPétalaEventsDown",
+          "expr": "up{job=\"petala-events\"} == 0",
+          "for": "5m",
+          "labels": {
+            "severity": "critical"
+          },
+          "annotations": {
+            "summary": "Pétala Pétala Events is down"
+          }
+        }
+      ]
+    }
+  ]
+}

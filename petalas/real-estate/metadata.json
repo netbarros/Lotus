@@ -1,0 +1,121 @@
+{
+  "name": "real-estate",
+  "displayName": "Pétala Real Estate",
+  "version": "1.0.0",
+  "description": "Complete real estate solution with property listings, VR tours, lead management, and mortgage calculator",
+  "category": "real-estate",
+  "icon": "🏘️",
+  "pricing": {
+    "starter": {
+      "price": 99,
+      "currency": "USD",
+      "period": "month",
+      "features": [
+        "Up to 50 property listings",
+        "Basic lead management",
+        "Contact forms",
+        "Property search & filters",
+        "Mobile responsive",
+        "Email support"
+      ]
+    },
+    "professional": {
+      "price": 199,
+      "currency": "USD",
+      "period": "month",
+      "features": [
+        "Unlimited property listings",
+        "Advanced lead management",
+        "CRM integration",
+        "VR tours",
+        "Mortgage calculator",
+        "IDX/MLS integration",
+        "Analytics dashboard",
+        "Priority support"
+      ]
+    },
+    "enterprise": {
+      "price": 499,
+      "currency": "USD",
+      "period": "month",
+      "features": [
+        "Everything in Professional",
+        "Multi-location support",
+        "White-label solution",
+        "API access",
+        "Custom integrations",
+        "E-signature",
+        "Dedicated account manager",
+        "24/7 phone support"
+      ]
+    }
+  },
+  "techStack": {
+    "frontend": "Vue 3 + Vite + Metronic demo1",
+    "backend": "Directus + PostgreSQL + Redis",
+    "maps": "Google Maps API",
+    "vr": "Matterport SDK",
+    "payment": "Stripe",
+    "storage": "Cloudinary",
+    "search": "Algolia"
+  },
+  "microPetalas": [
+    "auth-basic",
+    "auth-social",
+    "payment-stripe",
+    "email-templates",
+    "notifications-sms",
+    "analytics-google",
+    "file-upload",
+    "vr-tours",
+    "appointment-booking",
+    "e-signature",
+    "pdf-generator",
+    "qr-code"
+  ],
+  "collections": [
+    "properties",
+    "property_images",
+    "property_features",
+    "property_documents",
+    "leads",
+    "agents",
+    "agencies",
+    "appointments",
+    "contracts",
+    "neighborhoods"
+  ],
+  "features": [
+    "Property listings with advanced filters",
+    "Virtual reality (VR) property tours",
+    "3D floor plans",
+    "Lead capture & management",
+    "CRM for agents",
+    "Appointment scheduling",
+    "Mortgage calculator",
+    "Property comparison tool",
+    "Saved searches & favorites",
+    "Email alerts for new listings",
+    "IDX/MLS integration",
+    "E-signature for contracts",
+    "Document management",
+    "Agent profiles & reviews",
+    "Neighborhood information",
+    "School district data",
+    "Market analytics",
+    "Multi-language support",
+    "Mobile app (PWA)"
+  ],
+  "integrations": {
+    "mls": ["IDX Broker", "RETS", "Trestle"],
+    "crm": ["Salesforce", "HubSpot", "Zoho"],
+    "signing": ["DocuSign", "HelloSign"],
+    "payment": ["Stripe", "PayPal"],
+    "maps": ["Google Maps", "Mapbox"],
+    "vr": ["Matterport", "Kuula"]
+  },
+  "compliance": ["GDPR", "CCPA", "Fair Housing Act"],
+  "status": "production-ready",
+  "createdAt": "2025-11-10",
+  "updatedAt": "2025-11-10"
+}

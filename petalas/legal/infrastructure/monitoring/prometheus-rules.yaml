@@ -1,0 +1,20 @@
+{
+  "groups": [
+    {
+      "name": "petala_legal",
+      "rules": [
+        {
+          "alert": "PetalaPétalaLegalDown",
+          "expr": "up{job=\"petala-legal\"} == 0",
+          "for": "5m",
+          "labels": {
+            "severity": "critical"
+          },
+          "annotations": {
+            "summary": "Pétala Pétala Legal is down"
+          }
+        }
+      ]
+    }
+  ]
+}
