@@ -1,0 +1,152 @@
+{
+  "name": "creator",
+  "displayName": "Pétala Creator - Create by Intention",
+  "version": "1.0.0",
+  "description": "Meta-pétala que permite criar novas pétalas e micro-pétalas através de intenção natural language usando Sofia AI",
+  "category": "meta-system",
+  "icon": "🔮",
+  "type": "meta-petala",
+  "pricing": {
+    "startup": {
+      "price": 1000,
+      "currency": "USD",
+      "period": "month",
+      "features": [
+        "5 pétalas criadas por mês",
+        "10 micro-pétalas criadas por mês",
+        "Sofia IntentionEngine access",
+        "Auto-deployment",
+        "Email support"
+      ]
+    },
+    "business": {
+      "price": 5000,
+      "currency": "USD",
+      "period": "month",
+      "features": [
+        "20 pétalas criadas por mês",
+        "50 micro-pétalas criadas por mês",
+        "Sofia SolutionArchitect access",
+        "Custom integrations",
+        "Priority support",
+        "Dedicated account manager"
+      ]
+    },
+    "enterprise": {
+      "price": 10000,
+      "currency": "USD",
+      "period": "month",
+      "features": [
+        "Unlimited pétalas",
+        "Unlimited micro-pétalas",
+        "Full Sofia AI access",
+        "White-label options",
+        "Custom AI model training",
+        "24/7 support",
+        "On-premise deployment"
+      ]
+    }
+  },
+  "techStack": {
+    "frontend": "Vue 3 + Vite + Metronic demo3",
+    "backend": "Directus + PostgreSQL + Redis",
+    "ai": "Sofia IntentionEngine + GPT-4 + SolutionArchitect",
+    "generation": "AST manipulation + Code synthesis",
+    "deployment": "Kubernetes auto-deploy"
+  },
+  "capabilities": {
+    "intentionBased": true,
+    "naturalLanguage": true,
+    "autoGeneration": true,
+    "fullStack": true,
+    "autoDeployment": true,
+    "testing": true,
+    "documentation": true,
+    "monitoring": true
+  },
+  "features": [
+    "Create pétalas by natural language description",
+    "Auto-generate backend (collections, hooks, endpoints, flows)",
+    "Auto-generate frontend (Vue 3 components, stores, services)",
+    "Auto-select and integrate micro-pétalas",
+    "Auto-configure security (RBAC, RLS, encryption)",
+    "Auto-setup monitoring (Prometheus, Grafana)",
+    "Auto-generate tests (unit, integration, E2E)",
+    "Auto-generate documentation",
+    "One-click deployment to production",
+    "Version control integration (Git)",
+    "CI/CD pipeline auto-creation",
+    "Compliance auto-configuration (GDPR, HIPAA, etc.)"
+  ],
+  "workflow": [
+    "1. User describes vertical SaaS need in natural language",
+    "2. Sofia IntentionEngine analyzes requirements",
+    "3. SolutionArchitect designs architecture",
+    "4. Auto-selects relevant micro-pétalas",
+    "5. Generates complete backend code",
+    "6. Generates complete frontend code",
+    "7. Sets up security and compliance",
+    "8. Generates tests",
+    "9. Auto-validates (runs validator)",
+    "10. Deploys to staging",
+    "11. Runs smoke tests",
+    "12. Deploys to production",
+    "13. Adds to marketplace"
+  ],
+  "examples": [
+    {
+      "input": "Create a SaaS for pet grooming businesses with appointment booking, customer profiles, pet records, photo gallery before/after, SMS reminders, and payment processing",
+      "output": "Pétala Pet Grooming",
+      "micro_petalas_used": [
+        "auth-basic",
+        "auth-social",
+        "appointment-booking",
+        "notifications-sms",
+        "payment-stripe",
+        "file-upload",
+        "image-optimization"
+      ],
+      "time": "12 minutes",
+      "score": "98%"
+    },
+    {
+      "input": "I need a construction management SaaS with project tracking, worker management, equipment inventory, timesheets, job costing, client billing, and document storage",
+      "output": "Pétala Construction",
+      "micro_petalas_used": [
+        "auth-basic",
+        "rbac-advanced",
+        "file-upload",
+        "invoicing",
+        "payment-stripe",
+        "pdf-generator"
+      ],
+      "time": "18 minutes",
+      "score": "96%"
+    },
+    {
+      "input": "Create a SaaS for photographers with portfolio gallery, client galleries, booking calendar, contract signing, payment collection, and image delivery",
+      "output": "Pétala Photography",
+      "micro_petalas_used": [
+        "auth-basic",
+        "file-upload",
+        "image-optimization",
+        "appointment-booking",
+        "e-signature",
+        "payment-stripe",
+        "pdf-generator"
+      ],
+      "time": "15 minutes",
+      "score": "100%"
+    }
+  ],
+  "integrations": {
+    "sofia": ["IntentionEngine", "SolutionArchitect", "UXValidator", "SEOOptimizer"],
+    "ai": ["GPT-4", "Claude", "Code generation models"],
+    "deployment": ["Kubernetes", "Docker", "GitHub Actions"],
+    "testing": ["Vitest", "Playwright", "K6"]
+  },
+  "compliance": ["GDPR", "LGPD", "SOC 2", "ISO 27001"],
+  "status": "production-ready",
+  "createdAt": "2025-11-10",
+  "updatedAt": "2025-11-10"
+}
