@@ -1,0 +1,116 @@
+{
+  "name": "healthcare",
+  "displayName": "Pétala Healthcare",
+  "version": "1.0.0",
+  "description": "Complete healthcare platform with telemedicine, EHR, appointment scheduling, and HIPAA compliance",
+  "category": "health-tech",
+  "icon": "🏥",
+  "pricing": {
+    "starter": {
+      "price": 149,
+      "currency": "USD",
+      "period": "month",
+      "features": [
+        "Up to 50 patients",
+        "Appointment scheduling",
+        "Basic EHR",
+        "Video consultations",
+        "Email support"
+      ]
+    },
+    "professional": {
+      "price": 349,
+      "currency": "USD",
+      "period": "month",
+      "features": [
+        "Unlimited patients",
+        "Complete EHR system",
+        "E-prescription",
+        "Lab results integration",
+        "HIPAA compliance",
+        "Analytics dashboard",
+        "Priority support"
+      ]
+    },
+    "enterprise": {
+      "price": 799,
+      "currency": "USD",
+      "period": "month",
+      "features": [
+        "Everything in Professional",
+        "Multi-location support",
+        "Hospital integration",
+        "API access",
+        "Custom compliance",
+        "Dedicated support",
+        "24/7 phone support"
+      ]
+    }
+  },
+  "techStack": {
+    "frontend": "Vue 3 + Vite + Metronic demo8",
+    "backend": "Directus + PostgreSQL + Redis",
+    "video": "Twilio Video API",
+    "payment": "Stripe",
+    "storage": "AWS S3 (HIPAA-compliant)",
+    "encryption": "AES-256"
+  },
+  "microPetalas": [
+    "auth-basic",
+    "auth-2fa",
+    "auth-sso",
+    "payment-stripe",
+    "email-templates",
+    "notifications-sms",
+    "analytics-google",
+    "file-upload",
+    "telemedicine-video",
+    "appointment-booking",
+    "ehr-integration",
+    "e-signature",
+    "pdf-generator",
+    "ai-chatbot"
+  ],
+  "collections": [
+    "patients",
+    "appointments",
+    "medical_notes",
+    "prescriptions",
+    "lab_results",
+    "imaging",
+    "billing",
+    "insurance_claims",
+    "consents",
+    "providers",
+    "locations",
+    "health_metrics"
+  ],
+  "features": [
+    "Patient management (EHR)",
+    "Telemedicine video consultations",
+    "Appointment scheduling",
+    "E-prescription",
+    "Lab results & imaging (DICOM)",
+    "HIPAA compliance",
+    "Insurance claims processing",
+    "Billing & invoicing",
+    "Patient portal",
+    "Digital consent forms",
+    "Medication interaction checker",
+    "Allergy alerts",
+    "Wearable integration",
+    "Multi-language support",
+    "Mobile app (PWA)"
+  ],
+  "integrations": {
+    "video": ["Twilio Video"],
+    "payment": ["Stripe"],
+    "storage": ["AWS S3"],
+    "ehr": ["HL7", "FHIR"],
+    "wearables": ["Fitbit", "Apple Health"]
+  },
+  "compliance": ["HIPAA", "GDPR", "SOC 2", "PCI DSS", "LGPD"],
+  "status": "production-ready",
+  "createdAt": "2025-11-10",
+  "updatedAt": "2025-11-10"
+}
