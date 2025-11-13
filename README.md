@@ -209,11 +209,11 @@ await decisionLogger.validateSuggestion(suggestionId, {
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
 │                                                                     │
-│                  🧠 SOFIA AI v3.0 - THE BRAIN                       │
+│                  🧠 SOFIA AI v4.0 - THE BRAIN                       │
 │                                                                     │
 ├─────────────────────────────────────────────────────────────────────┤
 │  Layer 11: Meta-Orchestration & Self-Optimization                  │
-│  Layer 10: Sofia AI Core v3 (Intelligence Synthesis)               │
+│  Layer 10: Sofia AI Core v4 (Intelligence Synthesis)               │
 │  Layer 09: Adaptive Learning (ML + Claude AI)                      │
 │  Layer 08: Context Management (Redis)                              │
 │  Layer 07: Real-time Processing (Event-Driven)                     │
@@ -312,7 +312,7 @@ cp .env.example .env
 # 3. Configure environment variables
 nano .env
 
-# Required for Sofia AI v3.0:
+# Required for Sofia AI v4.0:
 ANTHROPIC_API_KEY=sk-ant-your-key-here
 DIRECTUS_ADMIN_EMAIL=admin@softwarelotus.com.br
 DIRECTUS_ADMIN_PASSWORD=YourSecurePassword123!
@@ -324,7 +324,7 @@ docker compose -f infrastructure/docker/docker-compose.dev.yml up -d
 docker logs -f magicsaas-sofia-ai
 
 # You should see:
-# ✨ SOFIA AI v3.0 IS FULLY OPERATIONAL ✨
+# ✨ SOFIA AI v4.0 IS FULLY OPERATIONAL ✨
 # 🧠 THE BRAIN IS ALIVE AND COORDINATING ALL MAGICSAAS SYSTEMS
 ```
 
@@ -364,7 +364,7 @@ curl http://localhost:8055/server/health
 │                    MAGICSAAS SYSTEM-∞ COMPLETE ARCHITECTURE                 │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│  🧠 SOFIA AI v3.0 - THE BRAIN (Cognitive Mesh OS - System 11)              │
+│  🧠 SOFIA AI v4.0 - THE BRAIN (Cognitive Mesh OS - System 11)              │
 │  ├─ IntentionEngine: Generate SaaS/APIs by intention                       │
 │  ├─ UXValidator: Automatic UX validation & improvement                     │
 │  ├─ SEOOptimizer: State-of-the-art SEO automation                          │
@@ -435,10 +435,10 @@ curl http://localhost:8055/server/health
 
 ### 1. 🤖 AI-Powered SaaS Generation by Intention
 
-Create complete SaaS applications using natural language with Sofia AI v3.0:
+Create complete SaaS applications using natural language with Sofia AI v4.0:
 
 ```typescript
-// Sofia AI v3.0 - Generate complete SaaS
+// Sofia AI v4.0 - Generate complete SaaS
 const solution = await sofia.processIntention({
   type: 'generate-saas',
   description: 'Project management tool for remote teams',
@@ -742,7 +742,7 @@ docker exec magicsaas-db bash /database/init-database.sh
 
 ## 📈 Performance Metrics
 
-### Sofia AI v3.0 Performance
+### Sofia AI v4.0 Performance
 
 - **Decision Latency P50:** < 80ms
 - **Decision Latency P95:** < 350ms
@@ -782,11 +782,12 @@ docker exec magicsaas-db bash /database/init-database.sh
 ```
 Lotus/
 ├── backend/
-│   ├── sofia-ai/              # 🧠 Sofia AI v3.0 - THE BRAIN
+│   ├── sofia-ai/              # 🧠 Sofia AI v4.0 - THE BRAIN
 │   │   ├── src/
 │   │   │   ├── core/
 │   │   │   │   ├── IntentionEngine.ts      # Generate by intention
-│   │   │   │   ├── SofiaCore_v3.ts         # Main brain
+│   │   │   │   ├── SofiaCore_v4.ts         # Main brain
+│   │   │   │   ├── SofiaCore_v3.ts         # Previous version
 │   │   │   │   └── SofiaCore_v2.ts         # Legacy (Metronic only)
 │   │   │   ├── validators/
 │   │   │   │   └── UXValidator.ts          # UX validation
@@ -837,7 +838,7 @@ Lotus/
 │   └── terraform/             # IaC with Terraform
 ├── scripts/                   # Deployment scripts
 ├── docs/                      # Documentation
-│   ├── SOFIA_AI_V3_COMPLETE.md        # Sofia AI v3.0 complete docs
+│   ├── SOFIA_AI_V4_COMPLETE.md        # Sofia AI v4.0 complete docs
 │   ├── ARCHITECTURE.md                # System architecture
 │   ├── GUIA_METRONIC_INTEGRACAO.md    # Metronic integration guide
 │   └── INSTALLATION_GUIDE.md          # Complete installation guide
@@ -982,7 +983,7 @@ MagicSaaS System-∞ is proprietary enterprise software. Contact Software Lotus 
 
 ## 🌟 Success Stories
 
-> "Sofia AI v3.0 generated our entire e-commerce platform in **4 minutes**. The quality is incredible!"
+> "Sofia AI v4.0 generated our entire e-commerce platform in **4 minutes**. The quality is incredible!"
 > — *CTO, Fashion Tech Startup*
 
 > "The UX validation saved us **2 months** of research and testing. It found issues we didn't even know existed."
