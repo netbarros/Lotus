@@ -8,7 +8,7 @@
 
 **The World's First Cognitive Mesh Operating System for SaaS Creation**
 
-**Powered by 🧠 Sofia AI v4.0 - The Brain**
+**Powered by 🧠 Sofia AI v4.0 - The Brain** 
 
 [![License](https://img.shields.io/badge/License-Proprietary-red.svg)](LICENSE)
 [![Version](https://img.shields.io/badge/Version-%E2%88%9E.2026.Q1-blue.svg)](https://github.com/netbarros/Lotus)
