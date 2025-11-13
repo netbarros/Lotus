@@ -147,6 +147,7 @@ main() {
         "03-sofia-ai-v4.sql:Sofia AI v4.0 Tables (LangChain, Langfuse, Qdrant)"
         "04-healthcare-medicas.sql:Healthcare/Médicas Complete Schema"
         "05-sofia-universal-petalas.sql:Sofia AI Universal Integration (ALL 13 Pétalas)"
+        "06-all-petalas-tables.sql:Universal Tables for ALL 13 Pétalas (Customers, Products, Orders, Appointments, Reviews)"
     )
 
     for schema_entry in "${schemas[@]}"; do
@@ -160,6 +161,7 @@ main() {
     local seeds=(
         "00-initial-data.sql:Initial Data (plans, tenants, users, roles)"
         "01-healthcare-demo-data.sql:Healthcare Demo Data (facilities, providers, patients)"
+        "02-all-petalas-demo-data.sql:Demo Data for ALL 13 Pétalas (Fashion, Restaurant, Fitness, Beauty, Education, etc.)"
     )
 
     for seed_entry in "${seeds[@]}"; do
@@ -242,7 +244,11 @@ main() {
     echo "║     ✓ 15 Patients (diverse demographics)                                ║"
     echo "║     ✓ 20 Appointments (scheduled + historical)                          ║"
     echo "║                                                                          ║"
-    echo "║  🌸 All 13 Pétalas registered and ready!                                ║"
+    echo "║  🌸 ALL 13 Pétalas Complete with Demo Data:                             ║"
+    echo "║     ✓ Healthcare, Fashion, Restaurant, Real Estate                      ║"
+    echo "║     ✓ Education, Fitness, Beauty, Legal, Automotive                     ║"
+    echo "║     ✓ Retail, Logistics, Hospitality, Events                            ║"
+    echo "║     ✓ 100+ Products/Services, 50+ Customers                             ║"
     echo "║                                                                          ║"
     echo "║  🚀 MagicSaaS System-∞ is ready for production!                         ║"
     echo "║                                                                          ║"
