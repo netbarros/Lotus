@@ -297,39 +297,91 @@ Cada pétala é um **SaaS vertical completo** com frontend, backend, database sc
 
 ## 🚀 Instalação
 
+### 💻 Instaladores Multiplataforma
+
+O MagicSaaS System-∞ possui instaladores otimizados para **TODAS as plataformas**:
+
+| Plataforma | Instalador | Auto-Detect | Validação 100/100 |
+|------------|------------|-------------|-------------------|
+| **Linux / macOS** | `install.sh` | ✅ | ✅ |
+| **Windows** | `install.ps1` | ✅ | ✅ |
+| **Hostinger VPS** | `deploy-hostinger.sh` | ✅ | ✅ + SSL + Backups |
+| **AWS** | `cloud/deploy-aws.sh` | ✅ | ✅ + Auto-scaling |
+| **GCP** | `cloud/deploy-gcp.sh` | ✅ | ✅ + Auto-scaling |
+| **Azure** | `cloud/deploy-azure.sh` | ✅ | ✅ + Auto-scaling |
+
+📖 **Documentação Completa:** [INSTALLERS.md](./INSTALLERS.md)
+
 ### Pré-requisitos
 
 - Docker 20+ & Docker Compose
-- Node.js 20+
+- Node.js 20+ (opcional para desenvolvimento)
 - Git
-- 10GB+ espaço em disco
+- **Linux/Mac:** 10GB+ espaço, 4GB+ RAM
+- **Windows:** 15GB+ espaço, 8GB+ RAM
 
 ### Instalação Rápida
+
+#### **Linux / macOS / WSL:**
 
 ```bash
 # 1. Clone o repositório
 git clone https://github.com/netbarros/Lotus.git
 cd Lotus
 
-# 2. Torne o instalador executável
+# 2. Execute o instalador
 chmod +x install.sh
-
-# 3. Execute o instalador
 ./install.sh
 
-# 4. Aguarde 5-10 minutos (primeira vez)
-# O instalador irá:
-# ✓ Verificar requisitos
-# ✓ Criar arquivos .env
-# ✓ Iniciar Docker containers
-# ✓ Criar schemas de banco de dados
-# ✓ Carregar dados de demonstração
-# ✓ Instalar dependências
-# ✓ Build aplicações
-# ✓ Health checks
+# 3. Validação completa (opcional)
+# Responda 'y' quando perguntado
+# ✓ Valida 61 endpoints
+# ✓ Valida RAG Pipeline
+# ✓ Valida Security (JWT, RLS, PII)
+# ✓ Score 100/100
 
-# 5. Pronto! 🎉
+# 4. Pronto! 🎉
 ```
+
+#### **Windows (PowerShell):**
+
+```powershell
+# 1. Clone o repositório
+git clone https://github.com/netbarros/Lotus.git
+cd Lotus
+
+# 2. Execute o instalador
+.\install.ps1
+
+# 3. Validação automática incluída
+# 4. Pronto! 🎉
+```
+
+#### **Hostinger VPS:**
+
+```bash
+# Download direto e instalação
+wget https://raw.githubusercontent.com/netbarros/Lotus/main/deploy-hostinger.sh
+chmod +x deploy-hostinger.sh
+./deploy-hostinger.sh
+
+# ✓ Firewall configurado automaticamente
+# ✓ SSL/TLS via Let's Encrypt
+# ✓ Backups diários (2 AM)
+# ✓ Health monitoring (5 min)
+# ✓ Log rotation automática
+```
+
+### O que o instalador faz:
+
+1. ✅ **Verifica requisitos** (Docker, RAM, Disco)
+2. ✅ **Cria configuração** (`.env` com secrets seguros)
+3. ✅ **Inicializa PostgreSQL 17** + pgVector + RLS Policies
+4. ✅ **Aplica 8 schemas SQL** (469 linhas RLS)
+5. ✅ **Inicia 26 services Docker** em ordem correta
+6. ✅ **Valida 61 API endpoints** (opcional)
+7. ✅ **Health checks completos** de todos services
+8. ✅ **Certificação 100/100** (10 dimensões validadas)
 
 ### Acesso aos Serviços
 
