@@ -5,7 +5,7 @@
  */
 
 import { create } from 'zustand';
-import type { SofiaHealth, SofiaMetrics } from '@types';
+import type { SofiaHealth, SofiaMetrics } from '@/types';
 import { sofia } from '@services/sofia';
 
 interface SofiaStore {
@@ -20,7 +20,7 @@ interface SofiaStore {
   stopMonitoring: () => void;
 }
 
-export const useSofiaStore = create<SofiaStore>((set, get) => ({
+export const useSofiaStore = create<SofiaStore>((set, _get) => ({
   health: null,
   metrics: null,
   loading: false,

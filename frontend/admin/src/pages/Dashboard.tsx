@@ -10,7 +10,7 @@ import { api } from '@services/api';
 import { StatsCard } from '@components/dashboard/StatsCard';
 import { SofiaHealthWidget } from '@components/dashboard/SofiaHealthWidget';
 import { PetalasOverview } from '@components/dashboard/PetalasOverview';
-import type { DashboardStats } from '@types';
+import type { DashboardStats } from '@/types';
 
 export function Dashboard() {
   const { data: stats, isLoading } = useQuery({

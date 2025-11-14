@@ -3,12 +3,19 @@
  * Global test configuration and mocks
  */
 
-import { beforeAll, afterAll, beforeEach, afterEach, vi } from 'vitest';
+import { beforeAll, afterAll, beforeEach, vi } from 'vitest';
 import { config } from 'dotenv';
 
 config({ path: '.env.test' });
 
-export const mockRedis = {
+export const mockRedis: {
+  get: ReturnType<typeof vi.fn>;
+  set: ReturnType<typeof vi.fn>;
+  setex: ReturnType<typeof vi.fn>;
+  del: ReturnType<typeof vi.fn>;
+  ping: ReturnType<typeof vi.fn>;
+  quit: ReturnType<typeof vi.fn>;
+} = {
   get: vi.fn(),
   set: vi.fn(),
   setex: vi.fn(),
@@ -17,7 +24,11 @@ export const mockRedis = {
   quit: vi.fn(),
 };
 
-export const mockPool = {
+export const mockPool: {
+  query: ReturnType<typeof vi.fn>;
+  connect: ReturnType<typeof vi.fn>;
+  end: ReturnType<typeof vi.fn>;
+} = {
   query: vi.fn(),
   connect: vi.fn(),
   end: vi.fn(),

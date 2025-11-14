@@ -94,14 +94,104 @@ export interface Project {
 // ═══════════════════════════════════════════════════════════════════════════
 
 export class ERPCore {
-  private config: ERPConfig;
+  private _config: ERPConfig;
   private db: Pool;
-  private redis: Redis;
+  private _redis: Redis;
 
-  constructor(config: ERPConfig, db: Pool, redis: Redis) {
-    this.config = config;
+  // Facade properties for server.ts API compatibility
+  public financial: any;
+  public inventory: any;
+  public hr: any;
+  public crm: any;
+  public projects: any;
+
+  constructor(redis: Redis, db: Pool, config?: ERPConfig) {
+    // Handle both old and new constructor signatures
+    this._redis = redis;
     this.db = db;
-    this.redis = redis;
+    this._config = config || {
+      tenantId: process.env.TENANT_ID || 'default',
+      modules: {
+        financial: true,
+        inventory: true,
+        hr: true,
+        crm: true,
+        projects: true,
+      },
+    };
+
+    // Initialize facade properties
+    this.financial = {
+      createTransaction: this.createTransaction.bind(this),
+      getFinancialSummary: this.getFinancialSummary.bind(this),
+      getAccountsReceivable: this.getAccountsReceivable.bind(this),
+      getAccountsPayable: this.getAccountsPayable.bind(this),
+    };
+
+    this.inventory = {
+      createInventoryItem: this.createInventoryItem.bind(this),
+      updateInventoryQuantity: this.updateInventoryQuantity.bind(this),
+      getLowStockItems: this.getLowStockItems.bind(this),
+      getInventoryValue: this.getInventoryValue.bind(this),
+    };
+
+    this.hr = {
+      createEmployee: this.createEmployee.bind(this),
+      updateEmployeeSalary: this.updateEmployeeSalary.bind(this),
+      getTotalPayroll: this.getTotalPayroll.bind(this),
+    };
+
+    this.crm = {
+      createCustomer: this.createCustomer.bind(this),
+      updateCustomerRevenue: this.updateCustomerRevenue.bind(this),
+      getTopCustomers: this.getTopCustomers.bind(this),
+    };
+
+    this.projects = {
+      createProject: this.createProject.bind(this),
+      trackProjectExpense: this.trackProjectExpense.bind(this),
+      getProjectProgress: this.getProjectProgress.bind(this),
+    };
+  }
+
+  private get config(): ERPConfig {
+    return this._config;
+  }
+
+  private get redis(): Redis {
+    return this._redis;
+  }
+
+  async initialize(): Promise<void> {
+    console.log(`   📊 Initializing ERP for tenant: ${this.config.tenantId}`);
+    console.log(`   📦 Enabled modules: ${Object.keys(this.config.modules).filter(k => this.config.modules[k as keyof typeof this.config.modules]).join(', ')}`);
+    // Could add schema validation, cache warming, etc. here
+  }
+
+  async getStatus() {
+    const [
+      inventoryValue,
+      totalPayroll,
+      accountsReceivable,
+      accountsPayable,
+    ] = await Promise.all([
+      this.getInventoryValue().catch(() => ({ cost: 0, retail: 0 })),
+      this.getTotalPayroll().catch(() => 0),
+      this.getAccountsReceivable().catch(() => 0),
+      this.getAccountsPayable().catch(() => 0),
+    ]);
+
+    return {
+      tenantId: this.config.tenantId,
+      modules: this.config.modules,
+      metrics: {
+        inventory: inventoryValue,
+        payroll: totalPayroll,
+        accountsReceivable,
+        accountsPayable,
+      },
+      timestamp: new Date().toISOString(),
+    };
   }
 
   // ═════════════════════════════════════════════════════════════════════════
@@ -309,6 +399,25 @@ export class ERPCore {
       departments: result.rows,
       totalPayroll: result.rows.reduce((sum, dept) => sum + parseFloat(dept.total_salary), 0),
     };
+  }
+
+  async updateEmployeeSalary(employeeId: string, newSalary: number): Promise<void> {
+    await this.db.query(
+      `UPDATE erp_employees
+       SET salary = $1, updated_at = NOW()
+       WHERE id = $2 AND tenant_id = $3`,
+      [newSalary, employeeId, this.config.tenantId]
+    );
+  }
+
+  async getTotalPayroll(): Promise<number> {
+    const result = await this.db.query(
+      `SELECT SUM(salary) as total
+       FROM erp_employees
+       WHERE tenant_id = $1 AND status = 'active'`,
+      [this.config.tenantId]
+    );
+    return parseFloat(result.rows[0].total || 0);
   }
 
   async trackAttendance(

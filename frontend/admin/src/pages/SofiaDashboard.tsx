@@ -8,7 +8,7 @@ import { useState } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { sofia } from '@services/sofia';
 import { useSofiaHealth } from '@hooks/useSofiaHealth';
-import type { IntentionRequest } from '@types';
+import type { IntentionRequest } from '@/types';
 
 export function SofiaDashboard() {
   const { health, isLoading: healthLoading } = useSofiaHealth();

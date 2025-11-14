@@ -6,7 +6,7 @@
  */
 
 import axios, { AxiosInstance, AxiosError } from 'axios';
-import type { APIResponse, APIError, PaginationParams } from '@types';
+import type { APIResponse, APIError, PaginationParams } from '@/types';
 
 // ═══════════════════════════════════════════════════════════════════════════
 // API CLIENT

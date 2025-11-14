@@ -6,6 +6,7 @@
 
 import { useSofiaHealth } from '@hooks/useSofiaHealth';
 import { formatNumber, formatDuration } from '@utils/format';
+import type { SofiaHealth } from '@/types';
 
 export function SofiaHealthWidget() {
   const { health, isLoading } = useSofiaHealth();
@@ -30,7 +31,20 @@ export function SofiaHealthWidget() {
     ? ((health.metrics.successfulRequests / health.metrics.totalRequests) * 100).toFixed(1)
     : 0;
 
-  const components = health?.components || {};
+  const components: SofiaHealth['components'] = health?.components || {
+    IntentionEngine: false,
+    UXValidator: false,
+    SEOOptimizer: false,
+    DirectusOrchestrator: false,
+    MarketplaceManager: false,
+    DecisionLogger: false,
+    EventStore: false,
+    Metrics: false,
+    LangChain: false,
+    Langfuse: false,
+    Qdrant: false,
+    pgVector: false,
+  };
   const activeComponents = Object.values(components).filter(Boolean).length;
   const totalComponents = Object.keys(components).length;
 

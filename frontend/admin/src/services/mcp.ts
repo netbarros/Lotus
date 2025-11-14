@@ -6,7 +6,7 @@
  */
 
 import axios, { AxiosInstance } from 'axios';
-import type { MCPConnection, MCPResource, MCPConfig } from '@types';
+import type { MCPConnection, MCPResource, MCPConfig } from '@/types';
 
 // ═══════════════════════════════════════════════════════════════════════════
 // MCP CLIENT

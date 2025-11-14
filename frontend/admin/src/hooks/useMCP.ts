@@ -7,7 +7,7 @@
 import { useState, useEffect } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { mcp } from '@services/mcp';
-import type { MCPConnection, MCPResource } from '@types';
+import type { MCPResource } from '@/types';
 
 export function useMCP() {
   const [connections, setConnections] = useState<string[]>([]);

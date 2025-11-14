@@ -6,7 +6,7 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@services/api';
-import type { Petala } from '@types';
+import type { Petala } from '@/types';
 
 export function usePetalas() {
   const queryClient = useQueryClient();
