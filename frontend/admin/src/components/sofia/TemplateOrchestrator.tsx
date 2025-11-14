@@ -294,7 +294,6 @@ class SofiaLayoutEngine {
   ): Promise<TemplateComponent[]> {
     const components: TemplateComponent[] = [];
     let row = 0;
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     let col = 0;
 
     // Generate header/stats row
@@ -461,9 +460,7 @@ export const TemplateOrchestrator: React.FC<TemplateOrchestratorProps> = ({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const location = useLocation();
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const navigate = useNavigate();
 
   /**

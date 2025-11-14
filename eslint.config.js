@@ -10,7 +10,7 @@ export default [
   // Base JavaScript recommended
   js.configs.recommended,
 
-  // TypeScript configuration
+  // TypeScript configuration - unified for all workspaces
   {
     files: ['**/*.ts', '**/*.tsx'],
     languageOptions: {
@@ -24,6 +24,7 @@ export default [
       },
       globals: {
         ...globals.node,
+        ...globals.browser,
         ...globals.es2021,
       },
     },
