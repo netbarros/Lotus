@@ -193,33 +193,44 @@ services:
   #   command: pnpm dev
 
   # ============================================================================
-  # FRONTEND ADMIN (NOT YET IMPLEMENTED - COMMENTED OUT)
+  # FRONTEND ADMIN - Enterprise Metronic Dashboard ✅ IMPLEMENTED
   # ============================================================================
-  # NOTE: Frontend Admin is not yet implemented. Uncomment when ready.
-  # For now, use Directus admin interface at http://localhost:8055
+  # Complete React + TypeScript + Metronic admin interface
+  # Integrated with Sofia AI v4.0 + MCP + Directus
 
-  # frontend-admin:
-  #   build:
-  #     context: ../../frontend/admin
-  #     dockerfile: Dockerfile
-  #   container_name: magicsaas-frontend-admin
-  #   ports:
-  #     - "3001:3001"
-  #   environment:
-  #     NODE_ENV: development
-  #     PORT: 3001
-  #     NEXT_PUBLIC_API_URL: http://localhost:3000
-  #     NEXT_PUBLIC_DIRECTUS_URL: http://localhost:8055
-  #   volumes:
-  #     - ../../frontend/admin:/app
-  #     - /app/node_modules
-  #     - /app/.next
-  #   depends_on:
-  #     - backend-api
-  #   networks:
-  #     - magicsaas-network
-  #   restart: unless-stopped
-  #   command: pnpm dev
+  frontend-admin:
+    build:
+      context: ../../frontend/admin
+      dockerfile: Dockerfile.dev
+      target: development
+    container_name: magicsaas-frontend-admin
+    ports:
+      - "3001:3001"
+    environment:
+      NODE_ENV: development
+      VITE_API_URL: http://directus:8055
+      VITE_DIRECTUS_URL: http://directus:8055
+      VITE_SOFIA_URL: http://sofia-ai:3003
+      VITE_MCP_ENABLED: "true"
+      VITE_MCP_DIRECTUS_URL: http://directus:8055
+      VITE_FEATURE_DASHBOARDS: "true"
+      VITE_FEATURE_PETALAS: "true"
+      VITE_FEATURE_MARKETPLACE: "true"
+      VITE_FEATURE_SOFIA_AI: "true"
+      VITE_FEATURE_MCP: "true"
+      VITE_SKIP_AUTH: "true"
+    volumes:
+      - ../../frontend/admin:/app
+      - /app/node_modules
+    depends_on:
+      directus:
+        condition: service_healthy
+      sofia-ai:
+        condition: service_started
+    networks:
+      - magicsaas-network
+    restart: unless-stopped
+    command: npm run dev
 
   # ============================================================================
   # INNGEST - Serverless Workflows
