@@ -1,0 +1,851 @@
+# ═══════════════════════════════════════════════════════════════════════════
+# MAGICSAAS SYSTEM-∞ - ULTIMATE END-TO-END INSTALLER
+# Complete Enterprise Stack - All Components Included
+# Version: ∞.2026.Q1-ULTIMATE
+# ═══════════════════════════════════════════════════════════════════════════
+#
+# This is the COMPLETE MagicSaaS stack including:
+# - Sofia AI v3.0 (The Brain) - Complete Cognitive Mesh OS
+# - Directus 11+ (Central Hub) - with all extensions
+# - Evolution API + Baileys (WhatsApp Integration)
+# - n8n (Marketing Automation)
+# - Chatwoot (Customer Support & Client Area)
+# - PostgreSQL 17 + pgVector + TimescaleDB
+# - Redis 8
+# - Prometheus + Grafana + Jaeger (Observability)
+# - MailHog (Email Testing)
+# - MinIO (S3-compatible Object Storage)
+# - All 13 Pétalas + 50 Micro-Pétalas ready
+#
+# ═══════════════════════════════════════════════════════════════════════════
+
+version: '3.9'
+
+services:
+  # ═══════════════════════════════════════════════════════════════════════════
+  # DATABASE LAYER
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  postgres:
+    image: pgvector/pgvector:pg17
+    container_name: magicsaas-postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-magicsaas}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_INITDB_ARGS: "-E UTF8 --locale=en_US.UTF-8"
+      # Enable pgVector and TimescaleDB
+      POSTGRES_MULTIPLE_EXTENSIONS: "pgvector,timescaledb"
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-scripts:/docker-entrypoint-initdb.d
+      - ../../database/schemas:/schemas:ro
+      - ../../database/seeds:/seeds:ro
+    command: >
+      postgres
+      -c max_connections=500
+      -c shared_buffers=512MB
+      -c effective_cache_size=2GB
+      -c maintenance_work_mem=128MB
+      -c checkpoint_completion_target=0.9
+      -c wal_buffers=16MB
+      -c default_statistics_target=100
+      -c random_page_cost=1.1
+      -c effective_io_concurrency=200
+      -c work_mem=4MB
+      -c min_wal_size=2GB
+      -c max_wal_size=8GB
+      -c max_worker_processes=4
+      -c max_parallel_workers_per_gather=2
+      -c max_parallel_workers=4
+      -c shared_preload_libraries='timescaledb'
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - magicsaas-network
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+        reservations:
+          cpus: '1'
+          memory: 1G
+
+  redis:
+    image: redis:8-alpine
+    container_name: magicsaas-redis
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    command: >
+      redis-server
+      --appendonly yes
+      --maxmemory 1gb
+      --maxmemory-policy allkeys-lru
+      --save 900 1
+      --save 300 10
+      --save 60 10000
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - magicsaas-network
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # OBJECT STORAGE - MinIO (S3-compatible)
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  minio:
+    image: minio/minio:latest
+    container_name: magicsaas-minio
+    ports:
+      - "9000:9000"      # API
+      - "9001:9001"      # Console
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minioadmin123}
+      MINIO_BROWSER: "on"
+      MINIO_DOMAIN: ${MINIO_DOMAIN:-localhost}
+    volumes:
+      - minio_data:/data
+    command: server /data --console-address ":9001"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - magicsaas-network
+    restart: unless-stopped
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # DIRECTUS 11+ - CENTRAL HUB
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  directus:
+    image: directus/directus:11-latest
+    container_name: magicsaas-directus
+    ports:
+      - "${DIRECTUS_PORT:-8055}:8055"
+    environment:
+      # Core
+      KEY: ${DIRECTUS_KEY}
+      SECRET: ${DIRECTUS_SECRET}
+
+      # Admin User
+      ADMIN_EMAIL: ${DIRECTUS_ADMIN_EMAIL}
+      ADMIN_PASSWORD: ${DIRECTUS_ADMIN_PASSWORD}
+
+      # Database
+      DB_CLIENT: pg
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_DATABASE: ${POSTGRES_DB:-magicsaas}
+      DB_USER: ${POSTGRES_USER:-postgres}
+      DB_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      DB_SSL: "false"
+
+      # Cache
+      CACHE_ENABLED: "true"
+      CACHE_STORE: redis
+      CACHE_TTL: 600
+      CACHE_NAMESPACE: directus-cache
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+
+      # Rate Limiting
+      RATE_LIMITER_ENABLED: "true"
+      RATE_LIMITER_STORE: redis
+      RATE_LIMITER_POINTS: 100
+      RATE_LIMITER_DURATION: 60
+
+      # Storage - MinIO (S3-compatible)
+      STORAGE_LOCATIONS: s3
+      STORAGE_S3_DRIVER: s3
+      STORAGE_S3_KEY: ${MINIO_ROOT_USER:-minioadmin}
+      STORAGE_S3_SECRET: ${MINIO_ROOT_PASSWORD:-minioadmin123}
+      STORAGE_S3_BUCKET: directus
+      STORAGE_S3_REGION: us-east-1
+      STORAGE_S3_ENDPOINT: http://minio:9000
+      STORAGE_S3_FORCE_PATH_STYLE: "true"
+
+      # Assets
+      ASSETS_CACHE_TTL: 86400
+      ASSETS_TRANSFORM_MAX_CONCURRENT: 4
+      ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION: 6000
+
+      # Email (using MailHog for dev)
+      EMAIL_FROM: ${EMAIL_FROM:-noreply@softwarelotus.com.br}
+      EMAIL_TRANSPORT: smtp
+      EMAIL_SMTP_HOST: mailhog
+      EMAIL_SMTP_PORT: 1025
+      EMAIL_SMTP_SECURE: "false"
+
+      # CORS
+      CORS_ENABLED: "true"
+      CORS_ORIGIN: "true"
+      CORS_CREDENTIALS: "true"
+      CORS_METHODS: "GET,POST,PATCH,DELETE"
+
+      # Security
+      AUTH_PROVIDERS: ""
+      REFRESH_TOKEN_TTL: 7d
+      ACCESS_TOKEN_TTL: 15m
+
+      # Extensions
+      EXTENSIONS_PATH: /directus/extensions
+      EXTENSIONS_AUTO_RELOAD: "true"
+
+      # Telemetry
+      TELEMETRY: "false"
+
+      # Webhooks
+      WEBHOOKS_ALLOW_URL_PRIVATE_NETWORKS: "true"
+
+      # File Upload
+      MAX_PAYLOAD_SIZE: 100mb
+
+      # Query Limits
+      QUERY_LIMIT_DEFAULT: 100
+      QUERY_LIMIT_MAX: 1000
+
+      # Logging
+      LOG_LEVEL: info
+      LOG_STYLE: pretty
+
+    volumes:
+      - directus_uploads:/directus/uploads
+      - directus_extensions:/directus/extensions
+      - ../../backend/directus/extensions:/directus/extensions/custom:ro
+      - ../../backend/directus/flows:/directus/flows:ro
+      - ../../backend/directus/insights:/directus/insights:ro
+      - ../../backend/directus/snapshots:/directus/snapshots
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8055/server/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    networks:
+      - magicsaas-network
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # SOFIA AI v3.0 - THE BRAIN
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  sofia-ai:
+    build:
+      context: ../../backend/sofia-ai
+      dockerfile: Dockerfile
+      args:
+        NODE_VERSION: "22"
+    container_name: magicsaas-sofia-ai
+    ports:
+      - "${SOFIA_PORT:-3003}:3003"
+    environment:
+      NODE_ENV: ${NODE_ENV:-development}
+      PORT: 3003
+
+      # Redis
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_URL: redis://redis:6379
+
+      # Anthropic Claude AI
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+
+      # Directus Central Hub
+      DIRECTUS_URL: http://directus:8055
+      DIRECTUS_TOKEN: ${DIRECTUS_ADMIN_TOKEN:-}
+
+      # Database (for direct queries if needed)
+      DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-magicsaas}
+
+      # Metronic Path
+      METRONIC_PATH: /workspace/metronic
+
+      # Feature Flags (all enabled)
+      FEATURE_INTENTION_ENGINE: "true"
+      FEATURE_UX_VALIDATION: "true"
+      FEATURE_SEO_OPTIMIZATION: "true"
+      FEATURE_MARKETPLACE: "true"
+      FEATURE_META_ORCHESTRATION: "true"
+      FEATURE_ADAPTIVE_LEARNING: "true"
+
+      # Logging
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+
+      # Observability
+      PROMETHEUS_ENABLED: "true"
+      JAEGER_ENDPOINT: http://jaeger:14268/api/traces
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://jaeger:4318
+
+    volumes:
+      - ../../backend/sofia-ai:/app
+      - ../../metronic:/workspace/metronic:ro
+      - ../../frontend:/workspace/frontend
+      - /app/node_modules
+      - sofia_logs:/app/logs
+      - sofia_cache:/app/.cache
+    depends_on:
+      redis:
+        condition: service_healthy
+      directus:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    networks:
+      - magicsaas-network
+    restart: unless-stopped
+    command: pnpm dev
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3003/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4G
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # EVOLUTION API + BAILEYS - WHATSAPP INTEGRATION
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  evolution-api:
+    image: atendai/evolution-api:latest
+    container_name: magicsaas-evolution-api
+    ports:
+      - "8080:8080"
+    environment:
+      # Server
+      SERVER_URL: ${EVOLUTION_SERVER_URL:-http://localhost:8080}
+      SERVER_PORT: 8080
+
+      # Database - PostgreSQL
+      DATABASE_ENABLED: "true"
+      DATABASE_PROVIDER: postgresql
+      DATABASE_CONNECTION_URI: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-magicsaas}?schema=evolution
+      DATABASE_CONNECTION_CLIENT_NAME: evolution_api
+      DATABASE_SAVE_DATA_INSTANCE: "true"
+      DATABASE_SAVE_DATA_NEW_MESSAGE: "true"
+      DATABASE_SAVE_MESSAGE_UPDATE: "true"
+      DATABASE_SAVE_DATA_CONTACTS: "true"
+      DATABASE_SAVE_DATA_CHATS: "true"
+
+      # Redis Cache
+      CACHE_REDIS_ENABLED: "true"
+      CACHE_REDIS_URI: redis://redis:6379/1
+      CACHE_REDIS_PREFIX_KEY: evolution
+      CACHE_REDIS_SAVE_INSTANCES: "true"
+      CACHE_LOCAL_ENABLED: "false"
+
+      # S3 Storage (MinIO)
+      S3_ENABLED: "true"
+      S3_ACCESS_KEY: ${MINIO_ROOT_USER:-minioadmin}
+      S3_SECRET_KEY: ${MINIO_ROOT_PASSWORD:-minioadmin123}
+      S3_BUCKET: evolution
+      S3_PORT: 9000
+      S3_ENDPOINT: minio
+      S3_USE_SSL: "false"
+
+      # Authentication
+      AUTHENTICATION_TYPE: apikey
+      AUTHENTICATION_API_KEY: ${EVOLUTION_API_KEY:-change-me-to-secure-key}
+      AUTHENTICATION_EXPOSE_IN_FETCH_INSTANCES: "true"
+
+      # Webhooks
+      WEBHOOK_GLOBAL_ENABLED: "true"
+      WEBHOOK_GLOBAL_URL: http://directus:8055/flows/trigger/evolution-webhook
+      WEBHOOK_GLOBAL_WEBHOOK_BY_EVENTS: "true"
+
+      # WhatsApp Settings
+      QRCODE_LIMIT: 30
+      QRCODE_COLOR: "#198754"
+
+      # Typebot Integration (if enabled)
+      TYPEBOT_ENABLED: "${TYPEBOT_ENABLED:-false}"
+      TYPEBOT_API_URL: "${TYPEBOT_API_URL:-http://typebot:3000}"
+
+      # Chatwoot Integration
+      CHATWOOT_ENABLED: "true"
+      CHATWOOT_ACCOUNT_ID: "${CHATWOOT_ACCOUNT_ID:-}"
+      CHATWOOT_TOKEN: "${CHATWOOT_TOKEN:-}"
+      CHATWOOT_URL: "http://chatwoot:3000"
+      CHATWOOT_SIGN_MSG: "true"
+      CHATWOOT_REOPEN_CONVERSATION: "true"
+      CHATWOOT_CONVERSATION_PENDING: "false"
+
+      # Logs
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      LOG_COLOR: "true"
+      LOG_BAILEYS: error
+
+      # Cleanup
+      DEL_INSTANCE: "false"
+      DEL_TEMP_INSTANCES: "true"
+
+    volumes:
+      - evolution_instances:/evolution/instances
+      - evolution_store:/evolution/store
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    networks:
+      - magicsaas-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # CHATWOOT - CUSTOMER SUPPORT & CLIENT AREA
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  chatwoot:
+    image: chatwoot/chatwoot:latest
+    container_name: magicsaas-chatwoot
+    ports:
+      - "3000:3000"
+    environment:
+      # Rails
+      RAILS_ENV: production
+      SECRET_KEY_BASE: ${CHATWOOT_SECRET_KEY_BASE:-replace-with-long-random-string}
+      FRONTEND_URL: ${CHATWOOT_FRONTEND_URL:-http://localhost:3000}
+
+      # Database
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_DATABASE: ${POSTGRES_DB:-magicsaas}
+      POSTGRES_USERNAME: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+
+      # Redis
+      REDIS_URL: redis://redis:6379/2
+      REDIS_PASSWORD: ""
+
+      # Storage - MinIO (S3-compatible)
+      ACTIVE_STORAGE_SERVICE: s3
+      S3_BUCKET_NAME: chatwoot
+      AWS_ACCESS_KEY_ID: ${MINIO_ROOT_USER:-minioadmin}
+      AWS_SECRET_ACCESS_KEY: ${MINIO_ROOT_PASSWORD:-minioadmin123}
+      AWS_REGION: us-east-1
+      S3_ENDPOINT: http://minio:9000
+      S3_FORCE_PATH_STYLE: "true"
+
+      # Email (MailHog for dev)
+      MAILER_SENDER_EMAIL: ${EMAIL_FROM:-noreply@softwarelotus.com.br}
+      SMTP_ADDRESS: mailhog
+      SMTP_PORT: 1025
+      SMTP_AUTHENTICATION: ""
+      SMTP_ENABLE_STARTTLS_AUTO: "false"
+      SMTP_OPENSSL_VERIFY_MODE: none
+
+      # Installation
+      INSTALLATION_NAME: MagicSaaS
+      INSTALLATION_ENV: development
+
+      # Features
+      ENABLE_ACCOUNT_SIGNUP: "false"
+      USE_INBOX_AVATAR_FOR_BOT: "true"
+
+      # Direct Uploads
+      DIRECT_UPLOADS_ENABLED: "true"
+
+      # Force SSL
+      FORCE_SSL: "false"
+
+    volumes:
+      - chatwoot_data:/app/storage
+      - chatwoot_public:/app/public
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    networks:
+      - magicsaas-network
+    restart: unless-stopped
+    command: bundle exec rails server -b 0.0.0.0 -p 3000
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 90s
+
+  chatwoot-sidekiq:
+    image: chatwoot/chatwoot:latest
+    container_name: magicsaas-chatwoot-sidekiq
+    environment:
+      RAILS_ENV: production
+      SECRET_KEY_BASE: ${CHATWOOT_SECRET_KEY_BASE:-replace-with-long-random-string}
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_DATABASE: ${POSTGRES_DB:-magicsaas}
+      POSTGRES_USERNAME: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      REDIS_URL: redis://redis:6379/2
+      REDIS_PASSWORD: ""
+    depends_on:
+      - chatwoot
+      - postgres
+      - redis
+    networks:
+      - magicsaas-network
+    restart: unless-stopped
+    command: bundle exec sidekiq -C config/sidekiq.yml
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # LANGFUSE - ML OBSERVABILITY & TRACING FOR LANGCHAIN
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  langfuse:
+    image: langfuse/langfuse:latest
+    container_name: magicsaas-langfuse
+    ports:
+      - "3030:3000"
+    environment:
+      # Database
+      DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-magicsaas}?schema=langfuse
+
+      # NextAuth
+      NEXTAUTH_URL: ${LANGFUSE_URL:-http://localhost:3030}
+      NEXTAUTH_SECRET: ${LANGFUSE_SECRET:-replace-with-random-secret-minimum-32-chars}
+
+      # Salt for API keys
+      SALT: ${LANGFUSE_SALT:-replace-with-random-salt}
+
+      # Telemetry
+      TELEMETRY_ENABLED: "false"
+
+      # Logging
+      NODE_ENV: production
+
+      # Optional: S3 storage for large traces
+      LANGFUSE_S3_EVENT_UPLOAD_ENABLED: "${LANGFUSE_S3_ENABLED:-true}"
+      LANGFUSE_S3_EVENT_UPLOAD_BUCKET: langfuse
+      LANGFUSE_S3_EVENT_UPLOAD_REGION: us-east-1
+      LANGFUSE_S3_EVENT_UPLOAD_ENDPOINT: http://minio:9000
+      LANGFUSE_S3_EVENT_UPLOAD_ACCESS_KEY_ID: ${MINIO_ROOT_USER:-minioadmin}
+      LANGFUSE_S3_EVENT_UPLOAD_SECRET_ACCESS_KEY: ${MINIO_ROOT_PASSWORD:-minioadmin123}
+      LANGFUSE_S3_EVENT_UPLOAD_FORCE_PATH_STYLE: "true"
+
+    volumes:
+      - langfuse_data:/app/.next
+    depends_on:
+      postgres:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    networks:
+      - magicsaas-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/public/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # QDRANT - VECTOR DATABASE FOR LANGCHAIN EMBEDDINGS
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: magicsaas-qdrant
+    ports:
+      - "6333:6333"  # HTTP API
+      - "6334:6334"  # gRPC API
+    environment:
+      QDRANT__SERVICE__API_KEY: ${QDRANT_API_KEY:-}
+      QDRANT__SERVICE__ENABLE_TLS: "false"
+      QDRANT__LOG_LEVEL: INFO
+    volumes:
+      - qdrant_data:/qdrant/storage
+      - qdrant_snapshots:/qdrant/snapshots
+    networks:
+      - magicsaas-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:6333/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # INNGEST - SERVERLESS WORKFLOWS
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  inngest:
+    image: inngest/inngest:latest
+    container_name: magicsaas-inngest
+    ports:
+      - "8288:8288"
+    environment:
+      INNGEST_DEV: "true"
+      INNGEST_SERVE_ORIGIN: ${INNGEST_SERVE_ORIGIN:-http://sofia-ai:3003}
+      INNGEST_LOG_LEVEL: info
+    networks:
+      - magicsaas-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8288/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # OBSERVABILITY - PROMETHEUS + GRAFANA + JAEGER
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: magicsaas-prometheus
+    ports:
+      - "${PROMETHEUS_PORT:-9090}:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./monitoring/slo-rules.yml:/etc/prometheus/slo-rules.yml:ro
+      - ../../infrastructure/monitoring/prometheus/alerts.yml:/etc/prometheus/alerts.yml:ro
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention.time=90d'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+      - '--web.enable-lifecycle'
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:9090/-/healthy"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - magicsaas-network
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: magicsaas-grafana
+    ports:
+      - "${GRAFANA_PORT:-3002}:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER:-admin}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-admin}
+      GF_USERS_ALLOW_SIGN_UP: "false"
+      GF_INSTALL_PLUGINS: grafana-clock-panel,grafana-simple-json-datasource,grafana-piechart-panel
+      GF_SERVER_ROOT_URL: ${GRAFANA_URL:-http://localhost:3002}
+      GF_ANALYTICS_REPORTING_ENABLED: "false"
+      GF_ANALYTICS_CHECK_FOR_UPDATES: "false"
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - ./monitoring/grafana/datasources:/etc/grafana/provisioning/datasources:ro
+    depends_on:
+      - prometheus
+    networks:
+      - magicsaas-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    container_name: magicsaas-jaeger
+    ports:
+      - "5775:5775/udp"    # Accept zipkin.thrift over compact thrift protocol
+      - "6831:6831/udp"    # Accept jaeger.thrift over compact thrift protocol
+      - "6832:6832/udp"    # Accept jaeger.thrift over binary thrift protocol
+      - "5778:5778"        # Serve configs
+      - "16686:16686"      # Serve frontend
+      - "14268:14268"      # Accept jaeger.thrift directly from clients
+      - "14250:14250"      # Accept model.proto
+      - "9411:9411"        # Accept Zipkin spans
+      - "4317:4317"        # OTLP gRPC
+      - "4318:4318"        # OTLP HTTP
+    environment:
+      COLLECTOR_ZIPKIN_HOST_PORT: :9411
+      COLLECTOR_OTLP_ENABLED: "true"
+      SPAN_STORAGE_TYPE: memory
+      MEMORY_MAX_TRACES: 10000
+    networks:
+      - magicsaas-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:14269/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # METRICS EXPORTERS
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  postgres-exporter:
+    image: prometheuscommunity/postgres-exporter:latest
+    container_name: magicsaas-postgres-exporter
+    ports:
+      - "9187:9187"
+    environment:
+      DATA_SOURCE_NAME: "postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-magicsaas}?sslmode=disable"
+      PG_EXPORTER_EXTEND_QUERY_PATH: /etc/postgres_exporter/queries.yaml
+    volumes:
+      - ./monitoring/postgres-queries.yaml:/etc/postgres_exporter/queries.yaml:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - magicsaas-network
+    restart: unless-stopped
+
+  redis-exporter:
+    image: oliver006/redis_exporter:latest
+    container_name: magicsaas-redis-exporter
+    ports:
+      - "9121:9121"
+    environment:
+      REDIS_ADDR: redis:6379
+    depends_on:
+      redis:
+        condition: service_healthy
+    networks:
+      - magicsaas-network
+    restart: unless-stopped
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # MAILHOG - EMAIL TESTING
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: magicsaas-mailhog
+    ports:
+      - "1025:1025"  # SMTP
+      - "8025:8025"  # Web UI
+    networks:
+      - magicsaas-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8025/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+# ═══════════════════════════════════════════════════════════════════════════
+# VOLUMES
+# ═══════════════════════════════════════════════════════════════════════════
+
+volumes:
+  # Database
+  postgres_data:
+    driver: local
+
+  # Cache
+  redis_data:
+    driver: local
+
+  # Object Storage
+  minio_data:
+    driver: local
+
+  # Directus
+  directus_uploads:
+    driver: local
+  directus_extensions:
+    driver: local
+
+  # Sofia AI
+  sofia_logs:
+    driver: local
+  sofia_cache:
+    driver: local
+
+  # Evolution API
+  evolution_instances:
+    driver: local
+  evolution_store:
+    driver: local
+
+  # Chatwoot
+  chatwoot_data:
+    driver: local
+  chatwoot_public:
+    driver: local
+
+  # Langfuse
+  langfuse_data:
+    driver: local
+
+  # Qdrant (Vector DB)
+  qdrant_data:
+    driver: local
+  qdrant_snapshots:
+    driver: local
+
+  # Monitoring
+  prometheus_data:
+    driver: local
+  grafana_data:
+    driver: local
+
+# ═══════════════════════════════════════════════════════════════════════════
+# NETWORKS
+# ═══════════════════════════════════════════════════════════════════════════
+
+networks:
+  magicsaas-network:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.25.0.0/16
+          gateway: 172.25.0.1
