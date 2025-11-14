@@ -1,19 +1,22 @@
 # ADR-006: Metronic as Universal UI/UX Framework
 
-**Status:** ✅ Accepted
-**Date:** 2025-11-06
-**Deciders:** NetBarros, Sofia AI Architecture Team
-**Related ADRs:** ADR-001 (Directus), ADR-002 (Cognitive Mesh OS), ADR-003 (Sofia AI)
+**Status:** ✅ Accepted **Date:** 2025-11-06 **Deciders:** NetBarros, Sofia AI
+Architecture Team **Related ADRs:** ADR-001 (Directus), ADR-002 (Cognitive Mesh
+OS), ADR-003 (Sofia AI)
 
 ---
 
 ## Context
 
-The MagicSaaS System-∞ requires a **world-class UI/UX framework** that can serve:
+The MagicSaaS System-∞ requires a **world-class UI/UX framework** that can
+serve:
 
-1. **13 Pétalas (Verticals)** - Each with unique industry-specific interfaces (Fashion e-commerce, Healthcare EHR, Restaurant POS, etc.)
-2. **Backend Admin Interface** - Unified control panel for tenant management, analytics, configuration
-3. **Marketplace Frontend** - E-commerce platform for selling Pétalas/modules/themes
+1. **13 Pétalas (Verticals)** - Each with unique industry-specific interfaces
+   (Fashion e-commerce, Healthcare EHR, Restaurant POS, etc.)
+2. **Backend Admin Interface** - Unified control panel for tenant management,
+   analytics, configuration
+3. **Marketplace Frontend** - E-commerce platform for selling
+   Pétalas/modules/themes
 4. **Landing Pages** - softwarelotus.com.br, product pages, marketing sites
 5. **Client-Facing Apps** - Dashboards, reports, self-service portals
 
@@ -32,20 +35,21 @@ The MagicSaaS System-∞ requires a **world-class UI/UX framework** that can ser
 
 ### Alternatives Considered:
 
-| Framework | Pros | Cons | Decision |
-|-----------|------|------|----------|
-| **Material-UI (MUI)** | Free, popular, React ecosystem | Generic Google design, limited SaaS templates | ❌ Rejected |
-| **Ant Design** | Excellent table components | Chinese design language, complex customization | ❌ Rejected |
-| **Tailwind UI** | Utility-first, modern | Requires extensive custom building | ❌ Rejected |
-| **AdminLTE** | Free, many plugins | Dated design, jQuery-based | ❌ Rejected |
-| **CoreUI** | Modern, clean | Limited advanced components | ❌ Rejected |
-| **Metronic 9** | **50+ demos, 200+ layouts, SaaS-optimized, framework agnostic** | **Paid license ($49-$499)** | ✅ **SELECTED** |
+| Framework             | Pros                                                            | Cons                                           | Decision        |
+| --------------------- | --------------------------------------------------------------- | ---------------------------------------------- | --------------- |
+| **Material-UI (MUI)** | Free, popular, React ecosystem                                  | Generic Google design, limited SaaS templates  | ❌ Rejected     |
+| **Ant Design**        | Excellent table components                                      | Chinese design language, complex customization | ❌ Rejected     |
+| **Tailwind UI**       | Utility-first, modern                                           | Requires extensive custom building             | ❌ Rejected     |
+| **AdminLTE**          | Free, many plugins                                              | Dated design, jQuery-based                     | ❌ Rejected     |
+| **CoreUI**            | Modern, clean                                                   | Limited advanced components                    | ❌ Rejected     |
+| **Metronic 9**        | **50+ demos, 200+ layouts, SaaS-optimized, framework agnostic** | **Paid license ($49-$499)**                    | ✅ **SELECTED** |
 
 ---
 
 ## Decision
 
-We will adopt **Metronic 9 by KeenThemes** as the **universal UI/UX framework** for:
+We will adopt **Metronic 9 by KeenThemes** as the **universal UI/UX framework**
+for:
 
 1. ✅ **All 13 Pétalas frontends** (Fashion, Restaurant, Healthcare, etc.)
 2. ✅ **Backend admin interface** (unified control panel)
@@ -56,7 +60,8 @@ We will adopt **Metronic 9 by KeenThemes** as the **universal UI/UX framework** 
 ### License:
 
 - **Regular License:** $49 (1 developer, 1 end product)
-- **Extended License:** $499 (unlimited developers, unlimited end products, SaaS resale)
+- **Extended License:** $499 (unlimited developers, unlimited end products, SaaS
+  resale)
 - **Decision:** Purchase **Extended License** to cover multi-tenant SaaS resale
 
 ---
@@ -67,21 +72,21 @@ We will adopt **Metronic 9 by KeenThemes** as the **universal UI/UX framework** 
 
 Each Pétala can start from a Metronic demo and customize:
 
-| Pétala | Base Demo | Customizations |
-|--------|-----------|----------------|
-| **Fashion** | `demo1` (E-commerce) | AR try-on, size guide, Instagram feed |
-| **Restaurant** | `demo6` (Food Delivery) | Table reservations, menu QR codes |
-| **Healthcare** | `demo8` (CRM) | Telemedicine video, EHR forms |
-| **Real Estate** | `demo1` (E-commerce) | VR property tours, map integration |
-| **Education** | `demo10` (LMS) | Gamification badges, video lessons |
-| **Fitness** | `demo7` (Project Mgmt) | Workout tracking, wearable sync |
-| **Legal** | `demo3` (SaaS App) | Case timeline, e-signature |
-| **Automotive** | `demo6` (Logistics) | Service order Kanban, parts inventory |
-| **Finance** | `demo2` (Analytics) | Open banking dashboards, reports |
-| **Travel** | `demo1` (E-commerce) | Booking calendar, itinerary builder |
-| **Events** | `demo5` (Ticketing) | QR check-in, seat map |
-| **Logistics** | `demo6` (Fleet) | Route optimization map, driver tracking |
-| **Retail** | `demo1` (E-commerce) | POS interface, omnichannel inventory |
+| Pétala          | Base Demo               | Customizations                          |
+| --------------- | ----------------------- | --------------------------------------- |
+| **Fashion**     | `demo1` (E-commerce)    | AR try-on, size guide, Instagram feed   |
+| **Restaurant**  | `demo6` (Food Delivery) | Table reservations, menu QR codes       |
+| **Healthcare**  | `demo8` (CRM)           | Telemedicine video, EHR forms           |
+| **Real Estate** | `demo1` (E-commerce)    | VR property tours, map integration      |
+| **Education**   | `demo10` (LMS)          | Gamification badges, video lessons      |
+| **Fitness**     | `demo7` (Project Mgmt)  | Workout tracking, wearable sync         |
+| **Legal**       | `demo3` (SaaS App)      | Case timeline, e-signature              |
+| **Automotive**  | `demo6` (Logistics)     | Service order Kanban, parts inventory   |
+| **Finance**     | `demo2` (Analytics)     | Open banking dashboards, reports        |
+| **Travel**      | `demo1` (E-commerce)    | Booking calendar, itinerary builder     |
+| **Events**      | `demo5` (Ticketing)     | QR check-in, seat map                   |
+| **Logistics**   | `demo6` (Fleet)         | Route optimization map, driver tracking |
+| **Retail**      | `demo1` (E-commerce)    | POS interface, omnichannel inventory    |
 
 **Time Savings:** ~40-60 hours per Pétala vs building from scratch
 
@@ -118,69 +123,76 @@ Metronic 9 supports:
 
 **Decision for MagicSaaS:**
 
-| Component | Framework | Rationale |
-|-----------|-----------|-----------|
-| **13 Pétalas** | Vue 3 + Vite | Lightweight, fast, great DX, Sofia AI code generation optimized |
-| **Backend Admin** | Vue 3 + Vite | Consistency with Pétalas, Directus Vue SDK |
-| **Marketplace** | Vue 3 + Vite | E-commerce demo optimized for Vue |
-| **Landing Pages** | HTML/JS | SEO optimized, no hydration needed |
-| **Directus Panels** | Vue 3 | Native Directus extension format |
+| Component           | Framework    | Rationale                                                       |
+| ------------------- | ------------ | --------------------------------------------------------------- |
+| **13 Pétalas**      | Vue 3 + Vite | Lightweight, fast, great DX, Sofia AI code generation optimized |
+| **Backend Admin**   | Vue 3 + Vite | Consistency with Pétalas, Directus Vue SDK                      |
+| **Marketplace**     | Vue 3 + Vite | E-commerce demo optimized for Vue                               |
+| **Landing Pages**   | HTML/JS      | SEO optimized, no hydration needed                              |
+| **Directus Panels** | Vue 3        | Native Directus extension format                                |
 
 ---
 
 ### 4. **Integration with Sofia AI SolutionArchitect**
 
-When Sofia AI generates a solution, the **SolutionArchitect** component intelligently selects:
+When Sofia AI generates a solution, the **SolutionArchitect** component
+intelligently selects:
 
 ```typescript
 // Sofia AI decision example
 interface SolutionArchitecture {
-  basePetala: string;              // 'fashion' | 'restaurant' | 'healthcare' | ...
-  modules: string[];               // ['auth', 'payment', 'notifications', ...]
+  basePetala: string; // 'fashion' | 'restaurant' | 'healthcare' | ...
+  modules: string[]; // ['auth', 'payment', 'notifications', ...]
   metronic: {
-    demo: string;                  // 'demo1' | 'demo2' | ... | 'demo50'
-    layouts: string[];             // ['ecommerce-dashboard', 'product-catalog', 'checkout']
-    components: string[];          // ['kt-card-product', 'kt-table-orders', 'kt-form-checkout']
-    theme: 'light' | 'dark';       // User preference
-    colorScheme: string;           // 'blue' | 'green' | 'purple' | ...
-    framework: 'vue' | 'react';    // Default: 'vue'
+    demo: string; // 'demo1' | 'demo2' | ... | 'demo50'
+    layouts: string[]; // ['ecommerce-dashboard', 'product-catalog', 'checkout']
+    components: string[]; // ['kt-card-product', 'kt-table-orders', 'kt-form-checkout']
+    theme: 'light' | 'dark'; // User preference
+    colorScheme: string; // 'blue' | 'green' | 'purple' | ...
+    framework: 'vue' | 'react'; // Default: 'vue'
   };
-  microPetalas: string[];          // ['ar-try-on', 'size-guide', 'instagram-feed']
-  customizations: string[];        // ['Add seasonal collection filter', 'Integrate Instagram Shopping API']
+  microPetalas: string[]; // ['ar-try-on', 'size-guide', 'instagram-feed']
+  customizations: string[]; // ['Add seasonal collection filter', 'Integrate Instagram Shopping API']
 }
 
 // Example: Fashion E-commerce
 const fashionSolution: SolutionArchitecture = {
   basePetala: 'fashion',
-  modules: ['auth', 'payment-stripe', 'notifications', 'analytics', 'ai-recommendations'],
+  modules: [
+    'auth',
+    'payment-stripe',
+    'notifications',
+    'analytics',
+    'ai-recommendations',
+  ],
   metronic: {
-    demo: 'demo1',  // E-commerce demo
+    demo: 'demo1', // E-commerce demo
     layouts: [
-      'layout-ecommerce-dashboard',    // Admin dashboard
-      'layout-product-catalog',        // Customer-facing catalog
-      'layout-product-detail',         // Product page
-      'layout-shopping-cart',          // Cart
-      'layout-checkout',               // Checkout flow
-      'layout-order-tracking',         // Post-purchase
+      'layout-ecommerce-dashboard', // Admin dashboard
+      'layout-product-catalog', // Customer-facing catalog
+      'layout-product-detail', // Product page
+      'layout-shopping-cart', // Cart
+      'layout-checkout', // Checkout flow
+      'layout-order-tracking', // Post-purchase
     ],
     components: [
-      'kt-card-product',               // Product card
-      'kt-table-orders',               // Orders table
-      'kt-form-checkout',              // Checkout form
-      'kt-chart-sales',                // Sales chart
-      'kt-datatable-customers',        // Customer list
-      'kt-drawer-filters',             // Product filters
+      'kt-card-product', // Product card
+      'kt-table-orders', // Orders table
+      'kt-form-checkout', // Checkout form
+      'kt-chart-sales', // Sales chart
+      'kt-datatable-customers', // Customer list
+      'kt-drawer-filters', // Product filters
     ],
     theme: 'light',
-    colorScheme: 'purple',             // Fashion brand color
+    colorScheme: 'purple', // Fashion brand color
     framework: 'vue',
   },
   microPetalas: [
-    'ar-try-on',                       // AR camera for clothes
-    'size-guide-dynamic',              // Size recommendation AI
-    'instagram-feed',                  // Social proof
-    'wishlist',                        // Save for later
-    'loyalty-points',                  // Gamification
+    'ar-try-on', // AR camera for clothes
+    'size-guide-dynamic', // Size recommendation AI
+    'instagram-feed', // Social proof
+    'wishlist', // Save for later
+    'loyalty-points', // Gamification
   ],
   customizations: [
     'Add filter by seasonal collection (Spring/Summer/Fall/Winter)',
@@ -354,7 +366,7 @@ export default defineConfig({
             '@metronic/charts',
             '@metronic/forms',
           ],
-          'vendor': ['vue', 'vue-router', 'pinia'],
+          vendor: ['vue', 'vue-router', 'pinia'],
         },
       },
     },
@@ -396,12 +408,12 @@ Metronic 9 supports:
 ```typescript
 // Sofia AI generates tenant-specific theme
 interface TenantTheme {
-  primary: string;      // '#8B5CF6' (purple for fashion)
-  secondary: string;    // '#EC4899' (pink accent)
+  primary: string; // '#8B5CF6' (purple for fashion)
+  secondary: string; // '#EC4899' (pink accent)
   mode: 'light' | 'dark';
-  logo: string;         // 'https://cdn.softwarelotus.com.br/tenants/acme/logo.svg'
+  logo: string; // 'https://cdn.softwarelotus.com.br/tenants/acme/logo.svg'
   favicon: string;
-  customCSS?: string;   // Optional overrides
+  customCSS?: string; // Optional overrides
 }
 
 // Applied at runtime
@@ -436,7 +448,8 @@ const applyTenantTheme = (theme: TenantTheme) => {
    - **ROI:** Saves ~500 hours of UI development = ~$50K in developer time
 
 2. **Vendor lock-in:** Switching to another framework = rewrite all UIs
-   - **Mitigation:** Metronic has 10+ years track record, unlikely to discontinue
+   - **Mitigation:** Metronic has 10+ years track record, unlikely to
+     discontinue
    - **Fallback:** Can extract CSS/JS and use without support if needed
 
 3. **Learning curve:** Developers must learn Metronic conventions
@@ -447,7 +460,8 @@ const applyTenantTheme = (theme: TenantTheme) => {
    - **Mitigation:** CDN caching, code splitting, lazy loading
    - **Impact:** Negligible on modern connections (< 1s download on 3G)
 
-5. **Customization limits:** Some highly custom UIs may require overriding styles
+5. **Customization limits:** Some highly custom UIs may require overriding
+   styles
    - **Mitigation:** CSS variables + Sass customization supported
    - **Escape hatch:** Can build custom components when truly needed
 
@@ -505,25 +519,25 @@ const applyTenantTheme = (theme: TenantTheme) => {
 
 ### Core Components Used:
 
-| Component | Usage | Pétalas Using |
-|-----------|-------|---------------|
-| **kt-card** | Container for content blocks | All 13 Pétalas |
-| **kt-datatable** | Data tables with sorting/filtering | All 13 Pétalas |
-| **kt-chart** | Charts (line, bar, pie, area) | All 13 Pétalas |
-| **kt-form** | Forms with validation | All 13 Pétalas |
-| **kt-modal** | Dialogs, confirmations | All 13 Pétalas |
-| **kt-drawer** | Side panels (filters, settings) | Fashion, Retail, Events |
-| **kt-timeline** | Activity feeds | Healthcare, Legal, Events |
-| **kt-calendar** | Calendar views | Restaurant, Events, Healthcare |
-| **kt-kanban** | Kanban boards | Automotive, Logistics, Legal |
-| **kt-chat** | Messaging interface | Healthcare (telemedicine), CTO Service |
-| **kt-file-manager** | File uploads/preview | Legal (documents), Healthcare (images) |
-| **kt-invoice** | Invoice generation | Finance, Automotive, Legal |
-| **kt-map** | Map integration | Real Estate, Logistics, Travel |
-| **kt-wizard** | Multi-step forms | All checkout flows |
+| Component           | Usage                              | Pétalas Using                          |
+| ------------------- | ---------------------------------- | -------------------------------------- |
+| **kt-card**         | Container for content blocks       | All 13 Pétalas                         |
+| **kt-datatable**    | Data tables with sorting/filtering | All 13 Pétalas                         |
+| **kt-chart**        | Charts (line, bar, pie, area)      | All 13 Pétalas                         |
+| **kt-form**         | Forms with validation              | All 13 Pétalas                         |
+| **kt-modal**        | Dialogs, confirmations             | All 13 Pétalas                         |
+| **kt-drawer**       | Side panels (filters, settings)    | Fashion, Retail, Events                |
+| **kt-timeline**     | Activity feeds                     | Healthcare, Legal, Events              |
+| **kt-calendar**     | Calendar views                     | Restaurant, Events, Healthcare         |
+| **kt-kanban**       | Kanban boards                      | Automotive, Logistics, Legal           |
+| **kt-chat**         | Messaging interface                | Healthcare (telemedicine), CTO Service |
+| **kt-file-manager** | File uploads/preview               | Legal (documents), Healthcare (images) |
+| **kt-invoice**      | Invoice generation                 | Finance, Automotive, Legal             |
+| **kt-map**          | Map integration                    | Real Estate, Logistics, Travel         |
+| **kt-wizard**       | Multi-step forms                   | All checkout flows                     |
 
-**Total Components Available:** 200+
-**Expected Usage:** ~80 components across all Pétalas
+**Total Components Available:** 200+ **Expected Usage:** ~80 components across
+all Pétalas
 
 ---
 
@@ -563,7 +577,8 @@ const applyTenantTheme = (theme: TenantTheme) => {
 
 ### Success Criteria:
 
-- ✅ **Development Speed:** 70-80% faster Pétala development (baseline: 200h → target: 40-60h)
+- ✅ **Development Speed:** 70-80% faster Pétala development (baseline: 200h →
+  target: 40-60h)
 - ✅ **Code Reuse:** 75%+ code reuse across Pétalas
 - ✅ **Performance:** FCP < 1.2s, LCP < 2.5s, CLS < 0.1
 - ✅ **Accessibility:** WCAG 2.1 AA compliance (tested with axe DevTools)
@@ -572,16 +587,16 @@ const applyTenantTheme = (theme: TenantTheme) => {
 
 ### Production Evidence (Q1 2026):
 
-| Metric | Target | Actual | Status |
-|--------|--------|--------|--------|
-| Pétala Development Time | 40-60h | TBD | 🟡 Pending |
-| Code Reuse % | 75% | TBD | 🟡 Pending |
-| FCP (First Contentful Paint) | < 1.2s | TBD | 🟡 Pending |
-| LCP (Largest Contentful Paint) | < 2.5s | TBD | 🟡 Pending |
-| CLS (Cumulative Layout Shift) | < 0.1 | TBD | 🟡 Pending |
-| WCAG 2.1 AA Compliance | 100% | TBD | 🟡 Pending |
-| UX Consistency Score | 90%+ | TBD | 🟡 Pending |
-| Sofia AI Manual Edits | < 20% | TBD | 🟡 Pending |
+| Metric                         | Target | Actual | Status     |
+| ------------------------------ | ------ | ------ | ---------- |
+| Pétala Development Time        | 40-60h | TBD    | 🟡 Pending |
+| Code Reuse %                   | 75%    | TBD    | 🟡 Pending |
+| FCP (First Contentful Paint)   | < 1.2s | TBD    | 🟡 Pending |
+| LCP (Largest Contentful Paint) | < 2.5s | TBD    | 🟡 Pending |
+| CLS (Cumulative Layout Shift)  | < 0.1  | TBD    | 🟡 Pending |
+| WCAG 2.1 AA Compliance         | 100%   | TBD    | 🟡 Pending |
+| UX Consistency Score           | 90%+   | TBD    | 🟡 Pending |
+| Sofia AI Manual Edits          | < 20%  | TBD    | 🟡 Pending |
 
 **Next Review:** Q2 2026 (after first 3 Pétalas in production)
 
@@ -602,21 +617,22 @@ const applyTenantTheme = (theme: TenantTheme) => {
 
 **Extended License Terms (Simplified):**
 
-- ✅ Can use in **unlimited end products** (all 13 Pétalas, backend, marketplace)
+- ✅ Can use in **unlimited end products** (all 13 Pétalas, backend,
+  marketplace)
 - ✅ Can use with **unlimited developers** on the team
 - ✅ Can **charge users** for access (SaaS model allowed)
 - ✅ Can **modify and customize** source code
 - ✅ Includes **lifetime updates** (new demos, components, features)
 - ✅ Includes **support** (email + Discord)
-- ❌ Cannot **resell Metronic itself** as a standalone product (we're not selling Metronic, we're selling Pétalas that use it)
+- ❌ Cannot **resell Metronic itself** as a standalone product (we're not
+  selling Metronic, we're selling Pétalas that use it)
 
-**Purchase:** https://themeforest.net/item/metronic-responsive-admin-dashboard-template/4021469
-**License Type:** Extended License
-**Cost:** $499 (one-time)
-**ROI:** Saves ~500 developer hours = ~$50,000 in labor costs
+**Purchase:**
+https://themeforest.net/item/metronic-responsive-admin-dashboard-template/4021469
+**License Type:** Extended License **Cost:** $499 (one-time) **ROI:** Saves ~500
+developer hours = ~$50,000 in labor costs
 
 ---
 
-**Decision Finalized:** 2025-11-06
-**Status:** ✅ Accepted - Implementation in Progress
-**Next ADR:** ADR-007 (TBD - VPS to Cloud Migration Strategy)
+**Decision Finalized:** 2025-11-06 **Status:** ✅ Accepted - Implementation in
+Progress **Next ADR:** ADR-007 (TBD - VPS to Cloud Migration Strategy)

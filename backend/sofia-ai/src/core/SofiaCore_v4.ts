@@ -220,17 +220,9 @@ export class SofiaCore_v4 {
       config.directus.token
     );
 
-    this.marketplace = new MarketplaceManager(
-      redis,
-      this.eventStore,
-      this.directus
-    );
+    this.marketplace = new MarketplaceManager(redis, this.eventStore, this.directus);
 
-    this.decisionLogger = new DecisionLogger(
-      redis,
-      this.eventStore,
-      this.directus
-    );
+    this.decisionLogger = new DecisionLogger(redis, this.eventStore, this.directus);
 
     // Initialize core engines
     this.intentionEngine = new IntentionEngine(
@@ -247,31 +239,16 @@ export class SofiaCore_v4 {
       config.anthropic.apiKey
     );
 
-    this.seoOptimizer = new SEOOptimizer(
-      redis,
-      this.eventStore,
-      config.anthropic.apiKey
-    );
+    this.seoOptimizer = new SEOOptimizer(redis, this.eventStore, config.anthropic.apiKey);
 
     // Initialize Metronic integration
     this.componentAnalyzer = new ComponentAnalyzer(redis, this.eventStore);
-    this.metronicWatcher = new MetronicWatcher(
-      this as any,
-      this.componentAnalyzer
-    );
+    this.metronicWatcher = new MetronicWatcher(this as any, this.componentAnalyzer);
 
     // Initialize advanced layers
-    this.layer11 = new Layer11_MetaOrchestration(
-      redis,
-      this.eventStore,
-      this.metrics
-    );
+    this.layer11 = new Layer11_MetaOrchestration(redis, this.eventStore, this.metrics);
 
-    this.layer09 = new Layer09_AdaptiveLearning(
-      redis,
-      this.eventStore,
-      config.anthropic.apiKey
-    );
+    this.layer09 = new Layer09_AdaptiveLearning(redis, this.eventStore, config.anthropic.apiKey);
 
     // ✨ NEW v4.0 - Initialize AI Stack
     if (config.features.langchain && config.langchain?.enabled !== false) {
@@ -279,7 +256,7 @@ export class SofiaCore_v4 {
         {
           anthropicApiKey: config.anthropic.apiKey,
           model: config.langchain?.model || config.anthropic.model,
-          temperature: config.langchain?.temperature
+          temperature: config.langchain?.temperature,
         },
         redis,
         this.eventStore
@@ -290,9 +267,11 @@ export class SofiaCore_v4 {
     if (config.features.langfuse && config.langfuse?.enabled !== false) {
       this.langfuse = new LangfuseService(
         {
-          publicKey: config.langfuse?.publicKey || process.env.LANGFUSE_PUBLIC_KEY || 'pk-lf-auto-generated',
-          secretKey: config.langfuse?.secretKey || process.env.LANGFUSE_SECRET_KEY || 'sk-lf-auto-generated',
-          host: config.langfuse?.host
+          publicKey:
+            config.langfuse?.publicKey || process.env.LANGFUSE_PUBLIC_KEY || 'pk-lf-auto-generated',
+          secretKey:
+            config.langfuse?.secretKey || process.env.LANGFUSE_SECRET_KEY || 'sk-lf-auto-generated',
+          host: config.langfuse?.host,
         },
         redis,
         this.eventStore
@@ -304,7 +283,7 @@ export class SofiaCore_v4 {
       this.qdrant = new QdrantService(
         {
           host: config.qdrant?.host || process.env.QDRANT_HOST || 'qdrant',
-          port: config.qdrant?.port || 6333
+          port: config.qdrant?.port || 6333,
         },
         redis,
         this.eventStore
@@ -316,7 +295,7 @@ export class SofiaCore_v4 {
       this.pgvector = new pgVectorService(
         {
           pool: postgres,
-          dimensions: config.pgvector?.dimensions || 1536
+          dimensions: config.pgvector?.dimensions || 1536,
         },
         redis,
         this.eventStore
@@ -339,8 +318,8 @@ export class SofiaCore_v4 {
         langchainExecutions: 0,
         langfuseTraces: 0,
         vectorSearches: 0,
-        embeddingsCount: 0
-      }
+        embeddingsCount: 0,
+      },
     };
   }
 
@@ -459,10 +438,10 @@ export class SofiaCore_v4 {
             langchain: !!this.langchain,
             langfuse: !!this.langfuse,
             qdrant: !!this.qdrant,
-            pgvector: !!this.pgvector
-          }
+            pgvector: !!this.pgvector,
+          },
         },
-        timestamp: new Date()
+        timestamp: new Date(),
       });
 
       logger.info('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
@@ -492,7 +471,7 @@ export class SofiaCore_v4 {
         name: 'process-intention',
         userId: request.requestedBy,
         tenantId: request.tenantId,
-        metadata: { type: request.type }
+        metadata: { type: request.type },
       });
     }
 
@@ -504,7 +483,7 @@ export class SofiaCore_v4 {
       // End trace
       if (this.langfuse && traceId) {
         await this.langfuse.endTrace(traceId, {
-          output: { success: true, quality: result.metadata.estimatedQuality }
+          output: { success: true, quality: result.metadata.estimatedQuality },
         });
       }
 
@@ -512,7 +491,7 @@ export class SofiaCore_v4 {
     } catch (error) {
       if (this.langfuse && traceId) {
         await this.langfuse.endTrace(traceId, {
-          metadata: { error: String(error), failed: true }
+          metadata: { error: String(error), failed: true },
         });
       }
       throw error;
@@ -604,7 +583,7 @@ export class SofiaCore_v4 {
     this.health.components[component] = {
       status,
       lastCheck: new Date(),
-      message
+      message,
     };
   }
 }

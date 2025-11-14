@@ -12,7 +12,7 @@ describe('Orders Endpoint', () => {
     // Authenticate
     const response = await api.post('/auth/login', {
       email: 'admin@example.com',
-      password: 'password'
+      password: 'password',
     });
     authToken = response.data.data.access_token;
     api.defaults.headers.common['Authorization'] = `Bearer ${authToken}`;
@@ -30,10 +30,8 @@ describe('Orders Endpoint', () => {
       const orderData = {
         customer_id: 1,
         status: 'pending',
-        total: 150.00,
-        items: [
-          { product_id: 1, quantity: 2, price: 75.00 }
-        ]
+        total: 150.0,
+        items: [{ product_id: 1, quantity: 2, price: 75.0 }],
       };
 
       const response = await api.post('/orders', orderData);
@@ -41,7 +39,7 @@ describe('Orders Endpoint', () => {
       expect(response.status).toBe(200);
       expect(response.data.data).toHaveProperty('id');
       expect(response.data.data.status).toBe('pending');
-      expect(response.data.data.total).toBe(150.00);
+      expect(response.data.data.total).toBe(150.0);
 
       testOrderId = response.data.data.id;
     });
@@ -49,8 +47,7 @@ describe('Orders Endpoint', () => {
     it('should validate required fields', async () => {
       const invalidOrder = { status: 'pending' };
 
-      await expect(api.post('/orders', invalidOrder))
-        .rejects.toThrow();
+      await expect(api.post('/orders', invalidOrder)).rejects.toThrow();
     });
   });
 
@@ -63,15 +60,14 @@ describe('Orders Endpoint', () => {
     });
 
     it('should return 404 for non-existent order', async () => {
-      await expect(api.get('/orders/99999'))
-        .rejects.toThrow();
+      await expect(api.get('/orders/99999')).rejects.toThrow();
     });
   });
 
   describe('PATCH /orders/:id', () => {
     it('should update order status', async () => {
       const response = await api.patch(`/orders/${testOrderId}`, {
-        status: 'processing'
+        status: 'processing',
       });
 
       expect(response.status).toBe(200);

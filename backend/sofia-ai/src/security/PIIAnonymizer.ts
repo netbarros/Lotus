@@ -171,7 +171,8 @@ export class PIIAnonymizer {
   constructor(pool: Pool, redis: Redis, encryptionKey?: string) {
     this.pool = pool;
     this.redis = redis;
-    this.encryptionKey = encryptionKey || process.env.PII_ENCRYPTION_KEY || 'default-key-change-in-production';
+    this.encryptionKey =
+      encryptionKey || process.env.PII_ENCRYPTION_KEY || 'default-key-change-in-production';
   }
 
   /**
@@ -219,17 +220,8 @@ export class PIIAnonymizer {
   /**
    * Anonymize text - detect and replace PII
    */
-  async anonymize(
-    text: string,
-    options: AnonymizationOptions = {}
-  ): Promise<AnonymizationResult> {
-    const {
-      reversible = false,
-      auditLog = true,
-      tenantId,
-      userId,
-      context = 'general',
-    } = options;
+  async anonymize(text: string, options: AnonymizationOptions = {}): Promise<AnonymizationResult> {
+    const { reversible = false, auditLog = true, tenantId, userId, context = 'general' } = options;
 
     const anonymizationId = this.generateAnonymizationId();
     const detectedPII: AnonymizationResult['detectedPII'] = [];
@@ -318,7 +310,9 @@ export class PIIAnonymizer {
   /**
    * Validate if text contains PII
    */
-  async detectPII(text: string): Promise<Array<{ type: string; value: string; sensitivity: string }>> {
+  async detectPII(
+    text: string
+  ): Promise<Array<{ type: string; value: string; sensitivity: string }>> {
     const detected: Array<{ type: string; value: string; sensitivity: string }> = [];
 
     for (const pattern of PII_PATTERNS) {
@@ -352,7 +346,7 @@ export class PIIAnonymizer {
     types: string[],
     options: AnonymizationOptions = {}
   ): Promise<AnonymizationResult> {
-    const filteredPatterns = PII_PATTERNS.filter(p => types.includes(p.type));
+    const filteredPatterns = PII_PATTERNS.filter((p) => types.includes(p.type));
     const originalPatterns = [...PII_PATTERNS];
 
     // Temporarily replace patterns
@@ -425,7 +419,7 @@ export class PIIAnonymizer {
     detectedPII: AnonymizationResult['detectedPII'];
     reversible: boolean;
   }): Promise<void> {
-    const piiTypes = [...new Set(data.detectedPII.map(p => p.type))];
+    const piiTypes = [...new Set(data.detectedPII.map((p) => p.type))];
 
     await this.pool.query(
       `INSERT INTO pii_anonymization_audit
@@ -480,7 +474,7 @@ export class PIIAnonymizer {
     return {
       totalAnonymizations: parseInt(result.rows[0]?.total_anonymizations || '0', 10),
       piiDetected: parseInt(result.rows[0]?.pii_detected || '0', 10),
-      mostCommonTypes: typesResult.rows.map(r => ({
+      mostCommonTypes: typesResult.rows.map((r) => ({
         type: r.type,
         count: parseInt(r.count, 10),
       })),

@@ -13,45 +13,45 @@
  * @author MagicSaaS Architecture Team
  */
 
-import { ref, computed, type Ref } from 'vue'
-import { getUniversalApis, type UniversalApis } from '../api/petala-apis'
-import { getRuntimeConfig, type RuntimeConfig } from '../config/runtime-config'
+import { ref, computed, type Ref } from 'vue';
+import { getUniversalApis, type UniversalApis } from '../api/petala-apis';
+import { getRuntimeConfig, type RuntimeConfig } from '../config/runtime-config';
 
 export interface UseApiState<T> {
-  data: Ref<T | null>
-  loading: Ref<boolean>
-  error: Ref<Error | null>
-  isSuccess: Ref<boolean>
-  isError: Ref<boolean>
+  data: Ref<T | null>;
+  loading: Ref<boolean>;
+  error: Ref<Error | null>;
+  isSuccess: Ref<boolean>;
+  isError: Ref<boolean>;
 }
 
 export interface UseApiOptions {
-  immediate?: boolean
-  onSuccess?: (data: any) => void
-  onError?: (error: Error) => void
+  immediate?: boolean;
+  onSuccess?: (data: any) => void;
+  onError?: (error: Error) => void;
 }
 
 /**
  * Universal API Composable
  */
 export function useUniversalApi() {
-  const apis: Ref<UniversalApis | null> = ref(null)
-  const config: Ref<RuntimeConfig | null> = ref(null)
-  const initialized = ref(false)
+  const apis: Ref<UniversalApis | null> = ref(null);
+  const config: Ref<RuntimeConfig | null> = ref(null);
+  const initialized = ref(false);
 
   /**
    * Initialize APIs and config
    */
   async function initialize() {
-    if (initialized.value) return
+    if (initialized.value) return;
 
     try {
-      config.value = await getRuntimeConfig()
-      apis.value = await getUniversalApis()
-      initialized.value = true
+      config.value = await getRuntimeConfig();
+      apis.value = await getUniversalApis();
+      initialized.value = true;
     } catch (error) {
-      console.error('Failed to initialize Universal API:', error)
-      throw error
+      console.error('Failed to initialize Universal API:', error);
+      throw error;
     }
   }
 
@@ -60,7 +60,7 @@ export function useUniversalApi() {
    */
   function ensureInitialized() {
     if (!initialized.value || !apis.value || !config.value) {
-      throw new Error('Universal API not initialized. Call initialize() first.')
+      throw new Error('Universal API not initialized. Call initialize() first.');
     }
   }
 
@@ -68,8 +68,8 @@ export function useUniversalApi() {
    * Get specific API
    */
   function getApi<K extends keyof UniversalApis>(apiName: K): UniversalApis[K] {
-    ensureInitialized()
-    return apis.value![apiName]
+    ensureInitialized();
+    return apis.value![apiName];
   }
 
   /**
@@ -79,36 +79,36 @@ export function useUniversalApi() {
     apiCall: () => Promise<T>,
     options?: UseApiOptions
   ): Promise<UseApiState<T>> {
-    const data = ref<T | null>(null) as Ref<T | null>
-    const loading = ref(false)
-    const error = ref<Error | null>(null)
+    const data = ref<T | null>(null) as Ref<T | null>;
+    const loading = ref(false);
+    const error = ref<Error | null>(null);
 
-    const isSuccess = computed(() => !loading.value && error.value === null && data.value !== null)
-    const isError = computed(() => error.value !== null)
+    const isSuccess = computed(() => !loading.value && error.value === null && data.value !== null);
+    const isError = computed(() => error.value !== null);
 
     const execute = async () => {
-      loading.value = true
-      error.value = null
+      loading.value = true;
+      error.value = null;
 
       try {
-        data.value = await apiCall()
+        data.value = await apiCall();
 
         if (options?.onSuccess) {
-          options.onSuccess(data.value)
+          options.onSuccess(data.value);
         }
       } catch (e) {
-        error.value = e as Error
+        error.value = e as Error;
 
         if (options?.onError) {
-          options.onError(error.value)
+          options.onError(error.value);
         }
       } finally {
-        loading.value = false
+        loading.value = false;
       }
-    }
+    };
 
     if (options?.immediate !== false) {
-      await execute()
+      await execute();
     }
 
     return {
@@ -116,8 +116,8 @@ export function useUniversalApi() {
       loading,
       error,
       isSuccess,
-      isError
-    }
+      isError,
+    };
   }
 
   /**
@@ -140,15 +140,14 @@ export function useUniversalApi() {
       execute(() => getApi('products').getFeatured(params), options),
 
     getRelated: (productId: string, params?: any, options?: UseApiOptions) =>
-      execute(() => getApi('products').getRelated(productId, params), options)
-  }
+      execute(() => getApi('products').getRelated(productId, params), options),
+  };
 
   /**
    * Cart API
    */
   const cart = {
-    get: (options?: UseApiOptions) =>
-      execute(() => getApi('cart').get(), options),
+    get: (options?: UseApiOptions) => execute(() => getApi('cart').get(), options),
 
     add: (productId: string, quantity: number, variantId?: string, options?: UseApiOptions) =>
       execute(() => getApi('cart').add(productId, quantity, variantId), options),
@@ -159,9 +158,8 @@ export function useUniversalApi() {
     remove: (itemId: string, options?: UseApiOptions) =>
       execute(() => getApi('cart').remove(itemId), options),
 
-    clear: (options?: UseApiOptions) =>
-      execute(() => getApi('cart').clear(), options)
-  }
+    clear: (options?: UseApiOptions) => execute(() => getApi('cart').clear(), options),
+  };
 
   /**
    * Orders API
@@ -186,8 +184,8 @@ export function useUniversalApi() {
       execute(() => getApi('orders').getInvoice(id), options),
 
     track: (id: string, options?: UseApiOptions) =>
-      execute(() => getApi('orders').track(id), options)
-  }
+      execute(() => getApi('orders').track(id), options),
+  };
 
   /**
    * Appointments API
@@ -212,8 +210,8 @@ export function useUniversalApi() {
       execute(() => getApi('appointments').checkAvailability(params), options),
 
     getAvailableSlots: (params: any, options?: UseApiOptions) =>
-      execute(() => getApi('appointments').getAvailableSlots(params), options)
-  }
+      execute(() => getApi('appointments').getAvailableSlots(params), options),
+  };
 
   /**
    * Customers API
@@ -241,8 +239,8 @@ export function useUniversalApi() {
       execute(() => getApi('customers').deleteAddress(id), options),
 
     getAddresses: (options?: UseApiOptions) =>
-      execute(() => getApi('customers').getAddresses(), options)
-  }
+      execute(() => getApi('customers').getAddresses(), options),
+  };
 
   /**
    * Payment API
@@ -258,8 +256,8 @@ export function useUniversalApi() {
       execute(() => getApi('payment').createIntent(amount, currency), options),
 
     confirmPayment: (paymentIntentId: string, options?: UseApiOptions) =>
-      execute(() => getApi('payment').confirmPayment(paymentIntentId), options)
-  }
+      execute(() => getApi('payment').confirmPayment(paymentIntentId), options),
+  };
 
   /**
    * Reviews API
@@ -281,8 +279,8 @@ export function useUniversalApi() {
       execute(() => getApi('reviews').markHelpful(id), options),
 
     getStats: (itemId: string, itemType?: string, options?: UseApiOptions) =>
-      execute(() => getApi('reviews').getStats(itemId, itemType), options)
-  }
+      execute(() => getApi('reviews').getStats(itemId, itemType), options),
+  };
 
   /**
    * Analytics API
@@ -294,9 +292,8 @@ export function useUniversalApi() {
     getMetrics: (metric: string, params?: any, options?: UseApiOptions) =>
       execute(() => getApi('analytics').getMetrics(metric, params), options),
 
-    trackEvent: (event: string, data?: any) =>
-      getApi('analytics').trackEvent(event, data)
-  }
+    trackEvent: (event: string, data?: any) => getApi('analytics').trackEvent(event, data),
+  };
 
   /**
    * Sofia AI API
@@ -318,8 +315,8 @@ export function useUniversalApi() {
       execute(() => getApi('sofia').getRecommendations(type, context), options),
 
     getSuggestions: (context?: any, options?: UseApiOptions) =>
-      execute(() => getApi('sofia').getSuggestions(context), options)
-  }
+      execute(() => getApi('sofia').getSuggestions(context), options),
+  };
 
   return {
     // Initialization
@@ -345,8 +342,8 @@ export function useUniversalApi() {
     sofia,
 
     // Utility
-    execute
-  }
+    execute,
+  };
 }
 
-export default useUniversalApi
+export default useUniversalApi;

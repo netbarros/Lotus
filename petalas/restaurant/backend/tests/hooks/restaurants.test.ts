@@ -24,7 +24,10 @@ describe('Restaurants Hook', () => {
 });
 
 function processRestaurantCreate(input: any) {
-  input.slug = input.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+  input.slug = input.name
+    .toLowerCase()
+    .replace(/\s+/g, '-')
+    .replace(/[^a-z0-9-]/g, '');
   input.status = input.status || 'active';
   input.averageRating = 0;
   input.totalReviews = 0;

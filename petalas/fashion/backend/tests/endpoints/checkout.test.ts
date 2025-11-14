@@ -11,7 +11,7 @@ describe('Checkout Endpoint', () => {
   beforeAll(async () => {
     const response = await api.post('/auth/login', {
       email: 'customer@example.com',
-      password: 'password'
+      password: 'password',
     });
     authToken = response.data.data.access_token;
     api.defaults.headers.common['Authorization'] = `Bearer ${authToken}`;
@@ -20,9 +20,7 @@ describe('Checkout Endpoint', () => {
   describe('POST /checkout/init', () => {
     it('should initialize checkout session', async () => {
       const response = await api.post('/checkout/init', {
-        items: [
-          { productId: 1, quantity: 2, price: 50 }
-        ]
+        items: [{ productId: 1, quantity: 2, price: 50 }],
       });
 
       expect(response.status).toBe(200);
@@ -42,8 +40,8 @@ describe('Checkout Endpoint', () => {
           city: 'Los Angeles',
           state: 'CA',
           zipCode: '90210',
-          country: 'USA'
-        }
+          country: 'USA',
+        },
       });
 
       expect(response.status).toBe(200);
@@ -56,7 +54,7 @@ describe('Checkout Endpoint', () => {
       const response = await api.post('/checkout/payment', {
         sessionId,
         paymentMethod: 'stripe',
-        paymentToken: 'tok_test123'
+        paymentToken: 'tok_test123',
       });
 
       expect(response.status).toBe(200);
@@ -69,7 +67,7 @@ describe('Checkout Endpoint', () => {
     it('should validate and apply coupon', async () => {
       const response = await api.post('/checkout/validate-coupon', {
         sessionId,
-        couponCode: 'SAVE10'
+        couponCode: 'SAVE10',
       });
 
       expect(response.status).toBe(200);

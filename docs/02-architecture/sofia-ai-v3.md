@@ -1,15 +1,19 @@
 # 🧠 Sofia AI v3.0 - THE BRAIN
 
-> **O Cérebro Cognitivo do MagicSaaS System-∞**
-> Powered by Anthropic Claude + Cognitive Mesh OS System 11
+> **O Cérebro Cognitivo do MagicSaaS System-∞** Powered by Anthropic Claude +
+> Cognitive Mesh OS System 11
 
 ---
 
 ## 🎯 Visão Geral
 
-**Sofia AI v3.0** é o sistema de inteligência artificial cognitiva que alimenta todo o MagicSaaS System-∞. Ela é composta por **7 componentes principais** que trabalham em harmonia para transformar intenções em aplicações completas e funcionais.
+**Sofia AI v3.0** é o sistema de inteligência artificial cognitiva que alimenta
+todo o MagicSaaS System-∞. Ela é composta por **7 componentes principais** que
+trabalham em harmonia para transformar intenções em aplicações completas e
+funcionais.
 
-Sofia **nasce com o sistema** e está disponível imediatamente após a instalação, rodando como um serviço independente na porta **3003**.
+Sofia **nasce com o sistema** e está disponível imediatamente após a instalação,
+rodando como um serviço independente na porta **3003**.
 
 ---
 
@@ -47,9 +51,12 @@ Sofia **nasce com o sistema** e está disponível imediatamente após a instala�
 ## 🎯 Componente 1: IntentionEngine
 
 ### **O Que Faz**
-Transforma **intenções em linguagem natural** em **arquiteturas completas de SaaS/microSaaS/APIs**.
+
+Transforma **intenções em linguagem natural** em **arquiteturas completas de
+SaaS/microSaaS/APIs**.
 
 ### **Capabilities**
+
 - ✅ Interpreta intenções naturais ("Criar um SaaS de agendamento...")
 - ✅ Gera arquitetura completa (database, APIs, UI)
 - ✅ Sugere tecnologias adequadas
@@ -58,6 +65,7 @@ Transforma **intenções em linguagem natural** em **arquiteturas completas de S
 - ✅ Documenta automaticamente
 
 ### **Exemplo de Uso**
+
 ```typescript
 const result = await intentionEngine.generate({
   intention: "Criar um SaaS para gerenciar academias",
@@ -99,6 +107,7 @@ const result = await intentionEngine.generate({
 ```
 
 ### **Powered By**
+
 - **Anthropic Claude Sonnet 4.5** (reasoning)
 - **Pattern Library** (13 verticais pré-configurados)
 - **Event Sourcing** (histórico de todas as gerações)
@@ -108,9 +117,12 @@ const result = await intentionEngine.generate({
 ## ✨ Componente 2: UXValidator
 
 ### **O Que Faz**
-Valida automaticamente **UX/UI** de componentes e páginas seguindo heurísticas de usabilidade.
+
+Valida automaticamente **UX/UI** de componentes e páginas seguindo heurísticas
+de usabilidade.
 
 ### **Validações**
+
 1. **Heurísticas de Nielsen** (10 princípios)
 2. **Acessibilidade** (WCAG 2.1 AA)
 3. **Responsividade** (mobile-first)
@@ -118,6 +130,7 @@ Valida automaticamente **UX/UI** de componentes e páginas seguindo heurísticas
 5. **Consistência** (design system)
 
 ### **Exemplo de Uso**
+
 ```typescript
 const validation = await uxValidator.validate({
   component: "LoginForm",
@@ -155,9 +168,11 @@ const validation = await uxValidator.validate({
 ## 🔍 Componente 3: SEOOptimizer
 
 ### **O Que Faz**
+
 Otimização **automática e completa de SEO** para todas as páginas geradas.
 
 ### **Features**
+
 - ✅ Meta tags otimizados (title, description, keywords)
 - ✅ Open Graph (Facebook, LinkedIn)
 - ✅ Twitter Cards
@@ -169,6 +184,7 @@ Otimização **automática e completa de SEO** para todas as páginas geradas.
 - ✅ Performance optimization
 
 ### **Exemplo de Uso**
+
 ```typescript
 const seo = await seoOptimizer.optimize({
   page: {
@@ -206,9 +222,11 @@ const seo = await seoOptimizer.optimize({
 ## 🏪 Componente 4: MarketplaceManager
 
 ### **O Que Faz**
+
 Gerencia **marketplace completo** de produtos, pétalas, checkout e pagamentos.
 
 ### **Features**
+
 - ✅ Catálogo de produtos/pétalas
 - ✅ Carrinho de compras
 - ✅ Checkout multi-step
@@ -218,22 +236,23 @@ Gerencia **marketplace completo** de produtos, pétalas, checkout e pagamentos.
 - ✅ Gerenciamento de pedidos
 
 ### **Pétalas (Add-on Modules)**
+
 ```typescript
 // Criar pétala customizada
 const petala = await marketplaceManager.createCustomPetala({
-  name: "WhatsApp Integration",
-  description: "Envio de mensagens via WhatsApp Business",
-  vertical: "communication",
+  name: 'WhatsApp Integration',
+  description: 'Envio de mensagens via WhatsApp Business',
+  vertical: 'communication',
   features: [
-    "Envio de mensagens automáticas",
-    "Templates pré-configurados",
-    "Analytics de entregas"
+    'Envio de mensagens automáticas',
+    'Templates pré-configurados',
+    'Analytics de entregas',
   ],
-  basePrice: 99.00
+  basePrice: 99.0,
 });
 
 // Buscar pétalas por vertical
-const petalas = await marketplaceManager.getPetalasByVertical("healthcare");
+const petalas = await marketplaceManager.getPetalasByVertical('healthcare');
 // [
 //   { name: "Telemedicine Video", price: 149 },
 //   { name: "EHR Integration", price: 299 },
@@ -242,23 +261,26 @@ const petalas = await marketplaceManager.getPetalasByVertical("healthcare");
 ```
 
 ### **Checkout Flow**
+
 ```typescript
 // Criar checkout session
 const session = await marketplaceManager.createCheckout({
-  tenantId: "tenant_123",
-  userId: "user_456",
+  tenantId: 'tenant_123',
+  userId: 'user_456',
   items: [
-    { productId: "petala_whatsapp", quantity: 1 },
-    { productId: "plan_professional", quantity: 1 }
+    { productId: 'petala_whatsapp', quantity: 1 },
+    { productId: 'plan_professional', quantity: 1 },
   ],
-  discountCode: "LAUNCH50"
+  discountCode: 'LAUNCH50',
 });
 
 // Processar pagamento
 const result = await marketplaceManager.processPayment(
   session.id,
-  "credit_card",
-  { /* payment data */ }
+  'credit_card',
+  {
+    /* payment data */
+  }
 );
 ```
 
@@ -267,9 +289,12 @@ const result = await marketplaceManager.processPayment(
 ## 📝 Componente 5: DecisionLogger
 
 ### **O Que Faz**
-**Auditoria completa** de todas as decisões tomadas pela Sofia AI com justificativas.
+
+**Auditoria completa** de todas as decisões tomadas pela Sofia AI com
+justificativas.
 
 ### **O Que É Logado**
+
 - ✅ Decisões arquiteturais
 - ✅ Tecnologias escolhidas (+ justificativa)
 - ✅ Padrões aplicados
@@ -278,35 +303,37 @@ const result = await marketplaceManager.processPayment(
 - ✅ Erros e recuperações
 
 ### **Exemplo de Log**
+
 ```typescript
 const decisions = await decisionLogger.getDecisions({
-  aggregateId: "project_gym_saas",
-  limit: 10
+  aggregateId: 'project_gym_saas',
+  limit: 10,
 });
 
 // Resultado:
 [
   {
-    id: "dec_001",
-    timestamp: "2025-11-05T10:30:00Z",
-    component: "IntentionEngine",
-    decision: "escolha_banco_dados",
-    chosen: "PostgreSQL + pgVector",
-    alternatives: ["MongoDB", "MySQL"],
-    reasoning: "PostgreSQL escolhido por suporte nativo a JSON, full-text search, e pgVector para futuras features de ML/embeddings.",
-    confidence: 0.95
+    id: 'dec_001',
+    timestamp: '2025-11-05T10:30:00Z',
+    component: 'IntentionEngine',
+    decision: 'escolha_banco_dados',
+    chosen: 'PostgreSQL + pgVector',
+    alternatives: ['MongoDB', 'MySQL'],
+    reasoning:
+      'PostgreSQL escolhido por suporte nativo a JSON, full-text search, e pgVector para futuras features de ML/embeddings.',
+    confidence: 0.95,
   },
   {
-    id: "dec_002",
-    timestamp: "2025-11-05T10:31:15Z",
-    component: "UXValidator",
-    decision: "validacao_formulario",
+    id: 'dec_002',
+    timestamp: '2025-11-05T10:31:15Z',
+    component: 'UXValidator',
+    decision: 'validacao_formulario',
     issues: 3,
-    severity: "medium",
-    improvements: ["adicionar loading state", "validação real-time"],
-    appliedFixes: true
-  }
-]
+    severity: 'medium',
+    improvements: ['adicionar loading state', 'validação real-time'],
+    appliedFixes: true,
+  },
+];
 ```
 
 ---
@@ -314,9 +341,11 @@ const decisions = await decisionLogger.getDecisions({
 ## 🎛️ Componente 6: DirectusOrchestrator
 
 ### **O Que Faz**
+
 **Hub central** que conecta todos os componentes via Directus CMS.
 
 ### **30+ Collections Gerenciadas**
+
 ```
 Projects               → Projetos gerados
 Intentions             → Intenções capturadas
@@ -333,6 +362,7 @@ Users                  → Usuários do sistema
 ```
 
 ### **GraphQL API Automática**
+
 ```graphql
 query GetProject {
   projects(filter: { status: { _eq: "completed" } }) {
@@ -359,9 +389,11 @@ query GetProject {
 ## 🧬 Componente 7: AdaptiveLearning (Layer 09)
 
 ### **O Que Faz**
+
 Sistema de **aprendizado contínuo** que melhora com cada projeto gerado.
 
 ### **Machine Learning Pipeline**
+
 1. **Coleta de Dados**: Captura métricas de cada projeto
 2. **Pattern Recognition**: Identifica padrões de sucesso
 3. **Model Training**: Treina modelos com Claude AI
@@ -369,6 +401,7 @@ Sistema de **aprendizado contínuo** que melhora com cada projeto gerado.
 5. **Feedback Loop**: Incorpora feedback do usuário
 
 ### **Métricas Rastreadas**
+
 - Performance dos projetos gerados
 - Taxa de sucesso de arquiteturas
 - Padrões que funcionam melhor por vertical
@@ -380,6 +413,7 @@ Sistema de **aprendizado contínuo** que melhora com cada projeto gerado.
 ## 🚀 Como Sofia AI Funciona (End-to-End)
 
 ### **Fluxo Completo**
+
 ```
 1. Usuário descreve intenção
    ↓
@@ -403,6 +437,7 @@ Sistema de **aprendizado contínuo** que melhora com cada projeto gerado.
 ## 📊 APIs Disponíveis
 
 ### **HTTP API (Porto 3003)**
+
 ```bash
 # Health check
 GET /health
@@ -437,6 +472,7 @@ POST /api/seo/optimize
 ## 🔧 Configuração
 
 ### **Environment Variables**
+
 ```env
 # REQUIRED
 ANTHROPIC_API_KEY=sk-ant-your-key-here
@@ -464,7 +500,9 @@ METRONIC_PATH=/workspace/metronic
 ## 📈 Métricas e Observabilidade
 
 ### **Prometheus Metrics**
+
 Sofia AI expõe métricas em `/metrics`:
+
 ```
 # Intenções processadas
 sofia_intentions_total{status="success|failure"}
@@ -481,6 +519,7 @@ sofia_cache_misses_total
 ```
 
 ### **Logs Estruturados**
+
 ```json
 {
   "timestamp": "2025-11-05T10:30:00Z",
@@ -504,4 +543,5 @@ sofia_cache_misses_total
 
 ---
 
-**[← Voltar ao Índice](../00-INDEX.md)** | **[Próximo: Cognitive Mesh OS →](./cognitive-mesh.md)**
+**[← Voltar ao Índice](../00-INDEX.md)** |
+**[Próximo: Cognitive Mesh OS →](./cognitive-mesh.md)**

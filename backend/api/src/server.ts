@@ -100,24 +100,28 @@ let pool: Pool;
 let redis: Redis;
 
 // Security middleware
-app.use(helmet({
-  contentSecurityPolicy: {
-    directives: {
-      defaultSrc: ["'self'"],
-      styleSrc: ["'self'", "'unsafe-inline'"],
-      scriptSrc: ["'self'"],
-      imgSrc: ["'self'", 'data:', 'https:'],
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        styleSrc: ["'self'", "'unsafe-inline'"],
+        scriptSrc: ["'self'"],
+        imgSrc: ["'self'", 'data:', 'https:'],
+      },
     },
-  },
-}));
+  })
+);
 
 // CORS configuration
-app.use(cors({
-  origin: process.env.CORS_ORIGIN || '*',
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-}));
+app.use(
+  cors({
+    origin: process.env.CORS_ORIGIN || '*',
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  })
+);
 
 // Compression
 app.use(compression());
@@ -168,7 +172,6 @@ async function initializeServices(): Promise<void> {
     console.log('   ✅ Auth schema initialized');
 
     console.log('✅ All services ready');
-
   } catch (error: any) {
     console.error('❌ Service initialization failed:', error.message);
     throw error;
@@ -347,8 +350,8 @@ function requirePermission(...permissions: string[]) {
       return;
     }
 
-    const hasPermission = permissions.some(perm =>
-      req.user!.permissions.includes(perm) || req.user!.role === 'admin'
+    const hasPermission = permissions.some(
+      (perm) => req.user!.permissions.includes(perm) || req.user!.role === 'admin'
     );
 
     if (!hasPermission) {
@@ -475,11 +478,9 @@ app.post('/api/auth/register', async (req: Request, res: Response) => {
     );
 
     // Generate refresh token
-    const refreshToken = jwt.sign(
-      { id: user.rows[0].id },
-      JWT_REFRESH_SECRET,
-      { expiresIn: JWT_REFRESH_EXPIRES_IN }
-    );
+    const refreshToken = jwt.sign({ id: user.rows[0].id }, JWT_REFRESH_SECRET, {
+      expiresIn: JWT_REFRESH_EXPIRES_IN,
+    });
 
     // Store refresh token
     const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
@@ -571,11 +572,9 @@ app.post('/api/auth/login', async (req: Request, res: Response) => {
     );
 
     // Generate refresh token
-    const refreshToken = jwt.sign(
-      { id: user.id },
-      JWT_REFRESH_SECRET,
-      { expiresIn: JWT_REFRESH_EXPIRES_IN }
-    );
+    const refreshToken = jwt.sign({ id: user.id }, JWT_REFRESH_SECRET, {
+      expiresIn: JWT_REFRESH_EXPIRES_IN,
+    });
 
     // Store refresh token
     const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
@@ -762,26 +761,31 @@ app.get('/api/auth/me', authenticateJWT, async (req: AuthRequest, res: Response)
  * GET /api/tenants
  * Get all tenants (admin only)
  */
-app.get('/api/tenants', authenticateJWT, requireRole('admin', 'superadmin'), async (req: AuthRequest, res: Response) => {
-  try {
-    const result = await pool.query(
-      `SELECT id, name, slug, status, plan, settings, created_at, updated_at
+app.get(
+  '/api/tenants',
+  authenticateJWT,
+  requireRole('admin', 'superadmin'),
+  async (req: AuthRequest, res: Response) => {
+    try {
+      const result = await pool.query(
+        `SELECT id, name, slug, status, plan, settings, created_at, updated_at
        FROM tenants
        ORDER BY created_at DESC`
-    );
+      );
 
-    res.status(200).json({
-      success: true,
-      data: result.rows,
-    });
-  } catch (error: any) {
-    console.error('Get tenants error:', error);
-    res.status(500).json({
-      error: 'Failed to get tenants',
-      message: error.message,
-    });
+      res.status(200).json({
+        success: true,
+        data: result.rows,
+      });
+    } catch (error: any) {
+      console.error('Get tenants error:', error);
+      res.status(500).json({
+        error: 'Failed to get tenants',
+        message: error.message,
+      });
+    }
   }
-});
+);
 
 /**
  * GET /api/tenants/:id
@@ -792,7 +796,11 @@ app.get('/api/tenants/:id', authenticateJWT, async (req: AuthRequest, res: Respo
     const { id } = req.params;
 
     // Check permission - user must be in the tenant or be admin
-    if (req.user!.tenantId !== id && req.user!.role !== 'admin' && req.user!.role !== 'superadmin') {
+    if (
+      req.user!.tenantId !== id &&
+      req.user!.role !== 'admin' &&
+      req.user!.role !== 'superadmin'
+    ) {
       return res.status(403).json({
         error: 'Forbidden',
         message: 'You do not have permission to view this tenant',
@@ -832,68 +840,79 @@ app.get('/api/tenants/:id', authenticateJWT, async (req: AuthRequest, res: Respo
  * GET /api/users
  * Get users in tenant
  */
-app.get('/api/users', authenticateJWT, requirePermission('users.read'), async (req: AuthRequest, res: Response) => {
-  try {
-    const result = await pool.query(
-      `SELECT id, email, name, role, permissions, active, created_at, last_login
+app.get(
+  '/api/users',
+  authenticateJWT,
+  requirePermission('users.read'),
+  async (req: AuthRequest, res: Response) => {
+    try {
+      const result = await pool.query(
+        `SELECT id, email, name, role, permissions, active, created_at, last_login
        FROM users
        WHERE tenant_id = $1
        ORDER BY created_at DESC`,
-      [req.user!.tenantId]
-    );
+        [req.user!.tenantId]
+      );
 
-    res.status(200).json({
-      success: true,
-      data: result.rows,
-    });
-  } catch (error: any) {
-    console.error('Get users error:', error);
-    res.status(500).json({
-      error: 'Failed to get users',
-      message: error.message,
-    });
+      res.status(200).json({
+        success: true,
+        data: result.rows,
+      });
+    } catch (error: any) {
+      console.error('Get users error:', error);
+      res.status(500).json({
+        error: 'Failed to get users',
+        message: error.message,
+      });
+    }
   }
-});
+);
 
 /**
  * POST /api/users
  * Create new user in tenant
  */
-app.post('/api/users', authenticateJWT, requirePermission('users.create'), auditLog('create', 'user'), async (req: AuthRequest, res: Response) => {
-  try {
-    const { email, name, password, role, permissions } = req.body;
+app.post(
+  '/api/users',
+  authenticateJWT,
+  requirePermission('users.create'),
+  auditLog('create', 'user'),
+  async (req: AuthRequest, res: Response) => {
+    try {
+      const { email, name, password, role, permissions } = req.body;
 
-    if (!email || !name || !password) {
-      return res.status(400).json({
-        error: 'Validation failed',
-        message: 'email, name, and password are required',
-      });
-    }
+      if (!email || !name || !password) {
+        return res.status(400).json({
+          error: 'Validation failed',
+          message: 'email, name, and password are required',
+        });
+      }
 
-    // Hash password
-    const passwordHash = await bcrypt.hash(password, 12);
+      // Hash password
+      const passwordHash = await bcrypt.hash(password, 12);
 
-    // Create user
-    const result = await pool.query(
-      `INSERT INTO users (tenant_id, email, name, password_hash, role, permissions, active)
+      // Create user
+      const result = await pool.query(
+        `INSERT INTO users (tenant_id, email, name, password_hash, role, permissions, active)
        VALUES ($1, $2, $3, $4, $5, $6, true)
        RETURNING id, email, name, role, permissions, created_at`,
-      [req.user!.tenantId, email, name, passwordHash, role || 'user', permissions || []]
-    );
+        [req.user!.tenantId, email, name, passwordHash, role || 'user', permissions || []]
+      );
 
-    res.status(201).json({
-      success: true,
-      message: 'User created successfully',
-      data: result.rows[0],
-    });
-  } catch (error: any) {
-    console.error('Create user error:', error);
-    res.status(500).json({
-      error: 'Failed to create user',
-      message: error.message,
-    });
+      res.status(201).json({
+        success: true,
+        message: 'User created successfully',
+        data: result.rows[0],
+      });
+    } catch (error: any) {
+      console.error('Create user error:', error);
+      res.status(500).json({
+        error: 'Failed to create user',
+        message: error.message,
+      });
+    }
   }
-});
+);
 
 // ==================== PROXY ROUTES TO MICROSERVICES ====================
 
@@ -997,7 +1016,6 @@ async function startServer(): Promise<void> {
       console.log(`     /api/erp/*                    - ERP System`);
       console.log('');
     });
-
   } catch (error: any) {
     console.error('❌ Failed to start server:', error.message);
     process.exit(1);

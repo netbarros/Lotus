@@ -17,7 +17,7 @@
         "id": 1,
         "title": "System Health - Cognitive Mesh OS Layer Status",
         "type": "stat",
-        "gridPos": {"x": 0, "y": 0, "w": 24, "h": 4},
+        "gridPos": { "x": 0, "y": 0, "w": 24, "h": 4 },
         "targets": [
           {
             "expr": "up{job=\"sofia-ai\"}",
@@ -55,13 +55,13 @@
             "thresholds": {
               "mode": "absolute",
               "steps": [
-                {"value": 0, "color": "red"},
-                {"value": 1, "color": "green"}
+                { "value": 0, "color": "red" },
+                { "value": 1, "color": "green" }
               ]
             },
             "mappings": [
-              {"type": "value", "value": "0", "text": "DOWN"},
-              {"type": "value", "value": "1", "text": "UP"}
+              { "type": "value", "value": "0", "text": "DOWN" },
+              { "type": "value", "value": "1", "text": "UP" }
             ]
           }
         }
@@ -70,7 +70,7 @@
         "id": 2,
         "title": "Request Rate (req/s)",
         "type": "graph",
-        "gridPos": {"x": 0, "y": 4, "w": 12, "h": 8},
+        "gridPos": { "x": 0, "y": 4, "w": 12, "h": 8 },
         "targets": [
           {
             "expr": "rate(http_requests_total{job=\"sofia-ai\"}[5m])",
@@ -83,16 +83,13 @@
             "refId": "B"
           }
         ],
-        "yaxes": [
-          {"format": "reqps", "label": "Requests/sec"},
-          {"format": "short"}
-        ]
+        "yaxes": [{ "format": "reqps", "label": "Requests/sec" }, { "format": "short" }]
       },
       {
         "id": 3,
         "title": "Response Time (p95, p99)",
         "type": "graph",
-        "gridPos": {"x": 12, "y": 4, "w": 12, "h": 8},
+        "gridPos": { "x": 12, "y": 4, "w": 12, "h": 8 },
         "targets": [
           {
             "expr": "histogram_quantile(0.95, rate(http_request_duration_seconds_bucket{job=\"sofia-ai\"}[5m]))",
@@ -105,16 +102,13 @@
             "refId": "B"
           }
         ],
-        "yaxes": [
-          {"format": "s", "label": "Response Time"},
-          {"format": "short"}
-        ],
+        "yaxes": [{ "format": "s", "label": "Response Time" }, { "format": "short" }],
         "alert": {
           "name": "High Response Time",
           "conditions": [
             {
-              "evaluator": {"type": "gt", "params": [0.5]},
-              "query": {"params": ["A", "5m", "now"]}
+              "evaluator": { "type": "gt", "params": [0.5] },
+              "query": { "params": ["A", "5m", "now"] }
             }
           ]
         }
@@ -123,7 +117,7 @@
         "id": 4,
         "title": "Error Rate (%)",
         "type": "graph",
-        "gridPos": {"x": 0, "y": 12, "w": 12, "h": 8},
+        "gridPos": { "x": 0, "y": 12, "w": 12, "h": 8 },
         "targets": [
           {
             "expr": "rate(http_requests_total{job=\"sofia-ai\",status=~\"5..\"}[5m]) / rate(http_requests_total{job=\"sofia-ai\"}[5m]) * 100",
@@ -137,15 +131,15 @@
           }
         ],
         "yaxes": [
-          {"format": "percent", "label": "Error Rate %", "max": 10},
-          {"format": "short"}
+          { "format": "percent", "label": "Error Rate %", "max": 10 },
+          { "format": "short" }
         ]
       },
       {
         "id": 5,
         "title": "Database Connections",
         "type": "graph",
-        "gridPos": {"x": 12, "y": 12, "w": 12, "h": 8},
+        "gridPos": { "x": 12, "y": 12, "w": 12, "h": 8 },
         "targets": [
           {
             "expr": "pg_stat_database_numbackends{datname=\"magicsaas\"}",
@@ -158,16 +152,13 @@
             "refId": "B"
           }
         ],
-        "yaxes": [
-          {"format": "short", "label": "Connections"},
-          {"format": "short"}
-        ]
+        "yaxes": [{ "format": "short", "label": "Connections" }, { "format": "short" }]
       },
       {
         "id": 6,
         "title": "CPU Usage (%)",
         "type": "graph",
-        "gridPos": {"x": 0, "y": 20, "w": 8, "h": 8},
+        "gridPos": { "x": 0, "y": 20, "w": 8, "h": 8 },
         "targets": [
           {
             "expr": "rate(process_cpu_seconds_total{job=\"sofia-ai\"}[5m]) * 100",
@@ -180,16 +171,13 @@
             "refId": "B"
           }
         ],
-        "yaxes": [
-          {"format": "percent", "label": "CPU %", "max": 100},
-          {"format": "short"}
-        ]
+        "yaxes": [{ "format": "percent", "label": "CPU %", "max": 100 }, { "format": "short" }]
       },
       {
         "id": 7,
         "title": "Memory Usage (MB)",
         "type": "graph",
-        "gridPos": {"x": 8, "y": 20, "w": 8, "h": 8},
+        "gridPos": { "x": 8, "y": 20, "w": 8, "h": 8 },
         "targets": [
           {
             "expr": "process_resident_memory_bytes{job=\"sofia-ai\"} / 1024 / 1024",
@@ -202,16 +190,13 @@
             "refId": "B"
           }
         ],
-        "yaxes": [
-          {"format": "decmbytes", "label": "Memory MB"},
-          {"format": "short"}
-        ]
+        "yaxes": [{ "format": "decmbytes", "label": "Memory MB" }, { "format": "short" }]
       },
       {
         "id": 8,
         "title": "Redis Cache Hit Rate (%)",
         "type": "graph",
-        "gridPos": {"x": 16, "y": 20, "w": 8, "h": 8},
+        "gridPos": { "x": 16, "y": 20, "w": 8, "h": 8 },
         "targets": [
           {
             "expr": "rate(redis_keyspace_hits_total[5m]) / (rate(redis_keyspace_hits_total[5m]) + rate(redis_keyspace_misses_total[5m])) * 100",
@@ -220,15 +205,15 @@
           }
         ],
         "yaxes": [
-          {"format": "percent", "label": "Hit Rate %", "min": 0, "max": 100},
-          {"format": "short"}
+          { "format": "percent", "label": "Hit Rate %", "min": 0, "max": 100 },
+          { "format": "short" }
         ]
       },
       {
         "id": 9,
         "title": "Sofia AI - Intention Processing Rate",
         "type": "graph",
-        "gridPos": {"x": 0, "y": 28, "w": 12, "h": 8},
+        "gridPos": { "x": 0, "y": 28, "w": 12, "h": 8 },
         "targets": [
           {
             "expr": "rate(sofia_intentions_processed_total[5m])",
@@ -236,16 +221,13 @@
             "refId": "A"
           }
         ],
-        "yaxes": [
-          {"format": "ops", "label": "Intentions/sec"},
-          {"format": "short"}
-        ]
+        "yaxes": [{ "format": "ops", "label": "Intentions/sec" }, { "format": "short" }]
       },
       {
         "id": 10,
         "title": "Sofia AI - Generation Success Rate (%)",
         "type": "stat",
-        "gridPos": {"x": 12, "y": 28, "w": 12, "h": 8},
+        "gridPos": { "x": 12, "y": 28, "w": 12, "h": 8 },
         "targets": [
           {
             "expr": "rate(sofia_generations_success_total[5m]) / rate(sofia_generations_total[5m]) * 100",
@@ -266,9 +248,9 @@
             "thresholds": {
               "mode": "absolute",
               "steps": [
-                {"value": 0, "color": "red"},
-                {"value": 90, "color": "yellow"},
-                {"value": 95, "color": "green"}
+                { "value": 0, "color": "red" },
+                { "value": 90, "color": "yellow" },
+                { "value": 95, "color": "green" }
               ]
             }
           }

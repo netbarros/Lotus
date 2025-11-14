@@ -13,8 +13,8 @@
  * @author MagicSaaS Architecture Team
  */
 
-import type { UniversalApiClient } from './universal-api'
-import { getApiClient } from './universal-api'
+import type { UniversalApiClient } from './universal-api';
+import { getApiClient } from './universal-api';
 
 /**
  * =============================================================================
@@ -23,26 +23,26 @@ import { getApiClient } from './universal-api'
  */
 
 export interface PaginationParams {
-  limit?: number
-  offset?: number
-  page?: number
-  sort?: string
+  limit?: number;
+  offset?: number;
+  page?: number;
+  sort?: string;
 }
 
 export interface SearchParams extends PaginationParams {
-  search?: string
-  query?: string
-  keyword?: string
+  search?: string;
+  query?: string;
+  keyword?: string;
 }
 
 export interface ApiResponse<T> {
-  data: T
+  data: T;
   meta?: {
-    total?: number
-    page?: number
-    limit?: number
-    hasMore?: boolean
-  }
+    total?: number;
+    page?: number;
+    limit?: number;
+    hasMore?: boolean;
+  };
 }
 
 /**
@@ -52,12 +52,12 @@ export interface ApiResponse<T> {
  */
 
 export interface ProductsApi {
-  list(params?: SearchParams & { status?: string; category?: string }): Promise<any>
-  getById(id: string): Promise<any>
-  search(query: string, params?: PaginationParams): Promise<any>
-  getByCategory(categoryId: string, params?: PaginationParams): Promise<any>
-  getFeatured(params?: PaginationParams): Promise<any>
-  getRelated(productId: string, params?: PaginationParams): Promise<any>
+  list(params?: SearchParams & { status?: string; category?: string }): Promise<any>;
+  getById(id: string): Promise<any>;
+  search(query: string, params?: PaginationParams): Promise<any>;
+  getByCategory(categoryId: string, params?: PaginationParams): Promise<any>;
+  getFeatured(params?: PaginationParams): Promise<any>;
+  getRelated(productId: string, params?: PaginationParams): Promise<any>;
 }
 
 export function createProductsApi(client: UniversalApiClient): ProductsApi {
@@ -65,10 +65,11 @@ export function createProductsApi(client: UniversalApiClient): ProductsApi {
     list: (params) => client.get('products', { params }),
     getById: (id) => client.get(`products/${id}`),
     search: (query, params) => client.get('products', { params: { search: query, ...params } }),
-    getByCategory: (categoryId, params) => client.get(`products`, { params: { category: categoryId, ...params } }),
+    getByCategory: (categoryId, params) =>
+      client.get(`products`, { params: { category: categoryId, ...params } }),
     getFeatured: (params) => client.get('products', { params: { featured: true, ...params } }),
-    getRelated: (productId, params) => client.get(`products/${productId}/related`, { params })
-  }
+    getRelated: (productId, params) => client.get(`products/${productId}/related`, { params }),
+  };
 }
 
 /**
@@ -78,11 +79,11 @@ export function createProductsApi(client: UniversalApiClient): ProductsApi {
  */
 
 export interface CartApi {
-  get(): Promise<any>
-  add(productId: string, quantity: number, variantId?: string): Promise<any>
-  update(itemId: string, quantity: number): Promise<any>
-  remove(itemId: string): Promise<any>
-  clear(): Promise<any>
+  get(): Promise<any>;
+  add(productId: string, quantity: number, variantId?: string): Promise<any>;
+  update(itemId: string, quantity: number): Promise<any>;
+  remove(itemId: string): Promise<any>;
+  clear(): Promise<any>;
 }
 
 export function createCartApi(client: UniversalApiClient): CartApi {
@@ -92,8 +93,8 @@ export function createCartApi(client: UniversalApiClient): CartApi {
       client.post('cart/add', { product_id: productId, quantity, variant_id: variantId }),
     update: (itemId, quantity) => client.put(`cart/${itemId}`, { quantity }),
     remove: (itemId) => client.delete(`cart/${itemId}`),
-    clear: () => client.delete('cart')
-  }
+    clear: () => client.delete('cart'),
+  };
 }
 
 /**
@@ -103,13 +104,13 @@ export function createCartApi(client: UniversalApiClient): CartApi {
  */
 
 export interface OrdersApi {
-  list(params?: PaginationParams & { status?: string }): Promise<any>
-  getById(id: string): Promise<any>
-  create(data: any): Promise<any>
-  cancel(id: string, reason?: string): Promise<any>
-  refund(id: string, reason: string, items?: any[]): Promise<any>
-  getInvoice(id: string): Promise<Blob>
-  track(id: string): Promise<any>
+  list(params?: PaginationParams & { status?: string }): Promise<any>;
+  getById(id: string): Promise<any>;
+  create(data: any): Promise<any>;
+  cancel(id: string, reason?: string): Promise<any>;
+  refund(id: string, reason: string, items?: any[]): Promise<any>;
+  getInvoice(id: string): Promise<Blob>;
+  track(id: string): Promise<any>;
 }
 
 export function createOrdersApi(client: UniversalApiClient): OrdersApi {
@@ -120,8 +121,8 @@ export function createOrdersApi(client: UniversalApiClient): OrdersApi {
     cancel: (id, reason) => client.put(`orders/${id}/cancel`, { reason }),
     refund: (id, reason, items) => client.post(`orders/${id}/refund`, { reason, items }),
     getInvoice: (id) => client.get(`orders/${id}/invoice`, { responseType: 'blob' }),
-    track: (id) => client.get(`orders/${id}/track`)
-  }
+    track: (id) => client.get(`orders/${id}/track`),
+  };
 }
 
 /**
@@ -131,34 +132,34 @@ export function createOrdersApi(client: UniversalApiClient): OrdersApi {
  */
 
 export interface AppointmentsApi {
-  list(params?: PaginationParams & { status?: string; date?: string }): Promise<any>
-  getById(id: string): Promise<any>
+  list(params?: PaginationParams & { status?: string; date?: string }): Promise<any>;
+  getById(id: string): Promise<any>;
   create(data: {
-    service_id?: string
-    provider_id?: string
-    table_id?: string
-    date: string
-    time: string
-    duration?: number
-    guests?: number
-    customer_name: string
-    customer_email: string
-    customer_phone: string
-    notes?: string
-  }): Promise<any>
-  update(id: string, data: any): Promise<any>
-  cancel(id: string, reason?: string): Promise<any>
+    service_id?: string;
+    provider_id?: string;
+    table_id?: string;
+    date: string;
+    time: string;
+    duration?: number;
+    guests?: number;
+    customer_name: string;
+    customer_email: string;
+    customer_phone: string;
+    notes?: string;
+  }): Promise<any>;
+  update(id: string, data: any): Promise<any>;
+  cancel(id: string, reason?: string): Promise<any>;
   checkAvailability(params: {
-    service_id?: string
-    provider_id?: string
-    date: string
-    time?: string
-  }): Promise<any>
+    service_id?: string;
+    provider_id?: string;
+    date: string;
+    time?: string;
+  }): Promise<any>;
   getAvailableSlots(params: {
-    service_id?: string
-    provider_id?: string
-    date: string
-  }): Promise<any>
+    service_id?: string;
+    provider_id?: string;
+    date: string;
+  }): Promise<any>;
 }
 
 export function createAppointmentsApi(client: UniversalApiClient): AppointmentsApi {
@@ -169,8 +170,8 @@ export function createAppointmentsApi(client: UniversalApiClient): AppointmentsA
     update: (id, data) => client.put(`appointments/${id}`, data),
     cancel: (id, reason) => client.put(`appointments/${id}/cancel`, { reason }),
     checkAvailability: (params) => client.get('appointments/availability', { params }),
-    getAvailableSlots: (params) => client.get('appointments/slots', { params })
-  }
+    getAvailableSlots: (params) => client.get('appointments/slots', { params }),
+  };
 }
 
 /**
@@ -180,14 +181,14 @@ export function createAppointmentsApi(client: UniversalApiClient): AppointmentsA
  */
 
 export interface CustomersApi {
-  getProfile(): Promise<any>
-  updateProfile(data: any): Promise<any>
-  getOrders(params?: PaginationParams): Promise<any>
-  getAppointments(params?: PaginationParams): Promise<any>
-  addAddress(address: any): Promise<any>
-  updateAddress(id: string, address: any): Promise<any>
-  deleteAddress(id: string): Promise<any>
-  getAddresses(): Promise<any>
+  getProfile(): Promise<any>;
+  updateProfile(data: any): Promise<any>;
+  getOrders(params?: PaginationParams): Promise<any>;
+  getAppointments(params?: PaginationParams): Promise<any>;
+  addAddress(address: any): Promise<any>;
+  updateAddress(id: string, address: any): Promise<any>;
+  deleteAddress(id: string): Promise<any>;
+  getAddresses(): Promise<any>;
 }
 
 export function createCustomersApi(client: UniversalApiClient): CustomersApi {
@@ -199,8 +200,8 @@ export function createCustomersApi(client: UniversalApiClient): CustomersApi {
     addAddress: (address) => client.post('customers/addresses', { address }),
     updateAddress: (id, address) => client.put(`customers/addresses/${id}`, { address }),
     deleteAddress: (id) => client.delete(`customers/addresses/${id}`),
-    getAddresses: () => client.get('customers/addresses')
-  }
+    getAddresses: () => client.get('customers/addresses'),
+  };
 }
 
 /**
@@ -210,10 +211,10 @@ export function createCustomersApi(client: UniversalApiClient): CustomersApi {
  */
 
 export interface PaymentApi {
-  process(orderId: string, method: string, data: any): Promise<any>
-  getStatus(orderId: string): Promise<any>
-  createIntent(amount: number, currency?: string): Promise<any>
-  confirmPayment(paymentIntentId: string): Promise<any>
+  process(orderId: string, method: string, data: any): Promise<any>;
+  getStatus(orderId: string): Promise<any>;
+  createIntent(amount: number, currency?: string): Promise<any>;
+  confirmPayment(paymentIntentId: string): Promise<any>;
 }
 
 export function createPaymentApi(client: UniversalApiClient): PaymentApi {
@@ -221,11 +222,10 @@ export function createPaymentApi(client: UniversalApiClient): PaymentApi {
     process: (orderId, method, data) =>
       client.post('payment', { order_id: orderId, payment_method: method, payment_data: data }),
     getStatus: (orderId) => client.get(`payment/${orderId}/status`),
-    createIntent: (amount, currency = 'BRL') =>
-      client.post('payment/intent', { amount, currency }),
+    createIntent: (amount, currency = 'BRL') => client.post('payment/intent', { amount, currency }),
     confirmPayment: (paymentIntentId) =>
-      client.post('payment/confirm', { payment_intent_id: paymentIntentId })
-  }
+      client.post('payment/confirm', { payment_intent_id: paymentIntentId }),
+  };
 }
 
 /**
@@ -235,19 +235,19 @@ export function createPaymentApi(client: UniversalApiClient): PaymentApi {
  */
 
 export interface ReviewsApi {
-  list(itemId: string, params?: PaginationParams & { rating_filter?: number }): Promise<any>
+  list(itemId: string, params?: PaginationParams & { rating_filter?: number }): Promise<any>;
   create(data: {
-    item_id: string
-    item_type: string
-    rating: number
-    title?: string
-    comment?: string
-    images?: string[]
-  }): Promise<any>
-  update(id: string, data: any): Promise<any>
-  delete(id: string): Promise<any>
-  markHelpful(id: string): Promise<any>
-  getStats(itemId: string, itemType?: string): Promise<any>
+    item_id: string;
+    item_type: string;
+    rating: number;
+    title?: string;
+    comment?: string;
+    images?: string[];
+  }): Promise<any>;
+  update(id: string, data: any): Promise<any>;
+  delete(id: string): Promise<any>;
+  markHelpful(id: string): Promise<any>;
+  getStats(itemId: string, itemType?: string): Promise<any>;
 }
 
 export function createReviewsApi(client: UniversalApiClient): ReviewsApi {
@@ -257,8 +257,9 @@ export function createReviewsApi(client: UniversalApiClient): ReviewsApi {
     update: (id, data) => client.put(`reviews/${id}`, data),
     delete: (id) => client.delete(`reviews/${id}`),
     markHelpful: (id) => client.post(`reviews/${id}/helpful`),
-    getStats: (itemId, itemType) => client.get(`reviews/stats/${itemId}`, { params: { item_type: itemType } })
-  }
+    getStats: (itemId, itemType) =>
+      client.get(`reviews/stats/${itemId}`, { params: { item_type: itemType } }),
+  };
 }
 
 /**
@@ -268,17 +269,17 @@ export function createReviewsApi(client: UniversalApiClient): ReviewsApi {
  */
 
 export interface AnalyticsApi {
-  getDashboard(params?: { period?: string; start_date?: string; end_date?: string }): Promise<any>
-  getMetrics(metric: string, params?: any): Promise<any>
-  trackEvent(event: string, data?: any): Promise<void>
+  getDashboard(params?: { period?: string; start_date?: string; end_date?: string }): Promise<any>;
+  getMetrics(metric: string, params?: any): Promise<any>;
+  trackEvent(event: string, data?: any): Promise<void>;
 }
 
 export function createAnalyticsApi(client: UniversalApiClient): AnalyticsApi {
   return {
     getDashboard: (params) => client.get('analytics/dashboard', { params }),
     getMetrics: (metric, params) => client.get(`analytics/metrics/${metric}`, { params }),
-    trackEvent: (event, data) => client.post('analytics/events', { event, data })
-  }
+    trackEvent: (event, data) => client.post('analytics/events', { event, data }),
+  };
 }
 
 /**
@@ -288,12 +289,12 @@ export function createAnalyticsApi(client: UniversalApiClient): AnalyticsApi {
  */
 
 export interface SofiaApi {
-  chat(message: string, context?: any): Promise<any>
-  generateIntention(description: string, requirements?: any): Promise<any>
-  validateUX(url?: string): Promise<any>
-  optimizeSEO(url: string, content?: string): Promise<any>
-  getRecommendations(type: string, context?: any): Promise<any>
-  getSuggestions(context?: any): Promise<any>
+  chat(message: string, context?: any): Promise<any>;
+  generateIntention(description: string, requirements?: any): Promise<any>;
+  validateUX(url?: string): Promise<any>;
+  optimizeSEO(url: string, content?: string): Promise<any>;
+  getRecommendations(type: string, context?: any): Promise<any>;
+  getSuggestions(context?: any): Promise<any>;
 }
 
 export function createSofiaApi(client: UniversalApiClient): SofiaApi {
@@ -305,8 +306,8 @@ export function createSofiaApi(client: UniversalApiClient): SofiaApi {
     optimizeSEO: (url, content) => client.post('sofia/seo-optimize', { url, content }),
     getRecommendations: (type, context) =>
       client.get('sofia/recommendations', { params: { type, ...context } }),
-    getSuggestions: (context) => client.get('sofia/suggestions', { params: context })
-  }
+    getSuggestions: (context) => client.get('sofia/suggestions', { params: context }),
+  };
 }
 
 /**
@@ -317,23 +318,23 @@ export function createSofiaApi(client: UniversalApiClient): SofiaApi {
  */
 
 export interface UniversalApis {
-  products: ProductsApi
-  cart: CartApi
-  orders: OrdersApi
-  appointments: AppointmentsApi
-  customers: CustomersApi
-  payment: PaymentApi
-  reviews: ReviewsApi
-  analytics: AnalyticsApi
-  sofia: SofiaApi
-  client: UniversalApiClient
+  products: ProductsApi;
+  cart: CartApi;
+  orders: OrdersApi;
+  appointments: AppointmentsApi;
+  customers: CustomersApi;
+  payment: PaymentApi;
+  reviews: ReviewsApi;
+  analytics: AnalyticsApi;
+  sofia: SofiaApi;
+  client: UniversalApiClient;
 }
 
 /**
  * Create all APIs (async)
  */
 export async function createUniversalApis(): Promise<UniversalApis> {
-  const client = await getApiClient()
+  const client = await getApiClient();
 
   return {
     products: createProductsApi(client),
@@ -345,30 +346,30 @@ export async function createUniversalApis(): Promise<UniversalApis> {
     reviews: createReviewsApi(client),
     analytics: createAnalyticsApi(client),
     sofia: createSofiaApi(client),
-    client
-  }
+    client,
+  };
 }
 
 /**
  * Singleton
  */
-let _universalApis: UniversalApis | null = null
+let _universalApis: UniversalApis | null = null;
 
 /**
  * Get Universal APIs (async, creates singleton)
  */
 export async function getUniversalApis(): Promise<UniversalApis> {
   if (!_universalApis) {
-    _universalApis = await createUniversalApis()
+    _universalApis = await createUniversalApis();
   }
-  return _universalApis
+  return _universalApis;
 }
 
 /**
  * Reset (useful for testing)
  */
 export function resetUniversalApis(): void {
-  _universalApis = null
+  _universalApis = null;
 }
 
-export default getUniversalApis
+export default getUniversalApis;

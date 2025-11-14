@@ -8,7 +8,7 @@ export default defineEndpoint((router, { services, database }) => {
       const {
         status = 'all', // 'all', 'low', 'out_of_stock'
         limit = 50,
-        offset = 0
+        offset = 0,
       } = req.query;
 
       let query = database('products')
@@ -27,7 +27,9 @@ export default defineEndpoint((router, { services, database }) => {
 
       switch (status) {
         case 'low':
-          query = query.whereRaw('inventory_quantity > 0 AND inventory_quantity <= low_stock_threshold');
+          query = query.whereRaw(
+            'inventory_quantity > 0 AND inventory_quantity <= low_stock_threshold'
+          );
           break;
         case 'out_of_stock':
           query = query.where('inventory_quantity', 0);
@@ -35,10 +37,7 @@ export default defineEndpoint((router, { services, database }) => {
         // 'all' - no additional filter
       }
 
-      const products = await query
-        .orderBy('inventory_quantity', 'asc')
-        .limit(limit)
-        .offset(offset);
+      const products = await query.orderBy('inventory_quantity', 'asc').limit(limit).offset(offset);
 
       const total = await database('products')
         .count('* as count')
@@ -46,7 +45,7 @@ export default defineEndpoint((router, { services, database }) => {
         .first();
 
       res.json({
-        data: products.map(p => ({
+        data: products.map((p) => ({
           id: p.id,
           name: p.name,
           slug: p.slug,
@@ -55,15 +54,15 @@ export default defineEndpoint((router, { services, database }) => {
           inventory: {
             quantity: p.inventory_quantity,
             threshold: p.low_stock_threshold,
-            status: getInventoryStatus(p.inventory_quantity, p.low_stock_threshold)
+            status: getInventoryStatus(p.inventory_quantity, p.low_stock_threshold),
           },
-          price: parseFloat(p.price).toFixed(2)
+          price: parseFloat(p.price).toFixed(2),
         })),
         meta: {
           total: parseInt(total.count),
           limit: parseInt(limit),
-          offset: parseInt(offset)
-        }
+          offset: parseInt(offset),
+        },
       });
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -94,7 +93,7 @@ export default defineEndpoint((router, { services, database }) => {
 
       if (!product.track_inventory) {
         return res.status(400).json({
-          error: 'Inventory tracking not enabled for this product'
+          error: 'Inventory tracking not enabled for this product',
         });
       }
 
@@ -112,17 +111,15 @@ export default defineEndpoint((router, { services, database }) => {
         default:
           return res.status(400).json({
             error: 'Invalid operation',
-            supported: ['set', 'increment', 'decrement']
+            supported: ['set', 'increment', 'decrement'],
           });
       }
 
       // Update inventory
-      await database('products')
-        .where({ id: req.params.product_id })
-        .update({
-          inventory_quantity: newQuantity,
-          updated_at: new Date()
-        });
+      await database('products').where({ id: req.params.product_id }).update({
+        inventory_quantity: newQuantity,
+        updated_at: new Date(),
+      });
 
       // Emit inventory update event
       await database('events').insert({
@@ -138,9 +135,9 @@ export default defineEndpoint((router, { services, database }) => {
           quantity: parseInt(quantity),
           old_quantity: product.inventory_quantity,
           new_quantity: newQuantity,
-          status: getInventoryStatus(newQuantity, product.low_stock_threshold)
+          status: getInventoryStatus(newQuantity, product.low_stock_threshold),
         }),
-        timestamp: new Date()
+        timestamp: new Date(),
       });
 
       // Check if low stock alert needed
@@ -156,9 +153,9 @@ export default defineEndpoint((router, { services, database }) => {
             sku: product.sku,
             name: product.name,
             quantity: newQuantity,
-            threshold: product.low_stock_threshold
+            threshold: product.low_stock_threshold,
           }),
-          timestamp: new Date()
+          timestamp: new Date(),
         });
       }
 
@@ -169,8 +166,8 @@ export default defineEndpoint((router, { services, database }) => {
           product_id: req.params.product_id,
           old_quantity: product.inventory_quantity,
           new_quantity: newQuantity,
-          status: getInventoryStatus(newQuantity, product.low_stock_threshold)
-        }
+          status: getInventoryStatus(newQuantity, product.low_stock_threshold),
+        },
       });
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -186,7 +183,7 @@ export default defineEndpoint((router, { services, database }) => {
       if (!updates || !Array.isArray(updates) || updates.length === 0) {
         return res.status(400).json({
           error: 'Updates array is required',
-          example: [{ product_id: 'uuid', quantity: 10, operation: 'set' }]
+          example: [{ product_id: 'uuid', quantity: 10, operation: 'set' }],
         });
       }
 
@@ -196,15 +193,13 @@ export default defineEndpoint((router, { services, database }) => {
         try {
           const { product_id, quantity, operation = 'set' } = update;
 
-          const product = await database('products')
-            .where({ id: product_id, tenant_id })
-            .first();
+          const product = await database('products').where({ id: product_id, tenant_id }).first();
 
           if (!product || !product.track_inventory) {
             results.push({
               product_id,
               success: false,
-              error: 'Product not found or inventory tracking disabled'
+              error: 'Product not found or inventory tracking disabled',
             });
             continue;
           }
@@ -225,12 +220,10 @@ export default defineEndpoint((router, { services, database }) => {
               continue;
           }
 
-          await database('products')
-            .where({ id: product_id })
-            .update({
-              inventory_quantity: newQuantity,
-              updated_at: new Date()
-            });
+          await database('products').where({ id: product_id }).update({
+            inventory_quantity: newQuantity,
+            updated_at: new Date(),
+          });
 
           // Emit event
           await database('events').insert({
@@ -243,32 +236,32 @@ export default defineEndpoint((router, { services, database }) => {
               product_id,
               operation,
               old_quantity: product.inventory_quantity,
-              new_quantity: newQuantity
+              new_quantity: newQuantity,
             }),
-            timestamp: new Date()
+            timestamp: new Date(),
           });
 
           results.push({
             product_id,
             success: true,
             old_quantity: product.inventory_quantity,
-            new_quantity: newQuantity
+            new_quantity: newQuantity,
           });
         } catch (err) {
           results.push({
             product_id: update.product_id,
             success: false,
-            error: err.message
+            error: err.message,
           });
         }
       }
 
-      const successCount = results.filter(r => r.success).length;
+      const successCount = results.filter((r) => r.success).length;
 
       res.json({
         success: successCount > 0,
         message: `Updated ${successCount} of ${updates.length} products`,
-        data: results
+        data: results,
       });
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -293,27 +286,27 @@ export default defineEndpoint((router, { services, database }) => {
 
       res.json({
         data: {
-          low_stock: lowStock.map(p => ({
+          low_stock: lowStock.map((p) => ({
             id: p.id,
             name: p.name,
             slug: p.slug,
             sku: p.sku,
             quantity: p.inventory_quantity,
             threshold: p.low_stock_threshold,
-            urgency: p.inventory_quantity <= (p.low_stock_threshold / 2) ? 'high' : 'medium'
+            urgency: p.inventory_quantity <= p.low_stock_threshold / 2 ? 'high' : 'medium',
           })),
-          out_of_stock: outOfStock.map(p => ({
+          out_of_stock: outOfStock.map((p) => ({
             id: p.id,
             name: p.name,
             slug: p.slug,
-            sku: p.sku
+            sku: p.sku,
           })),
           summary: {
             low_stock_count: lowStock.length,
             out_of_stock_count: outOfStock.length,
-            total_alerts: lowStock.length + outOfStock.length
-          }
-        }
+            total_alerts: lowStock.length + outOfStock.length,
+          },
+        },
       });
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -332,23 +325,23 @@ export default defineEndpoint((router, { services, database }) => {
         .where({
           tenant_id,
           aggregate_type: 'product',
-          aggregate_id: req.params.product_id
+          aggregate_id: req.params.product_id,
         })
         .where('event_type', 'like', '%inventory%')
         .orderBy('timestamp', 'desc')
         .limit(limit);
 
       res.json({
-        data: history.map(event => ({
+        data: history.map((event) => ({
           id: event.id,
           event_type: event.event_type,
           data: JSON.parse(event.event_data),
-          timestamp: event.timestamp
+          timestamp: event.timestamp,
         })),
         meta: {
           product_id: req.params.product_id,
-          count: history.length
-        }
+          count: history.length,
+        },
       });
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -376,7 +369,7 @@ export default defineEndpoint((router, { services, database }) => {
           reservations.push({
             product_id: item.product_id,
             success: false,
-            error: 'Product not found or inventory not tracked'
+            error: 'Product not found or inventory not tracked',
           });
           continue;
         }
@@ -387,7 +380,7 @@ export default defineEndpoint((router, { services, database }) => {
             success: false,
             error: 'Insufficient inventory',
             available: product.inventory_quantity,
-            requested: item.quantity
+            requested: item.quantity,
           });
           continue;
         }
@@ -403,26 +396,27 @@ export default defineEndpoint((router, { services, database }) => {
             product_id: item.product_id,
             quantity: item.quantity,
             order_id,
-            expires_at: new Date(Date.now() + 15 * 60 * 1000).toISOString() // 15 minutes
+            expires_at: new Date(Date.now() + 15 * 60 * 1000).toISOString(), // 15 minutes
           }),
-          timestamp: new Date()
+          timestamp: new Date(),
         });
 
         reservations.push({
           product_id: item.product_id,
           success: true,
-          quantity: item.quantity
+          quantity: item.quantity,
         });
       }
 
-      const successCount = reservations.filter(r => r.success).length;
+      const successCount = reservations.filter((r) => r.success).length;
 
       res.json({
         success: successCount === items.length,
-        message: successCount === items.length
-          ? 'All items reserved successfully'
-          : `Reserved ${successCount} of ${items.length} items`,
-        data: reservations
+        message:
+          successCount === items.length
+            ? 'All items reserved successfully'
+            : `Reserved ${successCount} of ${items.length} items`,
+        data: reservations,
       });
     } catch (error) {
       res.status(500).json({ error: error.message });

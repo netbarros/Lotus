@@ -7,6 +7,7 @@
 ## 🎯 Objetivo
 
 Este guia irá levá-lo através do processo de:
+
 1. ✅ Setup do ambiente de desenvolvimento
 2. ✅ Estrutura do projeto
 3. ✅ Primeiro feature: adicionar novo endpoint à Sofia AI
@@ -26,6 +27,7 @@ git --version     # 2.40.0+
 ```
 
 Se não tiver `pnpm`:
+
 ```bash
 npm install -g pnpm
 ```
@@ -90,6 +92,7 @@ nano .env
 ```
 
 **Variáveis OBRIGATÓRIAS**:
+
 ```env
 # Sofia AI
 ANTHROPIC_API_KEY=sk-ant-your-key-here
@@ -119,6 +122,7 @@ docker-compose -f docker-compose.dev.yml up -d
 ```
 
 Aguarde todos os serviços ficarem healthy (~2 min):
+
 ```bash
 docker ps
 ```
@@ -158,7 +162,7 @@ app.get('/api/hello', (req, res) => {
     message: `Hello, ${name}!`,
     timestamp: new Date().toISOString(),
     version: '3.0.0',
-    sofia: 'is alive 🌸'
+    sofia: 'is alive 🌸',
   });
 });
 ```
@@ -196,14 +200,12 @@ describe('GET /api/hello', () => {
   });
 
   it('should return hello world', async () => {
-    const response = await request(app)
-      .get('/api/hello')
-      .expect(200);
+    const response = await request(app).get('/api/hello').expect(200);
 
     expect(response.body).toMatchObject({
       success: true,
       message: 'Hello, World!',
-      sofia: 'is alive 🌸'
+      sofia: 'is alive 🌸',
     });
   });
 
@@ -216,9 +218,7 @@ describe('GET /api/hello', () => {
   });
 
   it('should include timestamp and version', async () => {
-    const response = await request(app)
-      .get('/api/hello')
-      .expect(200);
+    const response = await request(app).get('/api/hello').expect(200);
 
     expect(response.body.timestamp).toBeDefined();
     expect(response.body.version).toBe('3.0.0');
@@ -234,6 +234,7 @@ pnpm test
 ```
 
 Resultado esperado:
+
 ```
 ✓ GET /api/hello (3)
   ✓ should return hello world
@@ -250,15 +251,17 @@ Tests  3 passed (3)
 
 Adicione ao README ou crie documentação:
 
-```markdown
+````markdown
 ### GET /api/hello
 
 Endpoint de exemplo para demonstração.
 
 **Query Parameters:**
+
 - `name` (opcional): Nome para cumprimentar. Default: "World"
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -268,7 +271,9 @@ Endpoint de exemplo para demonstração.
   "sofia": "is alive 🌸"
 }
 ```
-```
+````
+
+````
 
 ---
 
@@ -278,7 +283,7 @@ Endpoint de exemplo para demonstração.
 
 ```bash
 git checkout -b feature/add-hello-endpoint
-```
+````
 
 ### **2. Commit**
 
@@ -351,7 +356,7 @@ export class EmailValidator {
     if (!email) {
       return {
         valid: false,
-        error: 'Email is required'
+        error: 'Email is required',
       };
     }
 
@@ -359,7 +364,7 @@ export class EmailValidator {
       return {
         valid: false,
         error: 'Invalid email format',
-        suggestions: this.getSuggestions(email)
+        suggestions: this.getSuggestions(email),
       };
     }
 
@@ -370,7 +375,7 @@ export class EmailValidator {
       return {
         valid: false,
         error: 'Disposable emails are not allowed',
-        suggestions: ['gmail.com', 'outlook.com', 'yahoo.com']
+        suggestions: ['gmail.com', 'outlook.com', 'yahoo.com'],
       };
     }
 
@@ -386,7 +391,7 @@ export class EmailValidator {
     const disposableDomains = [
       'tempmail.com',
       '10minutemail.com',
-      'guerrillamail.com'
+      'guerrillamail.com',
     ];
     return disposableDomains.includes(domain.toLowerCase());
   }
@@ -424,7 +429,7 @@ app.post('/api/validate/email', (req, res) => {
 
   res.json({
     success: result.valid,
-    ...result
+    ...result,
   });
 });
 ```
@@ -570,4 +575,5 @@ rate(sofia_http_requests_total{status=~"5.."}[5m])
 
 ---
 
-**[← Voltar ao Índice](../00-INDEX.md)** | **[Próximo: Coding Standards →](./coding-standards.md)**
+**[← Voltar ao Índice](../00-INDEX.md)** |
+**[Próximo: Coding Standards →](./coding-standards.md)**

@@ -1,7 +1,6 @@
 # 🚀 MagicSaaS System-∞ - Complete Installation Guide
 
-**Version:** ∞.2026.Q1 (Sofia AI v4.0)
-**Last Updated:** November 13, 2025
+**Version:** ∞.2026.Q1 (Sofia AI v4.0) **Last Updated:** November 13, 2025
 **Estimated Installation Time:** 10-15 minutes
 
 ---
@@ -76,6 +75,7 @@ chmod +x install-magicsaas-ultimate-v4.sh
 ```
 
 The installer will:
+
 1. ✅ Check all dependencies (Docker, Node.js, etc.)
 2. ✅ Prompt for configuration (API keys, admin email)
 3. ✅ Generate secure passwords
@@ -163,6 +163,7 @@ docker compose -f infrastructure/docker/docker-compose.dev.yml logs -f
 ```
 
 This starts **18+ services**:
+
 - PostgreSQL 17 with pgVector
 - Redis 8
 - Directus 11+
@@ -198,7 +199,8 @@ See [Database Initialization](#database-initialization) section below.
 
 ## 💾 Database Initialization
 
-The database initialization creates **all tables, loads demo data, and configures Sofia AI v4.0**.
+The database initialization creates **all tables, loads demo data, and
+configures Sofia AI v4.0**.
 
 ### Automated Initialization
 
@@ -213,6 +215,7 @@ docker exec magicsaas-db bash /database/init-database.sh
 This executes:
 
 **📊 7 Database Schemas (4,500+ lines):**
+
 1. `00-extensions.sql` - PostgreSQL Extensions (uuid, pgVector, TimescaleDB)
 2. `01-core-tables.sql` - Core Tables (tenants, users, plans, billing)
 3. `02-billing-credits.sql` - Lotus Credits & Billing System
@@ -222,11 +225,13 @@ This executes:
 7. `06-all-petalas-tables.sql` - Universal Tables (ALL 13 Pétalas)
 
 **🌱 3 Demo Data Seeds (1,800+ lines):**
+
 1. `00-initial-data.sql` - Initial Data (plans, tenants, users, roles)
 2. `01-healthcare-demo-data.sql` - Healthcare Demo Data
 3. `02-all-petalas-demo-data.sql` - Demo Data for ALL 13 Pétalas
 
 **Results:**
+
 - ✅ 50+ tables created
 - ✅ 13 Pétalas registered
 - ✅ 50+ customers with demo data
@@ -303,20 +308,21 @@ curl http://localhost:3003/health
 
 After successful installation, access these services:
 
-| Service | URL | Credentials |
-|---------|-----|-------------|
-| **Directus CMS** | http://localhost:8055 | See `.env` file |
-| **Sofia AI Health** | http://localhost:3003/health | N/A |
-| **Sofia AI Metrics** | http://localhost:3003/metrics | N/A |
-| **Grafana** | http://localhost:3002 | admin / admin |
-| **Prometheus** | http://localhost:9090 | N/A |
-| **Jaeger** | http://localhost:16686 | N/A |
-| **MailHog** | http://localhost:8025 | N/A |
-| **MinIO** | http://localhost:9001 | See `.env` file |
+| Service              | URL                           | Credentials     |
+| -------------------- | ----------------------------- | --------------- |
+| **Directus CMS**     | http://localhost:8055         | See `.env` file |
+| **Sofia AI Health**  | http://localhost:3003/health  | N/A             |
+| **Sofia AI Metrics** | http://localhost:3003/metrics | N/A             |
+| **Grafana**          | http://localhost:3002         | admin / admin   |
+| **Prometheus**       | http://localhost:9090         | N/A             |
+| **Jaeger**           | http://localhost:16686        | N/A             |
+| **MailHog**          | http://localhost:8025         | N/A             |
+| **MinIO**            | http://localhost:9001         | See `.env` file |
 
 ### Default Credentials
 
 **Directus Admin:**
+
 - Email: Set in `.env` (DIRECTUS_ADMIN_EMAIL)
 - Password: Set in `.env` (DIRECTUS_ADMIN_PASSWORD)
 
@@ -419,7 +425,8 @@ docker logs -f magicsaas-sofia-ai
 ### 3. Review Documentation
 
 - **[README.md](README.md)** - System overview
-- **[SOFIA_AI_V4_COMPLETE.md](SOFIA_AI_V4_COMPLETE.md)** - Sofia AI documentation
+- **[SOFIA_AI_V4_COMPLETE.md](SOFIA_AI_V4_COMPLETE.md)** - Sofia AI
+  documentation
 - **[PETALAS.md](PETALAS.md)** - Pétalas documentation
 - **[CERTIFICATION.md](CERTIFICATION.md)** - Official certification
 

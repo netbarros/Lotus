@@ -3,28 +3,28 @@
  * Wrapper for Claude API calls
  */
 
-import Anthropic from '@anthropic-ai/sdk'
+import Anthropic from '@anthropic-ai/sdk';
 
 export interface ClaudeMessage {
-  role: 'user' | 'assistant'
-  content: string
+  role: 'user' | 'assistant';
+  content: string;
 }
 
 export interface ClaudeCompletionOptions {
-  system: string
-  messages: ClaudeMessage[]
-  temperature?: number
-  max_tokens?: number
-  model?: string
+  system: string;
+  messages: ClaudeMessage[];
+  temperature?: number;
+  max_tokens?: number;
+  model?: string;
 }
 
 export class AnthropicClient {
-  private client: Anthropic
+  private client: Anthropic;
 
   constructor(apiKey: string) {
     this.client = new Anthropic({
-      apiKey
-    })
+      apiKey,
+    });
   }
 
   async complete(options: ClaudeCompletionOptions): Promise<string> {
@@ -34,14 +34,14 @@ export class AnthropicClient {
         system: options.system,
         messages: options.messages,
         temperature: options.temperature || 0.7,
-        max_tokens: options.max_tokens || 1024
-      })
+        max_tokens: options.max_tokens || 1024,
+      });
 
-      const content = response.content[0]
-      return content.type === 'text' ? content.text : ''
+      const content = response.content[0];
+      return content.type === 'text' ? content.text : '';
     } catch (error) {
-      console.error('Claude API error:', error)
-      throw error
+      console.error('Claude API error:', error);
+      throw error;
     }
   }
 }

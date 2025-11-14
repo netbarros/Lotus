@@ -1,42 +1,51 @@
 # ADR-003: Sofia AI as Orchestrator (Not Separate Microservice)
 
-**Status:** ✅ Accepted
-**Date:** 2025-11-06
-**Deciders:** Sofia Lotus AI, Architecture Team
-**Technical Story:** Sofia AI v3.0 architectural positioning
+**Status:** ✅ Accepted **Date:** 2025-11-06 **Deciders:** Sofia Lotus AI,
+Architecture Team **Technical Story:** Sofia AI v3.0 architectural positioning
 
 ---
 
 ## Context and Problem Statement
 
-Sofia AI v3.0 is the **core intelligence** of MagicSaaS System-∞, responsible for:
+Sofia AI v3.0 is the **core intelligence** of MagicSaaS System-∞, responsible
+for:
 
 - Parsing natural language intentions into SaaS specifications
-- Orchestrating multi-step AI workflows (UX validation, SEO optimization, marketplace logic)
-- Making real-time decisions based on user context, tenant config, and historical data
+- Orchestrating multi-step AI workflows (UX validation, SEO optimization,
+  marketplace logic)
+- Making real-time decisions based on user context, tenant config, and
+  historical data
 - Coordinating with external AI models (Claude 4.5 Sonnet, specialized LLMs)
 
 **Question:** Should Sofia AI be:
+
 1. A separate microservice (isolated, independently deployable)?
-2. An orchestrator embedded in the main application (Layer 10 of Cognitive Mesh OS)?
+2. An orchestrator embedded in the main application (Layer 10 of Cognitive Mesh
+   OS)?
 
 ---
 
 ## Decision Drivers
 
 1. **Latency Requirements** - AI decisions must complete in < 300s (p95 SLO)
-2. **State Management** - Sofia AI needs access to user context, tenant config, session state
-3. **Orchestration Complexity** - Multi-step AI workflows require coordination across layers
+2. **State Management** - Sofia AI needs access to user context, tenant config,
+   session state
+3. **Orchestration Complexity** - Multi-step AI workflows require coordination
+   across layers
 4. **Deployment Simplicity** - Minimize operational overhead
-5. **Cognitive Traceability** - Every AI decision must flow through DecisionLogger
-6. **Cost** - External microservice = additional infrastructure + network latency
+5. **Cognitive Traceability** - Every AI decision must flow through
+   DecisionLogger
+6. **Cost** - External microservice = additional infrastructure + network
+   latency
 
 ---
 
 ## Considered Options
 
 ### Option 1: Sofia AI as Separate Microservice
+
 **Architecture:**
+
 ```
 ┌─────────────┐      HTTP      ┌─────────────┐
 │   Backend   │ ────────────→  │  Sofia AI   │
@@ -45,20 +54,26 @@ Sofia AI v3.0 is the **core intelligence** of MagicSaaS System-∞, responsible 
 ```
 
 **Pros:**
+
 - Independent scaling (scale Sofia AI separately)
 - Technology isolation (Python for ML, Node for API)
 - Team ownership (separate AI team)
 
 **Cons:**
+
 - ❌ **Network Latency:** +50-100ms per HTTP call (kills p95 SLO)
-- ❌ **State Sharing:** Need to serialize context → send over HTTP → deserialize (slow + error-prone)
-- ❌ **Orchestration Hell:** Multi-step workflows require multiple HTTP round-trips
+- ❌ **State Sharing:** Need to serialize context → send over HTTP → deserialize
+  (slow + error-prone)
+- ❌ **Orchestration Hell:** Multi-step workflows require multiple HTTP
+  round-trips
 - ❌ **Cognitive Tracing:** Distributed tracing across microservices = complex
 - ❌ **Deployment Complexity:** Need to deploy 2 services, maintain 2 codebases
 - ❌ **Cost:** Additional Kubernetes pods, load balancers, network egress
 
 ### Option 2: Sofia AI as Library/SDK (Embedded in Backend)
+
 **Architecture:**
+
 ```
 ┌───────────────────────────────┐
 │       Backend (NestJS)        │
@@ -70,17 +85,23 @@ Sofia AI v3.0 is the **core intelligence** of MagicSaaS System-∞, responsible 
 ```
 
 **Pros:**
+
 - Zero network latency (in-process function calls)
 - Direct access to application state
 - Simple deployment (single codebase)
 
 **Cons:**
-- ❌ **Language Coupling:** Backend (TypeScript) vs Sofia AI (ideally Python for ML)
-- ❌ **Resource Contention:** AI inference uses CPU/memory → starves API requests
+
+- ❌ **Language Coupling:** Backend (TypeScript) vs Sofia AI (ideally Python for
+  ML)
+- ❌ **Resource Contention:** AI inference uses CPU/memory → starves API
+  requests
 - ❌ **No Independent Scaling:** Can't scale AI logic separately from API
 
 ### Option 3: **Sofia AI as Orchestrator (Layer 10 of Cognitive Mesh OS)** (CHOSEN) ✅
+
 **Architecture:**
+
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                     MAGICSAAS SYSTEM-∞                      │
@@ -110,36 +131,47 @@ Sofia AI v3.0 is the **core intelligence** of MagicSaaS System-∞, responsible 
 ```
 
 **Concept:**
+
 - Sofia AI is **Layer 10** in the 11-layer Cognitive Mesh OS
-- It's **not a separate service** → it's the **intelligence layer** of the unified system
+- It's **not a separate service** → it's the **intelligence layer** of the
+  unified system
 - Sofia AI **orchestrates** downstream layers (Context, Data, Integration)
 - Sofia AI **is orchestrated by** upstream layers (Meta-Orchestration)
 
 **Pros:**
+
 - ✅ **Zero Network Latency:** Function calls within same process/layer
 - ✅ **Shared State:** Direct access to Layer 05 (Context) and Layer 03 (Data)
-- ✅ **Cognitive Traceability:** All decisions flow through Layer 06 (Decision Engine)
-- ✅ **Simplified Deployment:** Single Kubernetes deployment (1 pod = all layers)
+- ✅ **Cognitive Traceability:** All decisions flow through Layer 06 (Decision
+  Engine)
+- ✅ **Simplified Deployment:** Single Kubernetes deployment (1 pod = all
+  layers)
 - ✅ **Independent Scaling:** Scale Layer 10 independently via Kubernetes HPA
 - ✅ **Cost Efficient:** No additional infrastructure, no network egress fees
 - ✅ **Developer Experience:** Unified codebase, single debug session
 
 **Cons:**
+
 - ⚠️ **Language Constraint:** Must use TypeScript (Node.js ecosystem)
-- ⚠️ **Resource Sharing:** AI inference competes with API requests for CPU (mitigated via async workers)
+- ⚠️ **Resource Sharing:** AI inference competes with API requests for CPU
+  (mitigated via async workers)
 - ⚠️ **Monorepo Complexity:** Larger codebase (mitigated via pnpm workspaces)
 
 ---
 
 ## Decision Outcome
 
-**Chosen:** **Option 3 - Sofia AI as Orchestrator (Layer 10 of Cognitive Mesh OS)** ✅
+**Chosen:** **Option 3 - Sofia AI as Orchestrator (Layer 10 of Cognitive Mesh
+OS)** ✅
 
 ### Rationale
 
 **Performance Trumps Modularity.**
 
-In a traditional CRUD app, microservices make sense (user service, order service, payment service). But **Sofia AI is not a CRUD service** — it's the **brain** of the system. Every user interaction flows through Sofia AI. Making it a separate microservice adds:
+In a traditional CRUD app, microservices make sense (user service, order
+service, payment service). But **Sofia AI is not a CRUD service** — it's the
+**brain** of the system. Every user interaction flows through Sofia AI. Making
+it a separate microservice adds:
 
 - **+50-100ms network latency per call**
 - **+200ms for context serialization**
@@ -148,6 +180,7 @@ In a traditional CRUD app, microservices make sense (user service, order service
 **Total overhead:** +500-1000ms → **kills our p95 SLO of 300s**.
 
 By embedding Sofia AI as **Layer 10**, we get:
+
 - **Function call latency:** < 1ms
 - **Zero serialization overhead**
 - **Single trace context** (no distributed tracing complexity)
@@ -158,15 +191,16 @@ By embedding Sofia AI as **Layer 10**, we get:
 
 ### 1. Sofia AI as TypeScript Orchestrator
 
-Instead of Python microservice, Sofia AI is written in **TypeScript** and integrated into the NestJS backend:
+Instead of Python microservice, Sofia AI is written in **TypeScript** and
+integrated into the NestJS backend:
 
 ```typescript
 // backend/sofia-ai/src/index.ts
 export class SofiaAI {
   constructor(
-    private readonly contextManager: ContextManager,  // Layer 05
-    private readonly decisionLogger: DecisionLogger,  // Layer 06
-    private readonly directusClient: DirectusClient   // Layer 03
+    private readonly contextManager: ContextManager, // Layer 05
+    private readonly decisionLogger: DecisionLogger, // Layer 06
+    private readonly directusClient: DirectusClient // Layer 03
   ) {}
 
   async processIntention(intention: string, userId: string): Promise<SaaSSpec> {
@@ -218,16 +252,19 @@ spec:
   minReplicas: 3
   maxReplicas: 15
   metrics:
-  - type: Pods
-    pods:
-      metric:
-        name: sofia_intention_processing_duration
-      target:
-        type: AverageValue
-        averageValue: "200s"  # If p95 > 200s, scale up
+    - type: Pods
+      pods:
+        metric:
+          name: sofia_intention_processing_duration
+        target:
+          type: AverageValue
+          averageValue: '200s' # If p95 > 200s, scale up
 ```
 
-**Result:** Sofia AI scales independently (even though it's Layer 10) by scaling the entire backend pod. This is **more efficient** than separate microservice because:
+**Result:** Sofia AI scales independently (even though it's Layer 10) by scaling
+the entire backend pod. This is **more efficient** than separate microservice
+because:
+
 - No network latency
 - No serialization overhead
 - Simpler deployment topology
@@ -254,6 +291,7 @@ export class IntentionProcessor {
 ```
 
 **API Flow:**
+
 ```
 User → POST /api/intentions
        ↓
@@ -272,23 +310,30 @@ User → POST /api/intentions
 
 - ✅ **Latency:** p95 API latency = 180ms (target 200ms) ✅
 - ✅ **SLO Compliance:** p95 intention processing = 250s (target 300s) ✅
-- ✅ **Developer Productivity:** Single codebase, single debug session, single deployment
-- ✅ **Cost:** $0 additional infrastructure (vs $500/month for separate microservice)
-- ✅ **Cognitive Tracing:** Single Jaeger trace spans all layers (no distributed tracing)
+- ✅ **Developer Productivity:** Single codebase, single debug session, single
+  deployment
+- ✅ **Cost:** $0 additional infrastructure (vs $500/month for separate
+  microservice)
+- ✅ **Cognitive Tracing:** Single Jaeger trace spans all layers (no distributed
+  tracing)
 
 ### Negative
 
-- ⚠️ **Language Lock-In:** Sofia AI must be TypeScript (can't use Python-first ML frameworks easily)
+- ⚠️ **Language Lock-In:** Sofia AI must be TypeScript (can't use Python-first
+  ML frameworks easily)
   - **Mitigation:** Use `@tensorflow/tfjs` for ML, Anthropic SDK for Claude AI
 - ⚠️ **Resource Contention:** AI inference uses CPU → can starve API requests
   - **Mitigation:** Async workers + separate thread pool for AI tasks
-- ⚠️ **Monorepo Size:** Codebase grows larger (Sofia AI + Backend + Frontend in one repo)
+- ⚠️ **Monorepo Size:** Codebase grows larger (Sofia AI + Backend + Frontend in
+  one repo)
   - **Mitigation:** pnpm workspaces, turborepo for monorepo management
 
 ### Neutral
 
-- 📊 **Team Ownership:** AI team owns `backend/sofia-ai/` directory (clear boundaries)
-- 🔄 **Future Migration:** Can extract to microservice if latency becomes non-issue (unlikely)
+- 📊 **Team Ownership:** AI team owns `backend/sofia-ai/` directory (clear
+  boundaries)
+- 🔄 **Future Migration:** Can extract to microservice if latency becomes
+  non-issue (unlikely)
 - 📚 **Documentation:** Need to clearly document Layer 10 responsibilities
 
 ---
@@ -297,13 +342,13 @@ User → POST /api/intentions
 
 ### Performance Tests (Q1 2026)
 
-| Metric | Target | Actual | Status |
-|--------|--------|--------|--------|
-| API p95 Latency | < 200ms | 180ms | ✅ |
-| Intention Processing p95 | < 300s | 250s | ✅ |
-| Throughput | 1000 req/s | 1200 req/s | ✅ |
-| CPU Usage (Sofia AI) | < 70% | 65% | ✅ |
-| Memory Usage | < 2GB | 1.8GB | ✅ |
+| Metric                   | Target     | Actual     | Status |
+| ------------------------ | ---------- | ---------- | ------ |
+| API p95 Latency          | < 200ms    | 180ms      | ✅     |
+| Intention Processing p95 | < 300s     | 250s       | ✅     |
+| Throughput               | 1000 req/s | 1200 req/s | ✅     |
+| CPU Usage (Sofia AI)     | < 70%      | 65%        | ✅     |
+| Memory Usage             | < 2GB      | 1.8GB      | ✅     |
 
 ### Load Test: 10K Concurrent Users
 
@@ -317,8 +362,10 @@ User → POST /api/intentions
 
 ## Trade-Offs Accepted
 
-1. **TypeScript Lock-In:** Accepted because Anthropic SDK (Claude AI) works well in Node.js
-2. **Monorepo Complexity:** Accepted because benefits (zero network latency) outweigh costs
+1. **TypeScript Lock-In:** Accepted because Anthropic SDK (Claude AI) works well
+   in Node.js
+2. **Monorepo Complexity:** Accepted because benefits (zero network latency)
+   outweigh costs
 3. **Resource Sharing:** Accepted because async workers mitigate contention
 
 ---
@@ -335,13 +382,15 @@ User → POST /api/intentions
 
 If TypeScript becomes a bottleneck for ML workloads:
 
-1. **Hybrid Model:** Keep Sofia AI as orchestrator, call Python microservice for heavy ML (e.g., model training)
+1. **Hybrid Model:** Keep Sofia AI as orchestrator, call Python microservice for
+   heavy ML (e.g., model training)
 2. **WebAssembly:** Compile Python ML models to WASM, run in Node.js
-3. **Rust Plugin:** Use Rust for performance-critical AI inference, call via N-API
+3. **Rust Plugin:** Use Rust for performance-critical AI inference, call via
+   N-API
 
 **Current Status:** TypeScript + Anthropic SDK sufficient. No migration needed.
 
 ---
 
-**Last Reviewed:** 2025-11-06
-**Next Review:** Q3 2026 (after 100K tenant scale test)
+**Last Reviewed:** 2025-11-06 **Next Review:** Q3 2026 (after 100K tenant scale
+test)

@@ -14,7 +14,10 @@ export function PetalasOverview() {
   if (isLoading) {
     return (
       <div className="card">
-        <div className="card-body d-flex justify-content-center align-items-center" style={{ minHeight: '400px' }}>
+        <div
+          className="card-body d-flex justify-content-center align-items-center"
+          style={{ minHeight: '400px' }}
+        >
           <div className="spinner-border text-primary" role="status">
             <span className="visually-hidden">Carregando...</span>
           </div>
@@ -64,7 +67,9 @@ export function PetalasOverview() {
                         className={`symbol symbol-45px me-5 symbol-light-${petala.color || 'primary'}`}
                       >
                         <span className="symbol-label">
-                          <i className={`${petala.icon} fs-2x text-${petala.color || 'primary'}`}></i>
+                          <i
+                            className={`${petala.icon} fs-2x text-${petala.color || 'primary'}`}
+                          ></i>
                         </span>
                       </div>
                       <div className="d-flex justify-content-start flex-column">
@@ -86,8 +91,8 @@ export function PetalasOverview() {
                         petala.status === 'active'
                           ? 'success'
                           : petala.status === 'development'
-                          ? 'warning'
-                          : 'secondary'
+                            ? 'warning'
+                            : 'secondary'
                       }`}
                     >
                       {petala.status}

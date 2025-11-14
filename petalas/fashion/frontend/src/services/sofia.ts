@@ -3,22 +3,22 @@
  * Integrates Sofia AI assistant with Fashion-specific features
  */
 
-import apiClient from './api'
+import apiClient from './api';
 import type {
   SofiaMessage,
   SofiaIntent,
   SofiaResponse,
   SofiaQuickAction,
-  FashionSofiaContext
-} from '../types/sofia'
+  FashionSofiaContext,
+} from '../types/sofia';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8055'
-const TENANT_ID = import.meta.env.VITE_TENANT_ID || 'default'
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8055';
+const TENANT_ID = import.meta.env.VITE_TENANT_ID || 'default';
 
 export class SofiaService {
-  private conversationId: string | null = null
-  private context: FashionSofiaContext = {}
-  private messageHistory: SofiaMessage[] = []
+  private conversationId: string | null = null;
+  private context: FashionSofiaContext = {};
+  private messageHistory: SofiaMessage[] = [];
 
   /**
    * Initialize Sofia session
@@ -28,14 +28,14 @@ export class SofiaService {
       const response = await apiClient.post('/petalas/fashion/sofia/session', {
         user_id: userId,
         tenant_id: TENANT_ID,
-        petala: 'fashion'
-      })
+        petala: 'fashion',
+      });
 
-      this.conversationId = response.data.conversation_id
-      this.context = response.data.context || {}
+      this.conversationId = response.data.conversation_id;
+      this.context = response.data.context || {};
     } catch (error) {
-      console.error('Failed to initialize Sofia session:', error)
-      throw error
+      console.error('Failed to initialize Sofia session:', error);
+      throw error;
     }
   }
 
@@ -44,22 +44,22 @@ export class SofiaService {
    */
   async sendMessage(message: string): Promise<SofiaResponse> {
     if (!this.conversationId) {
-      await this.initialize()
+      await this.initialize();
     }
 
     try {
       const response = await apiClient.post('/petalas/fashion/sofia/message', {
         conversation_id: this.conversationId,
         message,
-        context: this.context
-      })
+        context: this.context,
+      });
 
       // Update context with response
       if (response.data.context) {
         this.context = {
           ...this.context,
-          ...response.data.context
-        }
+          ...response.data.context,
+        };
       }
 
       // Add to message history
@@ -67,8 +67,8 @@ export class SofiaService {
         id: Date.now().toString(),
         role: 'user',
         content: message,
-        timestamp: new Date()
-      })
+        timestamp: new Date(),
+      });
 
       this.messageHistory.push({
         id: response.data.message_id,
@@ -76,13 +76,13 @@ export class SofiaService {
         content: response.data.message,
         timestamp: new Date(),
         actions: response.data.actions,
-        suggestions: response.data.suggestions
-      })
+        suggestions: response.data.suggestions,
+      });
 
-      return response.data
+      return response.data;
     } catch (error) {
-      console.error('Failed to send message to Sofia:', error)
-      throw error
+      console.error('Failed to send message to Sofia:', error);
+      throw error;
     }
   }
 
@@ -93,18 +93,18 @@ export class SofiaService {
     try {
       const response = await apiClient.post('/petalas/fashion/sofia/intent', {
         message,
-        context: this.context
-      })
+        context: this.context,
+      });
 
-      return response.data
+      return response.data;
     } catch (error) {
-      console.error('Failed to classify intent:', error)
+      console.error('Failed to classify intent:', error);
       return {
         intent: 'general_inquiry',
         confidence: 0.5,
         entities: {},
-        context: {}
-      }
+        context: {},
+      };
     }
   }
 
@@ -117,13 +117,13 @@ export class SofiaService {
         conversation_id: this.conversationId,
         query,
         filters,
-        context: this.context
-      })
+        context: this.context,
+      });
 
-      return response.data.products || []
+      return response.data.products || [];
     } catch (error) {
-      console.error('Sofia product search failed:', error)
-      return []
+      console.error('Sofia product search failed:', error);
+      return [];
     }
   }
 
@@ -135,13 +135,13 @@ export class SofiaService {
       const response = await apiClient.post('/petalas/fashion/sofia/recommendations', {
         conversation_id: this.conversationId,
         type,
-        context: this.context
-      })
+        context: this.context,
+      });
 
-      return response.data.recommendations || []
+      return response.data.recommendations || [];
     } catch (error) {
-      console.error('Sofia recommendations failed:', error)
-      return []
+      console.error('Sofia recommendations failed:', error);
+      return [];
     }
   }
 
@@ -153,13 +153,13 @@ export class SofiaService {
       const response = await apiClient.post('/petalas/fashion/sofia/outfits', {
         conversation_id: this.conversationId,
         product_id: productId,
-        context: this.context
-      })
+        context: this.context,
+      });
 
-      return response.data
+      return response.data;
     } catch (error) {
-      console.error('Sofia outfit suggestions failed:', error)
-      return { outfits: [] }
+      console.error('Sofia outfit suggestions failed:', error);
+      return { outfits: [] };
     }
   }
 
@@ -171,13 +171,13 @@ export class SofiaService {
       const response = await apiClient.post('/petalas/fashion/sofia/track', {
         conversation_id: this.conversationId,
         order_id: orderId,
-        context: this.context
-      })
+        context: this.context,
+      });
 
-      return response.data
+      return response.data;
     } catch (error) {
-      console.error('Sofia order tracking failed:', error)
-      throw error
+      console.error('Sofia order tracking failed:', error);
+      throw error;
     }
   }
 
@@ -188,13 +188,13 @@ export class SofiaService {
     try {
       const response = await apiClient.post('/petalas/fashion/sofia/cart-assist', {
         conversation_id: this.conversationId,
-        context: this.context
-      })
+        context: this.context,
+      });
 
-      return response.data
+      return response.data;
     } catch (error) {
-      console.error('Sofia cart assistance failed:', error)
-      throw error
+      console.error('Sofia cart assistance failed:', error);
+      throw error;
     }
   }
 
@@ -206,13 +206,13 @@ export class SofiaService {
       const response = await apiClient.post('/petalas/fashion/sofia/checkout-assist', {
         conversation_id: this.conversationId,
         step,
-        context: this.context
-      })
+        context: this.context,
+      });
 
-      return response.data
+      return response.data;
     } catch (error) {
-      console.error('Sofia checkout guidance failed:', error)
-      throw error
+      console.error('Sofia checkout guidance failed:', error);
+      throw error;
     }
   }
 
@@ -225,13 +225,13 @@ export class SofiaService {
         conversation_id: this.conversationId,
         action_type: actionType,
         payload,
-        context: this.context
-      })
+        context: this.context,
+      });
 
-      return response.data
+      return response.data;
     } catch (error) {
-      console.error('Sofia action execution failed:', error)
-      throw error
+      console.error('Sofia action execution failed:', error);
+      throw error;
     }
   }
 
@@ -242,22 +242,22 @@ export class SofiaService {
     this.context = {
       ...this.context,
       ...newContext,
-      updated_at: new Date().toISOString()
-    }
+      updated_at: new Date().toISOString(),
+    };
   }
 
   /**
    * Get current context
    */
   getContext(): FashionSofiaContext {
-    return this.context
+    return this.context;
   }
 
   /**
    * Get message history
    */
   getMessageHistory(): SofiaMessage[] {
-    return this.messageHistory
+    return this.messageHistory;
   }
 
   /**
@@ -266,15 +266,15 @@ export class SofiaService {
   async clearConversation(): Promise<void> {
     if (this.conversationId) {
       try {
-        await apiClient.delete(`/petalas/fashion/sofia/session/${this.conversationId}`)
+        await apiClient.delete(`/petalas/fashion/sofia/session/${this.conversationId}`);
       } catch (error) {
-        console.error('Failed to clear Sofia conversation:', error)
+        console.error('Failed to clear Sofia conversation:', error);
       }
     }
 
-    this.conversationId = null
-    this.context = {}
-    this.messageHistory = []
+    this.conversationId = null;
+    this.context = {};
+    this.messageHistory = [];
   }
 
   /**
@@ -286,21 +286,21 @@ export class SofiaService {
         id: 'search',
         label: 'Buscar produtos',
         icon: '🔍',
-        action: 'search_products'
+        action: 'search_products',
       },
       {
         id: 'recommendations',
         label: 'Ver recomendações',
         icon: '✨',
-        action: 'get_recommendations'
+        action: 'get_recommendations',
       },
       {
         id: 'track',
         label: 'Rastrear pedido',
         icon: '📦',
-        action: 'track_order'
-      }
-    ]
+        action: 'track_order',
+      },
+    ];
 
     // Add context-specific actions
     if (this.context.current_view === 'product_detail' && this.context.current_product_id) {
@@ -308,8 +308,8 @@ export class SofiaService {
         id: 'outfit',
         label: 'Ver looks',
         icon: '👗',
-        action: 'get_outfit_suggestions'
-      })
+        action: 'get_outfit_suggestions',
+      });
     }
 
     if (this.context.cart_items && this.context.cart_items.length > 0) {
@@ -317,58 +317,38 @@ export class SofiaService {
         id: 'cart_assist',
         label: 'Ajuda com carrinho',
         icon: '🛒',
-        action: 'cart_assistance'
-      })
+        action: 'cart_assistance',
+      });
     }
 
-    return baseActions
+    return baseActions;
   }
 
   /**
    * Get Fashion-specific suggestions based on context
    */
   getSuggestions(): string[] {
-    const suggestions: string[] = []
+    const suggestions: string[] = [];
 
     // Context-based suggestions
     if (this.context.current_view === 'home') {
-      suggestions.push(
-        'Mostre novidades',
-        'O que está em promoção?',
-        'Recomende algo para mim'
-      )
+      suggestions.push('Mostre novidades', 'O que está em promoção?', 'Recomende algo para mim');
     } else if (this.context.current_view === 'catalog') {
-      suggestions.push(
-        'Filtrar por preço',
-        'Mostrar vestidos',
-        'Ver promoções'
-      )
+      suggestions.push('Filtrar por preço', 'Mostrar vestidos', 'Ver promoções');
     } else if (this.context.current_view === 'product_detail') {
-      suggestions.push(
-        'Adicionar ao carrinho',
-        'Ver tamanhos disponíveis',
-        'Sugerir looks'
-      )
+      suggestions.push('Adicionar ao carrinho', 'Ver tamanhos disponíveis', 'Sugerir looks');
     } else if (this.context.current_view === 'cart') {
-      suggestions.push(
-        'Aplicar cupom',
-        'Calcular frete',
-        'Finalizar compra'
-      )
+      suggestions.push('Aplicar cupom', 'Calcular frete', 'Finalizar compra');
     } else if (this.context.current_view === 'account') {
-      suggestions.push(
-        'Ver meus pedidos',
-        'Rastrear entrega',
-        'Atualizar dados'
-      )
+      suggestions.push('Ver meus pedidos', 'Rastrear entrega', 'Atualizar dados');
     }
 
-    return suggestions
+    return suggestions;
   }
 }
 
 // Export singleton instance
-export const sofiaService = new SofiaService()
+export const sofiaService = new SofiaService();
 
 // Export default
-export default sofiaService
+export default sofiaService;

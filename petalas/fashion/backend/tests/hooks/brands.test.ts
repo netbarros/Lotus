@@ -28,7 +28,10 @@ describe('Brands Hook', () => {
 
 function processBrandCreate(input: any) {
   if (input.name && !input.slug) {
-    input.slug = input.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+    input.slug = input.name
+      .toLowerCase()
+      .replace(/\s+/g, '-')
+      .replace(/[^a-z0-9-]/g, '');
   }
   if (input.product_count === undefined) {
     input.product_count = 0;

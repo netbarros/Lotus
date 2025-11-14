@@ -10,7 +10,7 @@ describe('AR Try-On Endpoint', () => {
   beforeAll(async () => {
     const response = await api.post('/auth/login', {
       email: 'customer@example.com',
-      password: 'password'
+      password: 'password',
     });
     authToken = response.data.data.access_token;
     api.defaults.headers.common['Authorization'] = `Bearer ${authToken}`;
@@ -20,7 +20,7 @@ describe('AR Try-On Endpoint', () => {
     it('should create AR try-on session', async () => {
       const response = await api.post('/ar-tryon/session', {
         productId: 1,
-        deviceType: 'mobile'
+        deviceType: 'mobile',
       });
 
       expect(response.status).toBe(200);
@@ -36,7 +36,7 @@ describe('AR Try-On Endpoint', () => {
       formData.append('photo', new Blob(['test']), 'photo.jpg');
 
       const response = await api.post('/ar-tryon/upload-photo', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
+        headers: { 'Content-Type': 'multipart/form-data' },
       });
 
       expect(response.status).toBe(200);
@@ -49,7 +49,7 @@ describe('AR Try-On Endpoint', () => {
       const response = await api.post('/ar-tryon/process', {
         sessionId: 'ar_session_123',
         productId: 1,
-        photoId: 'photo_123'
+        photoId: 'photo_123',
       });
 
       expect(response.status).toBe(200);

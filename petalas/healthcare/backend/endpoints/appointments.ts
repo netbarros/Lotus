@@ -19,7 +19,7 @@ export default defineEndpoint((router, { database }) => {
         notes,
         order_type,
         status: 'pending',
-        created_at: database.fn.now()
+        created_at: database.fn.now(),
       });
 
       res.json({ success: true, order_id: id });
@@ -31,9 +31,7 @@ export default defineEndpoint((router, { database }) => {
   // GET /petalas/restaurant/orders/:id - Get order
   router.get('/:id', async (req, res) => {
     try {
-      const order = await database('orders')
-        .where({ id: req.params.id })
-        .first();
+      const order = await database('orders').where({ id: req.params.id }).first();
 
       if (!order) return res.status(404).json({ error: 'Order not found' });
 
@@ -60,8 +58,8 @@ export default defineEndpoint((router, { database }) => {
 });
 
 function generateUUID() {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
-    const r = Math.random() * 16 | 0;
-    return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+    const r = (Math.random() * 16) | 0;
+    return (c === 'x' ? r : (r & 0x3) | 0x8).toString(16);
   });
 }

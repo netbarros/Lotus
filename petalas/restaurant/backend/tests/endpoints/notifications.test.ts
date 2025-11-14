@@ -8,13 +8,18 @@ describe('Notifications Endpoint', () => {
   let authToken: string;
 
   beforeAll(async () => {
-    const response = await api.post('/auth/login', { email: 'admin@example.com', password: 'password' });
+    const response = await api.post('/auth/login', {
+      email: 'admin@example.com',
+      password: 'password',
+    });
     authToken = response.data.data.access_token;
     api.defaults.headers.common['Authorization'] = `Bearer ${authToken}`;
   });
 
   it('should send reservation confirmation', async () => {
-    const response = await api.post('/notifications/reservation-confirmation', { reservationId: 1 });
+    const response = await api.post('/notifications/reservation-confirmation', {
+      reservationId: 1,
+    });
     expect(response.status).toBe(200);
     expect(response.data.success).toBe(true);
   });
@@ -25,12 +30,19 @@ describe('Notifications Endpoint', () => {
   });
 
   it('should send SMS notification', async () => {
-    const response = await api.post('/notifications/sms', { phone: '+1234567890', message: 'Test' });
+    const response = await api.post('/notifications/sms', {
+      phone: '+1234567890',
+      message: 'Test',
+    });
     expect(response.status).toBe(200);
   });
 
   it('should send email notification', async () => {
-    const response = await api.post('/notifications/email', { to: 'test@example.com', subject: 'Test', body: 'Test' });
+    const response = await api.post('/notifications/email', {
+      to: 'test@example.com',
+      subject: 'Test',
+      body: 'Test',
+    });
     expect(response.status).toBe(200);
   });
 });

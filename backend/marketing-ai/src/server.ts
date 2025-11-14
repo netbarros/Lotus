@@ -47,10 +47,12 @@ const app = express();
 
 // Middleware
 app.use(helmet());
-app.use(cors({
-  origin: process.env.CORS_ORIGIN || '*',
-  credentials: true,
-}));
+app.use(
+  cors({
+    origin: process.env.CORS_ORIGIN || '*',
+    credentials: true,
+  })
+);
 app.use(compression());
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
@@ -110,7 +112,6 @@ async function initializeServices(): Promise<void> {
     console.log('   🧠 Marketing Intelligence v4.0 initialized with Sofia AI');
 
     console.log('✅ All services ready');
-
   } catch (error: any) {
     console.error('❌ Service initialization failed:', error.message);
     throw error;
@@ -262,7 +263,8 @@ app.post('/api/content/generate', async (req: Request, res: Response) => {
     if (!type || typeof type !== 'string') {
       return res.status(400).json({
         error: 'Invalid request',
-        message: 'type is required (blog, video, infographic, ebook, whitepaper, case_study, social_post)',
+        message:
+          'type is required (blog, video, infographic, ebook, whitepaper, case_study, social_post)',
       });
     }
 
@@ -454,7 +456,6 @@ async function startServer(): Promise<void> {
       console.log(`   POST /api/ab-tests              - Create A/B test with AI`);
       console.log('');
     });
-
   } catch (error: any) {
     console.error('❌ Failed to start server:', error.message);
     process.exit(1);

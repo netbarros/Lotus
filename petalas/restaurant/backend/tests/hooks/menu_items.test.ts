@@ -18,7 +18,10 @@ describe('Menu Items Hook', () => {
 });
 
 function processMenuItemCreate(input: any) {
-  input.slug = input.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+  input.slug = input.name
+    .toLowerCase()
+    .replace(/\s+/g, '-')
+    .replace(/[^a-z0-9-]/g, '');
   input.available = input.available !== undefined ? input.available : true;
   return input;
 }

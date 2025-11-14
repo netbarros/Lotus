@@ -55,14 +55,14 @@ export default defineHook(({ filter, action }, { services, database }) => {
         data: JSON.stringify({
           number: meta.payload.number,
           status: meta.payload.status,
-          capacity: meta.payload.capacity
+          capacity: meta.payload.capacity,
         }),
         metadata: JSON.stringify({
           timestamp: new Date().toISOString(),
           version: 1,
-          source: 'hook-tables'
+          source: 'hook-tables',
         }),
-        created_at: database.fn.now()
+        created_at: database.fn.now(),
       });
     }
   });

@@ -17,10 +17,7 @@ export function Dashboard() {
     queryKey: ['dashboard', 'stats'],
     queryFn: async () => {
       // This would call a custom Directus endpoint that aggregates stats
-      const response = await api.customEndpoint<DashboardStats>(
-        'GET',
-        '/items/dashboard_stats'
-      );
+      const response = await api.customEndpoint<DashboardStats>('GET', '/items/dashboard_stats');
       return response;
     },
     refetchInterval: 60000, // Refresh every minute
@@ -34,9 +31,7 @@ export function Dashboard() {
           <div className="card">
             <div className="card-body d-flex align-items-center py-8">
               <div className="d-flex flex-column flex-grow-1">
-                <h1 className="text-dark fw-bold mb-1">
-                  Bem-vindo ao MagicSaaS System-∞
-                </h1>
+                <h1 className="text-dark fw-bold mb-1">Bem-vindo ao MagicSaaS System-∞</h1>
                 <p className="text-gray-600 fw-semibold fs-6 mb-0">
                   Dashboard inteligente powered by Sofia AI v4.0 - Cognitive Mesh OS - All Layers
                 </p>
@@ -167,7 +162,9 @@ export function Dashboard() {
             <div className="card-header border-0 pt-5">
               <h3 className="card-title align-items-start flex-column">
                 <span className="card-label fw-bold fs-3 mb-1">Atividade Recente</span>
-                <span className="text-muted mt-1 fw-semibold fs-7">Últimas operações do sistema</span>
+                <span className="text-muted mt-1 fw-semibold fs-7">
+                  Últimas operações do sistema
+                </span>
               </h3>
             </div>
             <div className="card-body py-3">

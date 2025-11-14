@@ -108,7 +108,7 @@ export class RAGPipeline {
   private async ensureCollection(): Promise<void> {
     try {
       const collections = await this.qdrant.listCollections();
-      const exists = collections.some(c => c.name === this.collectionName);
+      const exists = collections.some((c) => c.name === this.collectionName);
 
       if (!exists) {
         await this.qdrant.createCollection(this.collectionName, {
@@ -164,11 +164,7 @@ export class RAGPipeline {
    * Multi-stage retrieval with hybrid search
    */
   async retrieve(query: string, options: RAGQuery['options'] = {}): Promise<Document[]> {
-    const {
-      topK = 10,
-      threshold = 0.7,
-      rerank = true,
-    } = options;
+    const { topK = 10, threshold = 0.7, rerank = true } = options;
 
     // Generate query embedding
     const queryEmbedding = await this.generateEmbedding(query);
@@ -201,7 +197,7 @@ export class RAGPipeline {
         with_payload: true,
       });
 
-      return results.map(r => ({
+      return results.map((r) => ({
         id: r.id,
         content: r.payload.content,
         metadata: r.payload.metadata || {},
@@ -231,7 +227,7 @@ export class RAGPipeline {
       [embeddingStr, limit]
     );
 
-    return result.rows.map(row => ({
+    return result.rows.map((row) => ({
       id: row.id,
       content: row.content,
       metadata: row.metadata,
@@ -278,9 +274,9 @@ export class RAGPipeline {
 
     const queryTokens = new Set(query.toLowerCase().split(/\s+/));
 
-    const scored = documents.map(doc => {
+    const scored = documents.map((doc) => {
       const contentTokens = doc.content.toLowerCase().split(/\s+/);
-      const overlap = contentTokens.filter(t => queryTokens.has(t)).length;
+      const overlap = contentTokens.filter((t) => queryTokens.has(t)).length;
       const relevance = overlap / queryTokens.size;
 
       return {
@@ -388,7 +384,7 @@ Answer:`;
 
       return {
         answer,
-        sources: uniqueDocs.map(doc => ({
+        sources: uniqueDocs.map((doc) => ({
           id: doc.id,
           content: doc.content,
           score: 0.9, // Placeholder
@@ -399,7 +395,6 @@ Answer:`;
         queryExpansions: queries.length > 1 ? queries : undefined,
         tracingId,
       };
-
     } catch (error: any) {
       console.error('RAG Pipeline error:', error);
 
@@ -425,12 +420,10 @@ Original query: "${query}"
 Alternative 1:
 Alternative 2:`;
 
-    const response = await this.langchain.chat([
-      { role: 'user', content: prompt },
-    ]);
+    const response = await this.langchain.chat([{ role: 'user', content: prompt }]);
 
-    const lines = response.content.split('\n').filter(l => l.trim());
-    const alternatives = lines.slice(0, 2).map(l => l.replace(/^Alternative \d+:\s*/, ''));
+    const lines = response.content.split('\n').filter((l) => l.trim());
+    const alternatives = lines.slice(0, 2).map((l) => l.replace(/^Alternative \d+:\s*/, ''));
 
     return [query, ...alternatives];
   }
@@ -553,9 +546,7 @@ Alternative 2:`;
     pgVectorDocs: number;
     collections: number;
   }> {
-    const pgResult = await this.pool.query(
-      'SELECT COUNT(*) as count FROM knowledge_embeddings'
-    );
+    const pgResult = await this.pool.query('SELECT COUNT(*) as count FROM knowledge_embeddings');
 
     const collections = await this.qdrant.listCollections();
 

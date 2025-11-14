@@ -1,14 +1,13 @@
 # 🏪 Pétala Retail
 
-**Version:** 1.0.0
-**Status:** ✅ Production-Ready
-**Category:** retail
+**Version:** 1.0.0 **Status:** ✅ Production-Ready **Category:** retail
 
 ---
 
 ## 📋 Overview
 
-Complete omnichannel retail platform with POS, inventory, e-commerce, and analytics
+Complete omnichannel retail platform with POS, inventory, e-commerce, and
+analytics
 
 ### Key Features
 
@@ -38,12 +37,14 @@ npm run dev
 ## 💰 Pricing
 
 ### Starter - $89/month
+
 - 1 POS terminal
 - Basic inventory
 - Online store
 - Email support
 
 ### Professional - $179/month
+
 - Unlimited POS
 - Advanced inventory
 - Omnichannel
@@ -51,6 +52,7 @@ npm run dev
 - Priority support
 
 ### Enterprise - $449/month
+
 - Everything in Professional
 - Multi-location
 - White-label
@@ -59,5 +61,4 @@ npm run dev
 
 ---
 
-**Built with ❤️ by Software Lotus**
-**Powered by MagicSaaS System-∞ & Sofia AI**
+**Built with ❤️ by Software Lotus** **Powered by MagicSaaS System-∞ & Sofia AI**

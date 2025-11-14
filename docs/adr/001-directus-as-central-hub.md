@@ -1,15 +1,15 @@
 # ADR-001: Directus as Central Hub for MagicSaaS System-∞
 
-**Status:** ✅ Accepted
-**Date:** 2025-11-06
-**Deciders:** Sofia Lotus AI, Architecture Team
-**Technical Story:** Foundation architecture for MagicSaaS System-∞
+**Status:** ✅ Accepted **Date:** 2025-11-06 **Deciders:** Sofia Lotus AI,
+Architecture Team **Technical Story:** Foundation architecture for MagicSaaS
+System-∞
 
 ---
 
 ## Context and Problem Statement
 
 MagicSaaS System-∞ needs a central data management layer that can:
+
 - Handle multi-tenancy with Row-Level Security (RLS)
 - Provide REST + GraphQL APIs automatically
 - Support Flows for automation
@@ -35,31 +35,39 @@ MagicSaaS System-∞ needs a central data management layer that can:
 ## Considered Options
 
 ### Option 1: Custom Node.js + Express API
+
 **Pros:**
+
 - Full control over architecture
 - No vendor lock-in
 - Optimized for specific needs
 
 **Cons:**
+
 - 6-12 months development time
 - Need to build admin UI, auth, RBAC, RLS from scratch
 - Higher maintenance burden
 - More bugs initially
 
 ### Option 2: Strapi CMS
+
 **Pros:**
+
 - Popular open-source headless CMS
 - REST + GraphQL auto-generated
 - Admin UI included
 
 **Cons:**
+
 - Limited multi-tenancy support
 - No built-in RLS
 - Performance concerns at scale
 - Less flexible for complex workflows
 
 ### Option 3: **Directus CMS (CHOSEN)** ✅
+
 **Pros:**
+
 - ✅ **Database-first approach** - Wraps existing PostgreSQL
 - ✅ **RLS support** - PostgreSQL Row-Level Security
 - ✅ **Auto-generated APIs** - REST + GraphQL from schema
@@ -72,17 +80,21 @@ MagicSaaS System-∞ needs a central data management layer that can:
 - ✅ **Enterprise features** - SSO, audit logs, versioning
 
 **Cons:**
+
 - Learning curve for Flows
 - Extensions require rebuild on changes
 - Less control than full custom solution
 
 ### Option 4: Supabase
+
 **Pros:**
+
 - Firebase alternative
 - Real-time subscriptions
 - Built on PostgreSQL
 
 **Cons:**
+
 - Vendor lock-in (hosted service)
 - Less flexible than Directus
 - Higher costs at scale
@@ -96,17 +108,24 @@ MagicSaaS System-∞ needs a central data management layer that can:
 
 ### Rationale
 
-1. **Time to Market:** Directus provides 80% of what we need out-of-the-box, allowing us to focus on Sofia AI (the differentiator) instead of rebuilding CRUD/admin UI.
+1. **Time to Market:** Directus provides 80% of what we need out-of-the-box,
+   allowing us to focus on Sofia AI (the differentiator) instead of rebuilding
+   CRUD/admin UI.
 
-2. **Multi-Tenancy:** PostgreSQL RLS + Directus collections give us enterprise-grade multi-tenancy without complex middleware.
+2. **Multi-Tenancy:** PostgreSQL RLS + Directus collections give us
+   enterprise-grade multi-tenancy without complex middleware.
 
-3. **Sofia AI Integration:** Directus serves as the **data layer** (Layer 02/03 in Cognitive Mesh OS), while Sofia AI handles **intelligence layer** (Layer 10). Clean separation of concerns.
+3. **Sofia AI Integration:** Directus serves as the **data layer** (Layer 02/03
+   in Cognitive Mesh OS), while Sofia AI handles **intelligence layer** (Layer
+   10). Clean separation of concerns.
 
-4. **Extensibility:** TypeScript extensions allow us to add custom business logic without forking Directus core.
+4. **Extensibility:** TypeScript extensions allow us to add custom business
+   logic without forking Directus core.
 
 5. **Cost:** Self-hosted = $0 license costs. Only infrastructure.
 
-6. **Future-Proof:** Database-first approach means we can migrate away if needed (data stays in PostgreSQL).
+6. **Future-Proof:** Database-first approach means we can migrate away if needed
+   (data stays in PostgreSQL).
 
 ---
 
@@ -171,16 +190,19 @@ MagicSaaS System-∞ needs a central data management layer that can:
 ### Collections Created
 
 **Core:**
+
 - `tenants` - Multi-tenant isolation
 - `users` - User management (synced with Directus)
 - `roles` - RBAC permissions
 
 **Business:**
+
 - `subscriptions` - Billing
 - `credit_wallet` - Lotus Credits system
 - `usage_records` - Usage tracking
 
 **Sofia AI:**
+
 - `sofia_metrics` - AI performance tracking
 - `decision_logs` - Audit trail
 - `workflows` - Generated solutions
@@ -202,7 +224,8 @@ MagicSaaS System-∞ needs a central data management layer that can:
 
 ### Trade-offs Accepted
 
-1. **Vendor Dependency:** Mitigated by database-first architecture (data portable)
+1. **Vendor Dependency:** Mitigated by database-first architecture (data
+   portable)
 2. **Extension Overhead:** Accepted for 80% functionality out-of-box
 3. **Flow Limitations:** Complex logic handled by Sofia AI instead
 
@@ -220,6 +243,7 @@ MagicSaaS System-∞ needs a central data management layer that can:
 ## Alternatives Considered in Future
 
 If Directus proves insufficient at 100K+ tenants, consider:
+
 1. **Custom API** with Directus as admin-only
 2. **Hasura** for GraphQL-first approach
 3. **PostgREST** for minimal overhead
@@ -228,5 +252,4 @@ If Directus proves insufficient at 100K+ tenants, consider:
 
 ---
 
-**Last Reviewed:** 2025-11-06
-**Next Review:** Q3 2026 (after scale testing)
+**Last Reviewed:** 2025-11-06 **Next Review:** Q3 2026 (after scale testing)

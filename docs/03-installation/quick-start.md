@@ -7,16 +7,19 @@
 ## 📋 Pré-requisitos
 
 ### **Hardware Mínimo**
+
 - **CPU**: 4 cores
 - **RAM**: 8 GB
 - **Disco**: 20 GB livres
 
 ### **Software Necessário**
+
 - ✅ **Docker** + **Docker Compose** (v2.0+)
 - ✅ **Node.js 22+** (opcional, para desenvolvimento)
 - ✅ **Git**
 
 ### **API Keys**
+
 - ✅ **Anthropic API Key** (obrigatório) → https://console.anthropic.com
 
 ---
@@ -79,16 +82,17 @@ bash install-magicsaas-ultimate.sh
 
 Após a instalação bem-sucedida, acesse:
 
-| Serviço | URL | Credenciais |
-|---------|-----|-------------|
-| **Sofia AI v3.0** | http://localhost:3003 | - |
-| **Directus CMS** | http://localhost:8055 | admin@softwarelotus.com.br / [gerada] |
-| **Grafana** | http://localhost:3002 | admin / admin |
-| **Prometheus** | http://localhost:9090 | - |
-| **Jaeger** | http://localhost:16686 | - |
-| **Mailhog** | http://localhost:8025 | - |
+| Serviço           | URL                    | Credenciais                           |
+| ----------------- | ---------------------- | ------------------------------------- |
+| **Sofia AI v3.0** | http://localhost:3003  | -                                     |
+| **Directus CMS**  | http://localhost:8055  | admin@softwarelotus.com.br / [gerada] |
+| **Grafana**       | http://localhost:3002  | admin / admin                         |
+| **Prometheus**    | http://localhost:9090  | -                                     |
+| **Jaeger**        | http://localhost:16686 | -                                     |
+| **Mailhog**       | http://localhost:8025  | -                                     |
 
-> **⚠️ IMPORTANTE**: As credenciais do Directus são exibidas no final da instalação. **Guarde-as em local seguro!**
+> **⚠️ IMPORTANTE**: As credenciais do Directus são exibidas no final da
+> instalação. **Guarde-as em local seguro!**
 
 ---
 
@@ -101,6 +105,7 @@ docker ps
 ```
 
 Você deve ver **8 containers** rodando:
+
 - magicsaas-postgres
 - magicsaas-redis
 - magicsaas-directus
@@ -118,6 +123,7 @@ curl http://localhost:3003/health
 ```
 
 Resposta esperada:
+
 ```json
 {
   "status": "healthy",
@@ -168,6 +174,7 @@ curl -X POST http://localhost:3003/api/intention/generate \
 ```
 
 ### **Resposta** (resumida)
+
 ```json
 {
   "success": true,
@@ -206,17 +213,20 @@ curl -X POST http://localhost:3003/api/intention/generate \
 ## 🔧 Comandos Úteis
 
 ### **Parar todos os serviços**
+
 ```bash
 cd infrastructure/docker
 docker-compose -f docker-compose.dev.yml down
 ```
 
 ### **Reiniciar serviços**
+
 ```bash
 docker-compose -f docker-compose.dev.yml restart
 ```
 
 ### **Ver logs de um serviço**
+
 ```bash
 # Sofia AI
 docker logs -f magicsaas-sofia-ai
@@ -229,11 +239,13 @@ docker logs -f magicsaas-postgres
 ```
 
 ### **Acessar console do PostgreSQL**
+
 ```bash
 docker exec -it magicsaas-postgres psql -U postgres -d magicsaas
 ```
 
 ### **Acessar Redis CLI**
+
 ```bash
 docker exec -it magicsaas-redis redis-cli
 ```
@@ -243,6 +255,7 @@ docker exec -it magicsaas-redis redis-cli
 ## 🐛 Troubleshooting Rápido
 
 ### **Problema: "Port 3003 already in use"**
+
 ```bash
 # Verificar o que está usando a porta
 netstat -ano | findstr :3003  # Windows
@@ -253,6 +266,7 @@ PORT=3004
 ```
 
 ### **Problema: "Directus não inicia"**
+
 ```bash
 # Verificar logs
 docker logs magicsaas-directus
@@ -263,6 +277,7 @@ docker-compose restart directus
 ```
 
 ### **Problema: "Sofia AI retorna 503"**
+
 ```bash
 # Verificar se Directus e Redis estão rodando
 docker ps | grep -E "directus|redis"
@@ -275,6 +290,7 @@ docker-compose restart sofia-ai
 ```
 
 ### **Problema: "ANTHROPIC_API_KEY inválida"**
+
 ```bash
 # Editar .env e atualizar a key
 nano .env
@@ -308,4 +324,5 @@ Agora que você tem o MagicSaaS instalado:
 
 ---
 
-**[← Voltar ao Índice](../00-INDEX.md)** | **[Próximo: Windows Installation →](./windows.md)**
+**[← Voltar ao Índice](../00-INDEX.md)** |
+**[Próximo: Windows Installation →](./windows.md)**

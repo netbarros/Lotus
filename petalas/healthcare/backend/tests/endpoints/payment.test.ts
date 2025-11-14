@@ -7,7 +7,10 @@ const api = axios.create({ baseURL: API_URL });
 describe('Healthcare Payment', () => {
   let authToken: string;
   beforeAll(async () => {
-    const response = await api.post('/auth/login', { email: 'patient@example.com', password: 'password' });
+    const response = await api.post('/auth/login', {
+      email: 'patient@example.com',
+      password: 'password',
+    });
     authToken = response.data.data.access_token;
     api.defaults.headers.common['Authorization'] = `Bearer ${authToken}`;
   });

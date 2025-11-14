@@ -85,31 +85,12 @@
     "Mobile app (PWA)"
   ],
   "integrations": {
-    "video": [
-      "Vimeo",
-      "YouTube",
-      "Wistia"
-    ],
-    "live": [
-      "Zoom",
-      "Google Meet",
-      "Jitsi"
-    ],
-    "payment": [
-      "Stripe",
-      "PayPal"
-    ],
-    "lms": [
-      "SCORM",
-      "xAPI",
-      "LTI"
-    ]
+    "video": ["Vimeo", "YouTube", "Wistia"],
+    "live": ["Zoom", "Google Meet", "Jitsi"],
+    "payment": ["Stripe", "PayPal"],
+    "lms": ["SCORM", "xAPI", "LTI"]
   },
-  "compliance": [
-    "GDPR",
-    "COPPA",
-    "FERPA"
-  ],
+  "compliance": ["GDPR", "COPPA", "FERPA"],
   "status": "production-ready",
   "createdAt": "2025-11-10",
   "updatedAt": "2025-11-10"

@@ -10,7 +10,7 @@ describe('Kitchen Display System Endpoint', () => {
   beforeAll(async () => {
     const response = await api.post('/auth/login', {
       email: 'chef@example.com',
-      password: 'password'
+      password: 'password',
     });
     authToken = response.data.data.access_token;
     api.defaults.headers.common['Authorization'] = `Bearer ${authToken}`;
@@ -28,7 +28,7 @@ describe('Kitchen Display System Endpoint', () => {
   describe('POST /kitchen/orders/:id/start', () => {
     it('should start preparing order', async () => {
       const response = await api.post('/kitchen/orders/1/start', {
-        station: 'grill'
+        station: 'grill',
       });
 
       expect(response.status).toBe(200);

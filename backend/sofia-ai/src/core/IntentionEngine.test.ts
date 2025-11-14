@@ -10,26 +10,29 @@ import type { EventStore } from '../events/EventStore.js';
 import type { Metrics } from '../telemetry/Metrics.js';
 
 // Mock dependencies
-const createMockRedis = (): Redis => ({
-  get: vi.fn().mockResolvedValue(null),
-  set: vi.fn().mockResolvedValue('OK'),
-  setex: vi.fn().mockResolvedValue('OK'),
-  del: vi.fn().mockResolvedValue(1),
-  publish: vi.fn().mockResolvedValue(1),
-} as any);
+const createMockRedis = (): Redis =>
+  ({
+    get: vi.fn().mockResolvedValue(null),
+    set: vi.fn().mockResolvedValue('OK'),
+    setex: vi.fn().mockResolvedValue('OK'),
+    del: vi.fn().mockResolvedValue(1),
+    publish: vi.fn().mockResolvedValue(1),
+  }) as any;
 
-const createMockEventStore = (): EventStore => ({
-  append: vi.fn().mockResolvedValue(undefined),
-  getEvents: vi.fn().mockResolvedValue([]),
-  getEventsByAggregate: vi.fn().mockResolvedValue([]),
-} as any);
+const createMockEventStore = (): EventStore =>
+  ({
+    append: vi.fn().mockResolvedValue(undefined),
+    getEvents: vi.fn().mockResolvedValue([]),
+    getEventsByAggregate: vi.fn().mockResolvedValue([]),
+  }) as any;
 
-const createMockMetrics = (): Metrics => ({
-  decisionsTotal: { inc: vi.fn() } as any,
-  decisionLatency: { observe: vi.fn() } as any,
-  errorsTotal: { inc: vi.fn() } as any,
-  intentionProcessingDuration: { observe: vi.fn() } as any,
-} as any);
+const createMockMetrics = (): Metrics =>
+  ({
+    decisionsTotal: { inc: vi.fn() } as any,
+    decisionLatency: { observe: vi.fn() } as any,
+    errorsTotal: { inc: vi.fn() } as any,
+    intentionProcessingDuration: { observe: vi.fn() } as any,
+  }) as any;
 
 // Mock Anthropic SDK
 vi.mock('@anthropic-ai/sdk', () => {
@@ -40,22 +43,31 @@ vi.mock('@anthropic-ai/sdk', () => {
           id: 'msg_test',
           type: 'message',
           role: 'assistant',
-          content: [{
-            type: 'text',
-            text: JSON.stringify({
-              competitors: [{ name: 'Shopify', features: ['Products', 'Cart'], strengths: ['Ease of use'], weaknesses: ['Pricing'] }],
-              bestPractices: ['Use HTTPS', 'Implement caching'],
-              trends: ['Headless commerce', 'PWA'],
-              recommendations: ['Focus on UX', 'Mobile-first']
-            })
-          }],
+          content: [
+            {
+              type: 'text',
+              text: JSON.stringify({
+                competitors: [
+                  {
+                    name: 'Shopify',
+                    features: ['Products', 'Cart'],
+                    strengths: ['Ease of use'],
+                    weaknesses: ['Pricing'],
+                  },
+                ],
+                bestPractices: ['Use HTTPS', 'Implement caching'],
+                trends: ['Headless commerce', 'PWA'],
+                recommendations: ['Focus on UX', 'Mobile-first'],
+              }),
+            },
+          ],
           model: 'claude-3-5-sonnet-20241022',
           stop_reason: 'end_turn',
           stop_sequence: null,
-          usage: { input_tokens: 100, output_tokens: 500 }
-        })
+          usage: { input_tokens: 100, output_tokens: 500 },
+        }),
       };
-    }
+    },
   };
 });
 
@@ -85,22 +97,12 @@ describe('IntentionEngine', () => {
   describe('Constructor', () => {
     it('should initialize with valid configuration', () => {
       expect(() => {
-        new IntentionEngine(
-          mockRedis,
-          mockEventStore,
-          mockMetrics,
-          'test-key-valid'
-        );
+        new IntentionEngine(mockRedis, mockEventStore, mockMetrics, 'test-key-valid');
       }).not.toThrow();
     });
 
     it('should create instance with all dependencies', () => {
-      const instance = new IntentionEngine(
-        mockRedis,
-        mockEventStore,
-        mockMetrics,
-        'test-key'
-      );
+      const instance = new IntentionEngine(mockRedis, mockEventStore, mockMetrics, 'test-key');
       expect(instance).toBeInstanceOf(IntentionEngine);
       expect(instance.getActiveIntentions()).toBeInstanceOf(Map);
       expect(instance.getActiveIntentions().size).toBe(0);
@@ -156,7 +158,7 @@ describe('IntentionEngine', () => {
       // Validate metrics were updated
       expect(mockMetrics.decisionsTotal.inc).toHaveBeenCalledWith({
         type: 'intention',
-        status: 'completed'
+        status: 'completed',
       });
       expect(mockMetrics.decisionLatency.observe).toHaveBeenCalled();
     });
@@ -172,13 +174,13 @@ describe('IntentionEngine', () => {
             'Shopping cart',
             'Checkout with Stripe',
             'Subscription management',
-            'Admin dashboard'
+            'Admin dashboard',
           ],
           technologies: ['Node.js', 'React', 'PostgreSQL', 'Redis'],
           targets: {
             vertical: 'E-commerce',
-            scale: 'enterprise'
-          }
+            scale: 'enterprise',
+          },
         },
         priority: 'high',
         requestedBy: 'user-456',
@@ -193,8 +195,8 @@ describe('IntentionEngine', () => {
 
       // Validate research was conducted (cached in Redis)
       expect(mockRedis.setex).toHaveBeenCalled();
-      const redisCall = (mockRedis.setex as any).mock.calls.find(
-        (call: any[]) => call[0].startsWith('research:')
+      const redisCall = (mockRedis.setex as any).mock.calls.find((call: any[]) =>
+        call[0].startsWith('research:')
       );
       expect(redisCall).toBeDefined();
 
@@ -244,12 +246,7 @@ describe('IntentionEngine', () => {
       const errorRedis = createMockRedis();
       (errorRedis.setex as any).mockRejectedValue(new Error('Redis connection failed'));
 
-      const errorEngine = new IntentionEngine(
-        errorRedis,
-        mockEventStore,
-        mockMetrics,
-        'test-key'
-      );
+      const errorEngine = new IntentionEngine(errorRedis, mockEventStore, mockMetrics, 'test-key');
 
       const request: IntentionRequest = {
         id: 'test-intention-error-1',
@@ -260,7 +257,9 @@ describe('IntentionEngine', () => {
         tenantId: 'tenant-error',
       };
 
-      await expect(errorEngine.processIntention(request)).rejects.toThrow('Redis connection failed');
+      await expect(errorEngine.processIntention(request)).rejects.toThrow(
+        'Redis connection failed'
+      );
 
       // Validate error was logged to event store
       expect(mockEventStore.append).toHaveBeenCalled();
@@ -272,7 +271,7 @@ describe('IntentionEngine', () => {
 
       // Validate error metric was incremented
       expect(mockMetrics.errorsTotal.inc).toHaveBeenCalledWith({
-        component: 'intention-engine'
+        component: 'intention-engine',
       });
     });
 
@@ -412,11 +411,11 @@ describe('IntentionEngine', () => {
       const solution = await engine.processIntention(request);
 
       // Quality is average of UX, performance, security scores
-      const avgScore = (
-        (solution.validation.uxScore || 0) +
-        (solution.validation.performanceScore || 0) +
-        (solution.validation.securityScore || 0)
-      ) / 3;
+      const avgScore =
+        ((solution.validation.uxScore || 0) +
+          (solution.validation.performanceScore || 0) +
+          (solution.validation.securityScore || 0)) /
+        3;
 
       expect(solution.metadata.estimatedQuality).toBeCloseTo(avgScore, 1);
     });
@@ -461,9 +460,7 @@ describe('IntentionEngine', () => {
         }));
 
       // Process all concurrently
-      const results = await Promise.all(
-        requests.map(req => engine.processIntention(req))
-      );
+      const results = await Promise.all(requests.map((req) => engine.processIntention(req)));
 
       // All should complete successfully
       expect(results).toHaveLength(3);
@@ -500,19 +497,21 @@ describe('IntentionEngine', () => {
         type: 'generate-saas',
         description: 'Comprehensive enterprise SaaS platform',
         requirements: {
-          features: Array(30).fill('feature').map((f, i) => `${f}-${i}`),
+          features: Array(30)
+            .fill('feature')
+            .map((f, i) => `${f}-${i}`),
           technologies: ['Node.js', 'React', 'PostgreSQL', 'Redis', 'Docker', 'Kubernetes'],
           constraints: ['GDPR compliant', 'SOC2 Type II', 'ISO27001'],
           targets: {
             vertical: 'Enterprise Software',
             audience: 'Fortune 500',
-            scale: 'global'
-          }
+            scale: 'global',
+          },
         },
         context: {
           existingCode: 'legacy-system-v1',
           similarProjects: ['salesforce', 'hubspot'],
-          userPreferences: { theme: 'dark', language: 'en-US' }
+          userPreferences: { theme: 'dark', language: 'en-US' },
         },
         priority: 'critical',
         requestedBy: 'user-extensive',

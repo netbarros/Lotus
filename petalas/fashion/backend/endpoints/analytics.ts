@@ -99,14 +99,12 @@ export default defineEndpoint((router, { services, database }) => {
         .whereBetween('created_at', [startDate, endDate])
         .first();
 
-      const abandonmentRate = totalCarts.count > 0
-        ? ((abandonedCarts.count / totalCarts.count) * 100).toFixed(2)
-        : 0;
+      const abandonmentRate =
+        totalCarts.count > 0 ? ((abandonedCarts.count / totalCarts.count) * 100).toFixed(2) : 0;
 
       // Conversion rate
-      const conversionRate = checkouts.count > 0
-        ? ((purchases.count / checkouts.count) * 100).toFixed(2)
-        : 0;
+      const conversionRate =
+        checkouts.count > 0 ? ((purchases.count / checkouts.count) * 100).toFixed(2) : 0;
 
       // Inventory alerts
       const lowInventory = await database('products')
@@ -133,58 +131,58 @@ export default defineEndpoint((router, { services, database }) => {
           period: {
             type: period,
             start_date: startDate,
-            end_date: endDate
+            end_date: endDate,
           },
           revenue: {
             total: parseFloat(revenueData.total_revenue || 0).toFixed(2),
             orders_count: parseInt(revenueData.orders_count || 0),
             avg_order_value: parseFloat(revenueData.avg_order_value || 0).toFixed(2),
             items_sold: parseInt(revenueData.items_sold || 0),
-            trend: revenueTrend
+            trend: revenueTrend,
           },
           orders: {
-            by_status: ordersByStatus.map(s => ({
+            by_status: ordersByStatus.map((s) => ({
               status: s.payment_status,
-              count: parseInt(s.count)
+              count: parseInt(s.count),
             })),
-            total: ordersByStatus.reduce((sum, s) => sum + parseInt(s.count), 0)
+            total: ordersByStatus.reduce((sum, s) => sum + parseInt(s.count), 0),
           },
           products: {
-            top_sellers: topProducts.map(p => ({
+            top_sellers: topProducts.map((p) => ({
               id: p.id,
               name: p.name,
               slug: p.slug,
               image: p.featured_image,
               units_sold: parseInt(p.units_sold),
-              revenue: parseFloat(p.revenue).toFixed(2)
+              revenue: parseFloat(p.revenue).toFixed(2),
             })),
-            low_inventory: lowInventory.map(p => ({
+            low_inventory: lowInventory.map((p) => ({
               id: p.id,
               name: p.name,
               slug: p.slug,
               quantity: p.inventory_quantity,
               threshold: p.low_stock_threshold,
-              urgency: p.inventory_quantity === 0 ? 'critical' : 'warning'
-            }))
+              urgency: p.inventory_quantity === 0 ? 'critical' : 'warning',
+            })),
           },
           customers: {
             total: parseInt(customerData.total_customers || 0),
             new: parseInt(newCustomers.count || 0),
-            avg_ltv: parseFloat(customerData.avg_ltv || 0).toFixed(2)
+            avg_ltv: parseFloat(customerData.avg_ltv || 0).toFixed(2),
           },
           conversion: {
             funnel: {
               views: parseInt(productViews.total_views || 0),
               cart_adds: parseInt(cartAdds.count || 0),
               checkouts: parseInt(checkouts.count || 0),
-              purchases: parseInt(purchases.count || 0)
+              purchases: parseInt(purchases.count || 0),
             },
             rates: {
               cart_abandonment: parseFloat(abandonmentRate),
-              checkout_conversion: parseFloat(conversionRate)
-            }
-          }
-        }
+              checkout_conversion: parseFloat(conversionRate),
+            },
+          },
+        },
       });
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -203,7 +201,7 @@ export default defineEndpoint((router, { services, database }) => {
         revenue: database.raw('SUM(CAST(order_items.subtotal AS DECIMAL)) DESC'),
         units: database.raw('SUM(order_items.quantity) DESC'),
         views: database.raw('products.views_count DESC'),
-        rating: database.raw('products.reviews_average DESC')
+        rating: database.raw('products.reviews_average DESC'),
       };
 
       const products = await database('products')
@@ -222,7 +220,7 @@ export default defineEndpoint((router, { services, database }) => {
           database.raw('COALESCE(SUM(CAST(order_items.subtotal AS DECIMAL)), 0) as revenue')
         )
         .leftJoin('order_items', 'products.id', 'order_items.product_id')
-        .leftJoin('orders', function() {
+        .leftJoin('orders', function () {
           this.on('order_items.order_id', '=', 'orders.id')
             .andOnVal('orders.payment_status', '=', 'paid')
             .andOn('orders.created_at', '>=', database.raw('?', [startDate]))
@@ -245,7 +243,7 @@ export default defineEndpoint((router, { services, database }) => {
         .limit(parseInt(limit));
 
       res.json({
-        data: products.map(p => ({
+        data: products.map((p) => ({
           id: p.id,
           name: p.name,
           slug: p.slug,
@@ -257,16 +255,16 @@ export default defineEndpoint((router, { services, database }) => {
             revenue: parseFloat(p.revenue || 0).toFixed(2),
             reviews: {
               count: parseInt(p.reviews_count || 0),
-              average: parseFloat(p.reviews_average || 0).toFixed(2)
+              average: parseFloat(p.reviews_average || 0).toFixed(2),
             },
-            inventory: parseInt(p.inventory_quantity || 0)
-          }
+            inventory: parseInt(p.inventory_quantity || 0),
+          },
         })),
         meta: {
           period: { type: period, start_date: startDate, end_date: endDate },
           sort_by: sort,
-          count: products.length
-        }
+          count: products.length,
+        },
       });
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -309,7 +307,7 @@ export default defineEndpoint((router, { services, database }) => {
       const customers = await query.limit(100);
 
       res.json({
-        data: customers.map(c => ({
+        data: customers.map((c) => ({
           id: c.id,
           email: c.email,
           name: c.name,
@@ -319,14 +317,14 @@ export default defineEndpoint((router, { services, database }) => {
             orders_count: parseInt(c.orders || 0),
             total_spent: parseFloat(c.ltv || 0).toFixed(2),
             avg_order_value: c.orders > 0 ? (c.ltv / c.orders).toFixed(2) : '0.00',
-            last_order_at: c.last_order_at
+            last_order_at: c.last_order_at,
           },
-          created_at: c.created_at
+          created_at: c.created_at,
         })),
         meta: {
           segment,
-          count: customers.length
-        }
+          count: customers.length,
+        },
       });
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -373,7 +371,7 @@ export default defineEndpoint((router, { services, database }) => {
         default:
           return res.status(400).json({
             error: 'Invalid export type',
-            supported: ['orders', 'products', 'customers']
+            supported: ['orders', 'products', 'customers'],
           });
       }
 
@@ -426,7 +424,7 @@ function convertToCSV(data) {
 
   // Add data rows
   for (const row of data) {
-    const values = headers.map(header => {
+    const values = headers.map((header) => {
       const value = row[header];
       // Escape commas and quotes
       const escaped = ('' + value).replace(/"/g, '""');

@@ -8,13 +8,20 @@ describe('Lab Results Endpoint', () => {
   let authToken: string;
 
   beforeAll(async () => {
-    const response = await api.post('/auth/login', { email: 'lab@example.com', password: 'password' });
+    const response = await api.post('/auth/login', {
+      email: 'lab@example.com',
+      password: 'password',
+    });
     authToken = response.data.data.access_token;
     api.defaults.headers.common['Authorization'] = `Bearer ${authToken}`;
   });
 
   it('should upload lab results', async () => {
-    const response = await api.post('/lab-results', { patientId: 1, testType: 'blood', results: {} });
+    const response = await api.post('/lab-results', {
+      patientId: 1,
+      testType: 'blood',
+      results: {},
+    });
     expect(response.status).toBe(200);
   });
 

@@ -2,7 +2,10 @@
 
 ## Overview
 
-Sofia is the universal AI persona powering all interactions across the MagicSaaS System-∞ and all 13 Pétalas. For Pétala Fashion, Sofia provides intelligent shopping assistance, natural language product search, personalized recommendations, and contextual guidance throughout the customer journey.
+Sofia is the universal AI persona powering all interactions across the MagicSaaS
+System-∞ and all 13 Pétalas. For Pétala Fashion, Sofia provides intelligent
+shopping assistance, natural language product search, personalized
+recommendations, and contextual guidance throughout the customer journey.
 
 ## Architecture
 
@@ -74,8 +77,10 @@ Sofia guides users through their shopping journey:
 
 - **Product Discovery**: "What's trending?" → Sofia shows latest arrivals
 - **Product Details**: "Tell me about this dress" → Sofia explains features
-- **Size Guidance**: "What size should I get?" → Sofia provides size recommendations
-- **Cart Assistance**: "Do I qualify for free shipping?" → Sofia calculates and advises
+- **Size Guidance**: "What size should I get?" → Sofia provides size
+  recommendations
+- **Cart Assistance**: "Do I qualify for free shipping?" → Sofia calculates and
+  advises
 - **Order Tracking**: "Where's my order?" → Sofia provides tracking info
 
 ### 4. Voice Shopping 🎤
@@ -129,37 +134,37 @@ Sofia seamlessly integrates with AR try-on:
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted } from 'vue'
-import { useSofia } from '@/composables/useSofia'
-import SofiaFloatingButton from '@/../../shared/sofia/components/SofiaFloatingButton.vue'
+import { computed, onMounted } from 'vue';
+import { useSofia } from '@/composables/useSofia';
+import SofiaFloatingButton from '@/../../shared/sofia/components/SofiaFloatingButton.vue';
 
 // Initialize Sofia
-const sofia = useSofia()
+const sofia = useSofia();
 
 // Sofia status
 const sofiaStatus = computed(() => {
-  if (sofia.state.value.listening) return 'listening'
-  if (sofia.state.value.loading) return 'thinking'
-  return 'idle'
-})
+  if (sofia.state.value.listening) return 'listening';
+  if (sofia.state.value.loading) return 'thinking';
+  return 'idle';
+});
 
 // Update context on mount
 onMounted(() => {
   sofia.updateContext({
     current_view: 'product_catalog',
     // ... other context
-  })
-})
+  });
+});
 
 // Message handler
 const handleSofiaMessage = async (message: string) => {
-  await sofia.sendMessage(message)
-}
+  await sofia.sendMessage(message);
+};
 
 // Action handler
 const handleSofiaAction = async (action: string) => {
-  await sofia.executeAction(action)
-}
+  await sofia.executeAction(action);
+};
 </script>
 ```
 
@@ -170,20 +175,20 @@ const handleSofiaAction = async (action: string) => {
 sofia.updateContext({
   current_view: 'product_detail',
   current_product_id: product.id,
-  current_category: product.category_id
-})
+  current_category: product.category_id,
+});
 
 // When user adds to cart
 sofia.updateContext({
   cart_items: cartStore.items,
-  cart_total: cartStore.total
-})
+  cart_total: cartStore.total,
+});
 
 // When user navigates
 sofia.updateContext({
   current_view: 'checkout',
-  purchase_intent: 'high'
-})
+  purchase_intent: 'high',
+});
 ```
 
 ### Backend Integration
@@ -205,17 +210,17 @@ Sofia endpoints are automatically available at `/petalas/fashion/sofia/*`:
 
 Sofia recognizes these Fashion intents:
 
-| Intent | Examples | Actions |
-|--------|----------|---------|
-| `search_products` | "Show me dresses", "Find red shoes" | Search with extracted filters |
-| `add_to_cart` | "Add to cart", "I want this" | Add current product to cart |
-| `get_recommendations` | "Recommend something", "What should I buy?" | Show personalized products |
-| `track_order` | "Where's my order?", "Track #123456" | Show order status |
-| `get_outfit_suggestions` | "What goes with this?", "Complete the look" | Show complementary items |
-| `apply_coupon` | "Apply code SAVE20", "Use my coupon" | Apply discount code |
-| `calculate_shipping` | "How much is shipping?", "Delivery cost?" | Calculate shipping |
-| `start_ar_tryon` | "Try with AR", "Virtual try-on" | Launch AR experience |
-| `get_size_guide` | "What's my size?", "Size help" | Show size guide |
+| Intent                   | Examples                                    | Actions                       |
+| ------------------------ | ------------------------------------------- | ----------------------------- |
+| `search_products`        | "Show me dresses", "Find red shoes"         | Search with extracted filters |
+| `add_to_cart`            | "Add to cart", "I want this"                | Add current product to cart   |
+| `get_recommendations`    | "Recommend something", "What should I buy?" | Show personalized products    |
+| `track_order`            | "Where's my order?", "Track #123456"        | Show order status             |
+| `get_outfit_suggestions` | "What goes with this?", "Complete the look" | Show complementary items      |
+| `apply_coupon`           | "Apply code SAVE20", "Use my coupon"        | Apply discount code           |
+| `calculate_shipping`     | "How much is shipping?", "Delivery cost?"   | Calculate shipping            |
+| `start_ar_tryon`         | "Try with AR", "Virtual try-on"             | Launch AR experience          |
+| `get_size_guide`         | "What's my size?", "Size help"              | Show size guide               |
 
 ## Context Tracking
 
@@ -224,31 +229,31 @@ Sofia maintains rich context about user sessions:
 ```typescript
 interface FashionSofiaContext {
   // User info
-  user_id?: string
-  customer_name?: string
-  customer_tier?: string
+  user_id?: string;
+  customer_name?: string;
+  customer_tier?: string;
 
   // Navigation
-  current_view?: string          // 'home' | 'catalog' | 'product_detail' | 'cart' | 'checkout' | 'account'
-  current_product_id?: string
-  current_category?: string
+  current_view?: string; // 'home' | 'catalog' | 'product_detail' | 'cart' | 'checkout' | 'account'
+  current_product_id?: string;
+  current_category?: string;
 
   // Shopping behavior
-  cart_items?: any[]
-  cart_total?: number
-  viewed_products?: string[]
-  search_history?: string[]
+  cart_items?: any[];
+  cart_total?: number;
+  viewed_products?: string[];
+  search_history?: string[];
 
   // Preferences
-  preferred_style?: string[]     // ['casual', 'formal', 'sporty']
-  preferred_sizes?: Record<string, string>
-  preferred_brands?: string[]
-  price_range?: { min: number; max: number }
+  preferred_style?: string[]; // ['casual', 'formal', 'sporty']
+  preferred_sizes?: Record<string, string>;
+  preferred_brands?: string[];
+  price_range?: { min: number; max: number };
 
   // Intelligence
-  browsing_pattern?: string      // 'explorer' | 'researcher' | 'buyer'
-  engagement_level?: 'high' | 'medium' | 'low'
-  purchase_intent?: 'high' | 'medium' | 'low'
+  browsing_pattern?: string; // 'explorer' | 'researcher' | 'buyer'
+  engagement_level?: 'high' | 'medium' | 'low';
+  purchase_intent?: 'high' | 'medium' | 'low';
 }
 ```
 
@@ -353,4 +358,5 @@ For issues or questions about Sofia integration:
 
 ---
 
-**Sofia** - Your intelligent shopping companion across all MagicSaaS Pétalas 🌸✨
+**Sofia** - Your intelligent shopping companion across all MagicSaaS Pétalas
+🌸✨

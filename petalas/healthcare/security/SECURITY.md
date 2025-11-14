@@ -1,10 +1,12 @@
 # Pétala Fashion - Security Documentation
 
-Comprehensive security implementation following OWASP Top 10, CIS Benchmarks, and industry best practices.
+Comprehensive security implementation following OWASP Top 10, CIS Benchmarks,
+and industry best practices.
 
 ## Security Score: 100/100 ✅
 
 ## Table of Contents
+
 1. [Security Architecture](#security-architecture)
 2. [Authentication & Authorization](#authentication--authorization)
 3. [Data Protection](#data-protection)
@@ -18,7 +20,9 @@ Comprehensive security implementation following OWASP Top 10, CIS Benchmarks, an
 ## Security Architecture
 
 ### Defense in Depth
+
 Multi-layered security approach:
+
 - **Layer 1**: Network (Firewall, WAF, DDoS protection)
 - **Layer 2**: Infrastructure (Kubernetes security, Pod security standards)
 - **Layer 3**: Application (Input validation, CSRF, XSS protection)
@@ -26,6 +30,7 @@ Multi-layered security approach:
 - **Layer 5**: Monitoring (Real-time threat detection, audit logs)
 
 ### Zero-Trust Security Model
+
 - No implicit trust
 - Verify explicitly
 - Use least privilege access
@@ -34,12 +39,14 @@ Multi-layered security approach:
 ## Authentication & Authorization
 
 ### Multi-Factor Authentication (MFA)
+
 - **Status**: Enabled
 - **Methods**: TOTP (Google Authenticator, Authy)
 - **Enforcement**: Mandatory for admin accounts
 - **Backup codes**: 10 one-time use codes
 
 ### Password Policy
+
 ```typescript
 {
   minLength: 12,
@@ -56,6 +63,7 @@ Multi-layered security approach:
 ```
 
 ### JWT Configuration
+
 - **Algorithm**: RS256 (asymmetric)
 - **Access Token TTL**: 15 minutes
 - **Refresh Token TTL**: 7 days
@@ -63,6 +71,7 @@ Multi-layered security approach:
 - **Secure Storage**: HttpOnly cookies with SameSite=Strict
 
 ### Role-Based Access Control (RBAC)
+
 ```typescript
 {
   admin: {
@@ -87,24 +96,28 @@ Multi-layered security approach:
 ## Data Protection
 
 ### Encryption at Rest
+
 - **Database**: AES-256 encryption (AWS RDS)
 - **File Storage**: AES-256 encryption (S3 SSE-KMS)
 - **Backups**: AES-256 encryption
 - **Secrets**: Kubernetes Secrets with encryption
 
 ### Encryption in Transit
+
 - **TLS Version**: 1.3 (minimum 1.2)
 - **Cipher Suites**: Modern only (no weak ciphers)
 - **HSTS**: Enabled (max-age=31536000)
 - **Certificate**: Let's Encrypt with auto-renewal
 
 ### Sensitive Data Handling
+
 - **PII**: Encrypted at rest, masked in logs
 - **Payment Data**: PCI-DSS compliant (Stripe)
 - **Passwords**: Bcrypt (cost factor 12)
 - **API Keys**: Encrypted in database, never logged
 
 ### Data Retention
+
 ```typescript
 {
   customerData: '7 years',
@@ -117,6 +130,7 @@ Multi-layered security approach:
 ```
 
 ### Row-Level Security (RLS)
+
 ```sql
 -- Every table has tenant_id
 CREATE POLICY tenant_isolation ON products
@@ -130,11 +144,13 @@ CREATE POLICY user_isolation ON orders
 ## Network Security
 
 ### Kubernetes Network Policies
+
 - **Default**: Deny all ingress and egress
 - **Explicit Allow**: Only required communication paths
 - **Microsegmentation**: Pod-to-pod isolation
 
 ### Firewall Rules
+
 ```typescript
 {
   ingress: {
@@ -153,12 +169,14 @@ CREATE POLICY user_isolation ON orders
 ```
 
 ### DDoS Protection
+
 - **Provider**: AWS Shield Standard + Advanced
 - **Rate Limiting**: Multi-tier (see rate-limiter.ts)
 - **Connection Limits**: 10,000 concurrent per IP
 - **Request Size Limits**: 50MB max
 
 ### Web Application Firewall (WAF)
+
 ```typescript
 {
   rules: [
@@ -169,8 +187,8 @@ CREATE POLICY user_isolation ON orders
     'CSRF Protection',
     'Bot Detection',
     'Geo-blocking (optional)',
-    'Rate Limiting'
-  ]
+    'Rate Limiting',
+  ];
 }
 ```
 
@@ -179,66 +197,77 @@ CREATE POLICY user_isolation ON orders
 ### OWASP Top 10 Mitigations
 
 #### 1. Broken Access Control
+
 - ✅ RBAC with least privilege
 - ✅ Row-level security (RLS)
 - ✅ API endpoint authentication
 - ✅ Resource-level permissions
 
 #### 2. Cryptographic Failures
+
 - ✅ TLS 1.3 for all communications
 - ✅ AES-256 encryption at rest
 - ✅ Strong password hashing (bcrypt)
 - ✅ Secure random number generation
 
 #### 3. Injection
+
 - ✅ Prepared statements (no raw SQL)
 - ✅ Input validation on all fields
 - ✅ Output encoding
 - ✅ SQL injection detection (see input-validation.ts)
 
 #### 4. Insecure Design
+
 - ✅ Threat modeling performed
 - ✅ Security requirements defined
 - ✅ Secure by default configuration
 - ✅ Defense in depth
 
 #### 5. Security Misconfiguration
+
 - ✅ Minimal attack surface
 - ✅ Security headers enabled
 - ✅ Error messages don't leak information
 - ✅ Regular security audits
 
 #### 6. Vulnerable Components
+
 - ✅ Automated dependency scanning
 - ✅ Regular updates (weekly)
 - ✅ Only trusted sources
 - ✅ Software Bill of Materials (SBOM)
 
 #### 7. Authentication Failures
+
 - ✅ MFA for sensitive accounts
 - ✅ Strong password policy
 - ✅ Session timeout (15 minutes)
 - ✅ Brute force protection
 
 #### 8. Software and Data Integrity
+
 - ✅ Code signing
 - ✅ Container image scanning
 - ✅ Integrity verification
 - ✅ Secure CI/CD pipeline
 
 #### 9. Security Logging Failures
+
 - ✅ Comprehensive audit logging
 - ✅ Real-time alerting
 - ✅ Log retention (1 year)
 - ✅ Tamper-proof logs
 
 #### 10. Server-Side Request Forgery (SSRF)
+
 - ✅ Input validation for URLs
 - ✅ Allowlist of external services
 - ✅ No arbitrary URL fetching
 - ✅ Network segmentation
 
 ### Input Validation
+
 ```typescript
 {
   email: 'RFC 5322 compliant',
@@ -255,6 +284,7 @@ CREATE POLICY user_isolation ON orders
 ```
 
 ### Security Headers
+
 ```http
 X-Frame-Options: SAMEORIGIN
 X-Content-Type-Options: nosniff
@@ -266,12 +296,14 @@ Permissions-Policy: geolocation=(self), camera=(), microphone=()
 ```
 
 ### CSRF Protection
+
 - **Method**: Double Submit Cookie
 - **SameSite**: Strict
 - **Token Rotation**: Every request
 - **Token Validation**: Server-side
 
 ### XSS Prevention
+
 - **Output Encoding**: All user input
 - **Content Security Policy**: Strict
 - **Input Sanitization**: xss library
@@ -280,6 +312,7 @@ Permissions-Policy: geolocation=(self), camera=(), microphone=()
 ## Infrastructure Security
 
 ### Container Security
+
 ```yaml
 securityContext:
   runAsNonRoot: true
@@ -288,24 +321,27 @@ securityContext:
   allowPrivilegeEscalation: false
   capabilities:
     drop:
-    - ALL
+      - ALL
   seccompProfile:
     type: RuntimeDefault
 ```
 
 ### Image Scanning
+
 - **Tool**: Trivy, Clair
 - **Frequency**: Every build + daily
 - **Action**: Block high/critical CVEs
 - **SBOM**: Generated for all images
 
 ### Secrets Management
+
 - **Storage**: Kubernetes Secrets
 - **Encryption**: At rest via KMS
 - **Rotation**: Quarterly (automated)
 - **Access**: Audit logged
 
 ### Pod Security Standards
+
 - **Level**: Restricted
 - **Enforcement**: Admission controller
 - **Audit**: Continuous monitoring
@@ -313,6 +349,7 @@ securityContext:
 ## Monitoring & Incident Response
 
 ### Security Monitoring
+
 ```typescript
 {
   metrics: [
@@ -335,6 +372,7 @@ securityContext:
 ```
 
 ### Audit Logging
+
 ```typescript
 {
   events: [
@@ -355,6 +393,7 @@ securityContext:
 ```
 
 ### Incident Response Plan
+
 1. **Detection**: Automated monitoring + manual reporting
 2. **Containment**: Isolate affected systems
 3. **Eradication**: Remove threat
@@ -362,6 +401,7 @@ securityContext:
 5. **Lessons Learned**: Post-mortem analysis
 
 ### Security Testing
+
 ```typescript
 {
   pentest: 'Quarterly',
@@ -375,6 +415,7 @@ securityContext:
 ## Compliance
 
 ### PCI-DSS (Payment Card Industry)
+
 - ✅ Tokenization (Stripe)
 - ✅ No card data storage
 - ✅ TLS for all transactions
@@ -382,6 +423,7 @@ securityContext:
 - ✅ Annual penetration testing
 
 ### GDPR (General Data Protection Regulation)
+
 - ✅ Data minimization
 - ✅ Right to erasure
 - ✅ Data portability
@@ -390,12 +432,14 @@ securityContext:
 - ✅ Data breach notification (< 72 hours)
 
 ### LGPD (Lei Geral de Proteção de Dados - Brazil)
+
 - ✅ Data mapping
 - ✅ Consent requirements
 - ✅ Data subject rights
 - ✅ International data transfers
 
 ### SOC 2 Type II
+
 - ✅ Security
 - ✅ Availability
 - ✅ Processing Integrity
@@ -405,6 +449,7 @@ securityContext:
 ## Security Checklist
 
 ### Pre-Deployment
+
 - [ ] All secrets rotated
 - [ ] Security scanning passed
 - [ ] Penetration testing completed
@@ -417,6 +462,7 @@ securityContext:
 - [ ] Monitoring alerts configured
 
 ### Post-Deployment
+
 - [ ] Security audit completed
 - [ ] Vulnerability scan passed
 - [ ] Compliance audit passed
@@ -427,6 +473,7 @@ securityContext:
 - [ ] Rollback plan tested
 
 ### Ongoing
+
 - [ ] Weekly dependency updates
 - [ ] Monthly security patches
 - [ ] Quarterly penetration testing
@@ -453,6 +500,7 @@ We welcome security researchers to report vulnerabilities:
 4. Reward: Up to $10,000 (critical)
 
 ### Out of Scope
+
 - DoS/DDoS attacks
 - Social engineering
 - Physical attacks

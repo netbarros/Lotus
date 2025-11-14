@@ -149,11 +149,7 @@ function validatePetala(petalaName: string): ValidationResult {
 
       // Validate required config fields
       const hasRequiredFields =
-        config.petala &&
-        config.database &&
-        config.sofia &&
-        config.security &&
-        config.monitoring;
+        config.petala && config.database && config.sofia && config.security && config.monitoring;
 
       result.checks.push({
         name: 'Config validation',
@@ -314,7 +310,9 @@ function printResults(results: ValidationResult[]): void {
 
   console.log('='.repeat(80));
   console.log(`OVERALL SCORE: ${avgScore}%`);
-  console.log(`STATUS: ${allPassed ? '✅ ALL PÉTALAS PRODUCTION-READY' : '⚠️  SOME PÉTALAS NEED ATTENTION'}`);
+  console.log(
+    `STATUS: ${allPassed ? '✅ ALL PÉTALAS PRODUCTION-READY' : '⚠️  SOME PÉTALAS NEED ATTENTION'}`
+  );
   console.log('='.repeat(80) + '\n');
 
   if (allPassed) {

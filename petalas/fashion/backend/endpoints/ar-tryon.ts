@@ -19,13 +19,13 @@ export default defineEndpoint((router, { services, database, env }) => {
 
       if (!product) {
         return res.status(404).json({
-          error: 'Product not found or AR not enabled for this product'
+          error: 'Product not found or AR not enabled for this product',
         });
       }
 
       if (!product.ar_model_url) {
         return res.status(400).json({
-          error: 'AR 3D model not available for this product'
+          error: 'AR 3D model not available for this product',
         });
       }
 
@@ -36,11 +36,13 @@ export default defineEndpoint((router, { services, database, env }) => {
           tenant_id,
           user_id,
           product_id,
-          customer_measurements: customer_measurements ? JSON.stringify(customer_measurements) : null,
+          customer_measurements: customer_measurements
+            ? JSON.stringify(customer_measurements)
+            : null,
           status: 'active',
           started_at: new Date(),
           created_at: new Date(),
-          updated_at: new Date()
+          updated_at: new Date(),
         })
         .returning('*');
 
@@ -54,9 +56,9 @@ export default defineEndpoint((router, { services, database, env }) => {
         event_data: JSON.stringify({
           session_id: session.id,
           product_id,
-          user_id
+          user_id,
         }),
-        timestamp: new Date()
+        timestamp: new Date(),
       });
 
       // Get 8th Wall API key (or other AR provider)
@@ -70,15 +72,15 @@ export default defineEndpoint((router, { services, database, env }) => {
             id: product.id,
             name: product.name,
             ar_model_url: product.ar_model_url,
-            featured_image: product.featured_image
+            featured_image: product.featured_image,
           },
           ar_config: {
             provider: '8th_wall',
             api_key: arApiKey,
             scene_url: `https://ar.softwarelotus.com.br/tryon/${session.id}`,
-            capabilities: ['face_tracking', 'body_tracking', 'surface_detection']
-          }
-        }
+            capabilities: ['face_tracking', 'body_tracking', 'surface_detection'],
+          },
+        },
       });
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -91,9 +93,7 @@ export default defineEndpoint((router, { services, database, env }) => {
       const { action, data } = req.body; // action: 'capture', 'share', 'end'
       const tenant_id = req.accountability.tenant;
 
-      const session = await database('ar_sessions')
-        .where({ id: req.params.id, tenant_id })
-        .first();
+      const session = await database('ar_sessions').where({ id: req.params.id, tenant_id }).first();
 
       if (!session) {
         return res.status(404).json({ error: 'AR session not found' });
@@ -107,13 +107,11 @@ export default defineEndpoint((router, { services, database, env }) => {
             return res.status(400).json({ error: 'image_url is required for capture action' });
           }
 
-          await database('ar_sessions')
-            .where({ id: req.params.id })
-            .update({
-              capture_url: captureUrl,
-              captured_at: new Date(),
-              updated_at: new Date()
-            });
+          await database('ar_sessions').where({ id: req.params.id }).update({
+            capture_url: captureUrl,
+            captured_at: new Date(),
+            updated_at: new Date(),
+          });
 
           // Emit capture event
           await database('events').insert({
@@ -125,15 +123,15 @@ export default defineEndpoint((router, { services, database, env }) => {
             event_data: JSON.stringify({
               session_id: req.params.id,
               product_id: session.product_id,
-              capture_url: captureUrl
+              capture_url: captureUrl,
             }),
-            timestamp: new Date()
+            timestamp: new Date(),
           });
 
           res.json({
             success: true,
             message: 'AR try-on captured successfully',
-            data: { capture_url: captureUrl }
+            data: { capture_url: captureUrl },
           });
           break;
 
@@ -154,14 +152,14 @@ export default defineEndpoint((router, { services, database, env }) => {
             event_data: JSON.stringify({
               session_id: req.params.id,
               product_id: session.product_id,
-              platform
+              platform,
             }),
-            timestamp: new Date()
+            timestamp: new Date(),
           });
 
           res.json({
             success: true,
-            message: `AR try-on shared to ${platform}`
+            message: `AR try-on shared to ${platform}`,
           });
           break;
 
@@ -169,14 +167,12 @@ export default defineEndpoint((router, { services, database, env }) => {
           // End AR session
           const duration = Math.floor((Date.now() - new Date(session.started_at).getTime()) / 1000);
 
-          await database('ar_sessions')
-            .where({ id: req.params.id })
-            .update({
-              status: 'completed',
-              ended_at: new Date(),
-              duration_seconds: duration,
-              updated_at: new Date()
-            });
+          await database('ar_sessions').where({ id: req.params.id }).update({
+            status: 'completed',
+            ended_at: new Date(),
+            duration_seconds: duration,
+            updated_at: new Date(),
+          });
 
           // Emit end event
           await database('events').insert({
@@ -189,22 +185,22 @@ export default defineEndpoint((router, { services, database, env }) => {
               session_id: req.params.id,
               product_id: session.product_id,
               duration_seconds: duration,
-              captured: !!session.capture_url
+              captured: !!session.capture_url,
             }),
-            timestamp: new Date()
+            timestamp: new Date(),
           });
 
           res.json({
             success: true,
             message: 'AR session ended',
-            data: { duration_seconds: duration }
+            data: { duration_seconds: duration },
           });
           break;
 
         default:
           return res.status(400).json({
             error: 'Invalid action',
-            supported: ['capture', 'share', 'end']
+            supported: ['capture', 'share', 'end'],
           });
       }
     } catch (error) {
@@ -230,17 +226,17 @@ export default defineEndpoint((router, { services, database, env }) => {
       const products = await query.limit(limit);
 
       res.json({
-        data: products.map(p => ({
+        data: products.map((p) => ({
           id: p.id,
           name: p.name,
           slug: p.slug,
           price: parseFloat(p.price).toFixed(2),
           image: p.featured_image,
-          ar_available: true
+          ar_available: true,
         })),
         meta: {
-          count: products.length
-        }
+          count: products.length,
+        },
       });
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -303,9 +299,13 @@ export default defineEndpoint((router, { services, database, env }) => {
       // Conversion rate (AR sessions → purchases)
       const arUserPurchases = await database('ar_sessions')
         .countDistinct('ar_sessions.user_id as count')
-        .leftJoin('orders', function() {
+        .leftJoin('orders', function () {
           this.on('ar_sessions.user_id', '=', 'orders.user_id')
-            .andOn('ar_sessions.product_id', '=', database.raw('ANY(SELECT product_id FROM order_items WHERE order_id = orders.id)'))
+            .andOn(
+              'ar_sessions.product_id',
+              '=',
+              database.raw('ANY(SELECT product_id FROM order_items WHERE order_id = orders.id)')
+            )
             .andOnVal('orders.payment_status', '=', 'paid');
         })
         .where({ 'ar_sessions.tenant_id': tenant_id })
@@ -319,9 +319,10 @@ export default defineEndpoint((router, { services, database, env }) => {
         .where('created_at', '>=', startDate)
         .first();
 
-      const conversionRate = uniqueArUsers.count > 0
-        ? ((arUserPurchases.count / uniqueArUsers.count) * 100).toFixed(2)
-        : 0;
+      const conversionRate =
+        uniqueArUsers.count > 0
+          ? ((arUserPurchases.count / uniqueArUsers.count) * 100).toFixed(2)
+          : 0;
 
       res.json({
         data: {
@@ -329,32 +330,34 @@ export default defineEndpoint((router, { services, database, env }) => {
           sessions: {
             total: parseInt(totalSessions.count || 0),
             completed: parseInt(completedSessions.count || 0),
-            completion_rate: totalSessions.count > 0
-              ? ((completedSessions.count / totalSessions.count) * 100).toFixed(2)
-              : 0
+            completion_rate:
+              totalSessions.count > 0
+                ? ((completedSessions.count / totalSessions.count) * 100).toFixed(2)
+                : 0,
           },
           captures: {
             count: parseInt(capturedPhotos.count || 0),
-            capture_rate: totalSessions.count > 0
-              ? ((capturedPhotos.count / totalSessions.count) * 100).toFixed(2)
-              : 0
+            capture_rate:
+              totalSessions.count > 0
+                ? ((capturedPhotos.count / totalSessions.count) * 100).toFixed(2)
+                : 0,
           },
           engagement: {
             avg_duration_seconds: Math.round(avgDuration.avg || 0),
-            avg_duration_minutes: ((avgDuration.avg || 0) / 60).toFixed(1)
+            avg_duration_minutes: ((avgDuration.avg || 0) / 60).toFixed(1),
           },
           conversion: {
             rate: parseFloat(conversionRate),
             purchases: parseInt(arUserPurchases.count || 0),
-            unique_users: parseInt(uniqueArUsers.count || 0)
+            unique_users: parseInt(uniqueArUsers.count || 0),
           },
-          top_products: topProducts.map(p => ({
+          top_products: topProducts.map((p) => ({
             id: p.id,
             name: p.name,
             slug: p.slug,
-            sessions: parseInt(p.sessions_count)
-          }))
-        }
+            sessions: parseInt(p.sessions_count),
+          })),
+        },
       });
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -370,7 +373,7 @@ export default defineEndpoint((router, { services, database, env }) => {
       if (!session_id || !rating) {
         return res.status(400).json({
           error: 'Missing required fields',
-          required: ['session_id', 'rating']
+          required: ['session_id', 'rating'],
         });
       }
 
@@ -378,9 +381,7 @@ export default defineEndpoint((router, { services, database, env }) => {
         return res.status(400).json({ error: 'Rating must be between 1 and 5' });
       }
 
-      const session = await database('ar_sessions')
-        .where({ id: session_id, tenant_id })
-        .first();
+      const session = await database('ar_sessions').where({ id: session_id, tenant_id }).first();
 
       if (!session) {
         return res.status(404).json({ error: 'AR session not found' });
@@ -393,7 +394,7 @@ export default defineEndpoint((router, { services, database, env }) => {
           feedback_rating: rating,
           feedback_comment: comment,
           feedback_issues: issues ? JSON.stringify(issues) : null,
-          updated_at: new Date()
+          updated_at: new Date(),
         });
 
       // Emit feedback event
@@ -407,14 +408,14 @@ export default defineEndpoint((router, { services, database, env }) => {
           session_id,
           product_id: session.product_id,
           rating,
-          has_issues: !!issues
+          has_issues: !!issues,
         }),
-        timestamp: new Date()
+        timestamp: new Date(),
       });
 
       res.json({
         success: true,
-        message: 'Feedback submitted successfully'
+        message: 'Feedback submitted successfully',
       });
     } catch (error) {
       res.status(500).json({ error: error.message });

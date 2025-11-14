@@ -152,10 +152,12 @@ let qdrantService: QdrantService;
 
 // Middleware
 app.use(helmet());
-app.use(cors({
-  origin: process.env.CORS_ORIGIN || '*',
-  credentials: true,
-}));
+app.use(
+  cors({
+    origin: process.env.CORS_ORIGIN || '*',
+    credentials: true,
+  })
+);
 app.use(compression());
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
@@ -210,28 +212,16 @@ async function initializeServices(): Promise<void> {
     console.log('   ✅ Qdrant service initialized');
 
     // Initialize Sofia Central Brain
-    sofia = new SofiaCentralBrain_v4(
-      redis,
-      pool,
-      langchainService,
-      langfuseService,
-      qdrantService
-    );
+    sofia = new SofiaCentralBrain_v4(redis, pool, langchainService, langfuseService, qdrantService);
     await sofia.initialize();
     console.log('   ✅ Sofia Central Brain v4.0 initialized');
 
     // Initialize Learning Engine
-    learningEngine = new SofiaLearningEngine_v4(
-      redis,
-      pool,
-      qdrantService,
-      langchainService
-    );
+    learningEngine = new SofiaLearningEngine_v4(redis, pool, qdrantService, langchainService);
     await learningEngine.initialize();
     console.log('   ✅ Sofia Learning Engine v4.0 initialized');
 
     console.log('✅ All Sofia AI services ready');
-
   } catch (error: any) {
     console.error('❌ Service initialization failed:', error.message);
     throw error;
@@ -641,7 +631,6 @@ async function startServer(): Promise<void> {
       console.log(`   POST /api/generate/api            - Generate API endpoint`);
       console.log('');
     });
-
   } catch (error: any) {
     console.error('❌ Failed to start server:', error.message);
     process.exit(1);

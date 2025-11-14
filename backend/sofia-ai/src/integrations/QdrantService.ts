@@ -77,16 +77,12 @@ export class QdrantService {
   private upsertCount = 0;
   private totalSearchLatency = 0;
 
-  constructor(
-    config: QdrantConfig,
-    redis: Redis,
-    eventStore: EventStore
-  ) {
+  constructor(config: QdrantConfig, redis: Redis, eventStore: EventStore) {
     this.config = {
       port: 6333,
       grpcPort: 6334,
       timeout: 30000,
-      ...config
+      ...config,
     };
     this.redis = redis;
     this.eventStore = eventStore;
@@ -121,9 +117,9 @@ export class QdrantService {
         metadata: {
           host: this.config.host,
           port: this.config.port,
-          collectionsFound: this.collections.size
+          collectionsFound: this.collections.size,
         },
-        timestamp: new Date()
+        timestamp: new Date(),
       });
     } catch (error) {
       logger.error('❌ Failed to initialize Qdrant Service:', error);
@@ -134,10 +130,7 @@ export class QdrantService {
   /**
    * Create a collection
    */
-  async createCollection(
-    name: string,
-    config: CollectionConfig
-  ): Promise<void> {
+  async createCollection(name: string, config: CollectionConfig): Promise<void> {
     logger.info(`🔍 Creating Qdrant collection: ${name}`);
 
     try {
@@ -148,15 +141,13 @@ export class QdrantService {
       const metadata = {
         name,
         config,
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
       };
-      await this.redis.setex(
-        `qdrant:collection:${name}`,
-        86400 * 365,
-        JSON.stringify(metadata)
-      );
+      await this.redis.setex(`qdrant:collection:${name}`, 86400 * 365, JSON.stringify(metadata));
 
-      logger.info(`✅ Created collection: ${name} (${config.vectors.size}D, ${config.vectors.distance})`);
+      logger.info(
+        `✅ Created collection: ${name} (${config.vectors.size}D, ${config.vectors.distance})`
+      );
 
       // Record event
       await this.eventStore.record({
@@ -164,9 +155,9 @@ export class QdrantService {
         metadata: {
           collectionName: name,
           vectorSize: config.vectors.size,
-          distance: config.vectors.distance
+          distance: config.vectors.distance,
         },
-        timestamp: new Date()
+        timestamp: new Date(),
       });
     } catch (error) {
       logger.error(`❌ Failed to create collection: ${name}`, error);
@@ -195,17 +186,14 @@ export class QdrantService {
     await this.eventStore.record({
       type: 'qdrant.collection_deleted',
       metadata: { collectionName: name },
-      timestamp: new Date()
+      timestamp: new Date(),
     });
   }
 
   /**
    * Upsert points (vectors) into a collection
    */
-  async upsert(
-    collectionName: string,
-    points: QdrantPoint[]
-  ): Promise<void> {
+  async upsert(collectionName: string, points: QdrantPoint[]): Promise<void> {
     if (!this.collectionExists(collectionName)) {
       throw new Error(`Collection does not exist: ${collectionName}`);
     }
@@ -228,9 +216,9 @@ export class QdrantService {
         type: 'qdrant.points_upserted',
         metadata: {
           collectionName,
-          pointCount: points.length
+          pointCount: points.length,
         },
-        timestamp: new Date()
+        timestamp: new Date(),
       });
     } catch (error) {
       logger.error(`❌ Failed to upsert points to ${collectionName}`, error);
@@ -280,9 +268,9 @@ export class QdrantService {
           collectionName,
           resultsCount: results.length,
           latencyMs: latency,
-          limit
+          limit,
         },
-        timestamp: new Date()
+        timestamp: new Date(),
       });
 
       return results;
@@ -295,10 +283,7 @@ export class QdrantService {
   /**
    * Get point by ID
    */
-  async getPoint(
-    collectionName: string,
-    pointId: string | number
-  ): Promise<QdrantPoint | null> {
+  async getPoint(collectionName: string, pointId: string | number): Promise<QdrantPoint | null> {
     const key = `qdrant:point:${collectionName}:${pointId}`;
     const data = await this.redis.get(key);
 
@@ -312,13 +297,10 @@ export class QdrantService {
   /**
    * Delete points by IDs
    */
-  async deletePoints(
-    collectionName: string,
-    pointIds: (string | number)[]
-  ): Promise<void> {
+  async deletePoints(collectionName: string, pointIds: (string | number)[]): Promise<void> {
     logger.info(`🔍 Deleting ${pointIds.length} points from ${collectionName}`);
 
-    const keys = pointIds.map(id => `qdrant:point:${collectionName}:${id}`);
+    const keys = pointIds.map((id) => `qdrant:point:${collectionName}:${id}`);
     if (keys.length > 0) {
       await this.redis.del(...keys);
     }
@@ -329,9 +311,9 @@ export class QdrantService {
       type: 'qdrant.points_deleted',
       metadata: {
         collectionName,
-        pointCount: pointIds.length
+        pointCount: pointIds.length,
       },
-      timestamp: new Date()
+      timestamp: new Date(),
     });
   }
 
@@ -354,7 +336,7 @@ export class QdrantService {
     return {
       name: collectionName,
       vectorsCount: 0, // Would be actual count in production
-      config: metadata.config
+      config: metadata.config,
     };
   }
 
@@ -383,7 +365,7 @@ export class QdrantService {
       searchCount: this.searchCount,
       upsertCount: this.upsertCount,
       averageSearchLatencyMs: this.searchCount > 0 ? this.totalSearchLatency / this.searchCount : 0,
-      collectionsCount: this.collections.size
+      collectionsCount: this.collections.size,
     };
   }
 
@@ -400,7 +382,7 @@ export class QdrantService {
       status: this.isInitialized ? 'healthy' : 'unhealthy',
       initialized: this.isInitialized,
       collections: Array.from(this.collections),
-      statistics: this.getStatistics()
+      statistics: this.getStatistics(),
     };
   }
 }

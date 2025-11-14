@@ -1,14 +1,13 @@
 # 🎓 Pétala Education
 
-**Version:** 1.0.0
-**Status:** ✅ Production-Ready
-**Category:** education
+**Version:** 1.0.0 **Status:** ✅ Production-Ready **Category:** education
 
 ---
 
 ## 📋 Overview
 
-Complete Learning Management System (LMS) with video lessons, quizzes, certificates, and gamification
+Complete Learning Management System (LMS) with video lessons, quizzes,
+certificates, and gamification
 
 ### Key Features
 
@@ -43,6 +42,7 @@ npm run dev
 ## 💰 Pricing
 
 ### Starter - $79/month
+
 - Up to 10 courses
 - Unlimited students
 - Video hosting
@@ -50,6 +50,7 @@ npm run dev
 - Email support
 
 ### Professional - $149/month
+
 - Unlimited courses
 - Advanced quizzes
 - Certificates
@@ -59,6 +60,7 @@ npm run dev
 - Priority support
 
 ### Enterprise - $399/month
+
 - Everything in Professional
 - White-label
 - API access
@@ -68,5 +70,4 @@ npm run dev
 
 ---
 
-**Built with ❤️ by Software Lotus**
-**Powered by MagicSaaS System-∞ & Sofia AI**
+**Built with ❤️ by Software Lotus** **Powered by MagicSaaS System-∞ & Sofia AI**

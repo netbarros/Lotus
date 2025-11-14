@@ -1,7 +1,7 @@
 # 📚 MagicSaaS System-∞ - Documentation
 
-> **Enterprise State-of-the-Art Documentation**
-> **Import this entire `/docs` folder into Notion**
+> **Enterprise State-of-the-Art Documentation** **Import this entire `/docs`
+> folder into Notion**
 
 ---
 
@@ -118,18 +118,22 @@ docs/
 ## 🎯 Páginas Mais Importantes
 
 ### **Para Iniciantes**
+
 1. [00-INDEX.md](./00-INDEX.md) - Navegação master
 2. [System Overview](./01-overview/system-overview.md) - O que é MagicSaaS
 3. [Quick Start](./03-installation/quick-start.md) - Instalação rápida
 4. [Getting Started](./04-development/getting-started.md) - Primeiro dev
 
 ### **Para Desenvolvedores**
+
 1. [Sofia AI v3.0](./02-architecture/sofia-ai-v3.md) - Arquitetura completa
 2. [API Reference](./05-api-reference/sofia-ai-api.md) - Todos os endpoints
-3. [Environment Variables](./03-installation/environment-variables.md) - 134 variáveis
+3. [Environment Variables](./03-installation/environment-variables.md) - 134
+   variáveis
 4. [Getting Started](./04-development/getting-started.md) - Dev guide
 
 ### **Para DevOps**
+
 1. [Docker Compose](./03-installation/docker-compose.md) - Setup containers
 2. [Monitoring](./06-deployment/monitoring.md) - Observabilidade
 3. [Production Checklist](./06-deployment/production-checklist.md) - Deploy
@@ -167,6 +171,7 @@ docs/
 ### **Como Manter Atualizado**
 
 1. **Automatic** (recomendado):
+
    ```bash
    # No futuro, sync automático via API
    ```
@@ -184,10 +189,12 @@ docs/
 ## 🆘 Suporte
 
 ### **Documentação**
+
 - **Issues**: https://github.com/netbarros/Lotus/issues
 - **Discussions**: https://github.com/netbarros/Lotus/discussions
 
 ### **Contato**
+
 - **Email**: support@softwarelotus.com.br
 - **Notion**: Em breve teremos workspace público
 
@@ -196,11 +203,13 @@ docs/
 ## 📝 Convenções de Nomenclatura
 
 ### **Prefixos de Arquivos**
+
 - `00-` = Índice/Navegação
 - `01-` a `09-` = Seções principais
 - `98-`, `99-` = Utilitários/Templates
 
 ### **Emojis de Categoria**
+
 - 🔴 = REQUIRED (obrigatório)
 - 🟡 = RECOMMENDED (recomendado)
 - 🟢 = OPTIONAL (opcional)

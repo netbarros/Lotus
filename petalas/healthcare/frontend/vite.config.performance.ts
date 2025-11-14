@@ -1,8 +1,8 @@
-import { defineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue'
-import { visualizer } from 'rollup-plugin-visualizer'
-import viteCompression from 'vite-plugin-compression'
-import viteImagemin from 'vite-plugin-imagemin'
+import { defineConfig } from 'vite';
+import vue from '@vitejs/plugin-vue';
+import { visualizer } from 'rollup-plugin-visualizer';
+import viteCompression from 'vite-plugin-compression';
+import viteImagemin from 'vite-plugin-imagemin';
 
 /**
  * Vite Performance Configuration for Pétala Fashion
@@ -97,38 +97,24 @@ export default defineConfig({
         // Manual chunks for better caching
         manualChunks: {
           // Vendor chunk - external libraries
-          'vendor': [
-            'vue',
-            'vue-router',
-            'pinia',
-          ],
+          vendor: ['vue', 'vue-router', 'pinia'],
 
           // UI framework chunk
-          'ui': [
-            '@headlessui/vue',
-            '@heroicons/vue',
-          ],
+          ui: ['@headlessui/vue', '@heroicons/vue'],
 
           // Sofia AI chunk - lazy loaded
-          'sofia': [
-            '@/services/sofia',
-            '@/composables/useSofia',
-          ],
+          sofia: ['@/services/sofia', '@/composables/useSofia'],
 
           // Utils chunk
-          'utils': [
-            'axios',
-            'dayjs',
-            'lodash-es',
-          ],
+          utils: ['axios', 'dayjs', 'lodash-es'],
         },
 
         // Dynamic chunk naming for better caching
         chunkFileNames: (chunkInfo) => {
           const facadeModuleId = chunkInfo.facadeModuleId
             ? chunkInfo.facadeModuleId.split('/').pop()
-            : 'chunk'
-          return `assets/chunks/[name]-[hash].js`
+            : 'chunk';
+          return `assets/chunks/[name]-[hash].js`;
         },
         entryFileNames: 'assets/[name]-[hash].js',
         assetFileNames: 'assets/[ext]/[name]-[hash][extname]',
@@ -147,12 +133,7 @@ export default defineConfig({
 
   // Optimize dependencies
   optimizeDeps: {
-    include: [
-      'vue',
-      'vue-router',
-      'pinia',
-      'axios',
-    ],
+    include: ['vue', 'vue-router', 'pinia', 'axios'],
     exclude: [
       // Exclude large dependencies to be dynamically imported
       '@/../../shared/sofia/components/SofiaChat.vue',
@@ -184,4 +165,4 @@ export default defineConfig({
   esbuild: {
     logOverride: { 'this-is-undefined-in-esm': 'silent' },
   },
-})
+});

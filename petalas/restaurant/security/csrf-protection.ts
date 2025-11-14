@@ -43,8 +43,8 @@ export default ({ app }: any) => {
       return res.status(403).json({
         error: {
           message: 'Invalid CSRF token',
-          code: 'CSRF_TOKEN_INVALID'
-        }
+          code: 'CSRF_TOKEN_INVALID',
+        },
       });
     }
 
@@ -61,7 +61,7 @@ export default ({ app }: any) => {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'strict',
-        maxAge: 60 * 60 * 1000 // 1 hour
+        maxAge: 60 * 60 * 1000, // 1 hour
       });
 
       // Send token in response header for client to use

@@ -92,11 +92,7 @@ class MCPClient {
     return response.data;
   }
 
-  async readOne(
-    collection: string,
-    id: string,
-    connectionId = 'directus-default'
-  ): Promise<any> {
+  async readOne(collection: string, id: string, connectionId = 'directus-default'): Promise<any> {
     const client = this.getConnection(connectionId);
     if (!client) {
       throw new Error(`MCP connection '${connectionId}' not found`);
@@ -131,11 +127,7 @@ class MCPClient {
     return response.data;
   }
 
-  async delete(
-    collection: string,
-    id: string,
-    connectionId = 'directus-default'
-  ): Promise<void> {
+  async delete(collection: string, id: string, connectionId = 'directus-default'): Promise<void> {
     const client = this.getConnection(connectionId);
     if (!client) {
       throw new Error(`MCP connection '${connectionId}' not found`);

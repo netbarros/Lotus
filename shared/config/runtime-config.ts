@@ -16,116 +16,130 @@
 
 export interface RuntimeConfig {
   // Environment Detection
-  environment: 'development' | 'staging' | 'production'
-  isLocalhost: boolean
-  isDevelopment: boolean
-  isProduction: boolean
+  environment: 'development' | 'staging' | 'production';
+  isLocalhost: boolean;
+  isDevelopment: boolean;
+  isProduction: boolean;
 
   // Domain Configuration
-  domain: string
-  subdomain: string | null
-  protocol: string
+  domain: string;
+  subdomain: string | null;
+  protocol: string;
 
   // Pétala Detection
   petala: {
-    name: string
-    type: 'fashion' | 'restaurant' | 'healthcare' | 'travel' | 'academy' | 'retail' | 'realestate' | 'education' | 'fitness' | 'hospitality' | 'financial' | 'legal' | 'manufacturing' | 'logistics'
-    basePath: string
-  }
+    name: string;
+    type:
+      | 'fashion'
+      | 'restaurant'
+      | 'healthcare'
+      | 'travel'
+      | 'academy'
+      | 'retail'
+      | 'realestate'
+      | 'education'
+      | 'fitness'
+      | 'hospitality'
+      | 'financial'
+      | 'legal'
+      | 'manufacturing'
+      | 'logistics';
+    basePath: string;
+  };
 
   // API Configuration
   api: {
-    baseUrl: string
-    timeout: number
-    retryAttempts: number
-    retryDelay: number
-  }
+    baseUrl: string;
+    timeout: number;
+    retryAttempts: number;
+    retryDelay: number;
+  };
 
   // Directus CMS
   directus: {
-    url: string
-    graphqlUrl: string
-    assetsUrl: string
-  }
+    url: string;
+    graphqlUrl: string;
+    assetsUrl: string;
+  };
 
   // Sofia AI
   sofia: {
-    enabled: boolean
-    apiUrl: string
+    enabled: boolean;
+    apiUrl: string;
     features: {
-      intentionEngine: boolean
-      uxValidation: boolean
-      seoOptimization: boolean
-      voiceAssistant: boolean
-    }
-  }
+      intentionEngine: boolean;
+      uxValidation: boolean;
+      seoOptimization: boolean;
+      voiceAssistant: boolean;
+    };
+  };
 
   // Authentication
   auth: {
-    jwtExpiration: string
-    refreshExpiration: string
-    storageKey: string
-  }
+    jwtExpiration: string;
+    refreshExpiration: string;
+    storageKey: string;
+  };
 
   // Feature Flags
   features: {
-    enablePWA: boolean
-    enableOfflineMode: boolean
-    enableAnalytics: boolean
-    enableSentry: boolean
-    enableHotjar: boolean
-  }
+    enablePWA: boolean;
+    enableOfflineMode: boolean;
+    enableAnalytics: boolean;
+    enableSentry: boolean;
+    enableHotjar: boolean;
+  };
 
   // Payment Gateways
   payment: {
     stripe: {
-      enabled: boolean
-      publicKey: string
-    }
+      enabled: boolean;
+      publicKey: string;
+    };
     mercadoPago: {
-      enabled: boolean
-      publicKey: string
-    }
-  }
+      enabled: boolean;
+      publicKey: string;
+    };
+  };
 
   // Media & CDN
   media: {
     cloudinary: {
-      enabled: boolean
-      cloudName: string
-      uploadPreset: string
-    }
-    maxUploadSize: number
-    allowedFormats: string[]
-  }
+      enabled: boolean;
+      cloudName: string;
+      uploadPreset: string;
+    };
+    maxUploadSize: number;
+    allowedFormats: string[];
+  };
 
   // Search
   search: {
     algolia: {
-      enabled: boolean
-      appId: string
-      searchKey: string
-    }
-  }
+      enabled: boolean;
+      appId: string;
+      searchKey: string;
+    };
+  };
 
   // Analytics
   analytics: {
     googleAnalytics: {
-      enabled: boolean
-      measurementId: string
-    }
+      enabled: boolean;
+      measurementId: string;
+    };
     hotjar: {
-      enabled: boolean
-      siteId: string
-    }
-  }
+      enabled: boolean;
+      siteId: string;
+    };
+  };
 
   // Tenant
   tenant: {
-    id: string
-    name: string
-    customDomain: string | null
-  }
+    id: string;
+    name: string;
+    customDomain: string | null;
+  };
 }
 
 /**
@@ -133,19 +147,19 @@ export interface RuntimeConfig {
  * Detects automatically based on hostname and protocol
  */
 function detectEnvironment(): RuntimeConfig['environment'] {
-  if (typeof window === 'undefined') return 'production'
+  if (typeof window === 'undefined') return 'production';
 
-  const hostname = window.location.hostname
+  const hostname = window.location.hostname;
 
   if (hostname === 'localhost' || hostname === '127.0.0.1' || hostname.includes('.local')) {
-    return 'development'
+    return 'development';
   }
 
   if (hostname.includes('staging.') || hostname.includes('.stg.')) {
-    return 'staging'
+    return 'staging';
   }
 
-  return 'production'
+  return 'production';
 }
 
 /**
@@ -158,82 +172,82 @@ function detectEnvironment(): RuntimeConfig['environment'] {
  */
 function detectPetala(): RuntimeConfig['petala'] {
   if (typeof window === 'undefined') {
-    return { name: 'default', type: 'fashion', basePath: '/petalas/fashion' }
+    return { name: 'default', type: 'fashion', basePath: '/petalas/fashion' };
   }
 
-  const hostname = window.location.hostname
-  const pathname = window.location.pathname
+  const hostname = window.location.hostname;
+  const pathname = window.location.pathname;
 
   // 1. Check subdomain mapping
   const subdomainMap: Record<string, RuntimeConfig['petala']['type']> = {
-    'fashion': 'fashion',
-    'restaurant': 'restaurant',
-    'food': 'restaurant',
-    'delivery': 'restaurant',
-    'health': 'healthcare',
-    'healthcare': 'healthcare',
-    'clinic': 'healthcare',
-    'hospital': 'healthcare',
-    'travel': 'travel',
-    'trips': 'travel',
-    'academy': 'academy',
-    'education': 'education',
-    'learn': 'academy',
-    'retail': 'retail',
-    'shop': 'retail',
-    'store': 'retail',
-    'realestate': 'realestate',
-    'properties': 'realestate',
-    'fitness': 'fitness',
-    'gym': 'fitness',
-    'hospitality': 'hospitality',
-    'hotel': 'hospitality',
-    'financial': 'financial',
-    'finance': 'financial',
-    'legal': 'legal',
-    'law': 'legal',
-    'manufacturing': 'manufacturing',
-    'factory': 'manufacturing',
-    'logistics': 'logistics',
-    'shipping': 'logistics'
-  }
+    fashion: 'fashion',
+    restaurant: 'restaurant',
+    food: 'restaurant',
+    delivery: 'restaurant',
+    health: 'healthcare',
+    healthcare: 'healthcare',
+    clinic: 'healthcare',
+    hospital: 'healthcare',
+    travel: 'travel',
+    trips: 'travel',
+    academy: 'academy',
+    education: 'education',
+    learn: 'academy',
+    retail: 'retail',
+    shop: 'retail',
+    store: 'retail',
+    realestate: 'realestate',
+    properties: 'realestate',
+    fitness: 'fitness',
+    gym: 'fitness',
+    hospitality: 'hospitality',
+    hotel: 'hospitality',
+    financial: 'financial',
+    finance: 'financial',
+    legal: 'legal',
+    law: 'legal',
+    manufacturing: 'manufacturing',
+    factory: 'manufacturing',
+    logistics: 'logistics',
+    shipping: 'logistics',
+  };
 
-  const subdomain = hostname.split('.')[0]
+  const subdomain = hostname.split('.')[0];
   if (subdomainMap[subdomain]) {
-    const type = subdomainMap[subdomain]
+    const type = subdomainMap[subdomain];
     return {
       name: type.charAt(0).toUpperCase() + type.slice(1),
       type,
-      basePath: `/petalas/${type}`
-    }
+      basePath: `/petalas/${type}`,
+    };
   }
 
   // 2. Check path mapping
-  const pathMatch = pathname.match(/^\/petalas\/([^/]+)/)
+  const pathMatch = pathname.match(/^\/petalas\/([^/]+)/);
   if (pathMatch) {
-    const type = pathMatch[1] as RuntimeConfig['petala']['type']
+    const type = pathMatch[1] as RuntimeConfig['petala']['type'];
     return {
       name: type.charAt(0).toUpperCase() + type.slice(1),
       type,
-      basePath: `/petalas/${type}`
-    }
+      basePath: `/petalas/${type}`,
+    };
   }
 
   // 3. Check custom domain mapping (would come from API/database)
   // This would be loaded from a config endpoint
 
   // 4. Default to fashion (or read from meta tag)
-  const metaTag = document.querySelector('meta[name="magicsaas:petala"]')
+  const metaTag = document.querySelector('meta[name="magicsaas:petala"]');
   if (metaTag) {
-    const type = metaTag.getAttribute('content') as RuntimeConfig['petala']['type'] || 'fashion'
+    const type = (metaTag.getAttribute('content') as RuntimeConfig['petala']['type']) || 'fashion';
     return {
       name: type.charAt(0).toUpperCase() + type.slice(1),
       type,
-      basePath: `/petalas/${type}`
-    }
+      basePath: `/petalas/${type}`,
+    };
   }
 
-  return { name: 'Fashion', type: 'fashion', basePath: '/petalas/fashion' }
+  return { name: 'Fashion', type: 'fashion', basePath: '/petalas/fashion' };
 }
 
 /**
@@ -241,30 +255,30 @@ function detectPetala(): RuntimeConfig['petala'] {
  * Detects API URL based on environment
  */
 function detectApiUrl(environment: RuntimeConfig['environment']): string {
-  if (typeof window === 'undefined') return 'http://localhost:8055'
+  if (typeof window === 'undefined') return 'http://localhost:8055';
 
   // Environment variable override (build-time)
-  const envApiUrl = import.meta.env?.VITE_API_URL
-  if (envApiUrl && envApiUrl !== 'AUTO') return envApiUrl
+  const envApiUrl = import.meta.env?.VITE_API_URL;
+  if (envApiUrl && envApiUrl !== 'AUTO') return envApiUrl;
 
   // Runtime detection
-  const hostname = window.location.hostname
-  const protocol = window.location.protocol
+  const hostname = window.location.hostname;
+  const protocol = window.location.protocol;
 
   if (environment === 'development') {
-    return 'http://localhost:8055'
+    return 'http://localhost:8055';
   }
 
   if (environment === 'staging') {
-    return `${protocol}//api.staging.magicsaas.com`
+    return `${protocol}//api.staging.magicsaas.com`;
   }
 
   // Production: Use same domain with /api path or api subdomain
   if (hostname.startsWith('www.')) {
-    return `${protocol}//api.${hostname.substring(4)}`
+    return `${protocol}//api.${hostname.substring(4)}`;
   }
 
-  return `${protocol}//api.${hostname}`
+  return `${protocol}//api.${hostname}`;
 }
 
 /**
@@ -278,17 +292,17 @@ async function loadRuntimeConfigFromServer(): Promise<Partial<RuntimeConfig> | n
   try {
     const response = await fetch('/config.json', {
       cache: 'no-cache',
-      headers: { 'Accept': 'application/json' }
-    })
+      headers: { Accept: 'application/json' },
+    });
 
     if (response.ok) {
-      return await response.json()
+      return await response.json();
     }
   } catch (error) {
-    console.warn('Could not load runtime config from server, using defaults', error)
+    console.warn('Could not load runtime config from server, using defaults', error);
   }
 
-  return null
+  return null;
 }
 
 /**
@@ -297,18 +311,19 @@ async function loadRuntimeConfigFromServer(): Promise<Partial<RuntimeConfig> | n
  */
 export async function createRuntimeConfig(): Promise<RuntimeConfig> {
   // Detect environment
-  const environment = detectEnvironment()
-  const isLocalhost = typeof window !== 'undefined' &&
-    (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+  const environment = detectEnvironment();
+  const isLocalhost =
+    typeof window !== 'undefined' &&
+    (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
 
   // Detect pétala
-  const petala = detectPetala()
+  const petala = detectPetala();
 
   // Detect API URL
-  const apiBaseUrl = detectApiUrl(environment)
+  const apiBaseUrl = detectApiUrl(environment);
 
   // Load server config (if available)
-  const serverConfig = await loadRuntimeConfigFromServer()
+  const serverConfig = await loadRuntimeConfigFromServer();
 
   // Build configuration with priorities
   const config: RuntimeConfig = {
@@ -320,7 +335,8 @@ export async function createRuntimeConfig(): Promise<RuntimeConfig> {
 
     // Domain
     domain: typeof window !== 'undefined' ? window.location.hostname : 'localhost',
-    subdomain: typeof window !== 'undefined' ? window.location.hostname.split('.')[0] || null : null,
+    subdomain:
+      typeof window !== 'undefined' ? window.location.hostname.split('.')[0] || null : null,
     protocol: typeof window !== 'undefined' ? window.location.protocol : 'http:',
 
     // Pétala
@@ -331,65 +347,84 @@ export async function createRuntimeConfig(): Promise<RuntimeConfig> {
       baseUrl: serverConfig?.api?.baseUrl || apiBaseUrl,
       timeout: serverConfig?.api?.timeout || parseInt(import.meta.env?.VITE_API_TIMEOUT || '30000'),
       retryAttempts: serverConfig?.api?.retryAttempts || 3,
-      retryDelay: serverConfig?.api?.retryDelay || 1000
+      retryDelay: serverConfig?.api?.retryDelay || 1000,
     },
 
     // Directus
     directus: {
       url: serverConfig?.directus?.url || apiBaseUrl,
       graphqlUrl: serverConfig?.directus?.graphqlUrl || `${apiBaseUrl}/graphql`,
-      assetsUrl: serverConfig?.directus?.assetsUrl || `${apiBaseUrl}/assets`
+      assetsUrl: serverConfig?.directus?.assetsUrl || `${apiBaseUrl}/assets`,
     },
 
     // Sofia AI
     sofia: {
       enabled: serverConfig?.sofia?.enabled ?? true,
-      apiUrl: serverConfig?.sofia?.apiUrl || (isLocalhost ? 'http://localhost:3003' : `${apiBaseUrl.replace('/api', '')}/sofia`),
+      apiUrl:
+        serverConfig?.sofia?.apiUrl ||
+        (isLocalhost ? 'http://localhost:3003' : `${apiBaseUrl.replace('/api', '')}/sofia`),
       features: {
         intentionEngine: serverConfig?.sofia?.features?.intentionEngine ?? true,
         uxValidation: serverConfig?.sofia?.features?.uxValidation ?? true,
         seoOptimization: serverConfig?.sofia?.features?.seoOptimization ?? true,
-        voiceAssistant: serverConfig?.sofia?.features?.voiceAssistant ?? false
-      }
+        voiceAssistant: serverConfig?.sofia?.features?.voiceAssistant ?? false,
+      },
     },
 
     // Auth
     auth: {
       jwtExpiration: serverConfig?.auth?.jwtExpiration || '7d',
       refreshExpiration: serverConfig?.auth?.refreshExpiration || '30d',
-      storageKey: serverConfig?.auth?.storageKey || 'magicsaas_auth'
+      storageKey: serverConfig?.auth?.storageKey || 'magicsaas_auth',
     },
 
     // Feature Flags
     features: {
       enablePWA: serverConfig?.features?.enablePWA ?? true,
       enableOfflineMode: serverConfig?.features?.enableOfflineMode ?? false,
-      enableAnalytics: serverConfig?.features?.enableAnalytics ?? (environment === 'production'),
-      enableSentry: serverConfig?.features?.enableSentry ?? (environment === 'production'),
-      enableHotjar: serverConfig?.features?.enableHotjar ?? false
+      enableAnalytics: serverConfig?.features?.enableAnalytics ?? environment === 'production',
+      enableSentry: serverConfig?.features?.enableSentry ?? environment === 'production',
+      enableHotjar: serverConfig?.features?.enableHotjar ?? false,
     },
 
     // Payment
     payment: {
       stripe: {
         enabled: serverConfig?.payment?.stripe?.enabled ?? false,
-        publicKey: serverConfig?.payment?.stripe?.publicKey || import.meta.env?.VITE_STRIPE_PUBLIC_KEY || ''
+        publicKey:
+          serverConfig?.payment?.stripe?.publicKey || import.meta.env?.VITE_STRIPE_PUBLIC_KEY || '',
       },
       mercadoPago: {
         enabled: serverConfig?.payment?.mercadoPago?.enabled ?? false,
-        publicKey: serverConfig?.payment?.mercadoPago?.publicKey || import.meta.env?.VITE_MERCADOPAGO_PUBLIC_KEY || ''
-      }
+        publicKey:
+          serverConfig?.payment?.mercadoPago?.publicKey ||
+          import.meta.env?.VITE_MERCADOPAGO_PUBLIC_KEY ||
+          '',
+      },
     },
 
     // Media
     media: {
       cloudinary: {
         enabled: serverConfig?.media?.cloudinary?.enabled ?? false,
-        cloudName: serverConfig?.media?.cloudinary?.cloudName || import.meta.env?.VITE_CLOUDINARY_CLOUD_NAME || '',
-        uploadPreset: serverConfig?.media?.cloudinary?.uploadPreset || import.meta.env?.VITE_CLOUDINARY_UPLOAD_PRESET || ''
+        cloudName:
+          serverConfig?.media?.cloudinary?.cloudName ||
+          import.meta.env?.VITE_CLOUDINARY_CLOUD_NAME ||
+          '',
+        uploadPreset:
+          serverConfig?.media?.cloudinary?.uploadPreset ||
+          import.meta.env?.VITE_CLOUDINARY_UPLOAD_PRESET ||
+          '',
       },
       maxUploadSize: serverConfig?.media?.maxUploadSize || 10485760, // 10MB
-      allowedFormats: serverConfig?.media?.allowedFormats || ['jpg', 'jpeg', 'png', 'webp', 'gif', 'svg']
+      allowedFormats: serverConfig?.media?.allowedFormats || [
+        'jpg',
+        'jpeg',
+        'png',
+        'webp',
+        'gif',
+        'svg',
+      ],
     },
 
     // Search
@@ -397,49 +432,56 @@ export async function createRuntimeConfig(): Promise<RuntimeConfig> {
       algolia: {
         enabled: serverConfig?.search?.algolia?.enabled ?? false,
         appId: serverConfig?.search?.algolia?.appId || import.meta.env?.VITE_ALGOLIA_APP_ID || '',
-        searchKey: serverConfig?.search?.algolia?.searchKey || import.meta.env?.VITE_ALGOLIA_SEARCH_KEY || ''
-      }
+        searchKey:
+          serverConfig?.search?.algolia?.searchKey ||
+          import.meta.env?.VITE_ALGOLIA_SEARCH_KEY ||
+          '',
+      },
     },
 
     // Analytics
     analytics: {
       googleAnalytics: {
-        enabled: serverConfig?.analytics?.googleAnalytics?.enabled ?? (environment === 'production'),
-        measurementId: serverConfig?.analytics?.googleAnalytics?.measurementId || import.meta.env?.VITE_GA_MEASUREMENT_ID || ''
+        enabled: serverConfig?.analytics?.googleAnalytics?.enabled ?? environment === 'production',
+        measurementId:
+          serverConfig?.analytics?.googleAnalytics?.measurementId ||
+          import.meta.env?.VITE_GA_MEASUREMENT_ID ||
+          '',
       },
       hotjar: {
         enabled: serverConfig?.analytics?.hotjar?.enabled ?? false,
-        siteId: serverConfig?.analytics?.hotjar?.siteId || import.meta.env?.VITE_HOTJAR_SITE_ID || ''
-      }
+        siteId:
+          serverConfig?.analytics?.hotjar?.siteId || import.meta.env?.VITE_HOTJAR_SITE_ID || '',
+      },
     },
 
     // Tenant
     tenant: {
       id: serverConfig?.tenant?.id || import.meta.env?.VITE_TENANT_ID || 'default',
       name: serverConfig?.tenant?.name || 'MagicSaaS',
-      customDomain: serverConfig?.tenant?.customDomain || null
-    }
-  }
+      customDomain: serverConfig?.tenant?.customDomain || null,
+    },
+  };
 
-  return config
+  return config;
 }
 
 /**
  * Runtime Config Singleton
  */
-let _runtimeConfig: RuntimeConfig | null = null
+let _runtimeConfig: RuntimeConfig | null = null;
 
 export async function getRuntimeConfig(): Promise<RuntimeConfig> {
   if (!_runtimeConfig) {
-    _runtimeConfig = await createRuntimeConfig()
+    _runtimeConfig = await createRuntimeConfig();
 
     // Log config in development
     if (_runtimeConfig.isDevelopment) {
-      console.log('🌸 MagicSaaS Runtime Configuration:', _runtimeConfig)
+      console.log('🌸 MagicSaaS Runtime Configuration:', _runtimeConfig);
     }
   }
 
-  return _runtimeConfig
+  return _runtimeConfig;
 }
 
 /**
@@ -447,16 +489,16 @@ export async function getRuntimeConfig(): Promise<RuntimeConfig> {
  */
 export function getRuntimeConfigSync(): RuntimeConfig {
   if (!_runtimeConfig) {
-    throw new Error('Runtime config not initialized. Call getRuntimeConfig() first.')
+    throw new Error('Runtime config not initialized. Call getRuntimeConfig() first.');
   }
-  return _runtimeConfig
+  return _runtimeConfig;
 }
 
 /**
  * Reset config (useful for testing)
  */
 export function resetRuntimeConfig(): void {
-  _runtimeConfig = null
+  _runtimeConfig = null;
 }
 
-export default getRuntimeConfig
+export default getRuntimeConfig;

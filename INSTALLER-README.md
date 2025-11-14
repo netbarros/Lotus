@@ -4,9 +4,12 @@
 
 ## 📋 Overview
 
-The **Ultimate Installer** is an autonomous, intelligent installation system powered by Sofia AI v4.0 that deploys the complete MagicSaaS ecosystem including:
+The **Ultimate Installer** is an autonomous, intelligent installation system
+powered by Sofia AI v4.0 that deploys the complete MagicSaaS ecosystem
+including:
 
 ### 🧠 Core AI & Intelligence
+
 - **Sofia AI v4.0** - The Brain (LangChain + Langfuse + Qdrant)
 - **LangChain** - Advanced AI orchestration
 - **Langfuse** - ML observability and tracing
@@ -14,23 +17,27 @@ The **Ultimate Installer** is an autonomous, intelligent installation system pow
 - **pgVector** - PostgreSQL vector extension
 
 ### 🎯 Central Hub & CMS
+
 - **Directus 11+** - Headless CMS and API platform
 - 30+ Collections auto-created
 - Custom extensions and flows
 - GraphQL + REST APIs
 
 ### 💬 Communication & Customer Support
+
 - **Evolution API + Baileys** - WhatsApp Business integration
 - **Chatwoot** - Multi-channel CRM and customer support
 - **MailHog** - Email testing (development)
 
 ### 📊 Observability & Monitoring
+
 - **Prometheus** - Metrics collection
 - **Grafana** - Dashboards and visualization
 - **Jaeger** - Distributed tracing
 - **OpenTelemetry** - Unified observability
 
 ### 💾 Data & Storage
+
 - **PostgreSQL 17** - Primary database
   - pgVector extension for embeddings
   - TimescaleDB for time-series data
@@ -38,11 +45,13 @@ The **Ultimate Installer** is an autonomous, intelligent installation system pow
 - **MinIO** - S3-compatible object storage
 
 ### ⚙️ Automation & Workflows
+
 - **Inngest** - Serverless workflow engine
 - Event-driven architecture
 - Background job processing
 
 ### 🎨 Frontend & UX
+
 - **Metronic 9** - Premium admin template
 - 50+ pre-built demos
 - 200+ layouts
@@ -54,9 +63,11 @@ The **Ultimate Installer** is an autonomous, intelligent installation system pow
 ## 🎯 Installation Modes
 
 ### Full Mode (Recommended for Production)
+
 ```bash
 ./install-magicsaas-ultimate-v4.sh --mode full
 ```
+
 - All services and features
 - Complete monitoring stack
 - All 13 Pétalas + 50 Micro-Pétalas
@@ -65,15 +76,18 @@ The **Ultimate Installer** is an autonomous, intelligent installation system pow
 - WhatsApp integration (Evolution API)
 
 **Requirements:**
+
 - 16GB RAM minimum
 - 100GB disk space
 - Docker 24+
 - Docker Compose v2
 
 ### Minimal Mode (Development & Testing)
+
 ```bash
 ./install-magicsaas-ultimate-v4.sh --mode minimal
 ```
+
 - Core services only
 - Sofia AI v4.0
 - Directus 11+
@@ -81,13 +95,16 @@ The **Ultimate Installer** is an autonomous, intelligent installation system pow
 - Basic monitoring
 
 **Requirements:**
+
 - 8GB RAM
 - 50GB disk space
 
 ### Dev Mode (Active Development)
+
 ```bash
 ./install-magicsaas-ultimate-v4.sh --mode dev
 ```
+
 - Hot-reload enabled
 - Debug tools
 - All development utilities
@@ -100,6 +117,7 @@ The **Ultimate Installer** is an autonomous, intelligent installation system pow
 ### Prerequisites
 
 1. **Docker & Docker Compose**
+
    ```bash
    # Ubuntu/Debian
    sudo apt-get update
@@ -119,12 +137,14 @@ The **Ultimate Installer** is an autonomous, intelligent installation system pow
 ### Installation Steps
 
 1. **Clone the repository**
+
    ```bash
    git clone https://github.com/netbarros/Lotus.git
    cd Lotus
    ```
 
 2. **Run the installer**
+
    ```bash
    chmod +x install-magicsaas-ultimate-v4.sh
    ./install-magicsaas-ultimate-v4.sh
@@ -146,20 +166,20 @@ The **Ultimate Installer** is an autonomous, intelligent installation system pow
 
 ## 📍 Service Access Points
 
-| Service | URL | Credentials | Purpose |
-|---------|-----|-------------|---------|
-| **Sofia AI v4.0** | http://localhost:3003 | - | AI Brain & Orchestrator |
-| **Directus 11+** | http://localhost:8055 | Check .env | CMS & API Hub |
-| **Evolution API** | http://localhost:8080 | Check .env | WhatsApp Integration |
-| **Chatwoot** | http://localhost:3000 | Setup required | CRM & Support |
-| **Langfuse** | http://localhost:3030 | Auto-setup | ML Observability |
-| **Qdrant** | http://localhost:6333 | - | Vector Database |
-| **Grafana** | http://localhost:3002 | admin/admin | Monitoring Dashboards |
-| **Prometheus** | http://localhost:9090 | - | Metrics Database |
-| **Jaeger** | http://localhost:16686 | - | Distributed Tracing |
-| **MinIO Console** | http://localhost:9001 | Check .env | S3 Storage |
-| **MailHog** | http://localhost:8025 | - | Email Testing |
-| **Inngest** | http://localhost:8288 | - | Workflow Engine |
+| Service           | URL                    | Credentials    | Purpose                 |
+| ----------------- | ---------------------- | -------------- | ----------------------- |
+| **Sofia AI v4.0** | http://localhost:3003  | -              | AI Brain & Orchestrator |
+| **Directus 11+**  | http://localhost:8055  | Check .env     | CMS & API Hub           |
+| **Evolution API** | http://localhost:8080  | Check .env     | WhatsApp Integration    |
+| **Chatwoot**      | http://localhost:3000  | Setup required | CRM & Support           |
+| **Langfuse**      | http://localhost:3030  | Auto-setup     | ML Observability        |
+| **Qdrant**        | http://localhost:6333  | -              | Vector Database         |
+| **Grafana**       | http://localhost:3002  | admin/admin    | Monitoring Dashboards   |
+| **Prometheus**    | http://localhost:9090  | -              | Metrics Database        |
+| **Jaeger**        | http://localhost:16686 | -              | Distributed Tracing     |
+| **MinIO Console** | http://localhost:9001  | Check .env     | S3 Storage              |
+| **MailHog**       | http://localhost:8025  | -              | Email Testing           |
+| **Inngest**       | http://localhost:8288  | -              | Workflow Engine         |
 
 ---
 
@@ -238,16 +258,19 @@ All pre-configured and ready to deploy:
 ### Environment Variables
 
 The installer generates a complete `.env` file with:
+
 - Secure random keys (64+ characters)
 - Database credentials
 - API keys and tokens
 - Service configurations
 
-**⚠️ Important:** Keep your `.env` file secure! It contains sensitive credentials.
+**⚠️ Important:** Keep your `.env` file secure! It contains sensitive
+credentials.
 
 ### Customization
 
 Edit `.env` to customize:
+
 - Service ports
 - Resource limits
 - Feature flags

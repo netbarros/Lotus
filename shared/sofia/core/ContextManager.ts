@@ -4,33 +4,33 @@
  */
 
 export class ContextManager {
-  private context: Record<string, any> = {}
+  private context: Record<string, any> = {};
 
   update(newContext: Record<string, any>): void {
     this.context = {
       ...this.context,
       ...newContext,
-      updated_at: new Date()
-    }
+      updated_at: new Date(),
+    };
   }
 
   get(): Record<string, any> {
-    return this.context
+    return this.context;
   }
 
   set(key: string, value: any): void {
-    this.context[key] = value
+    this.context[key] = value;
   }
 
   remove(key: string): void {
-    delete this.context[key]
+    delete this.context[key];
   }
 
   clear(): void {
-    this.context = {}
+    this.context = {};
   }
 
   has(key: string): boolean {
-    return key in this.context
+    return key in this.context;
   }
 }

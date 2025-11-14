@@ -127,11 +127,7 @@ describe('MarketingIntelligence_v4', () => {
     it('should cache campaign data', async () => {
       mockRedis.setex.mockResolvedValueOnce('OK');
       await mockRedis.setex('campaign:test-id', 3600, JSON.stringify({ id: 'test-id' }));
-      expect(mockRedis.setex).toHaveBeenCalledWith(
-        'campaign:test-id',
-        3600,
-        expect.any(String)
-      );
+      expect(mockRedis.setex).toHaveBeenCalledWith('campaign:test-id', 3600, expect.any(String));
     });
   });
 
@@ -191,7 +187,7 @@ describe('MarketingIntelligence_v4', () => {
       mockLangChain.processIntention.mockResolvedValueOnce({
         title: 'How to Choose an EHR System for Your Clinic',
         content: 'Complete blog post content here...',
-        confidence: 0.90,
+        confidence: 0.9,
       });
 
       const content = {
@@ -210,7 +206,7 @@ describe('MarketingIntelligence_v4', () => {
       const keywords = ['EHR', 'healthcare', 'clinic'];
 
       let seoScore = 50; // Base score
-      keywords.forEach(keyword => {
+      keywords.forEach((keyword) => {
         const regex = new RegExp(keyword, 'gi');
         const matches = content.match(regex);
         if (matches) seoScore += matches.length * 2;

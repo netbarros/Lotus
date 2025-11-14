@@ -8,7 +8,10 @@ describe('Telemedicine Endpoint', () => {
   let authToken: string;
 
   beforeAll(async () => {
-    const response = await api.post('/auth/login', { email: 'doctor@example.com', password: 'password' });
+    const response = await api.post('/auth/login', {
+      email: 'doctor@example.com',
+      password: 'password',
+    });
     authToken = response.data.data.access_token;
     api.defaults.headers.common['Authorization'] = `Bearer ${authToken}`;
   });

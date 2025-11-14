@@ -17,9 +17,7 @@ export function Header({ onMenuToggle }: HeaderProps) {
   const { health } = useSofiaHealth();
 
   const sofiaStatusColor =
-    health?.status === 'healthy' ? 'success' :
-    health?.status === 'degraded' ? 'warning' :
-    'danger';
+    health?.status === 'healthy' ? 'success' : health?.status === 'degraded' ? 'warning' : 'danger';
 
   return (
     <div id="kt_app_header" className="app-header">

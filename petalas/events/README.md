@@ -1,14 +1,13 @@
 # 🎫 Pétala Events
 
-**Version:** 1.0.0
-**Status:** ✅ Production-Ready
-**Category:** events
+**Version:** 1.0.0 **Status:** ✅ Production-Ready **Category:** events
 
 ---
 
 ## 📋 Overview
 
-Complete event management platform with ticketing, QR check-in, seat maps, and live streaming
+Complete event management platform with ticketing, QR check-in, seat maps, and
+live streaming
 
 ### Key Features
 
@@ -40,12 +39,14 @@ npm run dev
 ## 💰 Pricing
 
 ### Starter - $79/month
+
 - Up to 500 tickets/event
 - QR check-in
 - Basic reporting
 - Email support
 
 ### Professional - $149/month
+
 - Unlimited tickets
 - Seat maps
 - Live streaming
@@ -53,6 +54,7 @@ npm run dev
 - Priority support
 
 ### Enterprise - $399/month
+
 - Everything in Professional
 - White-label
 - API access
@@ -61,5 +63,4 @@ npm run dev
 
 ---
 
-**Built with ❤️ by Software Lotus**
-**Powered by MagicSaaS System-∞ & Sofia AI**
+**Built with ❤️ by Software Lotus** **Powered by MagicSaaS System-∞ & Sofia AI**

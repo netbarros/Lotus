@@ -174,13 +174,7 @@
       "position_y": 53,
       "options": {
         "collection": "subscriptions",
-        "fields": [
-          "created_at",
-          "amount",
-          "tier",
-          "status",
-          "user_id.email"
-        ],
+        "fields": ["created_at", "amount", "tier", "status", "user_id.email"],
         "filter": {
           "status": {
             "_eq": "active"

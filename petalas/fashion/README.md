@@ -1,15 +1,17 @@
 # 👗 Pétala Fashion - Complete E-commerce Solution
 
-**Version:** 1.0.0
-**Status:** ✅ Production-Ready
-**Category:** E-commerce
+**Version:** 1.0.0 **Status:** ✅ Production-Ready **Category:** E-commerce
 **License:** Proprietary
 
 ---
 
 ## 📋 Overview
 
-**Pétala Fashion** is a complete, production-ready e-commerce solution designed specifically for fashion brands, online boutiques, and clothing marketplaces. Built on the MagicSaaS System-∞ Cognitive Mesh OS, it provides state-of-the-art features including AR virtual try-on, real-time inventory management, omnichannel sales, and AI-powered recommendations.
+**Pétala Fashion** is a complete, production-ready e-commerce solution designed
+specifically for fashion brands, online boutiques, and clothing marketplaces.
+Built on the MagicSaaS System-∞ Cognitive Mesh OS, it provides state-of-the-art
+features including AR virtual try-on, real-time inventory management,
+omnichannel sales, and AI-powered recommendations.
 
 ### 🎯 Target Audience
 
@@ -22,18 +24,24 @@
 
 ### ⭐ Key Features
 
-1. ✅ **Sofia AI Assistant** - Conversational shopping with natural language search, personalized recommendations, and voice commands ([See Integration Guide](./SOFIA-INTEGRATION.md))
-2. ✅ **Product Catalog** - Collections, categories, tags, variants (size, color, material)
+1. ✅ **Sofia AI Assistant** - Conversational shopping with natural language
+   search, personalized recommendations, and voice commands
+   ([See Integration Guide](./SOFIA-INTEGRATION.md))
+2. ✅ **Product Catalog** - Collections, categories, tags, variants (size,
+   color, material)
 3. ✅ **AR Try-On** - Augmented reality virtual try-on powered by 8th Wall
 4. ✅ **Advanced Filters** - Size, color, price, brand, season, style
-5. ✅ **AI-Powered Recommendations** - Personalized product suggestions based on browsing behavior
-6. ✅ **Natural Language Search** - "Show me red dresses under $100" - Sofia understands
+5. ✅ **AI-Powered Recommendations** - Personalized product suggestions based on
+   browsing behavior
+6. ✅ **Natural Language Search** - "Show me red dresses under $100" - Sofia
+   understands
 7. ✅ **Size Guide** - Dynamic size recommendations per product
 8. ✅ **Lookbook** - Curated seasonal collections
 9. ✅ **Shopping Cart** - Persistent cart with saved items
 10. ✅ **Multi-Step Checkout** - Optimized conversion flow with guest checkout
 11. ✅ **Payment Gateway** - Stripe, Mercado Pago, PIX
-12. ✅ **Order Tracking** - Real-time status updates with carrier integration (Sofia-assisted)
+12. ✅ **Order Tracking** - Real-time status updates with carrier integration
+    (Sofia-assisted)
 13. ✅ **Customer Accounts** - Profiles, order history, addresses
 14. ✅ **Wishlist** - Save for later
 15. ✅ **Product Reviews** - Star ratings with photos
@@ -58,23 +66,24 @@
 
 Pétala Fashion integrates with **all 11 layers** of the Cognitive Mesh OS:
 
-| Layer | Components | Integration |
-|-------|------------|-------------|
-| **01 - Infrastructure** | Metronic 9, PostgreSQL 17, Redis 8 | ✅ Complete |
-| **02 - Data Foundation** | 9 Directus collections, Prisma ORM | ✅ Complete |
-| **03 - Integration Hub** | 15 API endpoints, GraphQL, WebSockets | ✅ Complete |
-| **04 - API Gateway** | Rate limiting, routing, CORS | ✅ Complete |
-| **05 - Authentication** | JWT, RBAC, RLS, OAuth 2.0 | ✅ Complete |
-| **06 - Business Logic** | 8 hooks, 5 flows, validation | ✅ Complete |
-| **07 - Event Sourcing** | 12 event types, TimescaleDB audit | ✅ Complete |
-| **08 - Analytics** | 12 Prometheus metrics, Grafana dashboard | ✅ Complete |
-| **09 - AI/ML Services** | Recommendations, semantic search, AR | ✅ Complete |
-| **10 - Intelligence Synthesis** | SolutionArchitect, UXValidator, SEO | ✅ Complete |
-| **11 - Meta-Orchestration** | Auto-scaling, health monitoring, cost optimization | ✅ Complete |
+| Layer                           | Components                                         | Integration |
+| ------------------------------- | -------------------------------------------------- | ----------- |
+| **01 - Infrastructure**         | Metronic 9, PostgreSQL 17, Redis 8                 | ✅ Complete |
+| **02 - Data Foundation**        | 9 Directus collections, Prisma ORM                 | ✅ Complete |
+| **03 - Integration Hub**        | 15 API endpoints, GraphQL, WebSockets              | ✅ Complete |
+| **04 - API Gateway**            | Rate limiting, routing, CORS                       | ✅ Complete |
+| **05 - Authentication**         | JWT, RBAC, RLS, OAuth 2.0                          | ✅ Complete |
+| **06 - Business Logic**         | 8 hooks, 5 flows, validation                       | ✅ Complete |
+| **07 - Event Sourcing**         | 12 event types, TimescaleDB audit                  | ✅ Complete |
+| **08 - Analytics**              | 12 Prometheus metrics, Grafana dashboard           | ✅ Complete |
+| **09 - AI/ML Services**         | Recommendations, semantic search, AR               | ✅ Complete |
+| **10 - Intelligence Synthesis** | SolutionArchitect, UXValidator, SEO                | ✅ Complete |
+| **11 - Meta-Orchestration**     | Auto-scaling, health monitoring, cost optimization | ✅ Complete |
 
 ### Tech Stack
 
 **Frontend:**
+
 - Vue 3 + Vite + Metronic 9 (demo1 - E-commerce)
 - Pinia (state management)
 - Vue Router 4 (routing)
@@ -84,6 +93,7 @@ Pétala Fashion integrates with **all 11 layers** of the Cognitive Mesh OS:
 - vee-validate + zod (form validation)
 
 **Backend:**
+
 - Directus 10 (headless CMS)
 - PostgreSQL 17 + pgVector (database)
 - Redis 8 (cache, sessions, rate limiting)
@@ -91,6 +101,7 @@ Pétala Fashion integrates with **all 11 layers** of the Cognitive Mesh OS:
 - Node.js 20 (runtime)
 
 **Integrations:**
+
 - **Payment:** Stripe, Mercado Pago, PIX
 - **Media:** Cloudinary (CDN, image optimization)
 - **Search:** Algolia (instant search)
@@ -173,7 +184,8 @@ pnpm dev
 
 ### Production Deployment
 
-See [docs/deployment/installation.md](docs/deployment/installation.md) for VPS and AWS EKS deployment guides.
+See [docs/deployment/installation.md](docs/deployment/installation.md) for VPS
+and AWS EKS deployment guides.
 
 ---
 
@@ -182,6 +194,7 @@ See [docs/deployment/installation.md](docs/deployment/installation.md) for VPS a
 Pétala Fashion leverages **Metronic 9 demo1** (E-commerce template):
 
 **Layouts:**
+
 - `layout-ecommerce-dashboard` - Admin dashboard
 - `layout-product-catalog` - Customer-facing product listing
 - `layout-product-detail` - Product detail page
@@ -190,6 +203,7 @@ Pétala Fashion leverages **Metronic 9 demo1** (E-commerce template):
 - `layout-order-tracking` - Order status page
 
 **Components:**
+
 - `kt-card-product` - Product cards (grid/list)
 - `kt-table-orders` - Orders data table
 - `kt-form-checkout` - Checkout form
@@ -218,25 +232,26 @@ See [backend/collections/](backend/collections/) for full YAML definitions.
 
 ## 🔌 API Endpoints (15)
 
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/api/petalas/fashion/products` | GET | List products (paginated, filtered) |
-| `/api/petalas/fashion/products/:id` | GET | Get product detail |
-| `/api/petalas/fashion/cart/add` | POST | Add item to cart |
-| `/api/petalas/fashion/cart` | GET | Get cart contents |
-| `/api/petalas/fashion/cart/:id` | DELETE | Remove from cart |
-| `/api/petalas/fashion/checkout` | POST | Create order |
-| `/api/petalas/fashion/payment` | POST | Process payment (Stripe/Mercado Pago/PIX) |
-| `/api/petalas/fashion/orders/:id` | GET | Track order status |
-| `/api/petalas/fashion/reviews` | POST | Submit product review |
-| `/api/petalas/fashion/recommendations` | GET | AI-powered product recommendations |
-| `/api/petalas/fashion/ar/try-on` | POST | Start AR try-on session |
-| `/api/petalas/fashion/shipping/calculate` | POST | Calculate shipping rates |
-| `/api/petalas/fashion/coupons/validate` | POST | Validate discount coupon |
-| `/api/petalas/fashion/analytics/dashboard` | GET | Dashboard metrics |
-| `/api/petalas/fashion/instagram/sync` | POST | Sync Instagram products |
+| Endpoint                                   | Method | Description                               |
+| ------------------------------------------ | ------ | ----------------------------------------- |
+| `/api/petalas/fashion/products`            | GET    | List products (paginated, filtered)       |
+| `/api/petalas/fashion/products/:id`        | GET    | Get product detail                        |
+| `/api/petalas/fashion/cart/add`            | POST   | Add item to cart                          |
+| `/api/petalas/fashion/cart`                | GET    | Get cart contents                         |
+| `/api/petalas/fashion/cart/:id`            | DELETE | Remove from cart                          |
+| `/api/petalas/fashion/checkout`            | POST   | Create order                              |
+| `/api/petalas/fashion/payment`             | POST   | Process payment (Stripe/Mercado Pago/PIX) |
+| `/api/petalas/fashion/orders/:id`          | GET    | Track order status                        |
+| `/api/petalas/fashion/reviews`             | POST   | Submit product review                     |
+| `/api/petalas/fashion/recommendations`     | GET    | AI-powered product recommendations        |
+| `/api/petalas/fashion/ar/try-on`           | POST   | Start AR try-on session                   |
+| `/api/petalas/fashion/shipping/calculate`  | POST   | Calculate shipping rates                  |
+| `/api/petalas/fashion/coupons/validate`    | POST   | Validate discount coupon                  |
+| `/api/petalas/fashion/analytics/dashboard` | GET    | Dashboard metrics                         |
+| `/api/petalas/fashion/instagram/sync`      | POST   | Sync Instagram products                   |
 
-See [docs/api/endpoints.md](docs/api/endpoints.md) for full OpenAPI specification.
+See [docs/api/endpoints.md](docs/api/endpoints.md) for full OpenAPI
+specification.
 
 ---
 
@@ -253,7 +268,8 @@ See [docs/api/endpoints.md](docs/api/endpoints.md) for full OpenAPI specificatio
 - `petala_fashion_inventory_low{tenant_id, product_id}` - Low stock alerts
 - `petala_fashion_ar_sessions_total{tenant_id}` - AR try-on sessions
 - `petala_fashion_reviews_total{tenant_id, rating}` - Reviews by rating
-- `petala_fashion_shipping_calculation_duration_seconds{carrier, percentile}` - Shipping API latency
+- `petala_fashion_shipping_calculation_duration_seconds{carrier, percentile}` -
+  Shipping API latency
 - `petala_fashion_api_requests_total{endpoint, method, status}` - API requests
 - `petala_fashion_active_users{tenant_id, plan}` - Active users by plan
 
@@ -262,6 +278,7 @@ See [docs/api/endpoints.md](docs/api/endpoints.md) for full OpenAPI specificatio
 **File:** `infrastructure/monitoring/05-petala-fashion.json`
 
 **16 Panels:**
+
 - Revenue (MRR, daily sales, growth rate)
 - Orders (total, by status, timeline, avg value)
 - Products (top sellers, low inventory, new arrivals)
@@ -280,6 +297,7 @@ See [docs/api/endpoints.md](docs/api/endpoints.md) for full OpenAPI specificatio
 ### Test Coverage: 80%+
 
 **Unit Tests:** 15 tests
+
 - `tests/unit/services/product.service.test.ts`
 - `tests/unit/services/cart.service.test.ts`
 - `tests/unit/utils/price.test.ts`
@@ -287,17 +305,20 @@ See [docs/api/endpoints.md](docs/api/endpoints.md) for full OpenAPI specificatio
 - `tests/unit/composables/useCart.test.ts`
 
 **Integration Tests:** 12 tests
+
 - `tests/integration/api/products.test.ts`
 - `tests/integration/api/checkout.test.ts`
 - `tests/integration/flows/order-processing.test.ts`
 - `tests/integration/flows/abandoned-cart.test.ts`
 
 **E2E Tests:** 10 tests (Playwright)
+
 - `tests/e2e/checkout-flow.spec.ts` - Full checkout journey
 - `tests/e2e/ar-try-on.spec.ts` - AR try-on feature
 - `tests/e2e/admin-panel.spec.ts` - Directus admin workflows
 
 **Load Tests:** 5 scenarios (K6)
+
 - `tests/load/smoke.js` - 1 user, 1 minute
 - `tests/load/load.js` - 100 users, 10 minutes
 - `tests/load/stress.js` - 500 users, 20 minutes
@@ -305,6 +326,7 @@ See [docs/api/endpoints.md](docs/api/endpoints.md) for full OpenAPI specificatio
 - `tests/load/soak.js` - 50 users, 2 hours (memory leak detection)
 
 **Run Tests:**
+
 ```bash
 # Unit + Integration
 pnpm test
@@ -325,16 +347,14 @@ pnpm test:coverage
 
 ### VPS (Development)
 
-**Provider:** Hostinger
-**Plan:** KVM8
-**Specs:**
+**Provider:** Hostinger **Plan:** KVM8 **Specs:**
+
 - 32GB RAM
 - 8 vCPUs
 - 400GB NVMe SSD
 - 32TB bandwidth
-- Dedicated IPv4
-**OS:** Ubuntu 22.04 LTS
-**Domain:** `dev-{tenant}.softwarelotus.com.br`
+- Dedicated IPv4 **OS:** Ubuntu 22.04 LTS **Domain:**
+  `dev-{tenant}.softwarelotus.com.br`
 
 ```bash
 # Deploy to Hostinger VPS
@@ -343,11 +363,9 @@ bash infrastructure/scripts/deploy-vps.sh
 
 ### AWS EKS (Production)
 
-**Regions:** us-east-1 (primary), sa-east-1 (Brazil)
-**Nodes:** 3-15 (auto-scaling based on CPU/requests)
-**Database:** RDS PostgreSQL 17 (Multi-AZ)
-**Cache:** ElastiCache Redis 8
-**Storage:** S3 (media) + CloudFront CDN
+**Regions:** us-east-1 (primary), sa-east-1 (Brazil) **Nodes:** 3-15
+(auto-scaling based on CPU/requests) **Database:** RDS PostgreSQL 17 (Multi-AZ)
+**Cache:** ElastiCache Redis 8 **Storage:** S3 (media) + CloudFront CDN
 **Domain:** `{tenant}.softwarelotus.com.br` or custom
 
 ```bash
@@ -355,17 +373,18 @@ bash infrastructure/scripts/deploy-vps.sh
 bash infrastructure/scripts/deploy-aws.sh
 ```
 
-See [docs/deployment/installation.md](docs/deployment/installation.md) for detailed deployment guides.
+See [docs/deployment/installation.md](docs/deployment/installation.md) for
+detailed deployment guides.
 
 ---
 
 ## 💰 Pricing
 
-| Plan | Price | Products | Storage | Orders/Month | Features |
-|------|-------|----------|---------|--------------|----------|
-| **Starter** | $79/mo | 100 | 2GB | 1,000 | Basic e-commerce, payment processing |
-| **Professional** | $149/mo | 1,000 | 10GB | 10,000 | + AR try-on, loyalty, Instagram, analytics |
-| **Enterprise** | $399/mo | Unlimited | 100GB | Unlimited | + Multi-store, white-label, priority support, SLA |
+| Plan             | Price   | Products  | Storage | Orders/Month | Features                                          |
+| ---------------- | ------- | --------- | ------- | ------------ | ------------------------------------------------- |
+| **Starter**      | $79/mo  | 100       | 2GB     | 1,000        | Basic e-commerce, payment processing              |
+| **Professional** | $149/mo | 1,000     | 10GB    | 10,000       | + AR try-on, loyalty, Instagram, analytics        |
+| **Enterprise**   | $399/mo | Unlimited | 100GB   | Unlimited    | + Multi-store, white-label, priority support, SLA |
 
 ---
 
@@ -411,23 +430,21 @@ See [docs/deployment/installation.md](docs/deployment/installation.md) for detai
 
 Proprietary - Copyright © 2025 Software Lotus. All rights reserved.
 
-This software is part of the MagicSaaS System-∞ ecosystem and is licensed for use only by authorized customers. Unauthorized use, distribution, or modification is prohibited.
+This software is part of the MagicSaaS System-∞ ecosystem and is licensed for
+use only by authorized customers. Unauthorized use, distribution, or
+modification is prohibited.
 
 ---
 
 ## 🏆 Production-Ready Certification
 
-✅ **Status:** Production-Ready
-✅ **Code Coverage:** 80%+
-✅ **Performance:** Lighthouse 90+, Core Web Vitals pass
-✅ **Security:** All OWASP Top 10 mitigated
-✅ **Compliance:** GDPR, LGPD, PCI DSS, WCAG 2.1 AA
-✅ **Observability:** Metrics, dashboards, alerts, tracing
-✅ **Documentation:** Complete technical + user docs
-✅ **Testing:** Unit, integration, E2E, load tests pass
+✅ **Status:** Production-Ready ✅ **Code Coverage:** 80%+ ✅ **Performance:**
+Lighthouse 90+, Core Web Vitals pass ✅ **Security:** All OWASP Top 10 mitigated
+✅ **Compliance:** GDPR, LGPD, PCI DSS, WCAG 2.1 AA ✅ **Observability:**
+Metrics, dashboards, alerts, tracing ✅ **Documentation:** Complete technical +
+user docs ✅ **Testing:** Unit, integration, E2E, load tests pass
 
-**Certified by:** Sofia Lotus AI v3.0 + Claude Sonnet 4.5
-**Date:** 2025-11-06
+**Certified by:** Sofia Lotus AI v3.0 + Claude Sonnet 4.5 **Date:** 2025-11-06
 **Version:** 1.0.0
 
 ---

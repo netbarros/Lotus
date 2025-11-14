@@ -82,68 +82,68 @@ export interface TemplateLayout {
 
 const METRONIC_COMPONENTS = {
   // Cards
-  'KTCard': {
+  KTCard: {
     category: 'layout',
     description: 'Base card component',
     defaultProps: { className: 'card shadow-sm' },
   },
-  'KTCardHeader': {
+  KTCardHeader: {
     category: 'layout',
     description: 'Card header with title',
     defaultProps: { className: 'card-header border-0 pt-5' },
   },
-  'KTCardBody': {
+  KTCardBody: {
     category: 'layout',
     description: 'Card body content',
     defaultProps: { className: 'card-body py-3' },
   },
 
   // Tables
-  'KTTable': {
+  KTTable: {
     category: 'data',
     description: 'Advanced data table',
     defaultProps: { className: 'table align-middle table-row-dashed fs-6 gy-5' },
   },
-  'KTTableAdvanced': {
+  KTTableAdvanced: {
     category: 'data',
     description: 'Table with sorting, filtering, pagination',
     defaultProps: { striped: true, hover: true },
   },
 
   // Charts
-  'ApexChart': {
+  ApexChart: {
     category: 'visualization',
     description: 'ApexCharts integration',
     defaultProps: { type: 'line', height: 350 },
   },
 
   // Forms
-  'KTForm': {
+  KTForm: {
     category: 'input',
     description: 'Metronic form wrapper',
     defaultProps: { className: 'form w-100' },
   },
-  'KTInput': {
+  KTInput: {
     category: 'input',
     description: 'Styled input field',
     defaultProps: { className: 'form-control form-control-solid' },
   },
 
   // Widgets
-  'StatisticsWidget': {
+  StatisticsWidget: {
     category: 'widget',
     description: 'Statistics display widget',
     defaultProps: { theme: 'primary' },
   },
-  'ChartWidget': {
+  ChartWidget: {
     category: 'widget',
     description: 'Chart display widget',
     defaultProps: { chartHeight: 200 },
   },
-  'TimelineWidget': {
+  TimelineWidget: {
     category: 'widget',
     description: 'Activity timeline',
-    defaultProps: { },
+    defaultProps: {},
   },
 };
 
@@ -194,17 +194,9 @@ class SofiaLayoutEngine {
         'tenant-overview'
       );
     } else if (context.userRole === 'manager') {
-      analysis.recommendedComponents.push(
-        'team-performance',
-        'task-overview',
-        'reports-summary'
-      );
+      analysis.recommendedComponents.push('team-performance', 'task-overview', 'reports-summary');
     } else {
-      analysis.recommendedComponents.push(
-        'my-tasks',
-        'recent-activity',
-        'notifications'
-      );
+      analysis.recommendedComponents.push('my-tasks', 'recent-activity', 'notifications');
     }
 
     // Industry-specific components
@@ -234,7 +226,9 @@ class SofiaLayoutEngine {
   /**
    * Assess user expertise level
    */
-  private static assessUserExpertise(context: TemplateContext): 'beginner' | 'intermediate' | 'expert' {
+  private static assessUserExpertise(
+    context: TemplateContext
+  ): 'beginner' | 'intermediate' | 'expert' {
     // In production: Use Sofia AI to analyze user behavior history
     // For now: Based on role
     if (context.userRole === 'admin' || context.userRole === 'superadmin') {
@@ -369,7 +363,10 @@ class SofiaLayoutEngine {
   /**
    * Generate component props
    */
-  private static getComponentProps(compType: string, context: TemplateContext): Record<string, any> {
+  private static getComponentProps(
+    compType: string,
+    context: TemplateContext
+  ): Record<string, any> {
     // Default props based on component type
     const props: Record<string, any> = {
       title: this.humanizeString(compType),
@@ -399,8 +396,8 @@ class SofiaLayoutEngine {
     context: TemplateContext
   ): Promise<TemplateLayout> {
     // Calculate optimal grid size
-    const maxCol = Math.max(...components.map(c => c.position.col + c.position.width));
-    const maxRow = Math.max(...components.map(c => c.position.row)) + 1;
+    const maxCol = Math.max(...components.map((c) => c.position.col + c.position.width));
+    const maxRow = Math.max(...components.map((c) => c.position.row)) + 1;
 
     return {
       id: `layout-${Date.now()}`,
@@ -414,13 +411,13 @@ class SofiaLayoutEngine {
       },
       responsive: {
         mobile: {
-          components: components.map(c => ({
+          components: components.map((c) => ({
             ...c,
             position: { ...c.position, width: 12 },
           })),
         },
         tablet: {
-          components: components.map(c => ({
+          components: components.map((c) => ({
             ...c,
             position: { ...c.position, width: c.position.width > 6 ? 12 : 6 },
           })),
@@ -440,7 +437,7 @@ class SofiaLayoutEngine {
   private static humanizeString(str: string): string {
     return str
       .split('-')
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(' ');
   }
 }
@@ -487,7 +484,6 @@ export const TemplateOrchestrator: React.FC<TemplateOrchestratorProps> = ({
         if (enableLearning) {
           await trackLayoutUsage(generatedLayout, context);
         }
-
       } catch (err: any) {
         console.error('❌ Sofia: Layout generation failed:', err);
         setError(err.message || 'Failed to generate layout');
@@ -517,13 +513,9 @@ export const TemplateOrchestrator: React.FC<TemplateOrchestratorProps> = ({
         <div className="card shadow-sm h-100">
           <div className="card-header border-0 pt-5">
             <h3 className="card-title align-items-start flex-column">
-              <span className="card-label fw-bold fs-3 mb-1">
-                {component.props.title}
-              </span>
+              <span className="card-label fw-bold fs-3 mb-1">{component.props.title}</span>
               {component.sofiaGenerated && (
-                <span className="text-muted mt-1 fw-semibold fs-7">
-                  🧠 Sofia AI Generated
-                </span>
+                <span className="text-muted mt-1 fw-semibold fs-7">🧠 Sofia AI Generated</span>
               )}
             </h3>
           </div>
@@ -544,7 +536,10 @@ export const TemplateOrchestrator: React.FC<TemplateOrchestratorProps> = ({
 
   if (loading) {
     return (
-      <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '400px' }}>
+      <div
+        className="d-flex justify-content-center align-items-center"
+        style={{ minHeight: '400px' }}
+      >
         <div className="text-center">
           <div className="spinner-border text-primary" role="status">
             <span className="visually-hidden">Loading...</span>
@@ -580,9 +575,7 @@ export const TemplateOrchestrator: React.FC<TemplateOrchestratorProps> = ({
               <span className="fs-2 me-3">🧠</span>
               <div>
                 <h4 className="mb-1">Sofia AI Layout Recommendation</h4>
-                <div className="fw-semibold">
-                  {layout.sofiaRecommendation.reasoning}
-                </div>
+                <div className="fw-semibold">{layout.sofiaRecommendation.reasoning}</div>
                 <div className="text-muted fs-7 mt-2">
                   Confidence: {(layout.sofiaRecommendation.confidence * 100).toFixed(0)}%
                 </div>
@@ -622,9 +615,7 @@ const ComponentRenderer: React.FC<{
     <div className="component-placeholder">
       <div className="badge badge-light-primary mb-2">{type.toUpperCase()}</div>
       <div className="text-muted fs-7">Component: {component}</div>
-      {props.description && (
-        <p className="mt-2">{props.description}</p>
-      )}
+      {props.description && <p className="mt-2">{props.description}</p>}
       {/* Actual component would be rendered here */}
       <div className="mt-4 text-center text-muted">
         <i className="bi bi-layout-text-window-reverse fs-2x"></i>

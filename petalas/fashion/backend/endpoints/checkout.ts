@@ -11,7 +11,7 @@ export default defineEndpoint((router, { services, database }) => {
         coupon_code,
         customer_email,
         customer_name,
-        customer_phone
+        customer_phone,
       } = req.body;
 
       const tenant_id = req.accountability.tenant;
@@ -21,13 +21,13 @@ export default defineEndpoint((router, { services, database }) => {
       if (!billing_address || !shipping_address || !payment_method) {
         return res.status(400).json({
           error: 'Missing required fields',
-          required: ['billing_address', 'shipping_address', 'payment_method']
+          required: ['billing_address', 'shipping_address', 'payment_method'],
         });
       }
 
       if (!user_id && !customer_email) {
         return res.status(400).json({
-          error: 'customer_email is required for guest checkout'
+          error: 'customer_email is required for guest checkout',
         });
       }
 
@@ -44,7 +44,7 @@ export default defineEndpoint((router, { services, database }) => {
         .where({
           'cart_items.user_id': user_id || customer_email,
           'cart_items.tenant_id': tenant_id,
-          'cart_items.status': 'active'
+          'cart_items.status': 'active',
         });
 
       if (cartItems.length === 0) {
@@ -58,7 +58,7 @@ export default defineEndpoint((router, { services, database }) => {
           inventoryErrors.push({
             product_name: item.product_name,
             requested: item.quantity,
-            available: item.inventory_quantity
+            available: item.inventory_quantity,
           });
         }
       }
@@ -66,12 +66,12 @@ export default defineEndpoint((router, { services, database }) => {
       if (inventoryErrors.length > 0) {
         return res.status(400).json({
           error: 'Insufficient inventory',
-          items: inventoryErrors
+          items: inventoryErrors,
         });
       }
 
       // Calculate subtotal
-      const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
       // Apply coupon if provided
       let discount = 0;
@@ -81,10 +81,10 @@ export default defineEndpoint((router, { services, database }) => {
           .where({
             code: coupon_code.toUpperCase(),
             tenant_id,
-            status: 'active'
+            status: 'active',
           })
           .where('valid_from', '<=', new Date())
-          .where(function() {
+          .where(function () {
             this.whereNull('valid_until').orWhere('valid_until', '>=', new Date());
           })
           .first();
@@ -100,7 +100,7 @@ export default defineEndpoint((router, { services, database }) => {
             return res.status(400).json({
               error: 'Minimum order value not met',
               minimum: coupon.minimum_order_value,
-              current: subtotal
+              current: subtotal,
             });
           }
 
@@ -120,22 +120,22 @@ export default defineEndpoint((router, { services, database }) => {
       }
 
       // Calculate shipping (simplified - use shipping calculator endpoint for real rates)
-      const totalWeight = cartItems.reduce((sum, item) => sum + ((item.weight || 0) * item.quantity), 0);
+      const totalWeight = cartItems.reduce(
+        (sum, item) => sum + (item.weight || 0) * item.quantity,
+        0
+      );
       const shipping = totalWeight > 0 ? Math.max(5, totalWeight * 0.5) : 0;
 
       // Calculate tax (simplified - 10% for now)
       const taxableAmount = subtotal - discount;
-      const tax = taxableAmount * 0.10;
+      const tax = taxableAmount * 0.1;
 
       // Calculate total
       const total = subtotal - discount + shipping + tax;
 
       // Generate order number
       const year = new Date().getFullYear();
-      const orderCount = await database('orders')
-        .where({ tenant_id })
-        .count('* as count')
-        .first();
+      const orderCount = await database('orders').where({ tenant_id }).count('* as count').first();
       const nextNumber = (parseInt(orderCount.count) || 0) + 1;
       const orderNumber = `ORD-${year}-${String(nextNumber).padStart(6, '0')}`;
 
@@ -165,7 +165,7 @@ export default defineEndpoint((router, { services, database }) => {
           notes: null,
           status: 'pending',
           created_at: new Date(),
-          updated_at: new Date()
+          updated_at: new Date(),
         })
         .returning('*');
 
@@ -182,15 +182,13 @@ export default defineEndpoint((router, { services, database }) => {
           subtotal: (cartItem.price * cartItem.quantity).toFixed(2),
           product_name: cartItem.product_name,
           created_at: new Date(),
-          updated_at: new Date()
+          updated_at: new Date(),
         });
       }
 
       // Update coupon usage if applied
       if (couponId) {
-        await database('coupons')
-          .where({ id: couponId })
-          .increment('usage_count', 1);
+        await database('coupons').where({ id: couponId }).increment('usage_count', 1);
       }
 
       // Clear cart
@@ -198,11 +196,11 @@ export default defineEndpoint((router, { services, database }) => {
         .where({
           user_id: user_id || customer_email,
           tenant_id,
-          status: 'active'
+          status: 'active',
         })
         .update({
           status: 'checked_out',
-          updated_at: new Date()
+          updated_at: new Date(),
         });
 
       // Return order details (payment will be processed separately)
@@ -216,8 +214,8 @@ export default defineEndpoint((router, { services, database }) => {
           currency: order.currency,
           payment_status: order.payment_status,
           payment_method: order.payment_method,
-          items_count: order.items_count
-        }
+          items_count: order.items_count,
+        },
       });
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -238,7 +236,7 @@ export default defineEndpoint((router, { services, database }) => {
         .where({
           'cart_items.user_id': user_id,
           'cart_items.tenant_id': tenant_id,
-          'cart_items.status': 'active'
+          'cart_items.status': 'active',
         });
 
       if (cartItems.length === 0) {
@@ -252,12 +250,12 @@ export default defineEndpoint((router, { services, database }) => {
           inventoryErrors.push({
             product_id: item.product_id,
             requested: item.quantity,
-            available: item.inventory_quantity
+            available: item.inventory_quantity,
           });
         }
       }
 
-      const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
       // Validate coupon if provided
       let couponValid = null;
@@ -266,10 +264,10 @@ export default defineEndpoint((router, { services, database }) => {
           .where({
             code: coupon_code.toUpperCase(),
             tenant_id,
-            status: 'active'
+            status: 'active',
           })
           .where('valid_from', '<=', new Date())
-          .where(function() {
+          .where(function () {
             this.whereNull('valid_until').orWhere('valid_until', '>=', new Date());
           })
           .first();
@@ -281,7 +279,7 @@ export default defineEndpoint((router, { services, database }) => {
             couponValid = {
               valid: false,
               error: 'Minimum order value not met',
-              minimum: coupon.minimum_order_value
+              minimum: coupon.minimum_order_value,
             };
           } else {
             let discount = 0;
@@ -297,7 +295,7 @@ export default defineEndpoint((router, { services, database }) => {
               valid: true,
               discount: discount.toFixed(2),
               type: coupon.discount_type,
-              value: coupon.discount_value
+              value: coupon.discount_value,
             };
           }
         } else {
@@ -309,7 +307,7 @@ export default defineEndpoint((router, { services, database }) => {
         valid: inventoryErrors.length === 0,
         inventory_errors: inventoryErrors.length > 0 ? inventoryErrors : null,
         coupon: couponValid,
-        subtotal: subtotal.toFixed(2)
+        subtotal: subtotal.toFixed(2),
       });
     } catch (error) {
       res.status(500).json({ error: error.message });

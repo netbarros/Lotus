@@ -40,11 +40,7 @@ async function main() {
         api_rate_limit: 100,
         workflows: 3,
       },
-      features: [
-        'Basic SaaS Generation',
-        'Community Support',
-        'Basic Templates',
-      ],
+      features: ['Basic SaaS Generation', 'Community Support', 'Basic Templates'],
       is_active: true,
     },
   });
@@ -180,7 +176,9 @@ async function main() {
     },
   });
 
-  console.log(`✅ Created ${[planFree, planStarter, planProfessional, planEnterprise, planQuantum].length} plans\n`);
+  console.log(
+    `✅ Created ${[planFree, planStarter, planProfessional, planEnterprise, planQuantum].length} plans\n`
+  );
 
   // ═══════════════════════════════════════════════════════════════════════════
   // 2. CREATE DEMO TENANTS
@@ -240,11 +238,7 @@ async function main() {
         secondary_color: '#EC4899',
         custom_css: '',
       },
-      features: [
-        'saas_generation',
-        'microsaas_generation',
-        'basic_workflows',
-      ],
+      features: ['saas_generation', 'microsaas_generation', 'basic_workflows'],
       limits: {
         max_users: 3,
         max_storage_gb: 10,

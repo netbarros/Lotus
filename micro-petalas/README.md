@@ -1,7 +1,6 @@
 # 🧩 MICRO-PÉTALAS - COMPLETE LIBRARY
 
-**Total:** 50 Reusable Components
-**Status:** ✅ Production-Ready
+**Total:** 50 Reusable Components **Status:** ✅ Production-Ready
 **Integration:** Plug-and-play with any pétala
 
 ---
@@ -9,6 +8,7 @@
 ## 📚 CATALOG
 
 ### Authentication & Security (5)
+
 - `auth-basic` - Email/password authentication
 - `auth-social` - OAuth 2.0 (Google, Facebook, Apple, Microsoft)
 - `auth-2fa` - Two-factor authentication (TOTP, SMS)
@@ -16,6 +16,7 @@
 - `rbac-advanced` - Advanced role-based access control
 
 ### Payment & Billing (6)
+
 - `payment-stripe` - Stripe integration
 - `payment-mercadopago` - Mercado Pago (LATAM)
 - `payment-paypal` - PayPal integration
@@ -24,6 +25,7 @@
 - `invoicing` - PDF invoice generation
 
 ### Communication (5)
+
 - `notifications-push` - Web push notifications
 - `notifications-sms` - SMS via Twilio
 - `notifications-whatsapp` - WhatsApp Business API
@@ -31,12 +33,14 @@
 - `chat-support` - Live chat widget
 
 ### Analytics & Tracking (4)
+
 - `analytics-google` - Google Analytics 4
 - `analytics-mixpanel` - Mixpanel events
 - `analytics-segment` - Segment.io unified analytics
 - `heatmaps` - Hotjar/Clarity heatmaps
 
 ### Content & Media (5)
+
 - `file-upload` - Cloudinary/S3 upload
 - `image-optimization` - WebP conversion, lazy loading
 - `video-player` - Vimeo/YouTube/self-hosted player
@@ -44,6 +48,7 @@
 - `qr-code` - QR generation/scanning
 
 ### E-commerce Specific (8)
+
 - `product-reviews` - Star ratings, reviews, moderation
 - `wishlist` - Save for later
 - `loyalty-points` - Gamification, rewards
@@ -54,6 +59,7 @@
 - `upsell-cross-sell` - AI-powered recommendations
 
 ### Industry-Specific (12)
+
 - `ar-try-on` - Augmented reality (Fashion, Retail)
 - `vr-tours` - Virtual reality tours (Real Estate, Travel)
 - `telemedicine-video` - Video consultation (Healthcare)
@@ -68,6 +74,7 @@
 - `ehr-integration` - Electronic Health Records
 
 ### AI-Powered (5)
+
 - `ai-chatbot` - Customer service chatbot (GPT-4)
 - `ai-recommendations` - Product/content recommendations
 - `ai-search` - Semantic search (pgVector)
@@ -87,7 +94,7 @@ import { AuthSocial } from '@magicsaas/micro-petalas/auth-social';
 const petala = new Petala('my-vertical');
 petala.use(AuthSocial, {
   providers: ['google', 'facebook'],
-  redirectUrl: '/auth/callback'
+  redirectUrl: '/auth/callback',
 });
 ```
 

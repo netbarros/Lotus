@@ -8,12 +8,7 @@
   "pricing": {
     "starter": {
       "price": 89,
-      "features": [
-        "1 POS terminal",
-        "Basic inventory",
-        "Online store",
-        "Email support"
-      ]
+      "features": ["1 POS terminal", "Basic inventory", "Online store", "Email support"]
     },
     "professional": {
       "price": 179,
@@ -72,23 +67,11 @@
     "Multi-location support"
   ],
   "integrations": {
-    "payment": [
-      "Stripe",
-      "Square"
-    ],
-    "pos": [
-      "Square",
-      "Clover"
-    ],
-    "ecommerce": [
-      "Shopify",
-      "WooCommerce"
-    ]
+    "payment": ["Stripe", "Square"],
+    "pos": ["Square", "Clover"],
+    "ecommerce": ["Shopify", "WooCommerce"]
   },
-  "compliance": [
-    "GDPR",
-    "PCI DSS"
-  ],
+  "compliance": ["GDPR", "PCI DSS"],
   "status": "production-ready",
   "createdAt": "2025-11-10",
   "updatedAt": "2025-11-10"

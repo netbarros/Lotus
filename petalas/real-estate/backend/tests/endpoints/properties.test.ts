@@ -8,13 +8,20 @@ describe('Properties Endpoint', () => {
   let authToken: string;
 
   beforeAll(async () => {
-    const response = await api.post('/auth/login', { email: 'agent@example.com', password: 'password' });
+    const response = await api.post('/auth/login', {
+      email: 'agent@example.com',
+      password: 'password',
+    });
     authToken = response.data.data.access_token;
     api.defaults.headers.common['Authorization'] = `Bearer ${authToken}`;
   });
 
   it('should create property listing', async () => {
-    const response = await api.post('/properties', { title: 'Beach House', price: 500000, type: 'sale' });
+    const response = await api.post('/properties', {
+      title: 'Beach House',
+      price: 500000,
+      type: 'sale',
+    });
     expect(response.status).toBe(200);
     expect(response.data.data).toHaveProperty('id');
   });

@@ -10,7 +10,7 @@ describe('Shipping Endpoint', () => {
   beforeAll(async () => {
     const response = await api.post('/auth/login', {
       email: 'admin@example.com',
-      password: 'password'
+      password: 'password',
     });
     authToken = response.data.data.access_token;
     api.defaults.headers.common['Authorization'] = `Bearer ${authToken}`;
@@ -21,7 +21,7 @@ describe('Shipping Endpoint', () => {
       const response = await api.post('/shipping/calculate', {
         zipCode: '90210',
         weight: 2.5,
-        items: [{ id: 1, quantity: 2 }]
+        items: [{ id: 1, quantity: 2 }],
       });
 
       expect(response.status).toBe(200);
@@ -34,7 +34,7 @@ describe('Shipping Endpoint', () => {
   describe('POST /shipping/track', () => {
     it('should track shipment', async () => {
       const response = await api.post('/shipping/track', {
-        trackingNumber: 'TRACK123456'
+        trackingNumber: 'TRACK123456',
       });
 
       expect(response.status).toBe(200);
@@ -56,7 +56,7 @@ describe('Shipping Endpoint', () => {
     it('should generate shipping label', async () => {
       const response = await api.post('/shipping/label', {
         orderId: 1,
-        carrier: 'ups'
+        carrier: 'ups',
       });
 
       expect(response.status).toBe(200);

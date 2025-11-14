@@ -8,12 +8,7 @@
   "pricing": {
     "starter": {
       "price": 89,
-      "features": [
-        "Up to 100 bookings/month",
-        "Hotel booking",
-        "Basic itinerary",
-        "Email support"
-      ]
+      "features": ["Up to 100 bookings/month", "Hotel booking", "Basic itinerary", "Email support"]
     },
     "professional": {
       "price": 189,
@@ -77,23 +72,11 @@
     "Analytics dashboard"
   ],
   "integrations": {
-    "flights": [
-      "Amadeus",
-      "Sabre"
-    ],
-    "hotels": [
-      "Booking.com",
-      "Expedia"
-    ],
-    "payment": [
-      "Stripe",
-      "PayPal"
-    ]
+    "flights": ["Amadeus", "Sabre"],
+    "hotels": ["Booking.com", "Expedia"],
+    "payment": ["Stripe", "PayPal"]
   },
-  "compliance": [
-    "GDPR",
-    "PCI DSS"
-  ],
+  "compliance": ["GDPR", "PCI DSS"],
   "status": "production-ready",
   "createdAt": "2025-11-10",
   "updatedAt": "2025-11-10"

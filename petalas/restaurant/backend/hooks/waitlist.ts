@@ -19,7 +19,7 @@ export default defineHook(({ filter, action }, { database }) => {
       const count = await database('waitlist')
         .where({
           restaurant_id: input.restaurant_id,
-          status: 'waiting'
+          status: 'waiting',
         })
         .count('id as total')
         .first();
@@ -36,18 +36,22 @@ export default defineHook(({ filter, action }, { database }) => {
     if (meta.collection === 'waitlist' && meta.payload) {
       // If waitlist entry was seated or cancelled, update positions for others
       if (['seated', 'cancelled', 'no_show'].includes(meta.payload.status)) {
-        const restaurant_id = meta.payload.restaurant_id ||
+        const restaurant_id =
+          meta.payload.restaurant_id ||
           (await database('waitlist').where('id', meta.keys[0]).first())?.restaurant_id;
 
         if (restaurant_id) {
-          await database.raw(`
+          await database.raw(
+            `
             UPDATE waitlist
             SET position = position - 1,
                 estimated_wait_minutes = (position - 1) * 15
             WHERE restaurant_id = ?
               AND status = 'waiting'
               AND position > (SELECT position FROM waitlist WHERE id = ?)
-          `, [restaurant_id, meta.keys[0]]);
+          `,
+            [restaurant_id, meta.keys[0]]
+          );
         }
       }
     }

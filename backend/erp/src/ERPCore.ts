@@ -151,8 +151,8 @@ export class ERPCore {
     );
 
     const summary = {
-      income: result.rows.filter(r => r.type === 'income'),
-      expenses: result.rows.filter(r => r.type === 'expense'),
+      income: result.rows.filter((r) => r.type === 'income'),
+      expenses: result.rows.filter((r) => r.type === 'expense'),
       netProfit: this.calculateNetProfit(result.rows),
       period: { start: startDate, end: endDate },
     };
@@ -311,7 +311,11 @@ export class ERPCore {
     };
   }
 
-  async trackAttendance(employeeId: string, date: Date, status: 'present' | 'absent' | 'leave'): Promise<void> {
+  async trackAttendance(
+    employeeId: string,
+    date: Date,
+    status: 'present' | 'absent' | 'leave'
+  ): Promise<void> {
     await this.db.query(
       `INSERT INTO erp_attendance (tenant_id, employee_id, date, status)
        VALUES ($1, $2, $3, $4)
@@ -442,15 +446,18 @@ export class ERPCore {
 
   private calculateNetProfit(transactions: any[]): number {
     const income = transactions
-      .filter(t => t.type === 'income')
+      .filter((t) => t.type === 'income')
       .reduce((sum, t) => sum + parseFloat(t.total), 0);
     const expenses = transactions
-      .filter(t => t.type === 'expense')
+      .filter((t) => t.type === 'expense')
       .reduce((sum, t) => sum + parseFloat(t.total), 0);
     return income - expenses;
   }
 
-  private calculateInventoryStatus(quantity: number, reorderLevel: number): InventoryItem['status'] {
+  private calculateInventoryStatus(
+    quantity: number,
+    reorderLevel: number
+  ): InventoryItem['status'] {
     if (quantity === 0) return 'out_of_stock';
     if (quantity <= reorderLevel) return 'low_stock';
     return 'in_stock';

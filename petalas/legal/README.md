@@ -1,14 +1,13 @@
 # ⚖️ Pétala Legal
 
-**Version:** 1.0.0
-**Status:** ✅ Production-Ready
-**Category:** legal
+**Version:** 1.0.0 **Status:** ✅ Production-Ready **Category:** legal
 
 ---
 
 ## 📋 Overview
 
-Complete legal practice management with case management, document management, time tracking, and e-signature
+Complete legal practice management with case management, document management,
+time tracking, and e-signature
 
 ### Key Features
 
@@ -42,6 +41,7 @@ npm run dev
 ## 💰 Pricing
 
 ### Starter - $129/month
+
 - Up to 50 cases
 - Document management
 - Time tracking
@@ -49,6 +49,7 @@ npm run dev
 - Email support
 
 ### Professional - $249/month
+
 - Unlimited cases
 - E-signature
 - Court calendar
@@ -58,6 +59,7 @@ npm run dev
 - Priority support
 
 ### Enterprise - $599/month
+
 - Everything in Professional
 - Multi-office
 - API access
@@ -67,5 +69,4 @@ npm run dev
 
 ---
 
-**Built with ❤️ by Software Lotus**
-**Powered by MagicSaaS System-∞ & Sofia AI**
+**Built with ❤️ by Software Lotus** **Powered by MagicSaaS System-∞ & Sofia AI**

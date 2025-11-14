@@ -67,17 +67,13 @@ export class LangChainService {
   private totalLatency = 0;
   private totalTokens = 0;
 
-  constructor(
-    config: LangChainConfig,
-    redis: Redis,
-    eventStore: EventStore
-  ) {
+  constructor(config: LangChainConfig, redis: Redis, eventStore: EventStore) {
     this.config = {
       model: 'claude-sonnet-4-5-20250929',
       temperature: 0.7,
       maxTokens: 4096,
       enableTracing: true,
-      ...config
+      ...config,
     };
     this.redis = redis;
     this.eventStore = eventStore;
@@ -117,9 +113,9 @@ export class LangChainService {
         metadata: {
           model: this.config.model,
           tracingEnabled: this.config.enableTracing,
-          chainsRegistered: this.chains.size
+          chainsRegistered: this.chains.size,
         },
-        timestamp: new Date()
+        timestamp: new Date(),
       });
     } catch (error) {
       logger.error('❌ Failed to initialize LangChain Service:', error);
@@ -193,9 +189,9 @@ export class LangChainService {
           latencyMs: latency,
           tokensUsed: result.tokensUsed,
           tenantId: options?.tenantId,
-          userId: options?.userId
+          userId: options?.userId,
         },
-        timestamp: new Date()
+        timestamp: new Date(),
       });
 
       // Cache result if applicable
@@ -212,8 +208,8 @@ export class LangChainService {
           tokensUsed: result.tokensUsed,
           latencyMs: latency,
           model: this.config.model!,
-          traceId
-        }
+          traceId,
+        },
       };
     } catch (error) {
       logger.error(`❌ Failed to execute LangChain chain: ${chainName}`, error);
@@ -224,9 +220,9 @@ export class LangChainService {
           chainName,
           traceId,
           error: error instanceof Error ? error.message : String(error),
-          tenantId: options?.tenantId
+          tenantId: options?.tenantId,
         },
-        timestamp: new Date()
+        timestamp: new Date(),
       });
 
       throw error;
@@ -245,15 +241,15 @@ export class LangChainService {
     logger.debug('🔗 Executing prompt with Claude...');
 
     // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 100));
+    await new Promise((resolve) => setTimeout(resolve, 100));
 
     return {
       output: JSON.stringify({
         status: 'success',
         message: 'LangChain integration is working',
-        prompt_length: prompt.length
+        prompt_length: prompt.length,
       }),
-      tokensUsed: Math.ceil(prompt.length / 4)
+      tokensUsed: Math.ceil(prompt.length / 4),
     };
   }
 
@@ -317,7 +313,7 @@ Provide:
 
 Output as JSON.`,
       inputVariables: ['description', 'requirements'],
-      outputParser: 'json'
+      outputParser: 'json',
     });
 
     // Validate UX chain
@@ -334,7 +330,7 @@ Provide:
 
 Output as JSON.`,
       inputVariables: ['appDescription', 'screens'],
-      outputParser: 'json'
+      outputParser: 'json',
     });
 
     // Optimize SEO chain
@@ -353,7 +349,7 @@ Provide:
 
 Output as JSON.`,
       inputVariables: ['url', 'content', 'keywords'],
-      outputParser: 'json'
+      outputParser: 'json',
     });
 
     logger.info(`🔗 Registered ${this.chains.size} default chains`);
@@ -372,7 +368,7 @@ Output as JSON.`,
       executionCount: this.executionCount,
       averageLatencyMs: this.executionCount > 0 ? this.totalLatency / this.executionCount : 0,
       totalTokens: this.totalTokens,
-      chainsRegistered: this.chains.size
+      chainsRegistered: this.chains.size,
     };
   }
 
@@ -389,7 +385,7 @@ Output as JSON.`,
       status: this.isInitialized ? 'healthy' : 'unhealthy',
       initialized: this.isInitialized,
       chainsRegistered: this.chains.size,
-      statistics: this.getStatistics()
+      statistics: this.getStatistics(),
     };
   }
 }

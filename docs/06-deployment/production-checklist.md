@@ -15,6 +15,7 @@ Use este checklist para garantir que seu deployment está **production-ready**.
 ## 🔐 Security
 
 ### **Secrets & Keys**
+
 - [ ] Todas as secrets em secret manager (não em .env)
 - [ ] API keys rotacionadas (dev → prod)
 - [ ] Passwords fortes (32+ chars)
@@ -24,6 +25,7 @@ Use este checklist para garantir que seu deployment está **production-ready**.
 - [ ] ANTHROPIC_API_KEY de produção
 
 ### **HTTPS & SSL**
+
 - [ ] Certificado SSL válido
 - [ ] HTTPS forçado (redirect HTTP → HTTPS)
 - [ ] HSTS headers configurados
@@ -31,6 +33,7 @@ Use este checklist para garantir que seu deployment está **production-ready**.
 - [ ] Certificate auto-renewal configurado
 
 ### **Authentication & Authorization**
+
 - [ ] JWT expiration configurado (não infinito)
 - [ ] Refresh token strategy implementada
 - [ ] Rate limiting habilitado
@@ -39,6 +42,7 @@ Use este checklist para garantir que seu deployment está **production-ready**.
 - [ ] XSS prevention headers
 
 ### **Security Headers**
+
 - [ ] Helmet.js configurado
 - [ ] Content-Security-Policy
 - [ ] X-Frame-Options
@@ -47,6 +51,7 @@ Use este checklist para garantir que seu deployment está **production-ready**.
 - [ ] Permissions-Policy
 
 ### **Database Security**
+
 - [ ] Row-level security (RLS) habilitado
 - [ ] SQL injection prevention verificado
 - [ ] Database connection encrypted
@@ -54,6 +59,7 @@ Use este checklist para garantir que seu deployment está **production-ready**.
 - [ ] Access logs habilitados
 
 ### **Vulnerability Scanning**
+
 - [ ] npm audit rodado (0 vulnerabilities)
 - [ ] Dependências atualizadas
 - [ ] OWASP Top 10 checklist completo
@@ -65,6 +71,7 @@ Use este checklist para garantir que seu deployment está **production-ready**.
 ## 🗄️ Database
 
 ### **Performance**
+
 - [ ] Indexes criados em colunas frequentemente consultadas
 - [ ] Queries lentas otimizadas (< 50ms)
 - [ ] Connection pooling configurado
@@ -72,6 +79,7 @@ Use este checklist para garantir que seu deployment está **production-ready**.
 - [ ] EXPLAIN ANALYZE rodado nas queries críticas
 
 ### **Backup & Recovery**
+
 - [ ] Backup automático configurado (diário)
 - [ ] Backup off-site configurado
 - [ ] Recovery procedure testado
@@ -80,12 +88,14 @@ Use este checklist para garantir que seu deployment está **production-ready**.
 - [ ] Backup encryption habilitado
 
 ### **Migrations**
+
 - [ ] Todas migrations testadas
 - [ ] Rollback procedure documentado
 - [ ] Zero-downtime migrations planejadas
 - [ ] Migration logs revisados
 
 ### **Monitoring**
+
 - [ ] Slow query log habilitado
 - [ ] Connection pool monitoring
 - [ ] Disk space alerts configurados
@@ -96,6 +106,7 @@ Use este checklist para garantir que seu deployment está **production-ready**.
 ## ⚡ Performance
 
 ### **Backend**
+
 - [ ] Response time < 100ms p95
 - [ ] Response time < 500ms p99
 - [ ] No N+1 queries
@@ -105,6 +116,7 @@ Use este checklist para garantir que seu deployment está **production-ready**.
 - [ ] CDN configurado
 
 ### **Frontend**
+
 - [ ] Lighthouse score 90+
 - [ ] Core Web Vitals OK:
   - [ ] LCP < 2.5s
@@ -116,6 +128,7 @@ Use este checklist para garantir que seu deployment está **production-ready**.
 - [ ] Bundle size < 1MB
 
 ### **Load Testing**
+
 - [ ] Load testing executado (k6, Artillery)
 - [ ] Stress testing executado
 - [ ] Spike testing executado
@@ -127,6 +140,7 @@ Use este checklist para garantir que seu deployment está **production-ready**.
 ## 📊 Monitoring & Observability
 
 ### **Metrics**
+
 - [ ] Prometheus configurado
 - [ ] Grafana dashboards criados
 - [ ] Business metrics rastreados
@@ -134,6 +148,7 @@ Use este checklist para garantir que seu deployment está **production-ready**.
 - [ ] SLIs/SLOs definidos
 
 ### **Logging**
+
 - [ ] Structured logging implementado (JSON)
 - [ ] Log levels apropriados
 - [ ] Correlation IDs em todos logs
@@ -142,12 +157,14 @@ Use este checklist para garantir que seu deployment está **production-ready**.
 - [ ] Sensitive data mascarada em logs
 
 ### **Tracing**
+
 - [ ] Jaeger configurado
 - [ ] Distributed tracing implementado
 - [ ] Trace sampling configurado
 - [ ] Spans com contexto apropriado
 
 ### **Alerting**
+
 - [ ] Alerts configurados:
   - [ ] High error rate (> 1%)
   - [ ] High latency (> 1s p95)
@@ -160,6 +177,7 @@ Use este checklist para garantir que seu deployment está **production-ready**.
 - [ ] Escalation policy definida
 
 ### **Health Checks**
+
 - [ ] /health endpoint implementado
 - [ ] /ready endpoint implementado
 - [ ] Liveness probe configurado (K8s)
@@ -170,6 +188,7 @@ Use este checklist para garantir que seu deployment está **production-ready**.
 ## 🐳 Infrastructure
 
 ### **Docker**
+
 - [ ] Multi-stage builds usados
 - [ ] Images escaneadas (Trivy, Clair)
 - [ ] .dockerignore configurado
@@ -178,6 +197,7 @@ Use este checklist para garantir que seu deployment está **production-ready**.
 - [ ] Health checks em containers
 
 ### **Kubernetes** (se aplicável)
+
 - [ ] Resource limits definidos
 - [ ] Resource requests definidos
 - [ ] HPA (auto-scaling) configurado
@@ -188,6 +208,7 @@ Use este checklist para garantir que seu deployment está **production-ready**.
 - [ ] TLS terminação configurada
 
 ### **CI/CD**
+
 - [ ] Pipeline automated (GitHub Actions)
 - [ ] Tests rodando em CI
 - [ ] Linting rodando em CI
@@ -202,18 +223,21 @@ Use este checklist para garantir que seu deployment está **production-ready**.
 ## 🌐 Networking
 
 ### **CDN**
+
 - [ ] CDN configurado (Cloudflare, CloudFront)
 - [ ] Static assets no CDN
 - [ ] Cache headers apropriados
 - [ ] Geo-replication configurada
 
 ### **DNS**
+
 - [ ] TTL apropriado (300-3600s)
 - [ ] DNSSEC configurado
 - [ ] DNS provider com boa uptime
 - [ ] Failover DNS configurado
 
 ### **Load Balancer**
+
 - [ ] Load balancer configurado
 - [ ] Health checks habilitados
 - [ ] Session stickiness configurado (se necessário)
@@ -224,6 +248,7 @@ Use este checklist para garantir que seu deployment está **production-ready**.
 ## 📱 Application
 
 ### **Configuration**
+
 - [ ] NODE_ENV=production
 - [ ] Debug mode desabilitado
 - [ ] Verbose logging desabilitado
@@ -231,6 +256,7 @@ Use este checklist para garantir que seu deployment está **production-ready**.
 - [ ] Error stack traces não expostos
 
 ### **Error Handling**
+
 - [ ] Error handling centralizado
 - [ ] Errors logados corretamente
 - [ ] User-friendly error messages
@@ -238,12 +264,14 @@ Use este checklist para garantir que seu deployment está **production-ready**.
 - [ ] Error recovery implementado
 
 ### **Rate Limiting**
+
 - [ ] Rate limiting implementado
 - [ ] Per-user rate limits
 - [ ] Per-IP rate limits
 - [ ] Burst limits configurados
 
 ### **Data Validation**
+
 - [ ] Input validation em todos endpoints
 - [ ] Output sanitization
 - [ ] File upload validation (tamanho, tipo)
@@ -255,6 +283,7 @@ Use este checklist para garantir que seu deployment está **production-ready**.
 ## 🧪 Testing
 
 ### **Tests**
+
 - [ ] Unit tests > 90% coverage
 - [ ] Integration tests escritos
 - [ ] E2E tests para fluxos críticos
@@ -263,6 +292,7 @@ Use este checklist para garantir que seu deployment está **production-ready**.
 - [ ] Accessibility tests executados
 
 ### **Manual Testing**
+
 - [ ] Smoke tests executados
 - [ ] User acceptance testing (UAT)
 - [ ] Cross-browser testing
@@ -274,12 +304,14 @@ Use este checklist para garantir que seu deployment está **production-ready**.
 ## 📝 Documentation
 
 ### **User Documentation**
+
 - [ ] User guide atualizado
 - [ ] API documentation atualizada
 - [ ] FAQ atualizado
 - [ ] Video tutorials (optional)
 
 ### **Technical Documentation**
+
 - [ ] Architecture documented
 - [ ] Deployment process documented
 - [ ] Rollback process documented
@@ -288,6 +320,7 @@ Use este checklist para garantir que seu deployment está **production-ready**.
 - [ ] Disaster recovery plan documentado
 
 ### **Legal**
+
 - [ ] Terms of Service
 - [ ] Privacy Policy
 - [ ] Cookie Policy
@@ -299,6 +332,7 @@ Use este checklist para garantir que seu deployment está **production-ready**.
 ## 💼 Business
 
 ### **Analytics**
+
 - [ ] Google Analytics configurado
 - [ ] Event tracking implementado
 - [ ] Conversion tracking
@@ -306,12 +340,14 @@ Use este checklist para garantir que seu deployment está **production-ready**.
 - [ ] User behavior analytics
 
 ### **Support**
+
 - [ ] Support email configurado
 - [ ] Help center criado
 - [ ] Status page configurado
 - [ ] Feedback mechanism implementado
 
 ### **Billing** (se aplicável)
+
 - [ ] Stripe/payment gateway configurado
 - [ ] Subscription management
 - [ ] Invoice generation
@@ -322,6 +358,7 @@ Use este checklist para garantir que seu deployment está **production-ready**.
 ## 🚀 Launch Preparation
 
 ### **Pre-Launch** (1 week before)
+
 - [ ] Staging environment = production clone
 - [ ] Full system test em staging
 - [ ] Load test executado
@@ -331,6 +368,7 @@ Use este checklist para garantir que seu deployment está **production-ready**.
 - [ ] Communication plan pronto
 
 ### **Launch Day**
+
 - [ ] Health checks passing
 - [ ] Monitoring dashboards abertos
 - [ ] On-call engineer disponível
@@ -340,6 +378,7 @@ Use este checklist para garantir que seu deployment está **production-ready**.
 - [ ] Email announcement pronto
 
 ### **Post-Launch** (first 24h)
+
 - [ ] Monitor errors closely
 - [ ] Monitor performance
 - [ ] Monitor user feedback
@@ -351,6 +390,7 @@ Use este checklist para garantir que seu deployment está **production-ready**.
 ## ✅ Final Checklist
 
 ### **Critical** (must have)
+
 - [ ] All security items checked
 - [ ] Backups working
 - [ ] Monitoring working
@@ -358,12 +398,14 @@ Use este checklist para garantir que seu deployment está **production-ready**.
 - [ ] Performance acceptable
 
 ### **Important** (should have)
+
 - [ ] Load testing done
 - [ ] Documentation complete
 - [ ] CI/CD working
 - [ ] Rollback tested
 
 ### **Nice to have**
+
 - [ ] Video tutorials
 - [ ] Advanced analytics
 - [ ] A/B testing ready
@@ -375,13 +417,15 @@ Use este checklist para garantir que seu deployment está **production-ready**.
 **Deployment Ready**: ⬜ YES / ⬜ NO
 
 **Signed by**:
-- [ ] Tech Lead: ________________
-- [ ] DevOps: ________________
-- [ ] Security: ________________
-- [ ] Product: ________________
 
-**Date**: __________
+- [ ] Tech Lead: ******\_\_\_\_******
+- [ ] DevOps: ******\_\_\_\_******
+- [ ] Security: ******\_\_\_\_******
+- [ ] Product: ******\_\_\_\_******
+
+**Date**: ****\_\_****
 
 ---
 
-**[← Voltar ao Índice](../00-INDEX.md)** | **[Próximo: Docker Production →](./docker-production.md)**
+**[← Voltar ao Índice](../00-INDEX.md)** |
+**[Próximo: Docker Production →](./docker-production.md)**

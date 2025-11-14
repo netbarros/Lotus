@@ -1,15 +1,18 @@
 # 💅 Pétala Beauty - Complete Salon & Spa Management Solution
 
-**Version:** 1.0.0
-**Status:** ✅ Production-Ready
-**Category:** Beauty & Wellness
-**License:** Proprietary
+**Version:** 1.0.0 **Status:** ✅ Production-Ready **Category:** Beauty &
+Wellness **License:** Proprietary
 
 ---
 
 ## 📋 Overview
 
-**Pétala Beauty** is a complete, production-ready salon and spa management solution designed for beauty salons, spas, barber shops, and wellness centers. Built on the MagicSaaS System-∞ Cognitive Mesh OS with Sofia AI v4.0 integration, it provides state-of-the-art features including appointment scheduling, service management, product sales, loyalty programs, and AI-powered client recommendations.
+**Pétala Beauty** is a complete, production-ready salon and spa management
+solution designed for beauty salons, spas, barber shops, and wellness centers.
+Built on the MagicSaaS System-∞ Cognitive Mesh OS with Sofia AI v4.0
+integration, it provides state-of-the-art features including appointment
+scheduling, service management, product sales, loyalty programs, and AI-powered
+client recommendations.
 
 ### 🎯 Target Audience
 
@@ -22,10 +25,14 @@
 
 ### ⭐ Key Features
 
-1. ✅ **Sofia AI Assistant** - Conversational booking with natural language, personalized recommendations, and intelligent scheduling
-2. ✅ **Appointment Booking** - Online booking with calendar integration, automated reminders
-3. ✅ **Service Catalog** - Haircuts, coloring, spa treatments, massages, manicures, facials
-4. ✅ **Staff Management** - Multiple professionals, schedules, specialties, availability
+1. ✅ **Sofia AI Assistant** - Conversational booking with natural language,
+   personalized recommendations, and intelligent scheduling
+2. ✅ **Appointment Booking** - Online booking with calendar integration,
+   automated reminders
+3. ✅ **Service Catalog** - Haircuts, coloring, spa treatments, massages,
+   manicures, facials
+4. ✅ **Staff Management** - Multiple professionals, schedules, specialties,
+   availability
 5. ✅ **Client Profiles** - Preferences, history, allergies, notes, photos
 6. ✅ **Point of Sale (POS)** - Services + products, quick checkout, tips
 7. ✅ **Product Inventory** - Hair products, cosmetics, accessories
@@ -45,10 +52,13 @@
 
 ### 🧠 Sofia AI v4.0 Integration
 
-Beauty pétala includes complete **Sofia AI v4.0** integration powered by LangChain, Langfuse, Qdrant, and pgVector:
+Beauty pétala includes complete **Sofia AI v4.0** integration powered by
+LangChain, Langfuse, Qdrant, and pgVector:
 
 #### AI-Powered Features:
-- **Intelligent Appointment Scheduling** - Sofia optimizes booking times based on:
+
+- **Intelligent Appointment Scheduling** - Sofia optimizes booking times based
+  on:
   - Service duration predictions
   - Staff performance history
   - Client preferences and behavior patterns
@@ -76,7 +86,9 @@ Beauty pétala includes complete **Sofia AI v4.0** integration powered by LangCh
   - Staff performance insights
 
 #### Database Integration:
-- `petala_customers` - Client profiles with AI customer scores and lifetime value predictions
+
+- `petala_customers` - Client profiles with AI customer scores and lifetime
+  value predictions
 - `petala_products` - Services and products with AI demand forecasting
 - `petala_appointments` - Booking with AI optimization scores
 - `petala_orders` - POS transactions with fraud detection
@@ -93,6 +105,7 @@ All data synchronized with Sofia AI v4.0 for real-time intelligence.
 ### Tech Stack
 
 **Backend:**
+
 - Node.js 22+ with TypeScript
 - PostgreSQL 17+ with pgVector extension
 - Redis 8+ for caching and real-time features
@@ -101,6 +114,7 @@ All data synchronized with Sofia AI v4.0 for real-time intelligence.
 - Qdrant for vector search
 
 **Frontend:**
+
 - React 18+ with TypeScript
 - Metronic 9 components
 - TailwindCSS for styling
@@ -108,6 +122,7 @@ All data synchronized with Sofia AI v4.0 for real-time intelligence.
 - PWA support
 
 **AI & Intelligence:**
+
 - Sofia AI v4.0 Core
 - Anthropic Claude API
 - Langfuse for observability
@@ -115,6 +130,7 @@ All data synchronized with Sofia AI v4.0 for real-time intelligence.
 - TimescaleDB for time-series analytics
 
 **Integrations:**
+
 - Stripe for payments
 - Twilio for SMS
 - Evolution API for WhatsApp
@@ -176,13 +192,16 @@ curl -X POST http://localhost:3003/api/intentions \
 
 Beauty pétala uses the universal tables:
 
-- **petala_customers** - Beauty clients with preferences, allergies, visit history
-- **petala_products** - Services (haircuts, massages, facials) and retail products
+- **petala_customers** - Beauty clients with preferences, allergies, visit
+  history
+- **petala_products** - Services (haircuts, massages, facials) and retail
+  products
 - **petala_orders** - POS transactions (services + products)
 - **petala_appointments** - Booking with staff assignments and time slots
 - **petala_reviews** - Client feedback with photos
 
 All tables include Sofia AI fields:
+
 - `ai_customer_score` - Client quality score (0-1)
 - `ai_lifetime_value_prediction` - Predicted CLV
 - `ai_churn_risk` - Risk of client leaving (0-1)
@@ -227,11 +246,11 @@ All metrics available in real-time dashboards with AI insights.
 
 Beauty pétala is available as part of MagicSaaS subscription:
 
-| Plan | Price | Appointments/month | Staff | Features |
-|------|-------|-------------------|-------|----------|
-| **Starter** | $29/mo | Up to 200 | 3 staff | Basic booking, POS, Sofia AI |
-| **Professional** | $99/mo | Up to 1,000 | 10 staff | Full features, loyalty, SMS |
-| **Enterprise** | $299/mo | Unlimited | Unlimited | Multi-location, API, white-label |
+| Plan             | Price   | Appointments/month | Staff     | Features                         |
+| ---------------- | ------- | ------------------ | --------- | -------------------------------- |
+| **Starter**      | $29/mo  | Up to 200          | 3 staff   | Basic booking, POS, Sofia AI     |
+| **Professional** | $99/mo  | Up to 1,000        | 10 staff  | Full features, loyalty, SMS      |
+| **Enterprise**   | $299/mo | Unlimited          | Unlimited | Multi-location, API, white-label |
 
 ---
 
@@ -248,6 +267,7 @@ Beauty pétala is available as part of MagicSaaS subscription:
 ## 🤝 Support
 
 For technical support:
+
 - **Email:** support@softwarelotus.com.br
 - **Documentation:** https://docs.softwarelotus.com.br
 - **Issues:** https://github.com/netbarros/Lotus/issues

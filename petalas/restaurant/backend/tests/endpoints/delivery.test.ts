@@ -10,7 +10,7 @@ describe('Delivery Endpoint', () => {
   beforeAll(async () => {
     const response = await api.post('/auth/login', {
       email: 'admin@example.com',
-      password: 'password'
+      password: 'password',
     });
     authToken = response.data.data.access_token;
     api.defaults.headers.common['Authorization'] = `Bearer ${authToken}`;
@@ -20,7 +20,7 @@ describe('Delivery Endpoint', () => {
     it('should assign order to driver', async () => {
       const response = await api.post('/delivery/assign', {
         orderId: 1,
-        driverId: 1
+        driverId: 1,
       });
 
       expect(response.status).toBe(200);
@@ -42,7 +42,7 @@ describe('Delivery Endpoint', () => {
   describe('POST /delivery/:id/update-status', () => {
     it('should update delivery status', async () => {
       const response = await api.post('/delivery/1/update-status', {
-        status: 'en_route'
+        status: 'en_route',
       });
 
       expect(response.status).toBe(200);
@@ -63,7 +63,7 @@ describe('Delivery Endpoint', () => {
     it('should calculate delivery fee', async () => {
       const response = await api.post('/delivery/calculate-fee', {
         address: '123 Main St',
-        zipCode: '90210'
+        zipCode: '90210',
       });
 
       expect(response.status).toBe(200);

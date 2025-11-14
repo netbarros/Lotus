@@ -8,11 +8,7 @@
   "pricing": {
     "starter": {
       "price": 149,
-      "features": [
-        "Up to 1000 transactions/month",
-        "Basic reporting",
-        "Email support"
-      ]
+      "features": ["Up to 1000 transactions/month", "Basic reporting", "Email support"]
     },
     "professional": {
       "price": 349,
@@ -73,25 +69,11 @@
     "Audit trail"
   ],
   "integrations": {
-    "banking": [
-      "Plaid",
-      "Yodlee"
-    ],
-    "payment": [
-      "Stripe",
-      "PayPal"
-    ],
-    "accounting": [
-      "QuickBooks",
-      "Xero"
-    ]
+    "banking": ["Plaid", "Yodlee"],
+    "payment": ["Stripe", "PayPal"],
+    "accounting": ["QuickBooks", "Xero"]
   },
-  "compliance": [
-    "GDPR",
-    "PCI DSS",
-    "SOC 2",
-    "KYC/AML"
-  ],
+  "compliance": ["GDPR", "PCI DSS", "SOC 2", "KYC/AML"],
   "status": "production-ready",
   "createdAt": "2025-11-10",
   "updatedAt": "2025-11-10"

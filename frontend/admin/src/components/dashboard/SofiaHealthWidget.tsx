@@ -23,9 +23,7 @@ export function SofiaHealthWidget() {
   }
 
   const statusColor =
-    health?.status === 'healthy' ? 'success' :
-    health?.status === 'degraded' ? 'warning' :
-    'danger';
+    health?.status === 'healthy' ? 'success' : health?.status === 'degraded' ? 'warning' : 'danger';
 
   const uptime = health?.uptime ? formatDuration(health.uptime) : 'N/A';
   const successRate = health?.metrics
@@ -99,9 +97,7 @@ export function SofiaHealthWidget() {
 
         <div className="mb-7">
           <div className="d-flex align-items-center mb-5">
-            <span className="fs-6 fw-semibold text-gray-800 flex-grow-1">
-              Components Active
-            </span>
+            <span className="fs-6 fw-semibold text-gray-800 flex-grow-1">Components Active</span>
             <span className="badge badge-light-primary">
               {activeComponents}/{totalComponents}
             </span>
@@ -139,7 +135,9 @@ export function SofiaHealthWidget() {
 function ComponentStatus({ name, active }: { name: string; active: boolean }) {
   return (
     <div className="d-flex align-items-center">
-      <span className={`bullet bullet-vertical h-20px bg-${active ? 'success' : 'danger'} me-3`}></span>
+      <span
+        className={`bullet bullet-vertical h-20px bg-${active ? 'success' : 'danger'} me-3`}
+      ></span>
       <span className="fs-7 text-gray-700">{name}</span>
       <span className="ms-auto">
         {active ? (

@@ -25,7 +25,7 @@ export default defineEndpoint((router, { services, database }) => {
       if (product.track_inventory && product.inventory_quantity < quantity) {
         return res.status(400).json({
           error: 'Insufficient inventory',
-          available: product.inventory_quantity
+          available: product.inventory_quantity,
         });
       }
 
@@ -36,7 +36,7 @@ export default defineEndpoint((router, { services, database }) => {
           tenant_id,
           product_id,
           variant_id: variant_id || null,
-          status: 'active'
+          status: 'active',
         })
         .first();
 
@@ -48,22 +48,20 @@ export default defineEndpoint((router, { services, database }) => {
           return res.status(400).json({
             error: 'Insufficient inventory for requested quantity',
             available: product.inventory_quantity,
-            current_in_cart: existingItem.quantity
+            current_in_cart: existingItem.quantity,
           });
         }
 
-        await database('cart_items')
-          .where({ id: existingItem.id })
-          .update({
-            quantity: newQuantity,
-            updated_at: new Date()
-          });
+        await database('cart_items').where({ id: existingItem.id }).update({
+          quantity: newQuantity,
+          updated_at: new Date(),
+        });
 
         res.json({
           success: true,
           message: 'Cart updated',
           item_id: existingItem.id,
-          quantity: newQuantity
+          quantity: newQuantity,
         });
       } else {
         // Create new cart item
@@ -78,7 +76,7 @@ export default defineEndpoint((router, { services, database }) => {
             price: product.price,
             status: 'active',
             created_at: new Date(),
-            updated_at: new Date()
+            updated_at: new Date(),
           })
           .returning('*');
 
@@ -86,7 +84,7 @@ export default defineEndpoint((router, { services, database }) => {
           success: true,
           message: 'Item added to cart',
           item_id: cartItem.id,
-          quantity
+          quantity,
         });
       }
     } catch (error) {
@@ -113,22 +111,22 @@ export default defineEndpoint((router, { services, database }) => {
         .where({
           'cart_items.user_id': user_id,
           'cart_items.tenant_id': tenant_id,
-          'cart_items.status': 'active'
+          'cart_items.status': 'active',
         })
         .orderBy('cart_items.created_at', 'desc');
 
       // Calculate totals
-      const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
       const itemsCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
       // Check for low inventory warnings
       const warnings = cartItems
-        .filter(item => item.track_inventory && item.inventory_quantity < item.quantity)
-        .map(item => ({
+        .filter((item) => item.track_inventory && item.inventory_quantity < item.quantity)
+        .map((item) => ({
           item_id: item.id,
           product_name: item.product_name,
           requested: item.quantity,
-          available: item.inventory_quantity
+          available: item.inventory_quantity,
         }));
 
       res.json({
@@ -137,10 +135,10 @@ export default defineEndpoint((router, { services, database }) => {
           summary: {
             items_count: itemsCount,
             subtotal: subtotal.toFixed(2),
-            currency: 'USD'
+            currency: 'USD',
           },
-          warnings: warnings.length > 0 ? warnings : null
-        }
+          warnings: warnings.length > 0 ? warnings : null,
+        },
       });
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -163,7 +161,7 @@ export default defineEndpoint((router, { services, database }) => {
           id: req.params.id,
           user_id,
           tenant_id,
-          status: 'active'
+          status: 'active',
         })
         .first();
 
@@ -172,28 +170,24 @@ export default defineEndpoint((router, { services, database }) => {
       }
 
       // Check inventory
-      const product = await database('products')
-        .where({ id: cartItem.product_id })
-        .first();
+      const product = await database('products').where({ id: cartItem.product_id }).first();
 
       if (product.track_inventory && product.inventory_quantity < quantity) {
         return res.status(400).json({
           error: 'Insufficient inventory',
-          available: product.inventory_quantity
+          available: product.inventory_quantity,
         });
       }
 
-      await database('cart_items')
-        .where({ id: req.params.id })
-        .update({
-          quantity,
-          updated_at: new Date()
-        });
+      await database('cart_items').where({ id: req.params.id }).update({
+        quantity,
+        updated_at: new Date(),
+      });
 
       res.json({
         success: true,
         message: 'Cart item updated',
-        quantity
+        quantity,
       });
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -211,7 +205,7 @@ export default defineEndpoint((router, { services, database }) => {
           id: req.params.id,
           user_id,
           tenant_id,
-          status: 'active'
+          status: 'active',
         })
         .first();
 
@@ -220,16 +214,14 @@ export default defineEndpoint((router, { services, database }) => {
       }
 
       // Soft delete
-      await database('cart_items')
-        .where({ id: req.params.id })
-        .update({
-          status: 'removed',
-          updated_at: new Date()
-        });
+      await database('cart_items').where({ id: req.params.id }).update({
+        status: 'removed',
+        updated_at: new Date(),
+      });
 
       res.json({
         success: true,
-        message: 'Item removed from cart'
+        message: 'Item removed from cart',
       });
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -246,16 +238,16 @@ export default defineEndpoint((router, { services, database }) => {
         .where({
           user_id,
           tenant_id,
-          status: 'active'
+          status: 'active',
         })
         .update({
           status: 'cleared',
-          updated_at: new Date()
+          updated_at: new Date(),
         });
 
       res.json({
         success: true,
-        message: 'Cart cleared'
+        message: 'Cart cleared',
       });
     } catch (error) {
       res.status(500).json({ error: error.message });

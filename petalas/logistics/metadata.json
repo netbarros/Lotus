@@ -8,12 +8,7 @@
   "pricing": {
     "starter": {
       "price": 99,
-      "features": [
-        "Up to 5 vehicles",
-        "Basic tracking",
-        "Route planning",
-        "Email support"
-      ]
+      "features": ["Up to 5 vehicles", "Basic tracking", "Route planning", "Email support"]
     },
     "professional": {
       "price": 199,
@@ -73,19 +68,10 @@
     "Analytics dashboard"
   ],
   "integrations": {
-    "maps": [
-      "Google Maps",
-      "Mapbox"
-    ],
-    "tracking": [
-      "GPS devices",
-      "Geotab"
-    ]
+    "maps": ["Google Maps", "Mapbox"],
+    "tracking": ["GPS devices", "Geotab"]
   },
-  "compliance": [
-    "GDPR",
-    "DOT regulations"
-  ],
+  "compliance": ["GDPR", "DOT regulations"],
   "status": "production-ready",
   "createdAt": "2025-11-10",
   "updatedAt": "2025-11-10"

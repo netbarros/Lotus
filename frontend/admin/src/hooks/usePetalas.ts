@@ -11,7 +11,11 @@ import type { Petala } from '@types';
 export function usePetalas() {
   const queryClient = useQueryClient();
 
-  const { data: petalas, isLoading, error } = useQuery({
+  const {
+    data: petalas,
+    isLoading,
+    error,
+  } = useQuery({
     queryKey: ['petalas'],
     queryFn: async () => {
       const response = await api.get<Petala>('petalas');

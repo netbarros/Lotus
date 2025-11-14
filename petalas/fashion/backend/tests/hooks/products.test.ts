@@ -16,7 +16,7 @@ describe('Products Hook', () => {
     it('should auto-generate slug from title', async () => {
       const input = {
         title: 'Summer Dress 2025',
-        price: 99.99
+        price: 99.99,
       };
 
       const result = await processFilter(input);
@@ -28,7 +28,7 @@ describe('Products Hook', () => {
       const input = {
         title: 'Summer Dress 2025',
         slug: 'custom-summer-dress',
-        price: 99.99
+        price: 99.99,
       };
 
       const result = await processFilter(input);
@@ -39,7 +39,7 @@ describe('Products Hook', () => {
     it('should set default status to draft', async () => {
       const input = {
         title: 'Summer Dress 2025',
-        price: 99.99
+        price: 99.99,
       };
 
       const result = await processFilter(input);
@@ -51,7 +51,7 @@ describe('Products Hook', () => {
       const input = {
         title: 'Summer Dress 2025',
         price: 100,
-        discount_percentage: 20
+        discount_percentage: 20,
       };
 
       const result = await processFilter(input);
@@ -64,7 +64,7 @@ describe('Products Hook', () => {
     it('should update search_vector on title/description change', async () => {
       const input = {
         title: 'Updated Product',
-        description: 'New description'
+        description: 'New description',
       };
 
       const result = await processAction(input);
@@ -75,7 +75,7 @@ describe('Products Hook', () => {
     it('should recalculate stock status on quantity change', async () => {
       const input = {
         quantity: 5,
-        low_stock_threshold: 10
+        low_stock_threshold: 10,
       };
 
       const result = await processAction(input);
@@ -88,7 +88,7 @@ describe('Products Hook', () => {
     it('should increment view count', async () => {
       const mockProduct = {
         id: 1,
-        views: 10
+        views: 10,
       };
 
       const result = await incrementViews(mockProduct);
@@ -99,11 +99,7 @@ describe('Products Hook', () => {
     it('should calculate average rating from reviews', async () => {
       const mockProduct = {
         id: 1,
-        reviews: [
-          { rating: 5 },
-          { rating: 4 },
-          { rating: 5 }
-        ]
+        reviews: [{ rating: 5 }, { rating: 4 }, { rating: 5 }],
       };
 
       const result = await calculateRating(mockProduct);
@@ -116,7 +112,10 @@ describe('Products Hook', () => {
 // Helper functions that would be extracted from the hook
 function processFilter(input: any) {
   if (input.title && !input.slug) {
-    input.slug = input.title.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+    input.slug = input.title
+      .toLowerCase()
+      .replace(/\s+/g, '-')
+      .replace(/[^a-z0-9-]/g, '');
   }
 
   if (!input.status) {

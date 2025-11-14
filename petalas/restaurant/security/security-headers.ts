@@ -31,16 +31,13 @@ export default ({ app }: any) => {
         "connect-src 'self' https://api.fashion.magicsaas.ai",
         "frame-ancestors 'self'",
         "base-uri 'self'",
-        "form-action 'self'"
+        "form-action 'self'",
       ].join('; ')
     );
 
     // Strict Transport Security (HSTS)
     if (req.secure || req.headers['x-forwarded-proto'] === 'https') {
-      res.setHeader(
-        'Strict-Transport-Security',
-        'max-age=31536000; includeSubDomains; preload'
-      );
+      res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
     }
 
     // Permissions Policy (formerly Feature Policy)
@@ -54,7 +51,7 @@ export default ({ app }: any) => {
         'usb=()',
         'magnetometer=()',
         'gyroscope=()',
-        'accelerometer=()'
+        'accelerometer=()',
       ].join(', ')
     );
 

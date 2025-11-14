@@ -5,7 +5,7 @@ describe('Orders Hook', () => {
     it('should generate order number', async () => {
       const input = {
         customer_id: 1,
-        total: 150.00
+        total: 150.0,
       };
 
       const result = processFilter(input);
@@ -17,7 +17,7 @@ describe('Orders Hook', () => {
     it('should set initial status to pending', async () => {
       const input = {
         customer_id: 1,
-        total: 150.00
+        total: 150.0,
       };
 
       const result = processFilter(input);
@@ -28,7 +28,7 @@ describe('Orders Hook', () => {
     it('should set order date to now', async () => {
       const input = {
         customer_id: 1,
-        total: 150.00
+        total: 150.0,
       };
 
       const result = processFilter(input);
@@ -42,7 +42,7 @@ describe('Orders Hook', () => {
       const input = {
         id: 1,
         status: 'confirmed',
-        customer_email: 'customer@example.com'
+        customer_email: 'customer@example.com',
       };
 
       const emailSent = await sendStatusEmail(input);
@@ -56,8 +56,8 @@ describe('Orders Hook', () => {
         status: 'completed',
         items: [
           { product_id: 1, quantity: 2 },
-          { product_id: 2, quantity: 1 }
-        ]
+          { product_id: 2, quantity: 1 },
+        ],
       };
 
       const inventoryUpdated = await updateInventory(input);
@@ -69,8 +69,8 @@ describe('Orders Hook', () => {
       const input = {
         id: 1,
         status: 'completed',
-        total: 100.00,
-        customer_id: 1
+        total: 100.0,
+        customer_id: 1,
       };
 
       const result = await calculateLoyaltyPoints(input);
@@ -83,9 +83,7 @@ describe('Orders Hook', () => {
     it('should restore inventory on order cancellation', async () => {
       const order = {
         id: 1,
-        items: [
-          { product_id: 1, quantity: 2 }
-        ]
+        items: [{ product_id: 1, quantity: 2 }],
       };
 
       const restored = await restoreInventory(order);
@@ -98,7 +96,9 @@ describe('Orders Hook', () => {
 function processFilter(input: any) {
   if (!input.order_number) {
     const date = new Date().toISOString().split('T')[0].replace(/-/g, '');
-    const random = Math.floor(Math.random() * 9999).toString().padStart(4, '0');
+    const random = Math.floor(Math.random() * 9999)
+      .toString()
+      .padStart(4, '0');
     input.order_number = `ORD-${date}-${random}`;
   }
 

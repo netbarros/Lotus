@@ -11,7 +11,7 @@ describe('Restaurant Customers Endpoint', () => {
   beforeAll(async () => {
     const response = await api.post('/auth/login', {
       email: 'admin@example.com',
-      password: 'password'
+      password: 'password',
     });
     authToken = response.data.data.access_token;
     api.defaults.headers.common['Authorization'] = `Bearer ${authToken}`;
@@ -29,7 +29,7 @@ describe('Restaurant Customers Endpoint', () => {
         name: 'John Doe',
         email: 'john@example.com',
         phone: '+1234567890',
-        dietary_preferences: ['vegetarian']
+        dietary_preferences: ['vegetarian'],
       };
 
       const response = await api.post('/customers', customerData);
@@ -56,7 +56,7 @@ describe('Restaurant Customers Endpoint', () => {
       const response = await api.post(`/customers/${testCustomerId}/preferences`, {
         dietary_restrictions: ['gluten-free'],
         favoriteItems: [1, 2, 3],
-        preferredSeating: 'outdoor'
+        preferredSeating: 'outdoor',
       });
 
       expect(response.status).toBe(200);

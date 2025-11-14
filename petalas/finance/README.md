@@ -1,14 +1,13 @@
 # 💰 Pétala Finance
 
-**Version:** 1.0.0
-**Status:** ✅ Production-Ready
-**Category:** finance
+**Version:** 1.0.0 **Status:** ✅ Production-Ready **Category:** finance
 
 ---
 
 ## 📋 Overview
 
-Complete fintech platform with accounts, transactions, open banking, reporting, and compliance
+Complete fintech platform with accounts, transactions, open banking, reporting,
+and compliance
 
 ### Key Features
 
@@ -40,11 +39,13 @@ npm run dev
 ## 💰 Pricing
 
 ### Starter - $149/month
+
 - Up to 1000 transactions/month
 - Basic reporting
 - Email support
 
 ### Professional - $349/month
+
 - Unlimited transactions
 - Open banking
 - Advanced analytics
@@ -52,6 +53,7 @@ npm run dev
 - Priority support
 
 ### Enterprise - $799/month
+
 - Everything in Professional
 - White-label
 - API access
@@ -60,5 +62,4 @@ npm run dev
 
 ---
 
-**Built with ❤️ by Software Lotus**
-**Powered by MagicSaaS System-∞ & Sofia AI**
+**Built with ❤️ by Software Lotus** **Powered by MagicSaaS System-∞ & Sofia AI**

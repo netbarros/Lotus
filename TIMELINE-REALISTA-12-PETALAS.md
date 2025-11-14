@@ -7,6 +7,7 @@
 ## 📊 Análise de Velocidade Real (Pétala Fashion)
 
 ### Sessão 1 (Inicial → 95%)
+
 - **Commits:** 1-12 (4fbecda → fd471a4)
 - **Arquivos criados:** 59
 - **Linhas escritas:** 11,660
@@ -23,6 +24,7 @@
 - **Tempo estimado:** 1 sessão contínua (com interrupções por context/limite)
 
 ### Sessão 2 (95% → 100%)
+
 - **Commits:** 13-17 (4765e6e → e1df1b0)
 - **Arquivos criados:** 18
 - **Linhas escritas:** 2,585
@@ -34,6 +36,7 @@
 - **Tempo estimado:** 1 sessão contínua
 
 ### Total Pétala Fashion
+
 - **Sessões:** 2 sessões
 - **Arquivos:** 77
 - **Linhas:** 14,245
@@ -75,6 +78,7 @@
 - **Timeline:** **4 meses**
 
 **Fatores incluídos:**
+
 - Context limits frequentes (a cada 2-3 horas de trabalho)
 - Necessidade de revisar código anterior
 - Ajustes e correções
@@ -94,6 +98,7 @@
 - **Timeline:** **6-7 meses**
 
 **Fatores incluídos:**
+
 - Todos os fatores do Cenário 2 +
 - Bugs e retrabalho (10-15% do tempo)
 - Integração entre Pétalas
@@ -109,20 +114,25 @@
 ## 📅 Cronograma Detalhado (Cenário Realista - 4 meses)
 
 ### Mês 1: Pétalas 2-4 (Restaurant, Healthcare, Real Estate)
+
 - **Semana 1-2:** Pétala Restaurant (Backend 70%, Frontend 30%)
 - **Semana 3-4:** Pétala Restaurant (100%) + Healthcare (Backend 50%)
 
 ### Mês 2: Pétalas 5-7 (Education, Fitness, Legal)
+
 - **Semana 5-6:** Healthcare (100%) + Real Estate (Backend 70%)
 - **Semana 7-8:** Real Estate (100%) + Education (Backend 50%)
 
 ### Mês 3: Pétalas 8-10 (Automotive, Finance, Travel)
+
 - **Semana 9-10:** Education (100%) + Fitness (Backend 70%)
 - **Semana 11-12:** Fitness (100%) + Legal (Backend 70%)
 
 ### Mês 4: Pétalas 11-13 (Events, Logistics, Retail)
+
 - **Semana 13-14:** Legal (100%) + Automotive (Backend 70%)
-- **Semana 15-16:** Automotive (100%) + Finance, Travel, Events, Logistics, Retail (70% cada - reuso massivo)
+- **Semana 15-16:** Automotive (100%) + Finance, Travel, Events, Logistics,
+  Retail (70% cada - reuso massivo)
 
 ---
 
@@ -133,6 +143,7 @@
 Após Pétala Fashion completa, podemos **reusar**:
 
 ✅ **100% Reuso:**
+
 - Docker Compose structure
 - Grafana dashboard template (ajustar queries)
 - Frontend core (Router, Stores structure, API service pattern)
@@ -141,6 +152,7 @@ Após Pétala Fashion completa, podemos **reusar**:
 - Authentication flow
 
 ✅ **70-80% Reuso:**
+
 - Collections structure (adaptar fields)
 - Flows patterns (adaptar to business logic)
 - Hooks patterns (adaptar to entities)
@@ -148,6 +160,7 @@ Após Pétala Fashion completa, podemos **reusar**:
 - Frontend views structure (adaptar content)
 
 ✅ **50-60% Reuso:**
+
 - Endpoints (adaptar business logic)
 - Frontend views content (adaptar to vertical)
 
@@ -161,6 +174,7 @@ Após Pétala Fashion completa, podemos **reusar**:
 **Média ponderada:** 55% do tempo original
 
 **Timeline ajustado com reuso:**
+
 - **Sem reuso:** 6 meses
 - **Com reuso (55%):** **3.3 meses**
 - **Arredondando:** **3-4 meses** ✅
@@ -169,11 +183,11 @@ Após Pétala Fashion completa, podemos **reusar**:
 
 ## 📊 Comparação de Cenários
 
-| Cenário | Sessões | Tempo/Semana | Timeline | Probabilidade |
-|---------|---------|--------------|----------|---------------|
-| **Otimista** | 30 | 5 sessões/semana | 1.5 meses | 10% |
-| **Realista** | 42 | 2.5 sessões/semana | **4 meses** | **60%** ✅ |
-| **Conservador** | 54 | 2 sessões/semana | 6-7 meses | 30% |
+| Cenário         | Sessões | Tempo/Semana       | Timeline    | Probabilidade |
+| --------------- | ------- | ------------------ | ----------- | ------------- |
+| **Otimista**    | 30      | 5 sessões/semana   | 1.5 meses   | 10%           |
+| **Realista**    | 42      | 2.5 sessões/semana | **4 meses** | **60%** ✅    |
+| **Conservador** | 54      | 2 sessões/semana   | 6-7 meses   | 30%           |
 
 ---
 
@@ -189,21 +203,21 @@ Após Pétala Fashion completa, podemos **reusar**:
 
 ### Breakdown por Componente
 
-| Componente | Tempo/Pétala | 12 Pétalas |
-|------------|--------------|------------|
-| Backend Collections | 2h (reuso 80%) | 24h |
-| Backend Flows | 1.5h (reuso 70%) | 18h |
-| Backend Hooks | 1h (reuso 70%) | 12h |
-| Backend Endpoints | 4h (reuso 50%) | 48h |
-| Frontend Views | 3h (reuso 60%) | 36h |
-| Frontend Components | 1h (reuso 80%) | 12h |
-| API Services | 0.5h (reuso 90%) | 6h |
-| Documentation | 1h (reuso 80%) | 12h |
-| Testing | 2h (novo) | 24h |
-| **TOTAL** | **16h/Pétala** | **192h** |
+| Componente          | Tempo/Pétala     | 12 Pétalas |
+| ------------------- | ---------------- | ---------- |
+| Backend Collections | 2h (reuso 80%)   | 24h        |
+| Backend Flows       | 1.5h (reuso 70%) | 18h        |
+| Backend Hooks       | 1h (reuso 70%)   | 12h        |
+| Backend Endpoints   | 4h (reuso 50%)   | 48h        |
+| Frontend Views      | 3h (reuso 60%)   | 36h        |
+| Frontend Components | 1h (reuso 80%)   | 12h        |
+| API Services        | 0.5h (reuso 90%) | 6h         |
+| Documentation       | 1h (reuso 80%)   | 12h        |
+| Testing             | 2h (novo)        | 24h        |
+| **TOTAL**           | **16h/Pétala**   | **192h**   |
 
-**192 horas ÷ 8 horas/sessão = 24 sessões**
-**24 sessões ÷ 2.5 sessões/semana = 9.6 semanas ≈ 2.5 meses**
+**192 horas ÷ 8 horas/sessão = 24 sessões** **24 sessões ÷ 2.5 sessões/semana =
+9.6 semanas ≈ 2.5 meses**
 
 **Com buffer de 40% para imprevistos: 3.5 meses**
 
@@ -234,6 +248,7 @@ Após Pétala Fashion completa, podemos **reusar**:
 ### 🎯 Resposta Direta
 
 **Com base na velocidade real observada e considerando:**
+
 - Interrupções por context limit
 - Necessidade de revisões
 - Reuso massivo de código
@@ -244,6 +259,7 @@ Após Pétala Fashion completa, podemos **reusar**:
 # 🗓️ 3-4 MESES
 
 **Data prevista de conclusão (começando agora):**
+
 - **Cenário Otimista:** Março 2026
 - **Cenário Realista:** Abril 2026 ✅
 - **Cenário Conservador:** Maio 2026
@@ -261,6 +277,5 @@ Após Pétala Fashion completa, podemos **reusar**:
 
 ---
 
-**Análise criada em:** 2025-11-06
-**Baseada em:** Velocidade real observada na Pétala Fashion
-**Confiança:** 85% (alta - baseada em dados reais)
+**Análise criada em:** 2025-11-06 **Baseada em:** Velocidade real observada na
+Pétala Fashion **Confiança:** 85% (alta - baseada em dados reais)

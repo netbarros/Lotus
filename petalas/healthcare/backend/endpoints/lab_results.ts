@@ -18,7 +18,7 @@ export default defineEndpoint((router, { database }) => {
         customer_phone,
         party_size,
         status: 'waiting',
-        created_at: database.fn.now()
+        created_at: database.fn.now(),
       });
 
       res.json({ success: true, waitlist_id: id });
@@ -30,9 +30,7 @@ export default defineEndpoint((router, { database }) => {
   // GET /petalas/restaurant/waitlist/position/:id - Get position
   router.get('/position/:id', async (req, res) => {
     try {
-      const entry = await database('waitlist')
-        .where({ id: req.params.id })
-        .first();
+      const entry = await database('waitlist').where({ id: req.params.id }).first();
 
       if (!entry) return res.status(404).json({ error: 'Not found' });
 
@@ -50,8 +48,8 @@ export default defineEndpoint((router, { database }) => {
 });
 
 function generateUUID() {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
-    const r = Math.random() * 16 | 0;
-    return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+    const r = (Math.random() * 16) | 0;
+    return (c === 'x' ? r : (r & 0x3) | 0x8).toString(16);
   });
 }

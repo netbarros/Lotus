@@ -68,16 +68,12 @@ export class pgVectorService {
   private searchCount = 0;
   private totalSearchLatency = 0;
 
-  constructor(
-    config: pgVectorConfig,
-    redis: Redis,
-    eventStore: EventStore
-  ) {
+  constructor(config: pgVectorConfig, redis: Redis, eventStore: EventStore) {
     this.config = {
       dimensions: 1536,
       tableName: 'embeddings',
       indexType: 'ivfflat',
-      ...config
+      ...config,
     };
     this.pool = config.pool;
     this.redis = redis;
@@ -116,9 +112,9 @@ export class pgVectorService {
         metadata: {
           tableName: this.config.tableName,
           dimensions: this.config.dimensions,
-          indexType: this.config.indexType
+          indexType: this.config.indexType,
         },
-        timestamp: new Date()
+        timestamp: new Date(),
       });
     } catch (error) {
       logger.error('❌ Failed to initialize pgVector Service:', error);
@@ -224,7 +220,7 @@ export class pgVectorService {
       embedding.content,
       JSON.stringify(embedding.embedding),
       JSON.stringify(embedding.metadata || {}),
-      embedding.tenantId || null
+      embedding.tenantId || null,
     ];
 
     const result = await this.pool.query(query, values);
@@ -239,9 +235,9 @@ export class pgVectorService {
       metadata: {
         id,
         contentLength: embedding.content.length,
-        tenantId: embedding.tenantId
+        tenantId: embedding.tenantId,
       },
-      timestamp: new Date()
+      timestamp: new Date(),
     });
 
     return id;
@@ -272,7 +268,7 @@ export class pgVectorService {
           embedding.content,
           JSON.stringify(embedding.embedding),
           JSON.stringify(embedding.metadata || {}),
-          embedding.tenantId || null
+          embedding.tenantId || null,
         ];
 
         const result = await client.query(query, values);
@@ -288,9 +284,9 @@ export class pgVectorService {
         type: 'pgvector.bulk_inserted',
         metadata: {
           count: embeddings.length,
-          tenantId: embeddings[0]?.tenantId
+          tenantId: embeddings[0]?.tenantId,
         },
-        timestamp: new Date()
+        timestamp: new Date(),
       });
 
       return ids;
@@ -359,11 +355,11 @@ export class pgVectorService {
       this.searchCount++;
       this.totalSearchLatency += latency;
 
-      const results: SimilarityResult[] = result.rows.map(row => ({
+      const results: SimilarityResult[] = result.rows.map((row) => ({
         id: row.id,
         content: row.content,
         similarity: parseFloat(row.similarity),
-        metadata: row.metadata
+        metadata: row.metadata,
       }));
 
       logger.info(`✅ Found ${results.length} similar embeddings (${latency}ms)`);
@@ -374,9 +370,9 @@ export class pgVectorService {
           resultsCount: results.length,
           latencyMs: latency,
           tenantId: options.tenantId,
-          limit
+          limit,
         },
-        timestamp: new Date()
+        timestamp: new Date(),
       });
 
       return results;
@@ -408,7 +404,7 @@ export class pgVectorService {
       embedding: JSON.parse(row.embedding),
       metadata: row.metadata,
       tenantId: row.tenant_id,
-      createdAt: row.created_at
+      createdAt: row.created_at,
     };
   }
 
@@ -429,7 +425,7 @@ export class pgVectorService {
       await this.eventStore.record({
         type: 'pgvector.embedding_deleted',
         metadata: { id },
-        timestamp: new Date()
+        timestamp: new Date(),
       });
       return true;
     }
@@ -455,7 +451,7 @@ export class pgVectorService {
     await this.eventStore.record({
       type: 'pgvector.tenant_deleted',
       metadata: { tenantId, count },
-      timestamp: new Date()
+      timestamp: new Date(),
     });
 
     return count;
@@ -488,7 +484,7 @@ export class pgVectorService {
     return {
       insertCount: this.insertCount,
       searchCount: this.searchCount,
-      averageSearchLatencyMs: this.searchCount > 0 ? this.totalSearchLatency / this.searchCount : 0
+      averageSearchLatencyMs: this.searchCount > 0 ? this.totalSearchLatency / this.searchCount : 0,
     };
   }
 
@@ -507,7 +503,7 @@ export class pgVectorService {
       initialized: this.isInitialized,
       tableName: this.config.tableName!,
       dimensions: this.config.dimensions!,
-      statistics: this.getStatistics()
+      statistics: this.getStatistics(),
     };
   }
 }

@@ -53,18 +53,14 @@ describe('LangChainService', () => {
     });
 
     it('should throw error for non-existent chain', async () => {
-      await expect(
-        service.executeChain('non-existent-chain', {})
-      ).rejects.toThrow();
+      await expect(service.executeChain('non-existent-chain', {})).rejects.toThrow();
     });
 
     it('should handle chain execution errors', async () => {
       const chainName = 'generate-saas';
       const invalidInput = null;
 
-      await expect(
-        service.executeChain(chainName, invalidInput)
-      ).rejects.toThrow();
+      await expect(service.executeChain(chainName, invalidInput)).rejects.toThrow();
     });
   });
 

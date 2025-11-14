@@ -81,11 +81,7 @@ export class SEOOptimizer {
   private redis: Redis;
   private eventStore: EventStore;
 
-  constructor(
-    redis: Redis,
-    eventStore: EventStore,
-    anthropicApiKey: string
-  ) {
+  constructor(redis: Redis, eventStore: EventStore, anthropicApiKey: string) {
     this.redis = redis;
     this.eventStore = eventStore;
     this.anthropic = new Anthropic({ apiKey: anthropicApiKey });
@@ -94,11 +90,7 @@ export class SEOOptimizer {
   /**
    * Analyze SEO for a page or entire site
    */
-  async analyzeSEO(
-    url: string,
-    content: string,
-    tenantId: string
-  ): Promise<SEOAnalysis> {
+  async analyzeSEO(url: string, content: string, tenantId: string): Promise<SEOAnalysis> {
     logger.info(`🚀 Analyzing SEO for: ${url}`);
 
     const startTime = Date.now();
@@ -123,18 +115,11 @@ export class SEOOptimizer {
       const competitors = await this.analyzeCompetitors(url, tenantId);
 
       // STEP 7: Generate improvement opportunities
-      const opportunities = await this.generateOpportunities(
-        content,
-        keywords,
-        competitors
-      );
+      const opportunities = await this.generateOpportunities(content, keywords, competitors);
 
       // Calculate overall score
       const overallScore = Math.round(
-        (technicalScore * 0.25 +
-          contentScore * 0.3 +
-          uxScore * 0.2 +
-          mobileScore * 0.25)
+        technicalScore * 0.25 + contentScore * 0.3 + uxScore * 0.2 + mobileScore * 0.25
       );
 
       // Determine grade
@@ -154,12 +139,12 @@ export class SEOOptimizer {
           content: contentScore,
           backlinks: 0, // Would be fetched from backlink analysis tool
           userExperience: uxScore,
-          mobile: mobileScore
+          mobile: mobileScore,
         },
         issues: [],
         opportunities,
         keywords,
-        competitors
+        competitors,
       };
 
       // Log analysis
@@ -175,19 +160,18 @@ export class SEOOptimizer {
           score: overallScore,
           grade,
           metrics: analysis.metrics,
-          opportunitiesCount: opportunities.length
+          opportunitiesCount: opportunities.length,
         },
         metadata: {
           tenantId,
           layer: 'seo-optimizer',
-          duration: Date.now() - startTime
-        }
+          duration: Date.now() - startTime,
+        },
       });
 
       logger.info(`✅ SEO analysis completed: ${grade} (${overallScore}/100)`);
 
       return analysis;
-
     } catch (error) {
       logger.error('❌ SEO analysis failed', error);
       throw error;
@@ -204,9 +188,7 @@ export class SEOOptimizer {
   ): Promise<SEOMetadata> {
     logger.info(`🔧 Generating SEO metadata for ${pageType} page`);
 
-    const keywordsContext = targetKeywords
-      ? `Target keywords: ${targetKeywords.join(', ')}`
-      : '';
+    const keywordsContext = targetKeywords ? `Target keywords: ${targetKeywords.join(', ')}` : '';
 
     const prompt = `You are Sofia AI, an expert SEO specialist.
 
@@ -247,12 +229,10 @@ Format as JSON:
       model: 'claude-3-5-sonnet-20241022',
       max_tokens: 2048,
       temperature: 0.4,
-      messages: [{ role: 'user', content: prompt }]
+      messages: [{ role: 'user', content: prompt }],
     });
 
-    const responseText = message.content[0].type === 'text'
-      ? message.content[0].text
-      : '{}';
+    const responseText = message.content[0].type === 'text' ? message.content[0].text : '{}';
 
     const jsonMatch = responseText.match(/\{[\s\S]*\}/);
     const metadata = jsonMatch ? JSON.parse(jsonMatch[0]) : {};
@@ -310,12 +290,10 @@ Format as JSON:
       model: 'claude-3-5-sonnet-20241022',
       max_tokens: 8192,
       temperature: 0.3,
-      messages: [{ role: 'user', content: prompt }]
+      messages: [{ role: 'user', content: prompt }],
     });
 
-    const responseText = message.content[0].type === 'text'
-      ? message.content[0].text
-      : '{}';
+    const responseText = message.content[0].type === 'text' ? message.content[0].text : '{}';
 
     const jsonMatch = responseText.match(/\{[\s\S]*\}/);
     const result = jsonMatch
@@ -339,7 +317,7 @@ Format as JSON:
       { test: /<link rel="canonical"/.test(content), penalty: 8, name: 'Canonical URL' },
       { test: /<html lang=/.test(content), penalty: 3, name: 'HTML lang attribute' },
       { test: /<h1>/.test(content), penalty: 10, name: 'H1 heading' },
-      { test: !/<img(?![^>]*alt=)/.test(content), penalty: 7, name: 'Image alt tags' }
+      { test: !/<img(?![^>]*alt=)/.test(content), penalty: 7, name: 'Image alt tags' },
     ];
 
     for (const check of checks) {
@@ -362,7 +340,8 @@ Format as JSON:
     let score = 100;
 
     // Scoring criteria
-    if (wordCount < 300) score -= 30; // Too short
+    if (wordCount < 300)
+      score -= 30; // Too short
     else if (wordCount < 600) score -= 15;
     else if (wordCount > 5000) score -= 10; // Too long
 
@@ -439,17 +418,13 @@ Format as JSON:
       model: 'claude-3-5-sonnet-20241022',
       max_tokens: 2048,
       temperature: 0.5,
-      messages: [{ role: 'user', content: prompt }]
+      messages: [{ role: 'user', content: prompt }],
     });
 
-    const responseText = message.content[0].type === 'text'
-      ? message.content[0].text
-      : '{}';
+    const responseText = message.content[0].type === 'text' ? message.content[0].text : '{}';
 
     const jsonMatch = responseText.match(/\{[\s\S]*\}/);
-    return jsonMatch
-      ? JSON.parse(jsonMatch[0])
-      : { current: [], suggested: [] };
+    return jsonMatch ? JSON.parse(jsonMatch[0]) : { current: [], suggested: [] };
   }
 
   /**
@@ -471,14 +446,14 @@ Format as JSON:
         domain: 'competitor1.com',
         score: 88,
         strengths: ['High-quality backlinks', 'Fast page speed'],
-        weaknesses: ['Poor mobile optimization', 'Thin content']
+        weaknesses: ['Poor mobile optimization', 'Thin content'],
       },
       {
         domain: 'competitor2.com',
         score: 82,
         strengths: ['Excellent content', 'Strong social signals'],
-        weaknesses: ['Technical SEO issues', 'Slow load times']
-      }
+        weaknesses: ['Technical SEO issues', 'Slow load times'],
+      },
     ];
   }
 
@@ -518,12 +493,10 @@ Format as JSON array:
       model: 'claude-3-5-sonnet-20241022',
       max_tokens: 2048,
       temperature: 0.6,
-      messages: [{ role: 'user', content: prompt }]
+      messages: [{ role: 'user', content: prompt }],
     });
 
-    const responseText = message.content[0].type === 'text'
-      ? message.content[0].text
-      : '[]';
+    const responseText = message.content[0].type === 'text' ? message.content[0].text : '[]';
 
     const jsonMatch = responseText.match(/\[[\s\S]*\]/);
     return jsonMatch ? JSON.parse(jsonMatch[0]) : [];
@@ -549,7 +522,7 @@ Format as JSON array:
       return {
         trend: 'stable',
         changePercent: 0,
-        alerts: ['Not enough historical data']
+        alerts: ['Not enough historical data'],
       };
     }
 
@@ -579,7 +552,7 @@ Format as JSON array:
     logger.info('🗺️  Generating sitemap...');
 
     const urls = pages
-      .map(page => {
+      .map((page) => {
         const priority = page.priority || 0.5;
         const lastmod = page.lastModified.toISOString().split('T')[0];
         return `  <url>
@@ -600,7 +573,7 @@ ${urls}
    * Generate robots.txt
    */
   generateRobotsTxt(sitemapUrl: string, disallowPaths: string[] = []): string {
-    const disallow = disallowPaths.map(path => `Disallow: ${path}`).join('\n');
+    const disallow = disallowPaths.map((path) => `Disallow: ${path}`).join('\n');
 
     return `User-agent: *
 ${disallow}

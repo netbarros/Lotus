@@ -161,9 +161,7 @@ describe('DecisionLogger', () => {
         { timestamp: new Date('2024-02-15') },
       ];
 
-      const filtered = logs.filter(
-        (log) => log.timestamp >= startDate && log.timestamp <= endDate
-      );
+      const filtered = logs.filter((log) => log.timestamp >= startDate && log.timestamp <= endDate);
 
       expect(filtered).toHaveLength(1);
     });
@@ -188,9 +186,7 @@ describe('DecisionLogger', () => {
       ];
 
       const keyword = 'user';
-      const results = logs.filter((log) =>
-        log.details.toLowerCase().includes(keyword)
-      );
+      const results = logs.filter((log) => log.details.toLowerCase().includes(keyword));
 
       expect(results).toHaveLength(2);
     });
@@ -205,8 +201,9 @@ describe('DecisionLogger', () => {
 
       // Detect rapid logins from different IPs
       const uniqueIPs = new Set(recentLogins.map((l) => l.ipAddress));
-      const timeSpan = Math.max(...recentLogins.map((l) => l.timestamp)) -
-                       Math.min(...recentLogins.map((l) => l.timestamp));
+      const timeSpan =
+        Math.max(...recentLogins.map((l) => l.timestamp)) -
+        Math.min(...recentLogins.map((l) => l.timestamp));
 
       const suspicious = uniqueIPs.size > 1 && timeSpan < 60000; // < 1 minute
       expect(suspicious).toBe(true);

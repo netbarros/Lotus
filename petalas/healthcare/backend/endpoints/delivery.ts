@@ -9,13 +9,11 @@ export default defineEndpoint((router, { database }) => {
     try {
       const { order_id, driver_id } = req.body;
 
-      await database('orders')
-        .where({ id: order_id })
-        .update({
-          driver_id,
-          status: 'out_for_delivery',
-          updated_at: database.fn.now()
-        });
+      await database('orders').where({ id: order_id }).update({
+        driver_id,
+        status: 'out_for_delivery',
+        updated_at: database.fn.now(),
+      });
 
       res.json({ success: true });
     } catch (error) {
@@ -25,9 +23,7 @@ export default defineEndpoint((router, { database }) => {
 
   router.get('/track/:order_id', async (req, res) => {
     try {
-      const order = await database('orders')
-        .where({ id: req.params.order_id })
-        .first();
+      const order = await database('orders').where({ id: req.params.order_id }).first();
 
       if (!order) return res.status(404).json({ error: 'Order not found' });
 

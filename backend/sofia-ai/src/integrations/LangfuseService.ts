@@ -69,15 +69,11 @@ export class LangfuseService {
   private traceCount = 0;
   private spanCount = 0;
 
-  constructor(
-    config: LangfuseConfig,
-    redis: Redis,
-    eventStore: EventStore
-  ) {
+  constructor(config: LangfuseConfig, redis: Redis, eventStore: EventStore) {
     this.config = {
       host: 'http://langfuse:3000',
       enabled: true,
-      ...config
+      ...config,
     };
     this.redis = redis;
     this.eventStore = eventStore;
@@ -119,9 +115,9 @@ export class LangfuseService {
         type: 'langfuse.initialized',
         metadata: {
           host: this.config.host,
-          enabled: this.config.enabled
+          enabled: this.config.enabled,
         },
-        timestamp: new Date()
+        timestamp: new Date(),
       });
     } catch (error) {
       logger.error('❌ Failed to initialize Langfuse Service:', error);
@@ -146,10 +142,10 @@ export class LangfuseService {
       userId: options.userId,
       metadata: {
         ...options.metadata,
-        tenantId: options.tenantId
+        tenantId: options.tenantId,
       },
       startTime: new Date(),
-      spans: []
+      spans: [],
     };
 
     this.traces.set(traceId, trace);
@@ -185,7 +181,7 @@ export class LangfuseService {
       input: options.input,
       output: options.output,
       metadata: options.metadata,
-      startTime: new Date()
+      startTime: new Date(),
     };
 
     trace.spans.push(span);
@@ -199,18 +195,14 @@ export class LangfuseService {
   /**
    * End a span
    */
-  endSpan(
-    traceId: string,
-    spanId: string,
-    output?: any
-  ): void {
+  endSpan(traceId: string, spanId: string, output?: any): void {
     const trace = this.traces.get(traceId);
     if (!trace) {
       logger.warn(`⚠️  Trace not found: ${traceId}`);
       return;
     }
 
-    const span = trace.spans.find(s => s.id === spanId);
+    const span = trace.spans.find((s) => s.id === spanId);
     if (!span) {
       logger.warn(`⚠️  Span not found: ${spanId}`);
       return;
@@ -259,9 +251,9 @@ export class LangfuseService {
         durationMs: duration,
         spanCount: trace.spans.length,
         userId: trace.userId,
-        tenantId: trace.metadata?.tenantId
+        tenantId: trace.metadata?.tenantId,
       },
-      timestamp: new Date()
+      timestamp: new Date(),
     });
 
     // Save to Redis for analytics
@@ -286,9 +278,7 @@ export class LangfuseService {
    */
   getRecentTraces(limit: number = 10): LangfuseTrace[] {
     const allTraces = Array.from(this.traces.values());
-    return allTraces
-      .sort((a, b) => b.startTime.getTime() - a.startTime.getTime())
-      .slice(0, limit);
+    return allTraces.sort((a, b) => b.startTime.getTime() - a.startTime.getTime()).slice(0, limit);
   }
 
   /**
@@ -306,7 +296,7 @@ export class LangfuseService {
       totalTraces: this.traceCount,
       totalSpans: this.spanCount,
       averageSpansPerTrace: this.traceCount > 0 ? this.spanCount / this.traceCount : 0,
-      traces: traces.slice(0, 100) // Last 100 traces
+      traces: traces.slice(0, 100), // Last 100 traces
     };
   }
 
@@ -321,7 +311,7 @@ export class LangfuseService {
     return {
       traceCount: this.traceCount,
       spanCount: this.spanCount,
-      activeTraces: this.traces.size
+      activeTraces: this.traces.size,
     };
   }
 
@@ -338,7 +328,7 @@ export class LangfuseService {
       status: this.isInitialized ? 'healthy' : 'unhealthy',
       initialized: this.isInitialized,
       enabled: this.config.enabled || false,
-      statistics: this.getStatistics()
+      statistics: this.getStatistics(),
     };
   }
 
@@ -370,8 +360,8 @@ export class LangfuseService {
       await this.endTrace(traceId, {
         metadata: {
           error: error instanceof Error ? error.message : String(error),
-          failed: true
-        }
+          failed: true,
+        },
       });
       throw error;
     }

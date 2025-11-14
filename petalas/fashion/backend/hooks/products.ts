@@ -48,10 +48,7 @@ export default defineHook(({ filter, action }, { services, database, getSchema }
 
       // Track inventory changes for event emission
       if (input.inventory_quantity !== undefined && context.accountability) {
-        const previousQuantity = await getPreviousInventoryQuantity(
-          meta.keys[0],
-          database
-        );
+        const previousQuantity = await getPreviousInventoryQuantity(meta.keys[0], database);
         context.previousInventoryQuantity = previousQuantity;
       }
     }
@@ -73,9 +70,9 @@ export default defineHook(({ filter, action }, { services, database, getSchema }
           price: meta.payload.price,
           status: meta.payload.status,
           category_id: meta.payload.category_id,
-          brand_id: meta.payload.brand_id
+          brand_id: meta.payload.brand_id,
         },
-        database
+        database,
       });
 
       // Update category product count
@@ -108,9 +105,9 @@ export default defineHook(({ filter, action }, { services, database, getSchema }
       await emitProductEvent({
         type: 'petala.fashion.product.updated',
         aggregateId: meta.keys[0],
-        tenantId: meta.payload.tenant_id || await getTenantId(meta.keys[0], database),
+        tenantId: meta.payload.tenant_id || (await getTenantId(meta.keys[0], database)),
         data: changes,
-        database
+        database,
       });
 
       // Check low stock
@@ -122,12 +119,12 @@ export default defineHook(({ filter, action }, { services, database, getSchema }
         await emitProductEvent({
           type: 'petala.fashion.product.low_stock',
           aggregateId: meta.keys[0],
-          tenantId: meta.payload.tenant_id || await getTenantId(meta.keys[0], database),
+          tenantId: meta.payload.tenant_id || (await getTenantId(meta.keys[0], database)),
           data: {
             quantity: meta.payload.inventory_quantity,
-            threshold: meta.payload.low_stock_threshold || 10
+            threshold: meta.payload.low_stock_threshold || 10,
           },
-          database
+          database,
         });
       }
     }
@@ -144,9 +141,9 @@ export default defineHook(({ filter, action }, { services, database, getSchema }
         tenantId: meta.payload.tenant_id,
         data: {
           name: meta.payload.name,
-          slug: meta.payload.slug
+          slug: meta.payload.slug,
         },
-        database
+        database,
       });
 
       // Update category product count
@@ -171,14 +168,11 @@ function generateSlug(name: string): string {
     .toLowerCase()
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '') // Remove accents
-    .replace(/[^a-z0-9]+/g, '-')     // Replace non-alphanumeric with hyphen
-    .replace(/^-+|-+$/g, '');        // Remove leading/trailing hyphens
+    .replace(/[^a-z0-9]+/g, '-') // Replace non-alphanumeric with hyphen
+    .replace(/^-+|-+$/g, ''); // Remove leading/trailing hyphens
 }
 
-async function getPreviousInventoryQuantity(
-  productId: string,
-  database: any
-): Promise<number> {
+async function getPreviousInventoryQuantity(productId: string, database: any): Promise<number> {
   const result = await database
     .select('inventory_quantity')
     .from('products')
@@ -188,11 +182,7 @@ async function getPreviousInventoryQuantity(
 }
 
 async function getTenantId(productId: string, database: any): Promise<string> {
-  const result = await database
-    .select('tenant_id')
-    .from('products')
-    .where('id', productId)
-    .first();
+  const result = await database.select('tenant_id').from('products').where('id', productId).first();
   return result?.tenant_id;
 }
 
@@ -201,9 +191,7 @@ async function updateCategoryProductCount(
   database: any,
   increment: number
 ): Promise<void> {
-  await database('categories')
-    .where('id', categoryId)
-    .increment('products_count', increment);
+  await database('categories').where('id', categoryId).increment('products_count', increment);
 }
 
 async function updateBrandProductCount(
@@ -211,9 +199,7 @@ async function updateBrandProductCount(
   database: any,
   increment: number
 ): Promise<void> {
-  await database('brands')
-    .where('id', brandId)
-    .increment('products_count', increment);
+  await database('brands').where('id', brandId).increment('products_count', increment);
 }
 
 async function emitProductEvent(params: {
@@ -234,9 +220,9 @@ async function emitProductEvent(params: {
     metadata: JSON.stringify({
       timestamp: new Date().toISOString(),
       version: 1,
-      source: 'hook-products'
+      source: 'hook-products',
     }),
-    created_at: database.fn.now()
+    created_at: database.fn.now(),
   });
 }
 

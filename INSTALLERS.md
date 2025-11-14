@@ -2,7 +2,8 @@
 
 **Certificação: 100/100 ✅** | **Multiplataforma** | **Auto-Detecção**
 
-Este documento descreve TODOS os instaladores disponíveis para o MagicSaaS System-∞ v4.0.
+Este documento descreve TODOS os instaladores disponíveis para o MagicSaaS
+System-∞ v4.0.
 
 ---
 
@@ -18,14 +19,14 @@ Este documento descreve TODOS os instaladores disponíveis para o MagicSaaS Syst
 
 ## 🎯 Visão Geral
 
-O MagicSaaS System-∞ oferece instaladores otimizados para **TODAS as plataformas** com:
+O MagicSaaS System-∞ oferece instaladores otimizados para **TODAS as
+plataformas** com:
 
-✅ **Auto-detecção de ambiente** (dev, production, cloud)
-✅ **Validação completa 100/100** de todos componentes
-✅ **26 Services Docker** automaticamente configurados
-✅ **61 API Endpoints** validados
-✅ **Zero configuração manual** requerida
-✅ **Suporte multiplataforma**: Linux, macOS, Windows, Cloud
+✅ **Auto-detecção de ambiente** (dev, production, cloud) ✅ **Validação
+completa 100/100** de todos componentes ✅ **26 Services Docker**
+automaticamente configurados ✅ **61 API Endpoints** validados ✅ **Zero
+configuração manual** requerida ✅ **Suporte multiplataforma**: Linux, macOS,
+Windows, Cloud
 
 ---
 
@@ -33,8 +34,7 @@ O MagicSaaS System-∞ oferece instaladores otimizados para **TODAS as plataform
 
 ### 1. **Linux / macOS** - `install.sh`
 
-**Arquivo:** `install.sh` (915 linhas)
-**Plataformas:** Linux, macOS, WSL
+**Arquivo:** `install.sh` (915 linhas) **Plataformas:** Linux, macOS, WSL
 **Certificação:** 100/100 ✅
 
 #### Características:
@@ -117,9 +117,8 @@ export NODE_ENV=production
 
 ### 2. **Windows** - `install.ps1`
 
-**Arquivo:** `install.ps1` (PowerShell)
-**Plataforma:** Windows 10/11, Windows Server 2019+
-**Certificação:** 100/100 ✅
+**Arquivo:** `install.ps1` (PowerShell) **Plataforma:** Windows 10/11, Windows
+Server 2019+ **Certificação:** 100/100 ✅
 
 #### Características:
 
@@ -177,8 +176,7 @@ export NODE_ENV=production
 
 ### 3. **Hostinger VPS** - `deploy-hostinger.sh`
 
-**Arquivo:** `deploy-hostinger.sh`
-**Ambiente:** Hostinger VPS (todos os planos)
+**Arquivo:** `deploy-hostinger.sh` **Ambiente:** Hostinger VPS (todos os planos)
 **Certificação:** 100/100 ✅
 
 #### Características:
@@ -231,15 +229,18 @@ chmod +x deploy-hostinger.sh
 #### Otimizações por Plano:
 
 **Basic (2 CPU, 4GB RAM):**
+
 - Disable Chatwoot
 - Disable Langfuse
 - Reduce worker pool
 
 **Business (4 CPU, 8GB RAM):**
+
 - Full stack enabled
 - Standard worker pool
 
 **Premium (8+ CPU, 16GB+ RAM):**
+
 - Full stack + extras
 - Maximum worker pool
 - All features enabled
@@ -269,9 +270,8 @@ tail -f /var/log/magicsaas-backup.log
 
 ### 4. **AWS (Amazon Web Services)**
 
-**Arquivo:** `cloud/deploy-aws.sh`
-**Serviços:** EC2, ECS, EKS
-**Certificação:** 100/100 ✅
+**Arquivo:** `cloud/deploy-aws.sh` **Serviços:** EC2, ECS, EKS **Certificação:**
+100/100 ✅
 
 #### Características:
 
@@ -305,8 +305,7 @@ tail -f /var/log/magicsaas-backup.log
 
 ### 5. **GCP (Google Cloud Platform)**
 
-**Arquivo:** `cloud/deploy-gcp.sh`
-**Serviços:** Compute Engine, GKE, Cloud Run
+**Arquivo:** `cloud/deploy-gcp.sh` **Serviços:** Compute Engine, GKE, Cloud Run
 **Certificação:** 100/100 ✅
 
 #### Características:
@@ -331,9 +330,8 @@ tail -f /var/log/magicsaas-backup.log
 
 ### 6. **Azure (Microsoft Azure)**
 
-**Arquivo:** `cloud/deploy-azure.sh`
-**Serviços:** AKS, Azure Container Instances
-**Certificação:** 100/100 ✅
+**Arquivo:** `cloud/deploy-azure.sh` **Serviços:** AKS, Azure Container
+Instances **Certificação:** 100/100 ✅
 
 #### Características:
 
@@ -359,7 +357,9 @@ tail -f /var/log/magicsaas-backup.log
 Todos os instaladores incluem validação completa opcional:
 
 #### **1/10 - Core Files**
+
 Valida existência e tamanho de 7 arquivos críticos:
+
 - API Gateway (1038 linhas)
 - Sofia AI REST API (703 linhas)
 - Marketing AI (455 linhas)
@@ -369,41 +369,49 @@ Valida existência e tamanho de 7 arquivos críticos:
 - RLS Policies (469 linhas)
 
 #### **2/10 - Database & RLS**
+
 - RLS habilitado em 20+ tabelas
 - Functions: current_tenant_id(), is_admin()
 - Multi-tenant isolation validado
 
 #### **3/10 - API Endpoints (61 total)**
+
 - API Gateway: 15 endpoints testados
 - Sofia AI: 10 endpoints testados
 - Marketing AI: 6 endpoints testados
 - ERP: 30 endpoints testados
 
 #### **4/10 - RAG Pipeline**
+
 - Qdrant vector database online
 - pgVector extension instalada
 - knowledge_embeddings table exists
 
 #### **5/10 - PII Anonymization**
+
 - PIIAnonymizer.ts implementado
 - 10+ tipos de PII detectados
 - pii_anonymization_audit table
 - GDPR/LGPD compliant
 
 #### **6/10 - Template Orchestrator**
+
 - TemplateOrchestrator.tsx implementado
 - SofiaLayoutEngine integrado
 - Dynamic layout generation
 
 #### **7/10 - 16 Pétalas**
+
 - 16/16 Dockerfiles validados
 - Todas pétalas configuradas
 
 #### **8/10 - Docker Infrastructure**
+
 - 26/26 services rodando
 - Health checks passando
 
 #### **9/10 - Security Features**
+
 - JWT Authentication
 - Refresh Tokens
 - RBAC/ABAC
@@ -412,6 +420,7 @@ Valida existência e tamanho de 7 arquivos críticos:
 - PII Anonymization
 
 #### **10/10 - Certification**
+
 - CERTIFICATION-100-REAL-VALIDATED.md exists
 - 1000+ linhas de certificação
 - Score 100/100 em 10+ dimensões
@@ -425,18 +434,21 @@ Valida existência e tamanho de 7 arquivos críticos:
 #### 1. **Docker não inicia**
 
 **Linux/Mac:**
+
 ```bash
 sudo systemctl start docker
 sudo systemctl enable docker
 ```
 
 **Windows:**
+
 - Abrir Docker Desktop
 - Verificar WSL2 habilitado
 
 #### 2. **Porta já em uso**
 
 Verificar portas:
+
 ```bash
 # Linux/Mac
 sudo lsof -i :3000
@@ -451,6 +463,7 @@ Parar processos ou alterar portas em `.env`.
 #### 3. **Falta de memória**
 
 **Planos Basic:**
+
 - Disable Chatwoot: `ENABLE_CHATWOOT=false`
 - Disable Langfuse: `FEATURE_LANGFUSE=false`
 
@@ -481,14 +494,14 @@ sudo systemctl restart nginx
 
 ## 📊 Comparação de Instaladores
 
-| Instalador | Plataforma | Auto-Detect | Validação | SSL | Backups | Monitoring |
-|------------|------------|-------------|-----------|-----|---------|------------|
-| install.sh | Linux/Mac | ✅ | ✅ 100/100 | ⚠️ Manual | ⚠️ Manual | ⚠️ Manual |
-| install.ps1 | Windows | ✅ | ✅ 100/100 | ⚠️ Manual | ⚠️ Manual | ⚠️ Manual |
-| deploy-hostinger.sh | Hostinger | ✅ | ✅ 100/100 | ✅ Auto | ✅ Auto | ✅ Auto |
-| deploy-aws.sh | AWS | ✅ | ✅ 100/100 | ✅ Auto | ✅ Auto | ✅ Auto |
-| deploy-gcp.sh | GCP | ✅ | ✅ 100/100 | ✅ Auto | ✅ Auto | ✅ Auto |
-| deploy-azure.sh | Azure | ✅ | ✅ 100/100 | ✅ Auto | ✅ Auto | ✅ Auto |
+| Instalador          | Plataforma | Auto-Detect | Validação  | SSL       | Backups   | Monitoring |
+| ------------------- | ---------- | ----------- | ---------- | --------- | --------- | ---------- |
+| install.sh          | Linux/Mac  | ✅          | ✅ 100/100 | ⚠️ Manual | ⚠️ Manual | ⚠️ Manual  |
+| install.ps1         | Windows    | ✅          | ✅ 100/100 | ⚠️ Manual | ⚠️ Manual | ⚠️ Manual  |
+| deploy-hostinger.sh | Hostinger  | ✅          | ✅ 100/100 | ✅ Auto   | ✅ Auto   | ✅ Auto    |
+| deploy-aws.sh       | AWS        | ✅          | ✅ 100/100 | ✅ Auto   | ✅ Auto   | ✅ Auto    |
+| deploy-gcp.sh       | GCP        | ✅          | ✅ 100/100 | ✅ Auto   | ✅ Auto   | ✅ Auto    |
+| deploy-azure.sh     | Azure      | ✅          | ✅ 100/100 | ✅ Auto   | ✅ Auto   | ✅ Auto    |
 
 ---
 
@@ -519,7 +532,8 @@ Após instalação:
 
 5. **Explore documentação:**
    - [README.md](./README.md) - Visão geral
-   - [CERTIFICATION-100-REAL-VALIDATED.md](./CERTIFICATION-100-REAL-VALIDATED.md) - Certificação
+   - [CERTIFICATION-100-REAL-VALIDATED.md](./CERTIFICATION-100-REAL-VALIDATED.md) -
+     Certificação
    - [docs/](./docs/) - Documentação técnica
 
 ---
@@ -528,7 +542,8 @@ Após instalação:
 
 Todos os instaladores são **certificados 100/100** por Anthropic Claude.
 
-📄 Ver certificação completa: [CERTIFICATION-100-REAL-VALIDATED.md](./CERTIFICATION-100-REAL-VALIDATED.md)
+📄 Ver certificação completa:
+[CERTIFICATION-100-REAL-VALIDATED.md](./CERTIFICATION-100-REAL-VALIDATED.md)
 
 ---
 
@@ -540,5 +555,5 @@ Todos os instaladores são **certificados 100/100** por Anthropic Claude.
 
 ---
 
-**© 2025 Software Lotus | MagicSaaS System-∞ v4.0**
-**🏆 Anthropic Claude Certified - 100/100 ♾️**
+**© 2025 Software Lotus | MagicSaaS System-∞ v4.0** **🏆 Anthropic Claude
+Certified - 100/100 ♾️**

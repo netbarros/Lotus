@@ -104,7 +104,7 @@ export async function exportUserData(req: Request, res: Response) {
       },
       usage_data: {
         total_records: usageRecords.length,
-        records: usageRecords.map(record => ({
+        records: usageRecords.map((record) => ({
           service_type: record.service_type,
           quantity: record.quantity,
           unit: record.unit,
@@ -113,20 +113,23 @@ export async function exportUserData(req: Request, res: Response) {
         })),
       },
       billing_data: {
-        wallet: tenant?.credit_wallet ? {
-          balance: tenant.credit_wallet.balance,
-          lifetime_earned: tenant.credit_wallet.lifetime_earned,
-          lifetime_spent: tenant.credit_wallet.lifetime_spent,
-        } : null,
-        transactions: tenant?.credit_wallet?.transactions.map(tx => ({
-          amount: tx.amount,
-          type: tx.type,
-          category: tx.category,
-          description: tx.description,
-          created_at: tx.created_at,
-        })) || [],
+        wallet: tenant?.credit_wallet
+          ? {
+              balance: tenant.credit_wallet.balance,
+              lifetime_earned: tenant.credit_wallet.lifetime_earned,
+              lifetime_spent: tenant.credit_wallet.lifetime_spent,
+            }
+          : null,
+        transactions:
+          tenant?.credit_wallet?.transactions.map((tx) => ({
+            amount: tx.amount,
+            type: tx.type,
+            category: tx.category,
+            description: tx.description,
+            created_at: tx.created_at,
+          })) || [],
       },
-      voice_sessions: userData.voice_sessions.map(session => ({
+      voice_sessions: userData.voice_sessions.map((session) => ({
         session_type: session.session_type,
         language: session.language,
         duration_seconds: session.duration_seconds,
@@ -135,7 +138,7 @@ export async function exportUserData(req: Request, res: Response) {
         started_at: session.started_at,
         ended_at: session.ended_at,
       })),
-      quantum_jobs: userData.quantum_jobs.map(job => ({
+      quantum_jobs: userData.quantum_jobs.map((job) => ({
         job_type: job.job_type,
         algorithm: job.algorithm,
         backend: job.backend,
@@ -144,7 +147,7 @@ export async function exportUserData(req: Request, res: Response) {
         submitted_at: job.submitted_at,
         completed_at: job.completed_at,
       })),
-      audit_trail: userData.audit_logs.map(log => ({
+      audit_trail: userData.audit_logs.map((log) => ({
         action: log.action,
         resource_type: log.resource_type,
         resource_id: log.resource_id,
@@ -171,7 +174,10 @@ export async function exportUserData(req: Request, res: Response) {
 
     // Set headers for download
     res.setHeader('Content-Type', 'application/json');
-    res.setHeader('Content-Disposition', `attachment; filename="magicsaas-data-export-${userId}-${Date.now()}.json"`);
+    res.setHeader(
+      'Content-Disposition',
+      `attachment; filename="magicsaas-data-export-${userId}-${Date.now()}.json"`
+    );
 
     return res.json(dataExport);
   } catch (error) {

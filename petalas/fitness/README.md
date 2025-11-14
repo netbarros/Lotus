@@ -1,14 +1,13 @@
 # 💪 Pétala Fitness
 
-**Version:** 1.0.0
-**Status:** ✅ Production-Ready
-**Category:** fitness
+**Version:** 1.0.0 **Status:** ✅ Production-Ready **Category:** fitness
 
 ---
 
 ## 📋 Overview
 
-Complete fitness management platform with class scheduling, member management, workout tracking, and wearable integration
+Complete fitness management platform with class scheduling, member management,
+workout tracking, and wearable integration
 
 ### Key Features
 
@@ -42,6 +41,7 @@ npm run dev
 ## 💰 Pricing
 
 ### Starter - $89/month
+
 - Up to 100 members
 - Class scheduling
 - Member check-in
@@ -49,6 +49,7 @@ npm run dev
 - Email support
 
 ### Professional - $169/month
+
 - Unlimited members
 - Workout tracking
 - Wearable sync
@@ -58,6 +59,7 @@ npm run dev
 - Priority support
 
 ### Enterprise - $449/month
+
 - Everything in Professional
 - Multi-location
 - White-label app
@@ -67,5 +69,4 @@ npm run dev
 
 ---
 
-**Built with ❤️ by Software Lotus**
-**Powered by MagicSaaS System-∞ & Sofia AI**
+**Built with ❤️ by Software Lotus** **Powered by MagicSaaS System-∞ & Sofia AI**

@@ -10,7 +10,7 @@ describe('Loyalty Endpoint', () => {
   beforeAll(async () => {
     const response = await api.post('/auth/login', {
       email: 'customer@example.com',
-      password: 'password'
+      password: 'password',
     });
     authToken = response.data.data.access_token;
     api.defaults.headers.common['Authorization'] = `Bearer ${authToken}`;
@@ -31,7 +31,7 @@ describe('Loyalty Endpoint', () => {
     it('should redeem loyalty points', async () => {
       const response = await api.post('/loyalty/redeem', {
         points: 100,
-        rewardId: 1
+        rewardId: 1,
       });
 
       expect(response.status).toBe(200);
@@ -39,10 +39,12 @@ describe('Loyalty Endpoint', () => {
     });
 
     it('should reject insufficient points', async () => {
-      await expect(api.post('/loyalty/redeem', {
-        points: 999999,
-        rewardId: 1
-      })).rejects.toThrow();
+      await expect(
+        api.post('/loyalty/redeem', {
+          points: 999999,
+          rewardId: 1,
+        })
+      ).rejects.toThrow();
     });
   });
 

@@ -9,7 +9,12 @@ describe('Restaurant Orders Hook', () => {
   });
 
   it('should calculate order total', () => {
-    const input = { items: [{ price: 10, quantity: 2 }, { price: 15, quantity: 1 }] };
+    const input = {
+      items: [
+        { price: 10, quantity: 2 },
+        { price: 15, quantity: 1 },
+      ],
+    };
     const result = calculateTotal(input);
     expect(result.subtotal).toBe(35);
     expect(result.tax).toBeGreaterThan(0);
@@ -25,13 +30,18 @@ describe('Restaurant Orders Hook', () => {
 
 function processOrderCreate(input: any) {
   const date = new Date().toISOString().split('T')[0].replace(/-/g, '');
-  input.orderNumber = `RO-${date}-${Math.floor(Math.random() * 9999).toString().padStart(4, '0')}`;
+  input.orderNumber = `RO-${date}-${Math.floor(Math.random() * 9999)
+    .toString()
+    .padStart(4, '0')}`;
   input.status = 'pending';
   return input;
 }
 
 function calculateTotal(input: any) {
-  const subtotal = input.items.reduce((sum: number, item: any) => sum + (item.price * item.quantity), 0);
+  const subtotal = input.items.reduce(
+    (sum: number, item: any) => sum + item.price * item.quantity,
+    0
+  );
   const tax = subtotal * 0.08;
   return { subtotal, tax, total: subtotal + tax };
 }

@@ -1,18 +1,21 @@
 # 🏘️ Pétala Real Estate - Complete Real Estate Solution
 
-**Version:** 1.0.0
-**Status:** ✅ Production-Ready
-**Category:** Real Estate, Property Management
+**Version:** 1.0.0 **Status:** ✅ Production-Ready **Category:** Real Estate,
+Property Management
 
 ---
 
 ## 📋 Overview
 
-Pétala Real Estate is a comprehensive, state-of-the-art real estate platform built on the MagicSaaS System-∞ ecosystem. It provides everything needed to run a modern real estate business: property listings, VR tours, lead management, CRM, appointment scheduling, and AI-powered features.
+Pétala Real Estate is a comprehensive, state-of-the-art real estate platform
+built on the MagicSaaS System-∞ ecosystem. It provides everything needed to run
+a modern real estate business: property listings, VR tours, lead management,
+CRM, appointment scheduling, and AI-powered features.
 
 ### Key Features
 
 ✅ **Property Management**
+
 - Unlimited property listings with rich media
 - Advanced search & filters (type, price, location, features)
 - Virtual reality (VR) property tours (Matterport integration)
@@ -21,6 +24,7 @@ Pétala Real Estate is a comprehensive, state-of-the-art real estate platform bu
 - Video tours
 
 ✅ **Lead Generation & CRM**
+
 - Lead capture forms
 - Automated lead assignment to agents
 - Lead scoring and qualification
@@ -29,6 +33,7 @@ Pétala Real Estate is a comprehensive, state-of-the-art real estate platform bu
 - Lead analytics and reporting
 
 ✅ **Agent Tools**
+
 - Agent profiles with reviews
 - Appointment scheduling
 - Property showing calendar
@@ -37,6 +42,7 @@ Pétala Real Estate is a comprehensive, state-of-the-art real estate platform bu
 - Commission tracking
 
 ✅ **Client Features**
+
 - Property search with map view
 - Save favorites and searches
 - Email alerts for new listings
@@ -45,6 +51,7 @@ Pétala Real Estate is a comprehensive, state-of-the-art real estate platform bu
 - Schedule viewings online
 
 ✅ **AI-Powered (Sofia Integration)**
+
 - Natural language property search
 - AI-powered recommendations
 - Chatbot for customer support
@@ -53,6 +60,7 @@ Pétala Real Estate is a comprehensive, state-of-the-art real estate platform bu
 - Anonymous web scraping for comps
 
 ✅ **Integrations**
+
 - IDX/MLS integration (RETS, Trestle)
 - E-signature (DocuSign, HelloSign)
 - Payment processing (Stripe)
@@ -110,6 +118,7 @@ npm run start
 ### Data Models
 
 **Collections:**
+
 - `properties` - Property listings
 - `leads` - Lead capture and management
 - `agents` - Real estate agent profiles
@@ -152,7 +161,7 @@ import { sofiaService } from '@/services/sofia';
 
 // Example: "Find me a 3 bedroom house under $500k in Miami"
 const result = await sofiaService.processIntention(
-  "Find me a 3 bedroom house under $500k in Miami"
+  'Find me a 3 bedroom house under $500k in Miami'
 );
 
 console.log(result.data); // Array of matching properties
@@ -164,13 +173,13 @@ console.log(result.data); // Array of matching properties
 // Scrape market data from Zillow
 const marketData = await sofiaService.scrapeData({
   url: 'https://zillow.com/home-values/miami-fl',
-  dataType: 'market'
+  dataType: 'market',
 });
 
 // Scrape school ratings
 const schools = await sofiaService.scrapeData({
   url: 'https://greatschools.org/search?zip=33101',
-  dataType: 'schools'
+  dataType: 'schools',
 });
 ```
 
@@ -197,7 +206,7 @@ const recommendations = await sofiaService.getRecommendations({
   property_type: 'house',
   price_range: { min: 300000, max: 500000 },
   bedrooms: 3,
-  city: 'Miami'
+  city: 'Miami',
 });
 
 console.log(recommendations);
@@ -226,6 +235,7 @@ petala_real_estate_agent_performance{agent_id, metric}
 ### Grafana Dashboard
 
 Pre-built dashboard with 18 panels:
+
 - Property inventory
 - Lead funnel (new → contacted → qualified → converted)
 - Agent performance (listings, sales, revenue)
@@ -275,6 +285,7 @@ k6 run property-search.js
 ```
 
 **Test Coverage:**
+
 - Unit tests: 15+ (80% coverage)
 - Integration tests: 12+
 - E2E tests: 10+
@@ -320,6 +331,7 @@ VITE_ALGOLIA_SEARCH_KEY=your-algolia-search-key
 ## 💰 Pricing
 
 ### Starter - $99/month
+
 - Up to 50 property listings
 - Basic lead management
 - Contact forms
@@ -328,6 +340,7 @@ VITE_ALGOLIA_SEARCH_KEY=your-algolia-search-key
 - Email support
 
 ### Professional - $199/month
+
 - Unlimited property listings
 - Advanced lead management
 - CRM integration
@@ -338,6 +351,7 @@ VITE_ALGOLIA_SEARCH_KEY=your-algolia-search-key
 - Priority support
 
 ### Enterprise - $499/month
+
 - Everything in Professional
 - Multi-location support
 - White-label solution
@@ -359,20 +373,21 @@ VITE_ALGOLIA_SEARCH_KEY=your-algolia-search-key
 
 ## 📄 License
 
-Proprietary - MagicSaaS System-∞
-Copyright © 2025 Software Lotus
+Proprietary - MagicSaaS System-∞ Copyright © 2025 Software Lotus
 
 ---
 
 ## 🗺️ Roadmap
 
 ### Q1 2026
+
 - [ ] Mobile apps (iOS/Android)
 - [ ] Blockchain property records
 - [ ] NFT property ownership
 - [ ] Metaverse property tours (VR headset)
 
 ### Q2 2026
+
 - [ ] International expansion (multi-currency, i18n)
 - [ ] AI property valuation model
 - [ ] Smart contracts for transactions
@@ -380,5 +395,4 @@ Copyright © 2025 Software Lotus
 
 ---
 
-**Built with ❤️ by Software Lotus**
-**Powered by MagicSaaS System-∞ & Sofia AI**
+**Built with ❤️ by Software Lotus** **Powered by MagicSaaS System-∞ & Sofia AI**

@@ -11,7 +11,7 @@ describe('Reviews Endpoint', () => {
   beforeAll(async () => {
     const response = await api.post('/auth/login', {
       email: 'admin@example.com',
-      password: 'password'
+      password: 'password',
     });
     authToken = response.data.data.access_token;
     api.defaults.headers.common['Authorization'] = `Bearer ${authToken}`;
@@ -31,7 +31,7 @@ describe('Reviews Endpoint', () => {
         rating: 5,
         title: 'Great product!',
         comment: 'Excellent quality and fast shipping',
-        verified_purchase: true
+        verified_purchase: true,
       };
 
       const response = await api.post('/reviews', reviewData);
@@ -49,11 +49,10 @@ describe('Reviews Endpoint', () => {
         product_id: 1,
         customer_id: 1,
         rating: 6,
-        comment: 'Invalid rating'
+        comment: 'Invalid rating',
       };
 
-      await expect(api.post('/reviews', invalidReview))
-        .rejects.toThrow();
+      await expect(api.post('/reviews', invalidReview)).rejects.toThrow();
     });
   });
 
@@ -78,7 +77,7 @@ describe('Reviews Endpoint', () => {
   describe('PATCH /reviews/:id', () => {
     it('should update review', async () => {
       const response = await api.patch(`/reviews/${testReviewId}`, {
-        comment: 'Updated comment after more use'
+        comment: 'Updated comment after more use',
       });
 
       expect(response.status).toBe(200);
@@ -98,7 +97,7 @@ describe('Reviews Endpoint', () => {
   describe('POST /reviews/:id/moderate', () => {
     it('should moderate review', async () => {
       const response = await api.post(`/reviews/${testReviewId}/moderate`, {
-        status: 'approved'
+        status: 'approved',
       });
 
       expect(response.status).toBe(200);

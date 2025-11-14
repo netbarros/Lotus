@@ -2,14 +2,14 @@
 
 ## STATE-OF-THE-ART DYNAMIC CONFIGURATION
 
-**Version:** 3.0.0
-**Status:** ✅ Production Ready
+**Version:** 3.0.0 **Status:** ✅ Production Ready
 
 ---
 
 ## 🎯 Core Concept: ZERO CODE CHANGES
 
 This system enables **100% zero code changes** between:
+
 - ✅ Development / Staging / Production environments
 - ✅ Different pétalas (Fashion, Restaurant, Healthcare, etc.)
 - ✅ Different domains and tenants
@@ -66,22 +66,24 @@ This system enables **100% zero code changes** between:
 ### 1. Install the Plugin (main.ts)
 
 ```typescript
-import { createApp } from 'vue'
-import { createMagicSaaSPlugin } from '@/shared/plugins/magicsaas-plugin'
-import App from './App.vue'
+import { createApp } from 'vue';
+import { createMagicSaaSPlugin } from '@/shared/plugins/magicsaas-plugin';
+import App from './App.vue';
 
-const app = createApp(App)
+const app = createApp(App);
 
 // Install MagicSaaS plugin
-app.use(createMagicSaaSPlugin({
-  enableDevTools: true,
-  enableErrorTracking: true,
-  onInitialized: (magicsaas) => {
-    console.log('MagicSaaS ready!', magicsaas.config.petala.name)
-  }
-}))
+app.use(
+  createMagicSaaSPlugin({
+    enableDevTools: true,
+    enableErrorTracking: true,
+    onInitialized: (magicsaas) => {
+      console.log('MagicSaaS ready!', magicsaas.config.petala.name);
+    },
+  })
+);
 
-app.mount('#app')
+app.mount('#app');
 ```
 
 ### 2. Use in Components (Options API)
@@ -99,10 +101,10 @@ app.mount('#app')
 export default {
   async mounted() {
     // Access APIs directly
-    const products = await this.$magicsaas.apis.products.list()
-    console.log(products)
-  }
-}
+    const products = await this.$magicsaas.apis.products.list();
+    console.log(products);
+  },
+};
 </script>
 ```
 
@@ -123,20 +125,20 @@ export default {
 </template>
 
 <script setup>
-import { onMounted } from 'vue'
-import { useUniversalApi } from '@/shared/composables/useUniversalApi'
+import { onMounted } from 'vue';
+import { useUniversalApi } from '@/shared/composables/useUniversalApi';
 
-const api = useUniversalApi()
+const api = useUniversalApi();
 
 // Initialize
-await api.initialize()
+await api.initialize();
 
 // Load products with reactive state
-const { data, loading, error } = await api.products.list()
+const { data, loading, error } = await api.products.list();
 
 onMounted(() => {
-  console.log('Pétala:', api.config.value?.petala.name)
-})
+  console.log('Pétala:', api.config.value?.petala.name);
+});
 </script>
 ```
 
@@ -173,6 +175,7 @@ Deploy this file to your web server's public root:
 ```
 
 **Priority Order:**
+
 1. Runtime config from `/config.json` (highest)
 2. Build-time environment variables (`VITE_*`)
 3. Smart auto-detection
@@ -184,15 +187,16 @@ Deploy this file to your web server's public root:
 
 **Automatic detection based on hostname:**
 
-| Hostname | Environment |
-|----------|-------------|
+| Hostname             | Environment   |
+| -------------------- | ------------- |
 | localhost, 127.0.0.1 | `development` |
-| *.staging.*, *.stg.* | `staging` |
-| All others | `production` |
+| _.staging._, _.stg._ | `staging`     |
+| All others           | `production`  |
 
 **Override with meta tag:**
+
 ```html
-<meta name="magicsaas:environment" content="staging">
+<meta name="magicsaas:environment" content="staging" />
 ```
 
 ---
@@ -202,6 +206,7 @@ Deploy this file to your web server's public root:
 **Automatic detection based on:**
 
 ### 1. Subdomain
+
 ```
 fashion.magicsaas.com      → Fashion pétala
 restaurant.magicsaas.com   → Restaurant pétala
@@ -209,6 +214,7 @@ health.magicsaas.com       → Healthcare pétala
 ```
 
 ### 2. Path
+
 ```
 /petalas/fashion/...       → Fashion pétala
 /petalas/restaurant/...    → Restaurant pétala
@@ -216,7 +222,9 @@ health.magicsaas.com       → Healthcare pétala
 ```
 
 ### 3. Custom Domain Mapping
+
 Configure in `/config.json`:
+
 ```json
 {
   "petala": {
@@ -227,8 +235,9 @@ Configure in `/config.json`:
 ```
 
 ### 4. Meta Tag
+
 ```html
-<meta name="magicsaas:petala" content="fashion">
+<meta name="magicsaas:petala" content="fashion" />
 ```
 
 ---
@@ -261,45 +270,48 @@ api.sofia.chat(message)       → POST /petalas/{type}/sofia/chat
 ## 🎨 Available APIs
 
 ### Products API
+
 ```typescript
-const api = useUniversalApi()
-await api.initialize()
+const api = useUniversalApi();
+await api.initialize();
 
 // List products
-const { data } = await api.products.list({ limit: 10 })
+const { data } = await api.products.list({ limit: 10 });
 
 // Get by ID
-const { data } = await api.products.getById('product-123')
+const { data } = await api.products.getById('product-123');
 
 // Search
-const { data } = await api.products.search('shoes', { limit: 20 })
+const { data } = await api.products.search('shoes', { limit: 20 });
 
 // Get featured
-const { data } = await api.products.getFeatured()
+const { data } = await api.products.getFeatured();
 
 // Get related
-const { data } = await api.products.getRelated('product-123')
+const { data } = await api.products.getRelated('product-123');
 ```
 
 ### Cart API
+
 ```typescript
 // Get cart
-const { data } = await api.cart.get()
+const { data } = await api.cart.get();
 
 // Add to cart
-await api.cart.add('product-123', 2, 'variant-456')
+await api.cart.add('product-123', 2, 'variant-456');
 
 // Update quantity
-await api.cart.update('item-123', 3)
+await api.cart.update('item-123', 3);
 
 // Remove item
-await api.cart.remove('item-123')
+await api.cart.remove('item-123');
 
 // Clear cart
-await api.cart.clear()
+await api.cart.clear();
 ```
 
 ### Orders API
+
 ```typescript
 // List orders
 const { data } = await api.orders.list({ status: 'pending' })
@@ -318,9 +330,10 @@ const { data } = await api.orders.track('order-123')
 ```
 
 ### Appointments API (Restaurant, Healthcare, Services)
+
 ```typescript
 // List appointments
-const { data } = await api.appointments.list({ date: '2025-11-08' })
+const { data } = await api.appointments.list({ date: '2025-11-08' });
 
 // Create appointment
 await api.appointments.create({
@@ -328,40 +341,43 @@ await api.appointments.create({
   time: '14:00',
   customer_name: 'John Doe',
   customer_email: 'john@example.com',
-  customer_phone: '+5511999999999'
-})
+  customer_phone: '+5511999999999',
+});
 
 // Check availability
 const { data } = await api.appointments.checkAvailability({
   date: '2025-11-08',
-  time: '14:00'
-})
+  time: '14:00',
+});
 
 // Get available slots
 const { data } = await api.appointments.getAvailableSlots({
-  date: '2025-11-08'
-})
+  date: '2025-11-08',
+});
 ```
 
 ### Sofia AI API
+
 ```typescript
 // Chat with Sofia
-const { data } = await api.sofia.chat('Suggest outfit for summer party')
+const { data } = await api.sofia.chat('Suggest outfit for summer party');
 
 // Generate by intention
 const { data } = await api.sofia.generateIntention(
   'E-commerce for digital products',
   { features: ['cart', 'checkout', 'downloads'] }
-)
+);
 
 // Validate UX
-const { data } = await api.sofia.validateUX()
+const { data } = await api.sofia.validateUX();
 
 // Optimize SEO
-const { data } = await api.sofia.optimizeSEO(window.location.href)
+const { data } = await api.sofia.optimizeSEO(window.location.href);
 
 // Get recommendations
-const { data } = await api.sofia.getRecommendations('products', { userId: '123' })
+const { data } = await api.sofia.getRecommendations('products', {
+  userId: '123',
+});
 ```
 
 ---
@@ -374,14 +390,14 @@ Authentication is handled automatically:
 // Login
 const { data } = await api.auth.login({
   email: 'user@example.com',
-  password: 'password123'
-})
+  password: 'password123',
+});
 
 // Token is automatically stored
 // All subsequent requests include: Authorization: Bearer {token}
 
 // Logout (automatic token removal + redirect)
-await api.auth.logout()
+await api.auth.logout();
 ```
 
 ---
@@ -389,12 +405,14 @@ await api.auth.logout()
 ## 🌐 Multi-Tenant Support
 
 Each request automatically includes:
+
 - `X-Tenant-ID`: Tenant identifier
 - `X-Petala-Type`: Pétala type
 - `X-Petala-Name`: Pétala name
 - `X-Environment`: Current environment
 
 Backend can use these headers for:
+
 - Row-level security (RLS)
 - Data isolation
 - Analytics
@@ -405,18 +423,19 @@ Backend can use these headers for:
 ## 📊 Error Handling
 
 ```typescript
-const { data, loading, error, isSuccess, isError } = await api.products.list()
+const { data, loading, error, isSuccess, isError } = await api.products.list();
 
 if (isError.value) {
-  console.error('Failed to load products:', error.value)
+  console.error('Failed to load products:', error.value);
 }
 
 if (isSuccess.value) {
-  console.log('Products loaded:', data.value)
+  console.log('Products loaded:', data.value);
 }
 ```
 
 **Automatic error handling:**
+
 - ✅ 401 Unauthorized → Auto logout + redirect to login
 - ✅ 5xx Server Errors → Auto retry with exponential backoff (3 attempts)
 - ✅ Network Errors → Auto retry
@@ -447,7 +466,7 @@ if (isSuccess.value) {
         :key="product.id"
         class="product-card"
       >
-        <img :src="product.image" :alt="product.name">
+        <img :src="product.image" :alt="product.name" />
         <h3>{{ product.name }}</h3>
         <p>{{ formatCurrency(product.price) }}</p>
         <button @click="addToCart(product.id)">Add to Cart</button>
@@ -457,34 +476,34 @@ if (isSuccess.value) {
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import { useUniversalApi } from '@/shared/composables/useUniversalApi'
-import { useMagicSaaS } from '@/shared/plugins/magicsaas-plugin'
+import { ref, onMounted } from 'vue';
+import { useUniversalApi } from '@/shared/composables/useUniversalApi';
+import { useMagicSaaS } from '@/shared/plugins/magicsaas-plugin';
 
 // Get MagicSaaS instance
-const magicsaas = useMagicSaaS()
+const magicsaas = useMagicSaaS();
 
 // Get Universal API
-const api = useUniversalApi()
-await api.initialize()
+const api = useUniversalApi();
+await api.initialize();
 
 // Reactive state
-const productsState = ref(null)
+const productsState = ref(null);
 
 // Load products
 async function loadProducts() {
   productsState.value = await api.products.list({
     limit: 20,
-    status: 'published'
-  })
+    status: 'published',
+  });
 }
 
 // Add to cart
 async function addToCart(productId) {
-  const { error } = await api.cart.add(productId, 1)
+  const { error } = await api.cart.add(productId, 1);
 
   if (!error.value) {
-    alert('Added to cart!')
+    alert('Added to cart!');
   }
 }
 
@@ -492,14 +511,14 @@ async function addToCart(productId) {
 function formatCurrency(value) {
   return new Intl.NumberFormat(magicsaas.config.tenant.locale || 'pt-BR', {
     style: 'currency',
-    currency: magicsaas.config.tenant.currency || 'BRL'
-  }).format(value)
+    currency: magicsaas.config.tenant.currency || 'BRL',
+  }).format(value);
 }
 
 // Load on mount
 onMounted(() => {
-  loadProducts()
-})
+  loadProducts();
+});
 </script>
 ```
 
@@ -508,12 +527,15 @@ onMounted(() => {
 ## 🎯 Deployment Checklist
 
 ### Development (localhost)
+
 - ✅ No `/config.json` needed
 - ✅ Uses smart defaults
 - ✅ API URL: `http://localhost:8055`
 
 ### Staging
+
 1. Deploy `/config.json` to web server root:
+
 ```json
 {
   "environment": "staging",
@@ -522,10 +544,12 @@ onMounted(() => {
   }
 }
 ```
+
 2. Configure subdomain: `*.staging.yourcompany.com`
 3. Test all pétalas
 
 ### Production
+
 1. Deploy `/config.json` with production values
 2. Enable all security features
 3. Configure CDN caching for `/config.json` (TTL: 5-10 minutes)
@@ -536,57 +560,61 @@ onMounted(() => {
 ## 🏆 Benefits
 
 ### Zero Code Changes
-✅ Same codebase for all environments
-✅ Same codebase for all pétalas
-✅ Same codebase for all tenants
+
+✅ Same codebase for all environments ✅ Same codebase for all pétalas ✅ Same
+codebase for all tenants
 
 ### Smart Defaults
-✅ Works out-of-the-box on localhost
-✅ Auto-detects environment
-✅ Auto-detects pétala
+
+✅ Works out-of-the-box on localhost ✅ Auto-detects environment ✅ Auto-detects
+pétala
 
 ### Type Safety
-✅ Full TypeScript support
-✅ Autocomplete in IDE
-✅ Compile-time checks
+
+✅ Full TypeScript support ✅ Autocomplete in IDE ✅ Compile-time checks
 
 ### Performance
-✅ Smart retry logic
-✅ Automatic request caching
-✅ Exponential backoff
+
+✅ Smart retry logic ✅ Automatic request caching ✅ Exponential backoff
 
 ### Developer Experience
-✅ Simple API: `await api.products.list()`
-✅ Reactive state: `const { data, loading, error } = await ...`
-✅ Global injection: `this.$magicsaas`
+
+✅ Simple API: `await api.products.list()` ✅ Reactive state:
+`const { data, loading, error } = await ...` ✅ Global injection:
+`this.$magicsaas`
 
 ---
 
 ## 📚 Advanced Usage
 
 ### Custom API Calls
+
 ```typescript
-const api = useUniversalApi()
-await api.initialize()
+const api = useUniversalApi();
+await api.initialize();
 
 // Custom endpoint
 const { data } = await api.execute(() =>
   api.getApi('client').get('custom-endpoint')
-)
+);
 ```
 
 ### Override Config
+
 ```typescript
-app.use(createMagicSaaSPlugin({
-  config: {
-    api: {
-      baseUrl: 'https://custom-api.com'
-    }
-  }
-}))
+app.use(
+  createMagicSaaSPlugin({
+    config: {
+      api: {
+        baseUrl: 'https://custom-api.com',
+      },
+    },
+  })
+);
 ```
 
 ### Multiple Tenants
+
 ```typescript
 // Tenant is auto-detected from:
 // 1. Subdomain
@@ -600,15 +628,20 @@ app.use(createMagicSaaSPlugin({
 ## 🆘 Troubleshooting
 
 ### "Runtime config not initialized"
+
 **Solution:** Call `await api.initialize()` before using APIs
 
 ### "API Client not initialized"
-**Solution:** Install the plugin in main.ts with `app.use(createMagicSaaSPlugin())`
+
+**Solution:** Install the plugin in main.ts with
+`app.use(createMagicSaaSPlugin())`
 
 ### 401 Unauthorized
+
 **Solution:** Check if user is logged in, token is valid
 
 ### CORS errors
+
 **Solution:** Configure backend to allow your domain in `ALLOWED_ORIGINS`
 
 ---
@@ -617,16 +650,13 @@ app.use(createMagicSaaSPlugin({
 
 This Universal Configuration System is **STATE-OF-THE-ART** and enables:
 
-✅ **100% code reuse** across environments, pétalas, and tenants
-✅ **Zero configuration** for developers
-✅ **Runtime flexibility** for DevOps
-✅ **Type safety** for quality
-✅ **Smart defaults** for simplicity
+✅ **100% code reuse** across environments, pétalas, and tenants ✅ **Zero
+configuration** for developers ✅ **Runtime flexibility** for DevOps ✅ **Type
+safety** for quality ✅ **Smart defaults** for simplicity
 
 **Deploy once, run anywhere!** 🚀
 
 ---
 
-**Version:** 3.0.0
-**License:** Proprietary - Software Lotus
-**Support:** support@softwarelotus.com.br
+**Version:** 3.0.0 **License:** Proprietary - Software Lotus **Support:**
+support@softwarelotus.com.br
