@@ -13,7 +13,7 @@
 import axios, { AxiosInstance } from 'axios';
 import { Redis } from 'ioredis';
 import { Pool } from 'pg';
-import { LangChainService } from './langchain.service';
+import { LangChainService } from './LangChainService';
 
 export interface ChatwootConfig {
   apiUrl: string;

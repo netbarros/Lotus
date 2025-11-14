@@ -23,9 +23,9 @@ import { SofiaCore_v4 } from './core/SofiaCore_v4';
 import { SofiaLearningEngine_v4 } from './core/SofiaLearningEngine_v4';
 
 // Integrations
-import { LangChainService } from './integrations/langchain.service';
-import { LangfuseService } from './integrations/langfuse.service';
-import { QdrantService } from './integrations/qdrant.service';
+import { LangChainService } from './integrations/LangChainService';
+import { LangfuseService } from './integrations/LangfuseService';
+import { QdrantService } from './integrations/QdrantService';
 import { ChatwootService } from './integrations/chatwoot.service';
 
 // Business Modules

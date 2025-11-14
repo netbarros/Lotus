@@ -16,9 +16,9 @@
 
 import { Redis } from 'ioredis';
 import { Pool } from 'pg';
-import { LangChainService } from '../integrations/langchain.service';
-import { QdrantService } from '../integrations/qdrant.service';
-import { LangfuseService } from '../integrations/langfuse.service';
+import { LangChainService } from '../integrations/LangChainService';
+import { QdrantService } from '../integrations/QdrantService';
+import { LangfuseService } from '../integrations/LangfuseService';
 import axios from 'axios';
 import * as cheerio from 'cheerio';
 import crypto from 'crypto';

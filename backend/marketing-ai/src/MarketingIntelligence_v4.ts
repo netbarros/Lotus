@@ -16,9 +16,9 @@
 
 import { Redis } from 'ioredis';
 import { Pool } from 'pg';
-import { LangChainService } from '../../sofia-ai/src/integrations/langchain.service';
-import { LangfuseService } from '../../sofia-ai/src/integrations/langfuse.service';
-import { QdrantService } from '../../sofia-ai/src/integrations/qdrant.service';
+import { LangChainService } from '../../sofia-ai/src/integrations/LangChainService';
+import { LangfuseService } from '../../sofia-ai/src/integrations/LangfuseService';
+import { QdrantService } from '../../sofia-ai/src/integrations/QdrantService';
 
 // ==================== TYPES ====================
 
