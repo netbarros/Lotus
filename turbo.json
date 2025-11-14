@@ -1,7 +1,7 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "globalDependencies": [".env", ".env.local", "tsconfig.json"],
-  "pipeline": {
+  "tasks": {
     "build": {
       "dependsOn": ["^build"],
       "outputs": ["dist/**", ".next/**", "!.next/cache/**", "build/**", "out/**"],
@@ -41,6 +41,10 @@
       ]
     },
     "lint": {
+      "outputs": []
+    },
+    "type-check": {
+      "dependsOn": ["^build"],
       "outputs": []
     },
     "test": {
