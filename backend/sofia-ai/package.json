@@ -1,7 +1,7 @@
 {
   "name": "@magicsaas/sofia-ai",
-  "version": "1.0.0",
-  "description": "Sofia AI - Intelligence Synthesis Layer (System 11 - Layer 10)",
+  "version": "4.0.0",
+  "description": "Sofia AI v4.0 - The Brain - Complete AI Stack (LangChain + Langfuse + Qdrant + pgVector)",
   "main": "dist/index.js",
   "type": "module",
   "scripts": {
@@ -15,7 +15,13 @@
     "sofia-ai",
     "cognitive-mesh",
     "system-11",
-    "metronic-manager",
+    "langchain",
+    "langfuse",
+    "qdrant",
+    "pgvector",
+    "vector-database",
+    "ml-observability",
+    "ai-orchestration",
     "intelligent-synthesis"
   ],
   "author": "Sofia Lotus AI <sofia@softwarelotus.com.br>",
@@ -26,6 +32,7 @@
     "dotenv": "^16.4.5",
     "fast-glob": "^3.3.2",
     "ioredis": "^5.4.1",
+    "pg": "^8.13.1",
     "pino": "^9.5.0",
     "pino-pretty": "^11.2.2",
     "typescript-parser": "^2.6.1",
@@ -33,6 +40,7 @@
   },
   "devDependencies": {
     "@types/node": "^22.8.6",
+    "@types/pg": "^8.11.10",
     "@typescript-eslint/eslint-plugin": "^8.13.0",
     "@typescript-eslint/parser": "^8.13.0",
     "eslint": "^9.14.0",
