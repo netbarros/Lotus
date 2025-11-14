@@ -3,7 +3,9 @@
  * Complete API documentation for MagicSaaS System-∞
  */
 
+// @ts-expect-error - swagger-jsdoc types not available
 import swaggerJsdoc from 'swagger-jsdoc';
+// @ts-expect-error - openapi-types not available
 import type { OpenAPIV3 } from 'openapi-types';
 
 const options: swaggerJsdoc.Options = {

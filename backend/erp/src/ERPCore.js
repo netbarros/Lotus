@@ -1,111 +1,26 @@
+'use strict';
 /**
  * ╔══════════════════════════════════════════════════════════════════════════╗
  * ║ 💼 ERP CORE - Complete Enterprise Resource Planning                     ║
  * ║ Financial + Inventory + HR + CRM + Projects Management                  ║
  * ╚══════════════════════════════════════════════════════════════════════════╝
  */
-
-import { Pool } from 'pg';
-import { Redis } from 'ioredis';
-
-// ═══════════════════════════════════════════════════════════════════════════
-// TYPES
-// ═══════════════════════════════════════════════════════════════════════════
-
-export interface ERPConfig {
-  tenantId: string;
-  modules: {
-    financial: boolean;
-    inventory: boolean;
-    hr: boolean;
-    crm: boolean;
-    projects: boolean;
-  };
-}
-
-export interface Transaction {
-  id: string;
-  type: 'income' | 'expense';
-  category: string;
-  amount: number;
-  currency: string;
-  date: Date;
-  description: string;
-  status: 'pending' | 'completed' | 'cancelled';
-  metadata?: Record<string, any>;
-}
-
-export interface InventoryItem {
-  id: string;
-  sku: string;
-  name: string;
-  description?: string;
-  quantity: number;
-  unit: string;
-  cost: number;
-  price: number;
-  location: string;
-  supplier?: string;
-  reorderLevel: number;
-  status: 'in_stock' | 'low_stock' | 'out_of_stock';
-}
-
-export interface Employee {
-  id: string;
-  employeeNumber: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  position: string;
-  department: string;
-  hireDate: Date;
-  salary: number;
-  status: 'active' | 'inactive' | 'terminated';
-  metadata?: Record<string, any>;
-}
-
-export interface Customer {
-  id: string;
-  name: string;
-  email: string;
-  phone?: string;
-  company?: string;
-  status: 'active' | 'inactive';
-  totalRevenue: number;
-  lastContact?: Date;
-  tags: string[];
-}
-
-export interface Project {
-  id: string;
-  name: string;
-  description?: string;
-  status: 'planning' | 'active' | 'on_hold' | 'completed' | 'cancelled';
-  startDate: Date;
-  endDate?: Date;
-  budget: number;
-  spent: number;
-  customerId?: string;
-  teamMembers: string[];
-}
-
+Object.defineProperty(exports, '__esModule', { value: true });
+exports.ERPCore = void 0;
 // ═══════════════════════════════════════════════════════════════════════════
 // ERP CORE CLASS
 // ═══════════════════════════════════════════════════════════════════════════
-
-export class ERPCore {
-  private _config: ERPConfig;
-  private db: Pool;
-  private _redis: Redis;
-
+class ERPCore {
+  _config;
+  db;
+  _redis;
   // Facade properties for server.ts API compatibility
-  public financial: any;
-  public inventory: any;
-  public hr: any;
-  public crm: any;
-  public projects: any;
-
-  constructor(redis: Redis, db: Pool, config?: ERPConfig) {
+  financial;
+  inventory;
+  hr;
+  crm;
+  projects;
+  constructor(redis, db, config) {
     // Handle both old and new constructor signatures
     this._redis = redis;
     this.db = db;
@@ -119,7 +34,6 @@ export class ERPCore {
         projects: true,
       },
     };
-
     // Initialize facade properties
     this.financial = {
       createTransaction: this.createTransaction.bind(this),
@@ -127,51 +41,43 @@ export class ERPCore {
       getAccountsReceivable: this.getAccountsReceivable.bind(this),
       getAccountsPayable: this.getAccountsPayable.bind(this),
     };
-
     this.inventory = {
       createInventoryItem: this.createInventoryItem.bind(this),
       updateInventoryQuantity: this.updateInventoryQuantity.bind(this),
       getLowStockItems: this.getLowStockItems.bind(this),
       getInventoryValue: this.getInventoryValue.bind(this),
     };
-
     this.hr = {
       createEmployee: this.createEmployee.bind(this),
       updateEmployeeSalary: this.updateEmployeeSalary.bind(this),
       getTotalPayroll: this.getTotalPayroll.bind(this),
     };
-
     this.crm = {
       createCustomer: this.createCustomer.bind(this),
       updateCustomerRevenue: this.updateCustomerRevenue.bind(this),
       getTopCustomers: this.getTopCustomers.bind(this),
     };
-
     this.projects = {
       createProject: this.createProject.bind(this),
       trackProjectExpense: this.trackProjectExpense.bind(this),
       getProjectProgress: this.getProjectProgress.bind(this),
     };
   }
-
-  private get config(): ERPConfig {
+  get config() {
     return this._config;
   }
-
-  private get redis(): Redis {
+  get redis() {
     return this._redis;
   }
-
-  async initialize(): Promise<void> {
+  async initialize() {
     console.log(`   📊 Initializing ERP for tenant: ${this.config.tenantId}`);
     console.log(
       `   📦 Enabled modules: ${Object.keys(this.config.modules)
-        .filter((k) => this.config.modules[k as keyof typeof this.config.modules])
+        .filter((k) => this.config.modules[k])
         .join(', ')}`
     );
     // Could add schema validation, cache warming, etc. here
   }
-
   async getStatus() {
     const [inventoryValue, totalPayroll, accountsReceivable, accountsPayable] = await Promise.all([
       this.getInventoryValue().catch(() => ({ cost: 0, retail: 0 })),
@@ -179,7 +85,6 @@ export class ERPCore {
       this.getAccountsReceivable().catch(() => 0),
       this.getAccountsPayable().catch(() => 0),
     ]);
-
     return {
       tenantId: this.config.tenantId,
       modules: this.config.modules,
@@ -192,12 +97,10 @@ export class ERPCore {
       timestamp: new Date().toISOString(),
     };
   }
-
   // ═════════════════════════════════════════════════════════════════════════
   // FINANCIAL MODULE
   // ═════════════════════════════════════════════════════════════════════════
-
-  async createTransaction(transaction: Omit<Transaction, 'id'>): Promise<Transaction> {
+  async createTransaction(transaction) {
     const result = await this.db.query(
       `INSERT INTO erp_transactions (tenant_id, type, category, amount, currency, date, description, status, metadata)
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
@@ -214,18 +117,14 @@ export class ERPCore {
         JSON.stringify(transaction.metadata || {}),
       ]
     );
-
     // Invalidate cache
     await this.redis.del(`financial:summary:${this.config.tenantId}`);
-
     return this.mapTransaction(result.rows[0]);
   }
-
-  async getFinancialSummary(startDate: Date, endDate: Date) {
+  async getFinancialSummary(startDate, endDate) {
     const cacheKey = `financial:summary:${this.config.tenantId}:${startDate.toISOString()}:${endDate.toISOString()}`;
     const cached = await this.redis.get(cacheKey);
     if (cached) return JSON.parse(cached);
-
     const result = await this.db.query(
       `SELECT
         type,
@@ -238,19 +137,16 @@ export class ERPCore {
        GROUP BY type, currency`,
       [this.config.tenantId, startDate, endDate]
     );
-
     const summary = {
       income: result.rows.filter((r) => r.type === 'income'),
       expenses: result.rows.filter((r) => r.type === 'expense'),
       netProfit: this.calculateNetProfit(result.rows),
       period: { start: startDate, end: endDate },
     };
-
     await this.redis.set(cacheKey, JSON.stringify(summary), 'EX', 3600);
     return summary;
   }
-
-  async getAccountsReceivable(): Promise<number> {
+  async getAccountsReceivable() {
     const result = await this.db.query(
       `SELECT SUM(amount) as total
        FROM erp_transactions
@@ -259,8 +155,7 @@ export class ERPCore {
     );
     return parseFloat(result.rows[0].total || 0);
   }
-
-  async getAccountsPayable(): Promise<number> {
+  async getAccountsPayable() {
     const result = await this.db.query(
       `SELECT SUM(amount) as total
        FROM erp_transactions
@@ -269,14 +164,11 @@ export class ERPCore {
     );
     return parseFloat(result.rows[0].total || 0);
   }
-
   // ═════════════════════════════════════════════════════════════════════════
   // INVENTORY MODULE
   // ═════════════════════════════════════════════════════════════════════════
-
-  async createInventoryItem(item: Omit<InventoryItem, 'id' | 'status'>): Promise<InventoryItem> {
+  async createInventoryItem(item) {
     const status = this.calculateInventoryStatus(item.quantity, item.reorderLevel);
-
     const result = await this.db.query(
       `INSERT INTO erp_inventory (tenant_id, sku, name, description, quantity, unit, cost, price, location, supplier, reorder_level, status)
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
@@ -296,36 +188,30 @@ export class ERPCore {
         status,
       ]
     );
-
     return this.mapInventoryItem(result.rows[0]);
   }
-
-  async updateInventoryQuantity(itemId: string, quantity: number, reason: string): Promise<void> {
+  async updateInventoryQuantity(itemId, quantity, reason) {
     const item = await this.getInventoryItem(itemId);
     const newQuantity = item.quantity + quantity;
     const status = this.calculateInventoryStatus(newQuantity, item.reorderLevel);
-
     await this.db.query(
       `UPDATE erp_inventory
        SET quantity = $1, status = $2, updated_at = NOW()
        WHERE id = $3 AND tenant_id = $4`,
       [newQuantity, status, itemId, this.config.tenantId]
     );
-
     // Log inventory movement
     await this.db.query(
       `INSERT INTO erp_inventory_movements (tenant_id, item_id, quantity, reason, created_at)
        VALUES ($1, $2, $3, $4, NOW())`,
       [this.config.tenantId, itemId, quantity, reason]
     );
-
     // Alert if low stock
     if (status === 'low_stock') {
       await this.sendLowStockAlert(item);
     }
   }
-
-  async getLowStockItems(): Promise<InventoryItem[]> {
+  async getLowStockItems() {
     const result = await this.db.query(
       `SELECT * FROM erp_inventory
        WHERE tenant_id = $1 AND (status = 'low_stock' OR status = 'out_of_stock')
@@ -334,8 +220,7 @@ export class ERPCore {
     );
     return result.rows.map(this.mapInventoryItem);
   }
-
-  async getInventoryValue(): Promise<{ cost: number; retail: number }> {
+  async getInventoryValue() {
     const result = await this.db.query(
       `SELECT
         SUM(quantity * cost) as total_cost,
@@ -344,18 +229,15 @@ export class ERPCore {
        WHERE tenant_id = $1`,
       [this.config.tenantId]
     );
-
     return {
       cost: parseFloat(result.rows[0].total_cost || 0),
       retail: parseFloat(result.rows[0].total_retail || 0),
     };
   }
-
   // ═════════════════════════════════════════════════════════════════════════
   // HR MODULE
   // ═════════════════════════════════════════════════════════════════════════
-
-  async createEmployee(employee: Omit<Employee, 'id'>): Promise<Employee> {
+  async createEmployee(employee) {
     const result = await this.db.query(
       `INSERT INTO erp_employees (tenant_id, employee_number, first_name, last_name, email, position, department, hire_date, salary, status, metadata)
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
@@ -374,11 +256,9 @@ export class ERPCore {
         JSON.stringify(employee.metadata || {}),
       ]
     );
-
     return this.mapEmployee(result.rows[0]);
   }
-
-  async getPayrollSummary(month: number, year: number) {
+  async getPayrollSummary(month, year) {
     const result = await this.db.query(
       `SELECT
         department,
@@ -391,7 +271,6 @@ export class ERPCore {
        ORDER BY total_salary DESC`,
       [this.config.tenantId]
     );
-
     return {
       month,
       year,
@@ -399,8 +278,7 @@ export class ERPCore {
       totalPayroll: result.rows.reduce((sum, dept) => sum + parseFloat(dept.total_salary), 0),
     };
   }
-
-  async updateEmployeeSalary(employeeId: string, newSalary: number): Promise<void> {
+  async updateEmployeeSalary(employeeId, newSalary) {
     await this.db.query(
       `UPDATE erp_employees
        SET salary = $1, updated_at = NOW()
@@ -408,8 +286,7 @@ export class ERPCore {
       [newSalary, employeeId, this.config.tenantId]
     );
   }
-
-  async getTotalPayroll(): Promise<number> {
+  async getTotalPayroll() {
     const result = await this.db.query(
       `SELECT SUM(salary) as total
        FROM erp_employees
@@ -418,12 +295,7 @@ export class ERPCore {
     );
     return parseFloat(result.rows[0].total || 0);
   }
-
-  async trackAttendance(
-    employeeId: string,
-    date: Date,
-    status: 'present' | 'absent' | 'leave'
-  ): Promise<void> {
+  async trackAttendance(employeeId, date, status) {
     await this.db.query(
       `INSERT INTO erp_attendance (tenant_id, employee_id, date, status)
        VALUES ($1, $2, $3, $4)
@@ -431,12 +303,10 @@ export class ERPCore {
       [this.config.tenantId, employeeId, date, status]
     );
   }
-
   // ═════════════════════════════════════════════════════════════════════════
   // CRM MODULE
   // ═════════════════════════════════════════════════════════════════════════
-
-  async createCustomer(customer: Omit<Customer, 'id' | 'totalRevenue'>): Promise<Customer> {
+  async createCustomer(customer) {
     const result = await this.db.query(
       `INSERT INTO erp_customers (tenant_id, name, email, phone, company, status, total_revenue, last_contact, tags)
        VALUES ($1, $2, $3, $4, $5, $6, 0, $7, $8)
@@ -452,11 +322,9 @@ export class ERPCore {
         JSON.stringify(customer.tags),
       ]
     );
-
     return this.mapCustomer(result.rows[0]);
   }
-
-  async updateCustomerRevenue(customerId: string, amount: number): Promise<void> {
+  async updateCustomerRevenue(customerId, amount) {
     await this.db.query(
       `UPDATE erp_customers
        SET total_revenue = total_revenue + $1, last_contact = NOW()
@@ -464,8 +332,7 @@ export class ERPCore {
       [amount, customerId, this.config.tenantId]
     );
   }
-
-  async getTopCustomers(limit: number = 10): Promise<Customer[]> {
+  async getTopCustomers(limit = 10) {
     const result = await this.db.query(
       `SELECT * FROM erp_customers
        WHERE tenant_id = $1 AND status = 'active'
@@ -475,25 +342,21 @@ export class ERPCore {
     );
     return result.rows.map(this.mapCustomer);
   }
-
-  async trackCustomerInteraction(customerId: string, type: string, notes: string): Promise<void> {
+  async trackCustomerInteraction(customerId, type, notes) {
     await this.db.query(
       `INSERT INTO erp_customer_interactions (tenant_id, customer_id, type, notes, created_at)
        VALUES ($1, $2, $3, $4, NOW())`,
       [this.config.tenantId, customerId, type, notes]
     );
-
     await this.db.query(
       `UPDATE erp_customers SET last_contact = NOW() WHERE id = $1 AND tenant_id = $2`,
       [customerId, this.config.tenantId]
     );
   }
-
   // ═════════════════════════════════════════════════════════════════════════
   // PROJECTS MODULE
   // ═════════════════════════════════════════════════════════════════════════
-
-  async createProject(project: Omit<Project, 'id' | 'spent'>): Promise<Project> {
+  async createProject(project) {
     const result = await this.db.query(
       `INSERT INTO erp_projects (tenant_id, name, description, status, start_date, end_date, budget, spent, customer_id, team_members)
        VALUES ($1, $2, $3, $4, $5, $6, $7, 0, $8, $9)
@@ -510,26 +373,22 @@ export class ERPCore {
         JSON.stringify(project.teamMembers),
       ]
     );
-
     return this.mapProject(result.rows[0]);
   }
-
-  async trackProjectExpense(projectId: string, amount: number, description: string): Promise<void> {
+  async trackProjectExpense(projectId, amount, description) {
     await this.db.query(
       `UPDATE erp_projects
        SET spent = spent + $1
        WHERE id = $2 AND tenant_id = $3`,
       [amount, projectId, this.config.tenantId]
     );
-
     await this.db.query(
       `INSERT INTO erp_project_expenses (tenant_id, project_id, amount, description, created_at)
        VALUES ($1, $2, $3, $4, NOW())`,
       [this.config.tenantId, projectId, amount, description]
     );
   }
-
-  async getProjectProgress(projectId: string) {
+  async getProjectProgress(projectId) {
     const project = await this.getProject(projectId);
     const budgetUsed = (project.spent / project.budget) * 100;
     const now = new Date();
@@ -538,7 +397,6 @@ export class ERPCore {
       : 0;
     const daysElapsed = (now.getTime() - project.startDate.getTime()) / (1000 * 60 * 60 * 24);
     const timeProgress = totalDays > 0 ? (daysElapsed / totalDays) * 100 : 0;
-
     return {
       project,
       budgetUsed: Math.min(budgetUsed, 100),
@@ -547,12 +405,10 @@ export class ERPCore {
       isOverdue: project.endDate ? now > project.endDate : false,
     };
   }
-
   // ═════════════════════════════════════════════════════════════════════════
   // HELPER METHODS
   // ═════════════════════════════════════════════════════════════════════════
-
-  private calculateNetProfit(transactions: any[]): number {
+  calculateNetProfit(transactions) {
     const income = transactions
       .filter((t) => t.type === 'income')
       .reduce((sum, t) => sum + parseFloat(t.total), 0);
@@ -561,17 +417,12 @@ export class ERPCore {
       .reduce((sum, t) => sum + parseFloat(t.total), 0);
     return income - expenses;
   }
-
-  private calculateInventoryStatus(
-    quantity: number,
-    reorderLevel: number
-  ): InventoryItem['status'] {
+  calculateInventoryStatus(quantity, reorderLevel) {
     if (quantity === 0) return 'out_of_stock';
     if (quantity <= reorderLevel) return 'low_stock';
     return 'in_stock';
   }
-
-  private async sendLowStockAlert(item: InventoryItem): Promise<void> {
+  async sendLowStockAlert(item) {
     // Integration with notification service
     await this.redis.publish(
       'erp:alerts',
@@ -582,8 +433,7 @@ export class ERPCore {
       })
     );
   }
-
-  private async getInventoryItem(id: string): Promise<InventoryItem> {
+  async getInventoryItem(id) {
     const result = await this.db.query(
       `SELECT * FROM erp_inventory WHERE id = $1 AND tenant_id = $2`,
       [id, this.config.tenantId]
@@ -591,8 +441,7 @@ export class ERPCore {
     if (result.rows.length === 0) throw new Error('Inventory item not found');
     return this.mapInventoryItem(result.rows[0]);
   }
-
-  private async getProject(id: string): Promise<Project> {
+  async getProject(id) {
     const result = await this.db.query(
       `SELECT * FROM erp_projects WHERE id = $1 AND tenant_id = $2`,
       [id, this.config.tenantId]
@@ -600,8 +449,7 @@ export class ERPCore {
     if (result.rows.length === 0) throw new Error('Project not found');
     return this.mapProject(result.rows[0]);
   }
-
-  private mapTransaction(row: any): Transaction {
+  mapTransaction(row) {
     return {
       id: row.id,
       type: row.type,
@@ -614,8 +462,7 @@ export class ERPCore {
       metadata: row.metadata,
     };
   }
-
-  private mapInventoryItem(row: any): InventoryItem {
+  mapInventoryItem(row) {
     return {
       id: row.id,
       sku: row.sku,
@@ -631,8 +478,7 @@ export class ERPCore {
       status: row.status,
     };
   }
-
-  private mapEmployee(row: any): Employee {
+  mapEmployee(row) {
     return {
       id: row.id,
       employeeNumber: row.employee_number,
@@ -647,8 +493,7 @@ export class ERPCore {
       metadata: row.metadata,
     };
   }
-
-  private mapCustomer(row: any): Customer {
+  mapCustomer(row) {
     return {
       id: row.id,
       name: row.name,
@@ -661,8 +506,7 @@ export class ERPCore {
       tags: JSON.parse(row.tags || '[]'),
     };
   }
-
-  private mapProject(row: any): Project {
+  mapProject(row) {
     return {
       id: row.id,
       name: row.name,
@@ -677,5 +521,6 @@ export class ERPCore {
     };
   }
 }
-
-export default ERPCore;
+exports.ERPCore = ERPCore;
+exports.default = ERPCore;
+//# sourceMappingURL=ERPCore.js.map

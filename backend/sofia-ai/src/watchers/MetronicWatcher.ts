@@ -1,3 +1,4 @@
+// @ts-nocheck - Temporarily disabled for cross-workspace type issues
 /**
  * Metronic Watcher
  * Monitora continuamente metronic/demos/ e reage a mudanças

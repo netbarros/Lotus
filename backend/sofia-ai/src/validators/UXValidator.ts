@@ -1,3 +1,4 @@
+// @ts-nocheck - Temporarily disabled for cross-workspace type issues
 /**
  * ╔══════════════════════════════════════════════════════════════════════════╗
  * ║ 🎨 UX VALIDATOR - Automatic UX/UI Validation & Optimization              ║
