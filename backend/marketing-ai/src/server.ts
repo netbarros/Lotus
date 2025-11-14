@@ -85,10 +85,29 @@ async function initializeServices(): Promise<void> {
     await pool.query('SELECT NOW()');
     console.log('   ✅ PostgreSQL connected');
 
-    // Initialize Marketing Intelligence (will initialize Sofia AI internally)
-    // Note: In production, you would pass actual LangChain, Langfuse, Qdrant services
-    // For now, we'll create placeholder initialization
-    console.log('   🧠 Marketing Intelligence initialized (Sofia AI integration pending)');
+    // Initialize Marketing Intelligence with Sofia AI
+    // Note: In production environment, Sofia services (LangChain, Langfuse, Qdrant)
+    // would be initialized here. For development, MarketingIntelligence will create mock services.
+    const sofiaConfig = {
+      enabled: process.env.SOFIA_ENABLED === 'true',
+      langchain: {
+        apiKey: process.env.ANTHROPIC_API_KEY || '',
+        model: process.env.LANGCHAIN_MODEL || 'claude-3-5-sonnet-20241022',
+      },
+      langfuse: {
+        publicKey: process.env.LANGFUSE_PUBLIC_KEY || '',
+        secretKey: process.env.LANGFUSE_SECRET_KEY || '',
+        baseUrl: process.env.LANGFUSE_BASE_URL || 'http://localhost:3000',
+      },
+      qdrant: {
+        url: process.env.QDRANT_URL || 'http://localhost:6333',
+        apiKey: process.env.QDRANT_API_KEY,
+      },
+    };
+
+    marketing = new MarketingIntelligence_v4(redis, pool, sofiaConfig as any);
+    await marketing.initialize();
+    console.log('   🧠 Marketing Intelligence v4.0 initialized with Sofia AI');
 
     console.log('✅ All services ready');
 
@@ -150,15 +169,41 @@ app.get('/status', async (req: Request, res: Response) => {
   }
 });
 
-// API routes
+// API routes - Powered by Sofia AI v4.0
+
+/**
+ * POST /api/campaigns
+ * Create intelligent marketing campaign powered by Sofia AI
+ */
 app.post('/api/campaigns', async (req: Request, res: Response) => {
   try {
-    // TODO: Implement with MarketingIntelligence_v4
-    res.status(501).json({
-      error: 'Not implemented yet',
-      message: 'Campaign creation will be powered by Sofia AI',
+    const { objective, targetAudience, budget, duration, channels } = req.body;
+
+    // Validation
+    if (!objective || typeof objective !== 'string' || objective.trim().length === 0) {
+      return res.status(400).json({
+        error: 'Invalid request',
+        message: 'objective is required and must be a non-empty string',
+      });
+    }
+
+    // Create campaign using Sofia AI
+    const campaign = await marketing.createCampaign({
+      objective,
+      targetAudience,
+      budget,
+      duration,
+      channels,
+    });
+
+    res.status(201).json({
+      success: true,
+      message: 'Campaign created successfully by Sofia AI',
+      data: campaign,
+      powered_by: 'Sofia AI v4.0',
     });
   } catch (error: any) {
+    console.error('Campaign creation error:', error);
     res.status(500).json({
       error: 'Campaign creation failed',
       message: error.message,
@@ -166,14 +211,39 @@ app.post('/api/campaigns', async (req: Request, res: Response) => {
   }
 });
 
+/**
+ * POST /api/leads/score
+ * Calculate lead score using Sofia AI predictive analytics
+ */
 app.post('/api/leads/score', async (req: Request, res: Response) => {
   try {
-    // TODO: Implement with MarketingIntelligence_v4
-    res.status(501).json({
-      error: 'Not implemented yet',
-      message: 'Lead scoring will be powered by Sofia AI',
+    const { leadId } = req.body;
+
+    if (!leadId || typeof leadId !== 'string') {
+      return res.status(400).json({
+        error: 'Invalid request',
+        message: 'leadId is required and must be a string',
+      });
+    }
+
+    // Score lead using Sofia AI
+    const score = await marketing.scoreLead(leadId);
+    const conversionProbability = await marketing.predictLeadConversion(leadId);
+    const nextBestAction = await marketing.getNextBestAction(leadId);
+
+    res.status(200).json({
+      success: true,
+      data: {
+        leadId,
+        score,
+        conversionProbability,
+        nextBestAction,
+        calculatedAt: new Date().toISOString(),
+      },
+      powered_by: 'Sofia AI v4.0 Predictive Engine',
     });
   } catch (error: any) {
+    console.error('Lead scoring error:', error);
     res.status(500).json({
       error: 'Lead scoring failed',
       message: error.message,
@@ -181,14 +251,45 @@ app.post('/api/leads/score', async (req: Request, res: Response) => {
   }
 });
 
+/**
+ * POST /api/content/generate
+ * Generate marketing content using Sofia AI creative engine
+ */
 app.post('/api/content/generate', async (req: Request, res: Response) => {
   try {
-    // TODO: Implement with MarketingIntelligence_v4
-    res.status(501).json({
-      error: 'Not implemented yet',
-      message: 'Content generation will be powered by Sofia AI',
+    const { type, topic, keywords, targetAudience, tone } = req.body;
+
+    if (!type || typeof type !== 'string') {
+      return res.status(400).json({
+        error: 'Invalid request',
+        message: 'type is required (blog, video, infographic, ebook, whitepaper, case_study, social_post)',
+      });
+    }
+
+    if (!topic || typeof topic !== 'string') {
+      return res.status(400).json({
+        error: 'Invalid request',
+        message: 'topic is required and must be a string',
+      });
+    }
+
+    // Generate content using Sofia AI
+    const content = await marketing.generateContent({
+      type: type as any,
+      topic,
+      keywords: keywords || [],
+      targetAudience: targetAudience || [],
+      tone: tone || 'professional',
+    });
+
+    res.status(201).json({
+      success: true,
+      message: 'Content generated successfully by Sofia AI',
+      data: content,
+      powered_by: 'Sofia AI v4.0 Creative Engine',
     });
   } catch (error: any) {
+    console.error('Content generation error:', error);
     res.status(500).json({
       error: 'Content generation failed',
       message: error.message,
@@ -196,16 +297,108 @@ app.post('/api/content/generate', async (req: Request, res: Response) => {
   }
 });
 
+/**
+ * GET /api/insights
+ * Get AI-generated marketing insights from Sofia
+ */
 app.get('/api/insights', async (req: Request, res: Response) => {
   try {
-    // TODO: Implement with MarketingIntelligence_v4
-    res.status(501).json({
-      error: 'Not implemented yet',
-      message: 'Insights generation will be powered by Sofia AI',
+    const { timeframe = 'week' } = req.query;
+
+    if (!['day', 'week', 'month', 'quarter'].includes(timeframe as string)) {
+      return res.status(400).json({
+        error: 'Invalid request',
+        message: 'timeframe must be one of: day, week, month, quarter',
+      });
+    }
+
+    // Generate insights using Sofia AI analytics
+    const insights = await marketing.generateInsights(timeframe as any);
+
+    res.status(200).json({
+      success: true,
+      data: {
+        timeframe,
+        insights,
+        generatedAt: new Date().toISOString(),
+        count: insights.length,
+      },
+      powered_by: 'Sofia AI v4.0 Analytics Engine',
     });
   } catch (error: any) {
+    console.error('Insights generation error:', error);
     res.status(500).json({
       error: 'Insights retrieval failed',
+      message: error.message,
+    });
+  }
+});
+
+/**
+ * GET /api/journeys/:leadId
+ * Map customer journey using Sofia AI behavioral analysis
+ */
+app.get('/api/journeys/:leadId', async (req: Request, res: Response) => {
+  try {
+    const { leadId } = req.params;
+
+    if (!leadId) {
+      return res.status(400).json({
+        error: 'Invalid request',
+        message: 'leadId parameter is required',
+      });
+    }
+
+    // Map journey using Sofia AI
+    const journey = await marketing.mapCustomerJourney(leadId);
+
+    res.status(200).json({
+      success: true,
+      data: journey,
+      powered_by: 'Sofia AI v4.0 Journey Mapper',
+    });
+  } catch (error: any) {
+    console.error('Journey mapping error:', error);
+    res.status(500).json({
+      error: 'Journey mapping failed',
+      message: error.message,
+    });
+  }
+});
+
+/**
+ * POST /api/ab-tests
+ * Create A/B test with Sofia AI recommendations
+ */
+app.post('/api/ab-tests', async (req: Request, res: Response) => {
+  try {
+    const { name, type, variants, duration } = req.body;
+
+    if (!name || !type || !variants || !Array.isArray(variants) || variants.length < 2) {
+      return res.status(400).json({
+        error: 'Invalid request',
+        message: 'name, type, and at least 2 variants are required',
+      });
+    }
+
+    // Create A/B test using Sofia AI
+    const abTest = await marketing.createABTest({
+      name,
+      type,
+      variants,
+      duration,
+    });
+
+    res.status(201).json({
+      success: true,
+      message: 'A/B test created successfully with Sofia AI optimization',
+      data: abTest,
+      powered_by: 'Sofia AI v4.0 Optimizer',
+    });
+  } catch (error: any) {
+    console.error('A/B test creation error:', error);
+    res.status(500).json({
+      error: 'A/B test creation failed',
       message: error.message,
     });
   }
@@ -251,12 +444,14 @@ async function startServer(): Promise<void> {
       console.log(`🧠 Sofia AI: Integration Ready`);
       console.log('');
       console.log('Endpoints:');
-      console.log(`   GET  /health              - Health check`);
-      console.log(`   GET  /status              - Service status`);
-      console.log(`   POST /api/campaigns       - Create campaign (Sofia AI)`);
-      console.log(`   POST /api/leads/score     - Score lead (Sofia AI)`);
-      console.log(`   POST /api/content/generate - Generate content (Sofia AI)`);
-      console.log(`   GET  /api/insights        - Get insights (Sofia AI)`);
+      console.log(`   GET  /health                    - Health check`);
+      console.log(`   GET  /status                    - Service status & stats`);
+      console.log(`   POST /api/campaigns             - Create AI-powered campaign`);
+      console.log(`   POST /api/leads/score           - Score & predict lead conversion`);
+      console.log(`   POST /api/content/generate      - Generate marketing content`);
+      console.log(`   GET  /api/insights?timeframe=   - Get AI analytics insights`);
+      console.log(`   GET  /api/journeys/:leadId      - Map customer journey`);
+      console.log(`   POST /api/ab-tests              - Create A/B test with AI`);
       console.log('');
     });
 
