@@ -26,11 +26,7 @@ export function Sidebar({ isOpen }: SidebarProps) {
       {/* Logo */}
       <div className="app-sidebar-logo px-6" id="kt_app_sidebar_logo">
         <a href="/">
-          <img
-            alt="Logo"
-            src="/media/logos/logo.svg"
-            className="h-25px app-sidebar-logo-default"
-          />
+          <img alt="Logo" src="/media/logos/logo.svg" className="h-25px app-sidebar-logo-default" />
           <img
             alt="Logo"
             src="/media/logos/logo-sm.svg"

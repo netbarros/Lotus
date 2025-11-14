@@ -1,8 +1,6 @@
 # 🎨 Guia de Integração do Metronic 9 com MagicSaaS
 
-**Versão:** 1.0
-**Data:** 2025-11-05
-**Autor:** Sofia Lotus AI
+**Versão:** 1.0 **Data:** 2025-11-05 **Autor:** Sofia Lotus AI
 
 ---
 
@@ -11,16 +9,19 @@
 ### 1. Execute o Instalador ULTIMATE
 
 **Windows (PowerShell):**
+
 ```powershell
 .\Install-MagicSaaS-ULTIMATE.ps1
 ```
 
 **Linux/macOS (Bash):**
+
 ```bash
 ./install-magicsaas-ultimate.sh
 ```
 
-Consulte o [INSTALLATION_GUIDE.md](INSTALLATION_GUIDE.md) para instruções completas.
+Consulte o [INSTALLATION_GUIDE.md](INSTALLATION_GUIDE.md) para instruções
+completas.
 
 ### 2. Compre o Metronic 9
 
@@ -54,7 +55,8 @@ C:\MagicSaaS/                                    ← Diretório raiz
 └── ...
 ```
 
-**IMPORTANTE:** O instalador cria a **ESTRUTURA** do frontend, mas o Metronic precisa ser adicionado manualmente porque é um produto pago.
+**IMPORTANTE:** O instalador cria a **ESTRUTURA** do frontend, mas o Metronic
+precisa ser adicionado manualmente porque é um produto pago.
 
 ---
 
@@ -68,6 +70,7 @@ C:\MagicSaaS/                                    ← Diretório raiz
 4. Extraia o arquivo ZIP
 
 Você terá uma estrutura assim:
+
 ```
 metronic-v9.0.0-react/
 ├── demo1/                                       ← USE ESTE
@@ -94,7 +97,8 @@ Você tem **2 opções**:
 
 ## 🎯 OPÇÃO 1: Copiar Componentes do Metronic (Recomendado)
 
-Esta opção mantém a estrutura do MagicSaaS e adiciona os componentes do Metronic.
+Esta opção mantém a estrutura do MagicSaaS e adiciona os componentes do
+Metronic.
 
 ### 3.1. Copiar Pasta `_metronic`
 
@@ -124,7 +128,8 @@ Copy-Item "C:\Downloads\metronic-v9.0.0-react\demo1\vite.config.ts" "C:\MagicSaa
 
 ### 3.4. Mesclar package.json
 
-Abra `C:\MagicSaaS\frontend\admin\package.json` e adicione as dependências do Metronic:
+Abra `C:\MagicSaaS\frontend\admin\package.json` e adicione as dependências do
+Metronic:
 
 ```json
 {
@@ -293,7 +298,8 @@ pnpm install
 
 ### 2.4. Customizar para MagicSaaS
 
-Agora você precisa criar as páginas específicas do MagicSaaS dentro do demo do Metronic:
+Agora você precisa criar as páginas específicas do MagicSaaS dentro do demo do
+Metronic:
 
 ```
 C:\MagicSaaS\frontend\admin/
@@ -343,25 +349,25 @@ O frontend estará disponível em: **http://localhost:5173**
 Crie o arquivo `src/services/api.ts`:
 
 ```typescript
-import axios from 'axios'
+import axios from 'axios';
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL || 'http://localhost:3000/api/v1',
   headers: {
     'Content-Type': 'application/json',
   },
-})
+});
 
 // Interceptor para adicionar token
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('auth_token')
+  const token = localStorage.getItem('auth_token');
   if (token) {
-    config.headers.Authorization = `Bearer ${token}`
+    config.headers.Authorization = `Bearer ${token}`;
   }
-  return config
-})
+  return config;
+});
 
-export default api
+export default api;
 ```
 
 ### Criar Arquivo .env
@@ -381,6 +387,7 @@ VITE_APP_VERSION=∞.2026.1.0
 ### Dashboard Module
 
 `src/app/modules/dashboard/DashboardPage.tsx`:
+
 ```typescript
 import { FC } from 'react'
 import { PageTitle } from '../../../_metronic/layout/core'
@@ -400,6 +407,7 @@ export const DashboardPage: FC = () => {
 ### Tenants Module
 
 `src/app/modules/tenants/TenantsPage.tsx`:
+
 ```typescript
 import { FC } from 'react'
 import { PageTitle } from '../../../_metronic/layout/core'
@@ -438,7 +446,7 @@ export const TenantsPage: FC = () => {
 
 ## 🐛 Troubleshooting
 
-### Erro: "Module not found: _metronic"
+### Erro: "Module not found: \_metronic"
 
 **Solução:** Você não copiou a pasta `_metronic` do Metronic.
 
@@ -470,9 +478,9 @@ pnpm dev
 **Solução:** Importe os estilos no `main.tsx`:
 
 ```typescript
-import './_metronic/assets/sass/style.scss'
-import './_metronic/assets/sass/plugins.scss'
-import './_metronic/assets/sass/style.react.scss'
+import './_metronic/assets/sass/style.scss';
+import './_metronic/assets/sass/plugins.scss';
+import './_metronic/assets/sass/style.react.scss';
 ```
 
 ---
@@ -482,7 +490,8 @@ import './_metronic/assets/sass/style.react.scss'
 Se tiver problemas com a integração:
 
 - **Email:** support@softwarelotus.com.br
-- **Documentação Metronic:** https://preview.keenthemes.com/metronic8/react/docs/
+- **Documentação Metronic:**
+  https://preview.keenthemes.com/metronic8/react/docs/
 
 ---
 
@@ -490,12 +499,11 @@ Se tiver problemas com a integração:
 
 Após seguir este guia, você terá:
 
-✅ Frontend Admin com Metronic 9 integrado
-✅ Estrutura de componentes organizados
-✅ Conexão com backend API
-✅ Ambiente de desenvolvimento pronto
+✅ Frontend Admin com Metronic 9 integrado ✅ Estrutura de componentes
+organizados ✅ Conexão com backend API ✅ Ambiente de desenvolvimento pronto
 
-**Próximo passo:** Começar a criar as páginas específicas do MagicSaaS usando os componentes do Metronic!
+**Próximo passo:** Começar a criar as páginas específicas do MagicSaaS usando os
+componentes do Metronic!
 
 ---
 

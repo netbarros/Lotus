@@ -8,7 +8,7 @@ export default defineEndpoint((router, { services, database, env }) => {
         user_id,
         product_id, // For "similar products"
         type = 'personalized', // 'personalized', 'similar', 'trending', 'complementary'
-        limit = 10
+        limit = 10,
       } = req.query;
 
       const tenant_id = req.accountability.tenant;
@@ -27,7 +27,9 @@ export default defineEndpoint((router, { services, database, env }) => {
 
         case 'similar':
           if (!product_id) {
-            return res.status(400).json({ error: 'product_id required for similar recommendations' });
+            return res
+              .status(400)
+              .json({ error: 'product_id required for similar recommendations' });
           }
           recommendations = await getSimilarProducts(database, tenant_id, product_id, limit);
           break;
@@ -38,7 +40,9 @@ export default defineEndpoint((router, { services, database, env }) => {
 
         case 'complementary':
           if (!product_id) {
-            return res.status(400).json({ error: 'product_id required for complementary recommendations' });
+            return res
+              .status(400)
+              .json({ error: 'product_id required for complementary recommendations' });
           }
           recommendations = await getComplementaryProducts(database, tenant_id, product_id, limit);
           break;
@@ -46,7 +50,7 @@ export default defineEndpoint((router, { services, database, env }) => {
         default:
           return res.status(400).json({
             error: 'Invalid recommendation type',
-            supported: ['personalized', 'similar', 'trending', 'complementary']
+            supported: ['personalized', 'similar', 'trending', 'complementary'],
           });
       }
 
@@ -55,8 +59,8 @@ export default defineEndpoint((router, { services, database, env }) => {
         meta: {
           type,
           count: recommendations.length,
-          algorithm: getAlgorithmInfo(type)
-        }
+          algorithm: getAlgorithmInfo(type),
+        },
       });
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -69,7 +73,7 @@ export default defineEndpoint((router, { services, database, env }) => {
       const {
         product_id,
         action, // 'view', 'click', 'add_to_cart', 'purchase', 'skip'
-        context // Optional context (recommendation_type, position, etc.)
+        context, // Optional context (recommendation_type, position, etc.)
       } = req.body;
 
       const tenant_id = req.accountability.tenant;
@@ -78,7 +82,7 @@ export default defineEndpoint((router, { services, database, env }) => {
       if (!product_id || !action) {
         return res.status(400).json({
           error: 'Missing required fields',
-          required: ['product_id', 'action']
+          required: ['product_id', 'action'],
         });
       }
 
@@ -90,7 +94,7 @@ export default defineEndpoint((router, { services, database, env }) => {
         product_id,
         action,
         context: context ? JSON.stringify(context) : null,
-        created_at: new Date()
+        created_at: new Date(),
       });
 
       // Emit event for real-time recommendation engine updates
@@ -104,9 +108,9 @@ export default defineEndpoint((router, { services, database, env }) => {
           user_id,
           product_id,
           action,
-          context
+          context,
         }),
-        timestamp: new Date()
+        timestamp: new Date(),
       });
 
       res.json({ success: true, message: 'Feedback recorded' });
@@ -133,13 +137,13 @@ export default defineEndpoint((router, { services, database, env }) => {
         .groupBy('action');
 
       // Calculate CTR (Click-Through Rate)
-      const views = stats.find(s => s.action === 'view')?.count || 0;
-      const clicks = stats.find(s => s.action === 'click')?.count || 0;
-      const addToCarts = stats.find(s => s.action === 'add_to_cart')?.count || 0;
-      const purchases = stats.find(s => s.action === 'purchase')?.count || 0;
+      const views = stats.find((s) => s.action === 'view')?.count || 0;
+      const clicks = stats.find((s) => s.action === 'click')?.count || 0;
+      const addToCarts = stats.find((s) => s.action === 'add_to_cart')?.count || 0;
+      const purchases = stats.find((s) => s.action === 'purchase')?.count || 0;
 
-      const ctr = views > 0 ? (clicks / views * 100).toFixed(2) : 0;
-      const conversionRate = clicks > 0 ? (purchases / clicks * 100).toFixed(2) : 0;
+      const ctr = views > 0 ? ((clicks / views) * 100).toFixed(2) : 0;
+      const conversionRate = clicks > 0 ? ((purchases / clicks) * 100).toFixed(2) : 0;
 
       res.json({
         data: {
@@ -148,14 +152,14 @@ export default defineEndpoint((router, { services, database, env }) => {
             views: parseInt(views),
             clicks: parseInt(clicks),
             add_to_carts: parseInt(addToCarts),
-            purchases: parseInt(purchases)
+            purchases: parseInt(purchases),
           },
           metrics: {
             ctr: parseFloat(ctr),
             conversion_rate: parseFloat(conversionRate),
-            add_to_cart_rate: clicks > 0 ? ((addToCarts / clicks) * 100).toFixed(2) : 0
-          }
-        }
+            add_to_cart_rate: clicks > 0 ? ((addToCarts / clicks) * 100).toFixed(2) : 0,
+          },
+        },
       });
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -196,8 +200,11 @@ async function getPersonalizedRecommendations(database, tenant_id, user_id, limi
       database.raw('COALESCE(products.orders_count, 0) as popularity')
     )
     .where({ 'products.tenant_id': tenant_id, 'products.status': 'active' })
-    .whereNotIn('products.id', userHistory.length > 0 ? userHistory : ['00000000-0000-0000-0000-000000000000'])
-    .where(function() {
+    .whereNotIn(
+      'products.id',
+      userHistory.length > 0 ? userHistory : ['00000000-0000-0000-0000-000000000000']
+    )
+    .where(function () {
       if (preferredCategories.length > 0) {
         this.whereIn('category_id', preferredCategories);
       }
@@ -211,9 +218,7 @@ async function getPersonalizedRecommendations(database, tenant_id, user_id, limi
 // Helper: Similar products (collaborative filtering)
 async function getSimilarProducts(database, tenant_id, product_id, limit) {
   // Get the product
-  const product = await database('products')
-    .where({ id: product_id, tenant_id })
-    .first();
+  const product = await database('products').where({ id: product_id, tenant_id }).first();
 
   if (!product) {
     return [];
@@ -226,7 +231,7 @@ async function getSimilarProducts(database, tenant_id, product_id, limit) {
     .select('products.*')
     .where({ tenant_id, status: 'active' })
     .where('id', '!=', product_id)
-    .where(function() {
+    .where(function () {
       this.where('category_id', product.category_id)
         .orWhere('brand_id', product.brand_id)
         .orWhere('gender', product.gender)
@@ -234,7 +239,7 @@ async function getSimilarProducts(database, tenant_id, product_id, limit) {
     })
     .whereBetween('price', [
       parseFloat(product.price) - priceRange,
-      parseFloat(product.price) + priceRange
+      parseFloat(product.price) + priceRange,
     ])
     .orderByRaw('RANDOM()') // Add some randomness
     .limit(limit);
@@ -261,13 +266,9 @@ async function getTrendingProducts(database, tenant_id, limit) {
 async function getComplementaryProducts(database, tenant_id, product_id, limit) {
   // Find products frequently bought together with this product
   const complementary = await database('order_items as oi1')
-    .select(
-      'products.*',
-      database.raw('COUNT(DISTINCT oi1.order_id) as frequency')
-    )
-    .leftJoin('order_items as oi2', function() {
-      this.on('oi1.order_id', '=', 'oi2.order_id')
-        .andOn('oi1.product_id', '!=', 'oi2.product_id');
+    .select('products.*', database.raw('COUNT(DISTINCT oi1.order_id) as frequency'))
+    .leftJoin('order_items as oi2', function () {
+      this.on('oi1.order_id', '=', 'oi2.order_id').andOn('oi1.product_id', '!=', 'oi2.product_id');
     })
     .leftJoin('products', 'oi2.product_id', 'products.id')
     .where({ 'oi1.product_id': product_id, 'oi1.tenant_id': tenant_id })
@@ -286,7 +287,7 @@ function getAlgorithmInfo(type) {
     personalized: 'Collaborative filtering based on user purchase history and preferences',
     similar: 'Content-based filtering using product attributes (category, price, tags)',
     trending: 'Popularity-based ranking using views and orders',
-    complementary: 'Association rule mining (frequently bought together)'
+    complementary: 'Association rule mining (frequently bought together)',
   };
   return algorithms[type] || 'Unknown';
 }

@@ -3,12 +3,14 @@ import { z } from 'zod';
 
 const intentionSchema = z.object({
   intention: z.string().min(10),
-  context: z.object({
-    user_id: z.string().optional(),
-    session_id: z.string().optional(),
-    current_property: z.string().optional(),
-    search_criteria: z.any().optional(),
-  }).optional(),
+  context: z
+    .object({
+      user_id: z.string().optional(),
+      session_id: z.string().optional(),
+      current_property: z.string().optional(),
+      search_criteria: z.any().optional(),
+    })
+    .optional(),
 });
 
 export default defineEndpoint({
@@ -118,10 +120,7 @@ export default defineEndpoint({
         enrichedData.schools = schools;
 
         // Scrape crime statistics
-        const crimeStats = await scrapeCrimeData(
-          property.address.city,
-          property.address.zipcode
-        );
+        const crimeStats = await scrapeCrimeData(property.address.city, property.address.zipcode);
         enrichedData.crime_stats = crimeStats;
 
         // Scrape market trends
@@ -157,12 +156,11 @@ export default defineEndpoint({
         // - Similar users' behavior (collaborative filtering)
         // - Market trends and predictions
 
-        const recommendations = await generateSofiaRecommendations(
-          user_id,
-          preferences,
-          history,
-          { services, schema, accountability: req.accountability }
-        );
+        const recommendations = await generateSofiaRecommendations(user_id, preferences, history, {
+          services,
+          schema,
+          accountability: req.accountability,
+        });
 
         res.json({ data: recommendations });
       } catch (error: any) {
@@ -172,7 +170,12 @@ export default defineEndpoint({
 
     // Helper functions
 
-    async function processSofiaIntention(intention: string, context: any, accountability: any, deps: any) {
+    async function processSofiaIntention(
+      intention: string,
+      context: any,
+      accountability: any,
+      deps: any
+    ) {
       const { services, schema } = deps;
 
       // Parse intention using NLP
@@ -181,16 +184,28 @@ export default defineEndpoint({
       // Execute appropriate action based on intent type
       switch (parsedIntent.type) {
         case 'search':
-          return await executePropertySearch(parsedIntent.parameters, { services, schema, accountability });
+          return await executePropertySearch(parsedIntent.parameters, {
+            services,
+            schema,
+            accountability,
+          });
 
         case 'schedule':
-          return await scheduleAppointment(parsedIntent.parameters, { services, schema, accountability });
+          return await scheduleAppointment(parsedIntent.parameters, {
+            services,
+            schema,
+            accountability,
+          });
 
         case 'calculate':
           return await calculateMortgage(parsedIntent.parameters);
 
         case 'compare':
-          return await compareProperties(parsedIntent.parameters, { services, schema, accountability });
+          return await compareProperties(parsedIntent.parameters, {
+            services,
+            schema,
+            accountability,
+          });
 
         default:
           return {
@@ -219,7 +234,7 @@ export default defineEndpoint({
 
       let type = 'unknown';
       for (const [intentType, words] of Object.entries(keywords)) {
-        if (words.some(word => intention.toLowerCase().includes(word))) {
+        if (words.some((word) => intention.toLowerCase().includes(word))) {
           type = intentType;
           break;
         }
@@ -294,8 +309,8 @@ export default defineEndpoint({
       const monthlyRate = interestRate / 12;
       const numPayments = years * 12;
 
-      const monthlyPayment = principal *
-        (monthlyRate * Math.pow(1 + monthlyRate, numPayments)) /
+      const monthlyPayment =
+        (principal * (monthlyRate * Math.pow(1 + monthlyRate, numPayments))) /
         (Math.pow(1 + monthlyRate, numPayments) - 1);
 
       return {
@@ -305,7 +320,7 @@ export default defineEndpoint({
           principal,
           monthlyPayment: monthlyPayment.toFixed(2),
           totalPaid: (monthlyPayment * numPayments).toFixed(2),
-          totalInterest: ((monthlyPayment * numPayments) - principal).toFixed(2),
+          totalInterest: (monthlyPayment * numPayments - principal).toFixed(2),
         },
       };
     }
@@ -384,7 +399,12 @@ export default defineEndpoint({
       };
     }
 
-    async function generateSofiaRecommendations(userId: string, preferences: any, history: any, deps: any) {
+    async function generateSofiaRecommendations(
+      userId: string,
+      preferences: any,
+      history: any,
+      deps: any
+    ) {
       // AI-powered recommendations using Sofia
       const { services, schema, accountability } = deps;
       const propertiesService = new ItemsService('properties', {

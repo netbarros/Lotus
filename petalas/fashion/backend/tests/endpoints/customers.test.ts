@@ -11,7 +11,7 @@ describe('Customers Endpoint', () => {
   beforeAll(async () => {
     const response = await api.post('/auth/login', {
       email: 'admin@example.com',
-      password: 'password'
+      password: 'password',
     });
     authToken = response.data.data.access_token;
     api.defaults.headers.common['Authorization'] = `Bearer ${authToken}`;
@@ -29,7 +29,7 @@ describe('Customers Endpoint', () => {
         email: 'newcustomer@example.com',
         first_name: 'John',
         last_name: 'Doe',
-        phone: '+1234567890'
+        phone: '+1234567890',
       };
 
       const response = await api.post('/customers', customerData);
@@ -45,11 +45,10 @@ describe('Customers Endpoint', () => {
       const customerData = {
         email: 'newcustomer@example.com',
         first_name: 'Jane',
-        last_name: 'Doe'
+        last_name: 'Doe',
       };
 
-      await expect(api.post('/customers', customerData))
-        .rejects.toThrow();
+      await expect(api.post('/customers', customerData)).rejects.toThrow();
     });
   });
 
@@ -65,7 +64,7 @@ describe('Customers Endpoint', () => {
   describe('PATCH /customers/:id', () => {
     it('should update customer', async () => {
       const response = await api.patch(`/customers/${testCustomerId}`, {
-        phone: '+9876543210'
+        phone: '+9876543210',
       });
 
       expect(response.status).toBe(200);
@@ -98,7 +97,7 @@ describe('Customers Endpoint', () => {
       const response = await api.post(`/customers/${testCustomerId}/preferences`, {
         preferredCategories: ['dresses', 'shoes'],
         emailNotifications: true,
-        smsNotifications: false
+        smsNotifications: false,
       });
 
       expect(response.status).toBe(200);

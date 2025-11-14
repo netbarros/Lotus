@@ -20,9 +20,7 @@ export default defineEndpoint((router, { services, database }) => {
     try {
       const { tenant_id } = req.query;
 
-      const menus = await database('menus')
-        .where({ tenant_id })
-        .select('*');
+      const menus = await database('menus').where({ tenant_id }).select('*');
 
       res.json({ data: menus });
     } catch (error) {
@@ -33,9 +31,7 @@ export default defineEndpoint((router, { services, database }) => {
   // GET /petalas/restaurant/menu/:id - Get menu details
   router.get('/:id', async (req, res) => {
     try {
-      const menu = await database('menus')
-        .where({ id: req.params.id })
-        .first();
+      const menu = await database('menus').where({ id: req.params.id }).first();
 
       if (!menu) {
         return res.status(404).json({ error: 'Menu not found' });
@@ -52,8 +48,7 @@ export default defineEndpoint((router, { services, database }) => {
     try {
       const { available_only = false, category } = req.query;
 
-      let query = database('menu_items')
-        .where({ menu_id: req.params.id, status: 'published' });
+      let query = database('menu_items').where({ menu_id: req.params.id, status: 'published' });
 
       if (available_only === 'true') {
         query = query.where({ available: true });
@@ -79,7 +74,7 @@ export default defineEndpoint((router, { services, database }) => {
       const items = await database('menu_items')
         .where('tenant_id', tenant_id)
         .where('status', 'published')
-        .where(function() {
+        .where(function () {
           this.where('name', 'like', `%${q}%`)
             .orWhere('description', 'like', `%${q}%`)
             .orWhere('ingredients', 'like', `%${q}%`);
@@ -95,9 +90,7 @@ export default defineEndpoint((router, { services, database }) => {
   // GET /petalas/restaurant/menu/items/:id - Get menu item details
   router.get('/items/:id', async (req, res) => {
     try {
-      const item = await database('menu_items')
-        .where({ id: req.params.id })
-        .first();
+      const item = await database('menu_items').where({ id: req.params.id }).first();
 
       if (!item) {
         return res.status(404).json({ error: 'Menu item not found' });

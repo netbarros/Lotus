@@ -84,25 +84,11 @@
     "Analytics and reporting"
   ],
   "integrations": {
-    "signature": [
-      "DocuSign",
-      "HelloSign"
-    ],
-    "storage": [
-      "AWS S3",
-      "Box",
-      "Dropbox"
-    ],
-    "calendar": [
-      "Google Calendar",
-      "Outlook"
-    ]
+    "signature": ["DocuSign", "HelloSign"],
+    "storage": ["AWS S3", "Box", "Dropbox"],
+    "calendar": ["Google Calendar", "Outlook"]
   },
-  "compliance": [
-    "GDPR",
-    "ABA Model Rules",
-    "Client confidentiality"
-  ],
+  "compliance": ["GDPR", "ABA Model Rules", "Client confidentiality"],
   "status": "production-ready",
   "createdAt": "2025-11-10",
   "updatedAt": "2025-11-10"

@@ -8,13 +8,20 @@ describe('Medical Records Endpoint (HIPAA)', () => {
   let authToken: string;
 
   beforeAll(async () => {
-    const response = await api.post('/auth/login', { email: 'doctor@example.com', password: 'password' });
+    const response = await api.post('/auth/login', {
+      email: 'doctor@example.com',
+      password: 'password',
+    });
     authToken = response.data.data.access_token;
     api.defaults.headers.common['Authorization'] = `Bearer ${authToken}`;
   });
 
   it('should create encrypted medical record', async () => {
-    const response = await api.post('/medical-records', { patientId: 1, diagnosis: 'Test', notes: 'Confidential' });
+    const response = await api.post('/medical-records', {
+      patientId: 1,
+      diagnosis: 'Test',
+      notes: 'Confidential',
+    });
     expect(response.status).toBe(200);
     expect(response.data.data).toHaveProperty('encrypted');
   });

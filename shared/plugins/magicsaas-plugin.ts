@@ -13,15 +13,15 @@
  * @author MagicSaaS Architecture Team
  */
 
-import type { App, Plugin } from 'vue'
-import { getRuntimeConfig, type RuntimeConfig } from '../config/runtime-config'
-import { getUniversalApis, type UniversalApis } from '../api/petala-apis'
+import type { App, Plugin } from 'vue';
+import { getRuntimeConfig, type RuntimeConfig } from '../config/runtime-config';
+import { getUniversalApis, type UniversalApis } from '../api/petala-apis';
 
 export interface MagicSaaSGlobal {
-  config: RuntimeConfig
-  apis: UniversalApis
-  version: string
-  initialized: boolean
+  config: RuntimeConfig;
+  apis: UniversalApis;
+  version: string;
+  initialized: boolean;
 }
 
 /**
@@ -29,15 +29,15 @@ export interface MagicSaaSGlobal {
  */
 export interface MagicSaaSPluginOptions {
   // Optional config override
-  config?: Partial<RuntimeConfig>
+  config?: Partial<RuntimeConfig>;
 
   // Callbacks
-  onInitialized?: (magicsaas: MagicSaaSGlobal) => void
-  onError?: (error: Error) => void
+  onInitialized?: (magicsaas: MagicSaaSGlobal) => void;
+  onError?: (error: Error) => void;
 
   // Feature toggles
-  enableDevTools?: boolean
-  enableErrorTracking?: boolean
+  enableDevTools?: boolean;
+  enableErrorTracking?: boolean;
 }
 
 /**
@@ -46,64 +46,63 @@ export interface MagicSaaSPluginOptions {
 export function createMagicSaaSPlugin(options: MagicSaaSPluginOptions = {}): Plugin {
   return {
     async install(app: App) {
-      console.log('🌸 Initializing MagicSaaS System-∞...')
+      console.log('🌸 Initializing MagicSaaS System-∞...');
 
       try {
         // Load runtime config
-        const config = await getRuntimeConfig()
+        const config = await getRuntimeConfig();
 
         // Override with provided options
         if (options.config) {
-          Object.assign(config, options.config)
+          Object.assign(config, options.config);
         }
 
         // Create Universal APIs
-        const apis = await getUniversalApis()
+        const apis = await getUniversalApis();
 
         // Create global instance
         const magicsaas: MagicSaaSGlobal = {
           config,
           apis,
           version: '3.0.0',
-          initialized: true
-        }
+          initialized: true,
+        };
 
         // Inject globally
-        app.config.globalProperties.$magicsaas = magicsaas
-        app.provide('magicsaas', magicsaas)
+        app.config.globalProperties.$magicsaas = magicsaas;
+        app.provide('magicsaas', magicsaas);
 
         // Dev tools
         if (options.enableDevTools && config.isDevelopment) {
-          installDevTools(app, magicsaas)
+          installDevTools(app, magicsaas);
         }
 
         // Error tracking
         if (options.enableErrorTracking && config.features.enableSentry) {
-          installErrorTracking(app, magicsaas)
+          installErrorTracking(app, magicsaas);
         }
 
         // Success callback
         if (options.onInitialized) {
-          options.onInitialized(magicsaas)
+          options.onInitialized(magicsaas);
         }
 
-        console.log('✅ MagicSaaS System-∞ initialized successfully!')
-        console.log(`   Environment: ${config.environment}`)
-        console.log(`   Pétala: ${config.petala.name} (${config.petala.type})`)
-        console.log(`   API: ${config.api.baseUrl}`)
-        console.log(`   Tenant: ${config.tenant.name} (${config.tenant.id})`)
-
+        console.log('✅ MagicSaaS System-∞ initialized successfully!');
+        console.log(`   Environment: ${config.environment}`);
+        console.log(`   Pétala: ${config.petala.name} (${config.petala.type})`);
+        console.log(`   API: ${config.api.baseUrl}`);
+        console.log(`   Tenant: ${config.tenant.name} (${config.tenant.id})`);
       } catch (error) {
-        console.error('❌ Failed to initialize MagicSaaS:', error)
+        console.error('❌ Failed to initialize MagicSaaS:', error);
 
         if (options.onError) {
-          options.onError(error as Error)
+          options.onError(error as Error);
         }
 
-        throw error
+        throw error;
       }
-    }
-  }
+    },
+  };
 }
 
 /**
@@ -112,8 +111,8 @@ export function createMagicSaaSPlugin(options: MagicSaaSPluginOptions = {}): Plu
 function installDevTools(app: App, magicsaas: MagicSaaSGlobal): void {
   // Make available in window for debugging
   if (typeof window !== 'undefined') {
-    (window as any).__MAGICSAAS__ = magicsaas
-    console.log('🛠️ MagicSaaS Dev Tools available at window.__MAGICSAAS__')
+    (window as any).__MAGICSAAS__ = magicsaas;
+    console.log('🛠️ MagicSaaS Dev Tools available at window.__MAGICSAAS__');
   }
 
   // Install custom dev tools panel (future)
@@ -125,27 +124,29 @@ function installDevTools(app: App, magicsaas: MagicSaaSGlobal): void {
  */
 function installErrorTracking(app: App, magicsaas: MagicSaaSGlobal): void {
   app.config.errorHandler = (err, instance, info) => {
-    console.error('Vue Error:', err, info)
+    console.error('Vue Error:', err, info);
 
     // Send to error tracking service
     // This would integrate with Sentry or similar
     if (magicsaas.config.features.enableSentry) {
       // Sentry.captureException(err)
     }
-  }
+  };
 }
 
 /**
  * Composition API helper to inject MagicSaaS
  */
 export function useMagicSaaS(): MagicSaaSGlobal {
-  const magicsaas = inject<MagicSaaSGlobal>('magicsaas')
+  const magicsaas = inject<MagicSaaSGlobal>('magicsaas');
 
   if (!magicsaas) {
-    throw new Error('MagicSaaS plugin not installed. Install it in your main.ts with app.use(createMagicSaaSPlugin())')
+    throw new Error(
+      'MagicSaaS plugin not installed. Install it in your main.ts with app.use(createMagicSaaSPlugin())'
+    );
   }
 
-  return magicsaas
+  return magicsaas;
 }
 
 /**
@@ -153,10 +154,10 @@ export function useMagicSaaS(): MagicSaaSGlobal {
  */
 declare module '@vue/runtime-core' {
   export interface ComponentCustomProperties {
-    $magicsaas: MagicSaaSGlobal
+    $magicsaas: MagicSaaSGlobal;
   }
 }
 
-import { inject } from 'vue'
+import { inject } from 'vue';
 
-export default createMagicSaaSPlugin
+export default createMagicSaaSPlugin;

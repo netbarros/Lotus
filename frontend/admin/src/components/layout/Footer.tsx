@@ -12,7 +12,11 @@ export function Footer() {
       <div className="app-container container-fluid d-flex flex-column flex-md-row flex-center flex-md-stack py-3">
         <div className="text-dark order-2 order-md-1">
           <span className="text-muted fw-bold me-1">{currentYear} ©</span>
-          <a href="https://softwarelotus.com.br" target="_blank" className="text-gray-800 text-hover-primary">
+          <a
+            href="https://softwarelotus.com.br"
+            target="_blank"
+            className="text-gray-800 text-hover-primary"
+          >
             Software Lotus
           </a>
           <span className="text-muted mx-2">|</span>

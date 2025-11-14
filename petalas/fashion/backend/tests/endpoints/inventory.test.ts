@@ -10,7 +10,7 @@ describe('Inventory Endpoint', () => {
   beforeAll(async () => {
     const response = await api.post('/auth/login', {
       email: 'admin@example.com',
-      password: 'password'
+      password: 'password',
     });
     authToken = response.data.data.access_token;
     api.defaults.headers.common['Authorization'] = `Bearer ${authToken}`;
@@ -32,7 +32,7 @@ describe('Inventory Endpoint', () => {
       const response = await api.post('/inventory/adjust', {
         productId: 1,
         quantity: 50,
-        reason: 'Restock'
+        reason: 'Restock',
       });
 
       expect(response.status).toBe(200);
@@ -45,7 +45,7 @@ describe('Inventory Endpoint', () => {
       const response = await api.post('/inventory/reserve', {
         productId: 1,
         quantity: 2,
-        orderId: 1
+        orderId: 1,
       });
 
       expect(response.status).toBe(200);
@@ -53,11 +53,13 @@ describe('Inventory Endpoint', () => {
     });
 
     it('should reject insufficient inventory', async () => {
-      await expect(api.post('/inventory/reserve', {
-        productId: 1,
-        quantity: 999999,
-        orderId: 1
-      })).rejects.toThrow();
+      await expect(
+        api.post('/inventory/reserve', {
+          productId: 1,
+          quantity: 999999,
+          orderId: 1,
+        })
+      ).rejects.toThrow();
     });
   });
 
@@ -76,7 +78,7 @@ describe('Inventory Endpoint', () => {
         productId: 1,
         fromLocation: 'warehouse-1',
         toLocation: 'warehouse-2',
-        quantity: 10
+        quantity: 10,
       });
 
       expect(response.status).toBe(200);

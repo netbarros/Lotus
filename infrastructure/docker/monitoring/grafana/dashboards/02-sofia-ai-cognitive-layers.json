@@ -16,7 +16,7 @@
         "id": 1,
         "title": "Layer 11: Meta-Orchestration - Coordination Events",
         "type": "graph",
-        "gridPos": {"x": 0, "y": 0, "w": 24, "h": 6},
+        "gridPos": { "x": 0, "y": 0, "w": 24, "h": 6 },
         "targets": [
           {
             "expr": "rate(sofia_meta_orchestration_events_total[5m])",
@@ -30,14 +30,14 @@
         "id": 2,
         "title": "Layer 10: Intelligence Synthesis (Sofia AI Core)",
         "type": "row",
-        "gridPos": {"x": 0, "y": 6, "w": 24, "h": 1},
+        "gridPos": { "x": 0, "y": 6, "w": 24, "h": 1 },
         "collapsed": false
       },
       {
         "id": 3,
         "title": "IntentionEngine - Processing Time (p50, p95, p99)",
         "type": "graph",
-        "gridPos": {"x": 0, "y": 7, "w": 8, "h": 6},
+        "gridPos": { "x": 0, "y": 7, "w": 8, "h": 6 },
         "targets": [
           {
             "expr": "histogram_quantile(0.50, rate(sofia_intention_processing_duration_seconds_bucket[5m]))",
@@ -55,13 +55,13 @@
             "refId": "C"
           }
         ],
-        "yaxes": [{"format": "s", "label": "Processing Time"}]
+        "yaxes": [{ "format": "s", "label": "Processing Time" }]
       },
       {
         "id": 4,
         "title": "UXValidator - Validation Score Distribution",
         "type": "graph",
-        "gridPos": {"x": 8, "y": 7, "w": 8, "h": 6},
+        "gridPos": { "x": 8, "y": 7, "w": 8, "h": 6 },
         "targets": [
           {
             "expr": "histogram_quantile(0.50, rate(sofia_ux_validation_score_bucket[5m]))",
@@ -74,13 +74,13 @@
             "refId": "B"
           }
         ],
-        "yaxes": [{"format": "short", "label": "UX Score (0-100)", "min": 0, "max": 100}]
+        "yaxes": [{ "format": "short", "label": "UX Score (0-100)", "min": 0, "max": 100 }]
       },
       {
         "id": 5,
         "title": "SEOOptimizer - SEO Grade Distribution",
         "type": "pie",
-        "gridPos": {"x": 16, "y": 7, "w": 8, "h": 6},
+        "gridPos": { "x": 16, "y": 7, "w": 8, "h": 6 },
         "targets": [
           {
             "expr": "sum by (grade) (sofia_seo_grade_total)",
@@ -93,7 +93,7 @@
         "id": 6,
         "title": "MarketplaceManager - Checkout Conversion Funnel",
         "type": "graph",
-        "gridPos": {"x": 0, "y": 13, "w": 12, "h": 6},
+        "gridPos": { "x": 0, "y": 13, "w": 12, "h": 6 },
         "targets": [
           {
             "expr": "rate(sofia_marketplace_product_views_total[5m])",
@@ -121,7 +121,7 @@
         "id": 7,
         "title": "DecisionLogger - Confidence Score Distribution",
         "type": "heatmap",
-        "gridPos": {"x": 12, "y": 13, "w": 12, "h": 6},
+        "gridPos": { "x": 12, "y": 13, "w": 12, "h": 6 },
         "targets": [
           {
             "expr": "rate(sofia_decision_confidence_bucket[5m])",
@@ -135,7 +135,7 @@
         "id": 8,
         "title": "Layer 09: Adaptive Learning - Model Performance",
         "type": "graph",
-        "gridPos": {"x": 0, "y": 19, "w": 12, "h": 6},
+        "gridPos": { "x": 0, "y": 19, "w": 12, "h": 6 },
         "targets": [
           {
             "expr": "sofia_adaptive_learning_accuracy",
@@ -149,15 +149,15 @@
           }
         ],
         "yaxes": [
-          {"format": "percentunit", "label": "Accuracy"},
-          {"format": "short", "label": "Cycles/hour"}
+          { "format": "percentunit", "label": "Accuracy" },
+          { "format": "short", "label": "Cycles/hour" }
         ]
       },
       {
         "id": 9,
         "title": "Layer 08: Pattern Recognition - Patterns Detected",
         "type": "stat",
-        "gridPos": {"x": 12, "y": 19, "w": 6, "h": 6},
+        "gridPos": { "x": 12, "y": 19, "w": 6, "h": 6 },
         "targets": [
           {
             "expr": "sum(sofia_patterns_detected_total)",
@@ -174,7 +174,7 @@
         "id": 10,
         "title": "Layer 07: Event Sourcing - Events Persisted",
         "type": "graph",
-        "gridPos": {"x": 18, "y": 19, "w": 6, "h": 6},
+        "gridPos": { "x": 18, "y": 19, "w": 6, "h": 6 },
         "targets": [
           {
             "expr": "rate(sofia_events_persisted_total[5m])",
@@ -187,7 +187,7 @@
         "id": 11,
         "title": "Layer 06: Decision Engine - Decisions/sec by Type",
         "type": "graph",
-        "gridPos": {"x": 0, "y": 25, "w": 12, "h": 6},
+        "gridPos": { "x": 0, "y": 25, "w": 12, "h": 6 },
         "targets": [
           {
             "expr": "rate(sofia_decisions_made_total[5m])",
@@ -200,7 +200,7 @@
         "id": 12,
         "title": "Layer 05: Context Management - Active Contexts",
         "type": "stat",
-        "gridPos": {"x": 12, "y": 25, "w": 6, "h": 6},
+        "gridPos": { "x": 12, "y": 25, "w": 6, "h": 6 },
         "targets": [
           {
             "expr": "sofia_active_contexts",
@@ -213,7 +213,7 @@
         "id": 13,
         "title": "Layer 04: Service Mesh - Inter-service Communication",
         "type": "graph",
-        "gridPos": {"x": 18, "y": 25, "w": 6, "h": 6},
+        "gridPos": { "x": 18, "y": 25, "w": 6, "h": 6 },
         "targets": [
           {
             "expr": "rate(service_mesh_requests_total[5m])",
@@ -226,7 +226,7 @@
         "id": 14,
         "title": "Layer 03: Data Layer - Query Performance",
         "type": "graph",
-        "gridPos": {"x": 0, "y": 31, "w": 12, "h": 6},
+        "gridPos": { "x": 0, "y": 31, "w": 12, "h": 6 },
         "targets": [
           {
             "expr": "histogram_quantile(0.95, rate(pg_stat_statements_mean_time_seconds_bucket[5m]))",
@@ -239,13 +239,13 @@
             "refId": "B"
           }
         ],
-        "yaxes": [{"format": "s", "label": "Query Time"}]
+        "yaxes": [{ "format": "s", "label": "Query Time" }]
       },
       {
         "id": 15,
         "title": "Layer 02: Integration Layer - API Response Times",
         "type": "graph",
-        "gridPos": {"x": 12, "y": 31, "w": 12, "h": 6},
+        "gridPos": { "x": 12, "y": 31, "w": 12, "h": 6 },
         "targets": [
           {
             "expr": "histogram_quantile(0.95, rate(http_request_duration_seconds_bucket{job=\"directus\"}[5m]))",
@@ -253,13 +253,13 @@
             "refId": "A"
           }
         ],
-        "yaxes": [{"format": "s", "label": "Response Time"}]
+        "yaxes": [{ "format": "s", "label": "Response Time" }]
       },
       {
         "id": 16,
         "title": "Layer 01: Infrastructure - Resource Utilization",
         "type": "graph",
-        "gridPos": {"x": 0, "y": 37, "w": 24, "h": 6},
+        "gridPos": { "x": 0, "y": 37, "w": 24, "h": 6 },
         "targets": [
           {
             "expr": "100 - (avg by (instance) (rate(node_cpu_seconds_total{mode=\"idle\"}[5m])) * 100)",
@@ -277,7 +277,7 @@
             "refId": "C"
           }
         ],
-        "yaxes": [{"format": "percent", "label": "Utilization %", "min": 0, "max": 100}]
+        "yaxes": [{ "format": "percent", "label": "Utilization %", "min": 0, "max": 100 }]
       }
     ]
   }

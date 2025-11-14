@@ -1,10 +1,12 @@
 # Pétala Fashion - Kubernetes Deployment
 
-Complete Kubernetes manifests for production deployment of Pétala Fashion on AWS EKS or any Kubernetes cluster.
+Complete Kubernetes manifests for production deployment of Pétala Fashion on AWS
+EKS or any Kubernetes cluster.
 
 ## Architecture
 
 ### Components
+
 - **PostgreSQL** (TimescaleDB): Primary database with event sourcing
 - **Redis**: Caching and session management
 - **Directus**: Backend API with 3 replicas
@@ -13,6 +15,7 @@ Complete Kubernetes manifests for production deployment of Pétala Fashion on AW
 - **Grafana**: Observability dashboards
 
 ### Scaling Configuration
+
 - **Directus**: Auto-scales 3-20 replicas based on CPU/Memory
 - **Frontend**: Auto-scales 3-10 replicas based on CPU/Memory
 - **Database**: Single replica with persistent storage (20GB)
@@ -21,6 +24,7 @@ Complete Kubernetes manifests for production deployment of Pétala Fashion on AW
 ## Prerequisites
 
 ### 1. Kubernetes Cluster
+
 ```bash
 # AWS EKS (recommended)
 eksctl create cluster \
@@ -37,16 +41,19 @@ eksctl create cluster \
 ### 2. Install Required Components
 
 #### NGINX Ingress Controller
+
 ```bash
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.8.2/deploy/static/provider/aws/deploy.yaml
 ```
 
 #### Cert-Manager (SSL/TLS)
+
 ```bash
 kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.13.2/cert-manager.yaml
 ```
 
 #### Metrics Server (for HPA)
+
 ```bash
 kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
 ```
@@ -54,6 +61,7 @@ kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/late
 ### 3. Storage Classes
 
 #### AWS EBS (gp3)
+
 ```yaml
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
@@ -67,6 +75,7 @@ volumeBindingMode: WaitForFirstConsumer
 ```
 
 #### AWS EFS (for shared storage)
+
 ```yaml
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
@@ -191,6 +200,7 @@ grafana.fashion.magicsaas.ai  -> CNAME to LB hostname
 ## Monitoring & Observability
 
 ### Access Grafana
+
 ```bash
 # Get Grafana URL
 echo "https://grafana.fashion.magicsaas.ai"
@@ -201,6 +211,7 @@ Password: (from secrets.yaml ADMIN_PASSWORD)
 ```
 
 ### Access Prometheus
+
 ```bash
 # Port forward to access locally
 kubectl port-forward -n petala-fashion svc/prometheus-service 9090:9090
@@ -211,6 +222,7 @@ kubectl port-forward -n petala-fashion svc/prometheus-service 9090:9090
 ## Scaling
 
 ### Manual Scaling
+
 ```bash
 # Scale Directus
 kubectl scale deployment directus -n petala-fashion --replicas=5
@@ -220,12 +232,14 @@ kubectl scale deployment frontend -n petala-fashion --replicas=5
 ```
 
 ### Auto-Scaling (Already Configured)
+
 - **Directus**: 3-20 replicas (70% CPU / 80% Memory threshold)
 - **Frontend**: 3-10 replicas (70% CPU / 80% Memory threshold)
 
 ## Backup & Restore
 
 ### Database Backup
+
 ```bash
 # Backup PostgreSQL
 kubectl exec -n petala-fashion postgres-0 -- pg_dump -U directus petala_fashion > backup.sql
@@ -235,6 +249,7 @@ kubectl exec -i -n petala-fashion postgres-0 -- psql -U directus petala_fashion 
 ```
 
 ### Volume Snapshots (AWS EBS)
+
 ```bash
 # Create snapshot
 aws ec2 create-snapshot --volume-id vol-xxxxx --description "Pétala Fashion DB Backup"
@@ -246,6 +261,7 @@ aws ec2 create-volume --snapshot-id snap-xxxxx --availability-zone us-east-1a
 ## Troubleshooting
 
 ### Check Pod Status
+
 ```bash
 kubectl get pods -n petala-fashion
 kubectl describe pod <pod-name> -n petala-fashion
@@ -253,11 +269,13 @@ kubectl logs <pod-name> -n petala-fashion
 ```
 
 ### Check Events
+
 ```bash
 kubectl get events -n petala-fashion --sort-by='.lastTimestamp'
 ```
 
 ### Database Connection Issues
+
 ```bash
 # Test PostgreSQL connection
 kubectl exec -it -n petala-fashion deployment/directus -- nc -zv postgres-service 5432
@@ -267,6 +285,7 @@ kubectl exec -it -n petala-fashion deployment/directus -- nc -zv redis-service 6
 ```
 
 ### Restart Deployments
+
 ```bash
 kubectl rollout restart deployment/directus -n petala-fashion
 kubectl rollout restart deployment/frontend -n petala-fashion
@@ -275,6 +294,7 @@ kubectl rollout restart deployment/frontend -n petala-fashion
 ## Security
 
 ### Network Policies
+
 - Zero-trust network policy by default (deny all)
 - Explicit allow rules for required communication
 - Frontend can only access Directus
@@ -282,12 +302,14 @@ kubectl rollout restart deployment/frontend -n petala-fashion
 - No pod-to-pod communication except explicitly allowed
 
 ### TLS/SSL
+
 - Automatic SSL certificate provisioning via cert-manager
 - Let's Encrypt production certificates
 - Forced HTTPS redirect
 - HSTS enabled
 
 ### Security Headers
+
 - X-Frame-Options: SAMEORIGIN
 - X-Content-Type-Options: nosniff
 - X-XSS-Protection: 1; mode=block
@@ -295,6 +317,7 @@ kubectl rollout restart deployment/frontend -n petala-fashion
 - Strict-Transport-Security: max-age=31536000
 
 ### Rate Limiting
+
 - 100 requests/minute per IP at ingress level
 - 50 requests/second at Directus level
 - Configurable via ConfigMap
@@ -302,6 +325,7 @@ kubectl rollout restart deployment/frontend -n petala-fashion
 ## Cost Optimization
 
 ### AWS EKS Estimated Costs
+
 - **EKS Control Plane**: $73/month
 - **EC2 Nodes** (3x t3.xlarge): ~$450/month
 - **EBS Storage** (100GB): ~$10/month
@@ -312,6 +336,7 @@ kubectl rollout restart deployment/frontend -n petala-fashion
 **Total**: ~$575/month base infrastructure
 
 ### Optimization Tips
+
 1. Use Spot Instances for non-production workloads
 2. Enable Cluster Autoscaler
 3. Use smaller instance types for development
@@ -338,6 +363,7 @@ kubectl rollout restart deployment/frontend -n petala-fashion
 ## Support
 
 For issues or questions:
+
 - GitHub: https://github.com/netbarros/Lotus
 - Documentation: https://docs.magicsaas.ai
 - Email: support@magicsaas.ai

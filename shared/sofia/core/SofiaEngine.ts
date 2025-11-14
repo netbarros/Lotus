@@ -14,80 +14,80 @@
  * Maximum reusability, minimal code duplication.
  */
 
-import { AnthropicClient } from './AnthropicClient'
-import { IntentClassifier } from './IntentClassifier'
-import { ContextManager } from './ContextManager'
-import { PersonalityAdapter } from './PersonalityAdapter'
+import { AnthropicClient } from './AnthropicClient';
+import { IntentClassifier } from './IntentClassifier';
+import { ContextManager } from './ContextManager';
+import { PersonalityAdapter } from './PersonalityAdapter';
 
 export interface SofiaConfig {
-  petala: string // 'fashion', 'restaurant', 'healthcare', etc.
-  tenant_id: string
-  user_id?: string
-  language?: string
-  personality?: 'professional' | 'friendly' | 'casual'
+  petala: string; // 'fashion', 'restaurant', 'healthcare', etc.
+  tenant_id: string;
+  user_id?: string;
+  language?: string;
+  personality?: 'professional' | 'friendly' | 'casual';
   features?: {
-    voice?: boolean
-    chat?: boolean
-    recommendations?: boolean
-    proactive?: boolean
-  }
+    voice?: boolean;
+    chat?: boolean;
+    recommendations?: boolean;
+    proactive?: boolean;
+  };
 }
 
 export interface SofiaMessage {
-  id: string
-  role: 'user' | 'sofia' | 'system'
-  content: string
-  timestamp: Date
+  id: string;
+  role: 'user' | 'sofia' | 'system';
+  content: string;
+  timestamp: Date;
   metadata?: {
-    intent?: string
-    confidence?: number
+    intent?: string;
+    confidence?: number;
     actions?: Array<{
-      type: string
-      payload: any
-    }>
-    suggestions?: string[]
-  }
+      type: string;
+      payload: any;
+    }>;
+    suggestions?: string[];
+  };
 }
 
 export interface SofiaIntent {
-  intent: string
-  confidence: number
-  entities: Record<string, any>
-  context: Record<string, any>
+  intent: string;
+  confidence: number;
+  entities: Record<string, any>;
+  context: Record<string, any>;
 }
 
 export interface SofiaResponse {
-  message: string
-  intent: SofiaIntent
+  message: string;
+  intent: SofiaIntent;
   actions?: Array<{
-    type: string
-    payload: any
-  }>
-  suggestions?: string[]
+    type: string;
+    payload: any;
+  }>;
+  suggestions?: string[];
   ui_updates?: Array<{
-    component: string
-    action: string
-    data: any
-  }>
+    component: string;
+    action: string;
+    data: any;
+  }>;
 }
 
 /**
  * Sofia Engine - Universal AI Brain
  */
 export class SofiaEngine {
-  private config: SofiaConfig
-  private anthropic: AnthropicClient
-  private intentClassifier: IntentClassifier
-  private contextManager: ContextManager
-  private personalityAdapter: PersonalityAdapter
-  private conversationHistory: SofiaMessage[] = []
+  private config: SofiaConfig;
+  private anthropic: AnthropicClient;
+  private intentClassifier: IntentClassifier;
+  private contextManager: ContextManager;
+  private personalityAdapter: PersonalityAdapter;
+  private conversationHistory: SofiaMessage[] = [];
 
   constructor(config: SofiaConfig) {
-    this.config = config
-    this.anthropic = new AnthropicClient(process.env.ANTHROPIC_API_KEY!)
-    this.intentClassifier = new IntentClassifier(config.petala)
-    this.contextManager = new ContextManager()
-    this.personalityAdapter = new PersonalityAdapter(config.personality || 'friendly')
+    this.config = config;
+    this.anthropic = new AnthropicClient(process.env.ANTHROPIC_API_KEY!);
+    this.intentClassifier = new IntentClassifier(config.petala);
+    this.contextManager = new ContextManager();
+    this.personalityAdapter = new PersonalityAdapter(config.personality || 'friendly');
   }
 
   /**
@@ -100,21 +100,21 @@ export class SofiaEngine {
       id: this.generateId(),
       role: 'user',
       content: userMessage,
-      timestamp: new Date()
-    })
+      timestamp: new Date(),
+    });
 
     // 2. Classify intent
-    const intent = await this.intentClassifier.classify(userMessage, context)
+    const intent = await this.intentClassifier.classify(userMessage, context);
 
     // 3. Update context
     this.contextManager.update({
       ...context,
       last_intent: intent.intent,
-      timestamp: new Date()
-    })
+      timestamp: new Date(),
+    });
 
     // 4. Generate response using Claude
-    const response = await this.generateResponse(userMessage, intent, context)
+    const response = await this.generateResponse(userMessage, intent, context);
 
     // 5. Add Sofia's response to history
     this.addMessage({
@@ -126,11 +126,11 @@ export class SofiaEngine {
         intent: intent.intent,
         confidence: intent.confidence,
         actions: response.actions,
-        suggestions: response.suggestions
-      }
-    })
+        suggestions: response.suggestions,
+      },
+    });
 
-    return response
+    return response;
   }
 
   /**
@@ -141,8 +141,8 @@ export class SofiaEngine {
     intent: SofiaIntent,
     context?: Record<string, any>
   ): Promise<SofiaResponse> {
-    const systemPrompt = this.buildSystemPrompt()
-    const conversationContext = this.buildConversationContext()
+    const systemPrompt = this.buildSystemPrompt();
+    const conversationContext = this.buildConversationContext();
 
     const claudeResponse = await this.anthropic.complete({
       system: systemPrompt,
@@ -150,26 +150,26 @@ export class SofiaEngine {
         ...conversationContext,
         {
           role: 'user',
-          content: userMessage
-        }
+          content: userMessage,
+        },
       ],
       temperature: 0.7,
-      max_tokens: 1024
-    })
+      max_tokens: 1024,
+    });
 
     // Parse Claude's response and extract actions
-    const parsed = this.parseClaudeResponse(claudeResponse, intent)
+    const parsed = this.parseClaudeResponse(claudeResponse, intent);
 
     // Adapt personality
-    const adaptedMessage = this.personalityAdapter.adapt(parsed.message)
+    const adaptedMessage = this.personalityAdapter.adapt(parsed.message);
 
     return {
       message: adaptedMessage,
       intent,
       actions: parsed.actions,
       suggestions: parsed.suggestions,
-      ui_updates: parsed.ui_updates
-    }
+      ui_updates: parsed.ui_updates,
+    };
   }
 
   /**
@@ -178,7 +178,7 @@ export class SofiaEngine {
   private buildSystemPrompt(): string {
     const basePrompt = `You are Sofia, the AI assistant for MagicSaaS System-∞.
 You are helpful, knowledgeable, and always focused on providing the best user experience.
-You understand context, remember conversations, and proactively help users achieve their goals.`
+You understand context, remember conversations, and proactively help users achieve their goals.`;
 
     const petalaPrompts: Record<string, string> = {
       fashion: `
@@ -215,9 +215,9 @@ You are Sofia, a healthcare assistant. You help users:
 You're knowledgeable, empathetic, and HIPAA-compliant.`,
 
       // Add more Pétalas as they're developed
-    }
+    };
 
-    return basePrompt + '\n\n' + (petalaPrompts[this.config.petala] || basePrompt)
+    return basePrompt + '\n\n' + (petalaPrompts[this.config.petala] || basePrompt);
   }
 
   /**
@@ -225,45 +225,48 @@ You're knowledgeable, empathetic, and HIPAA-compliant.`,
    */
   private buildConversationContext(): Array<{ role: 'user' | 'assistant'; content: string }> {
     return this.conversationHistory
-      .filter(msg => msg.role !== 'system')
-      .map(msg => ({
+      .filter((msg) => msg.role !== 'system')
+      .map((msg) => ({
         role: msg.role === 'sofia' ? 'assistant' : 'user',
-        content: msg.content
-      }))
+        content: msg.content,
+      }));
   }
 
   /**
    * Parse Claude's response and extract structured data
    */
-  private parseClaudeResponse(response: string, intent: SofiaIntent): {
-    message: string
-    actions?: any[]
-    suggestions?: string[]
-    ui_updates?: any[]
+  private parseClaudeResponse(
+    response: string,
+    intent: SofiaIntent
+  ): {
+    message: string;
+    actions?: any[];
+    suggestions?: string[];
+    ui_updates?: any[];
   } {
     // Try to parse JSON if present in response
-    const jsonMatch = response.match(/```json\n([\s\S]*?)\n```/)
+    const jsonMatch = response.match(/```json\n([\s\S]*?)\n```/);
 
     if (jsonMatch) {
       try {
-        const data = JSON.parse(jsonMatch[1])
+        const data = JSON.parse(jsonMatch[1]);
         return {
           message: response.replace(/```json\n[\s\S]*?\n```/, '').trim(),
-          ...data
-        }
+          ...data,
+        };
       } catch (e) {
         // If JSON parsing fails, return plain response
       }
     }
 
     // Generate actions based on intent
-    const actions = this.generateActionsFromIntent(intent)
+    const actions = this.generateActionsFromIntent(intent);
 
     return {
       message: response,
       actions,
-      suggestions: this.generateSuggestions(intent)
-    }
+      suggestions: this.generateSuggestions(intent),
+    };
   }
 
   /**
@@ -271,46 +274,46 @@ You're knowledgeable, empathetic, and HIPAA-compliant.`,
    */
   private generateActionsFromIntent(intent: SofiaIntent): any[] {
     const actionMap: Record<string, any> = {
-      'search_products': [
+      search_products: [
         {
           type: 'SEARCH',
           payload: {
             query: intent.entities.query,
-            filters: intent.entities.filters
-          }
-        }
+            filters: intent.entities.filters,
+          },
+        },
       ],
-      'add_to_cart': [
+      add_to_cart: [
         {
           type: 'ADD_TO_CART',
           payload: {
             product_id: intent.entities.product_id,
-            quantity: intent.entities.quantity || 1
-          }
-        }
+            quantity: intent.entities.quantity || 1,
+          },
+        },
       ],
-      'make_reservation': [
+      make_reservation: [
         {
           type: 'OPEN_RESERVATION_FORM',
           payload: {
             date: intent.entities.date,
             time: intent.entities.time,
-            party_size: intent.entities.party_size
-          }
-        }
+            party_size: intent.entities.party_size,
+          },
+        },
       ],
-      'track_order': [
+      track_order: [
         {
           type: 'SHOW_ORDER_TRACKING',
           payload: {
-            order_id: intent.entities.order_id
-          }
-        }
+            order_id: intent.entities.order_id,
+          },
+        },
       ],
       // Add more intent->action mappings
-    }
+    };
 
-    return actionMap[intent.intent] || []
+    return actionMap[intent.intent] || [];
   }
 
   /**
@@ -318,52 +321,54 @@ You're knowledgeable, empathetic, and HIPAA-compliant.`,
    */
   private generateSuggestions(intent: SofiaIntent): string[] {
     const suggestionMap: Record<string, string[]> = {
-      'search_products': [
+      search_products: [
         'Show me trending items',
         'Filter by price',
         'Sort by popularity',
-        'View my wishlist'
+        'View my wishlist',
       ],
-      'make_reservation': [
+      make_reservation: [
         'Show available times',
         'View restaurant menu',
         'Add special requests',
-        'Save as favorite restaurant'
+        'Save as favorite restaurant',
       ],
       // Add more suggestions per intent
-    }
+    };
 
-    return suggestionMap[intent.intent] || [
-      'What can you help me with?',
-      'Show me recommendations',
-      'View my account'
-    ]
+    return (
+      suggestionMap[intent.intent] || [
+        'What can you help me with?',
+        'Show me recommendations',
+        'View my account',
+      ]
+    );
   }
 
   /**
    * Get conversation history
    */
   getHistory(): SofiaMessage[] {
-    return this.conversationHistory
+    return this.conversationHistory;
   }
 
   /**
    * Clear conversation history
    */
   clearHistory(): void {
-    this.conversationHistory = []
-    this.contextManager.clear()
+    this.conversationHistory = [];
+    this.contextManager.clear();
   }
 
   /**
    * Add message to history
    */
   private addMessage(message: SofiaMessage): void {
-    this.conversationHistory.push(message)
+    this.conversationHistory.push(message);
 
     // Keep only last 20 messages to manage token limits
     if (this.conversationHistory.length > 20) {
-      this.conversationHistory = this.conversationHistory.slice(-20)
+      this.conversationHistory = this.conversationHistory.slice(-20);
     }
   }
 
@@ -371,21 +376,21 @@ You're knowledgeable, empathetic, and HIPAA-compliant.`,
    * Generate unique ID
    */
   private generateId(): string {
-    return `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+    return `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   }
 
   /**
    * Get current context
    */
   getContext(): Record<string, any> {
-    return this.contextManager.get()
+    return this.contextManager.get();
   }
 
   /**
    * Update configuration
    */
   updateConfig(config: Partial<SofiaConfig>): void {
-    this.config = { ...this.config, ...config }
+    this.config = { ...this.config, ...config };
   }
 }
 
@@ -395,7 +400,7 @@ You're knowledgeable, empathetic, and HIPAA-compliant.`,
  */
 export class SofiaFactory {
   static create(config: SofiaConfig): SofiaEngine {
-    return new SofiaEngine(config)
+    return new SofiaEngine(config);
   }
 
   static createForFashion(tenant_id: string, user_id?: string): SofiaEngine {
@@ -408,9 +413,9 @@ export class SofiaFactory {
         voice: true,
         chat: true,
         recommendations: true,
-        proactive: true
-      }
-    })
+        proactive: true,
+      },
+    });
   }
 
   static createForRestaurant(tenant_id: string, user_id?: string): SofiaEngine {
@@ -423,9 +428,9 @@ export class SofiaFactory {
         voice: true,
         chat: true,
         recommendations: true,
-        proactive: true
-      }
-    })
+        proactive: true,
+      },
+    });
   }
 
   static createForHealthcare(tenant_id: string, user_id?: string): SofiaEngine {
@@ -438,10 +443,10 @@ export class SofiaFactory {
         voice: true,
         chat: true,
         recommendations: false, // Healthcare is more sensitive
-        proactive: true
-      }
-    })
+        proactive: true,
+      },
+    });
   }
 }
 
-export default SofiaEngine
+export default SofiaEngine;

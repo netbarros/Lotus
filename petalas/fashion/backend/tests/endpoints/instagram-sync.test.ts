@@ -10,7 +10,7 @@ describe('Instagram Sync Endpoint', () => {
   beforeAll(async () => {
     const response = await api.post('/auth/login', {
       email: 'admin@example.com',
-      password: 'password'
+      password: 'password',
     });
     authToken = response.data.data.access_token;
     api.defaults.headers.common['Authorization'] = `Bearer ${authToken}`;
@@ -20,7 +20,7 @@ describe('Instagram Sync Endpoint', () => {
     it('should connect Instagram account', async () => {
       const response = await api.post('/instagram/connect', {
         accessToken: 'ig_access_token_123',
-        username: 'fashion_brand'
+        username: 'fashion_brand',
       });
 
       expect(response.status).toBe(200);
@@ -44,7 +44,7 @@ describe('Instagram Sync Endpoint', () => {
       const response = await api.post('/instagram/tag-product', {
         postId: 'ig_post_123',
         productId: 1,
-        coordinates: { x: 0.5, y: 0.5 }
+        coordinates: { x: 0.5, y: 0.5 },
       });
 
       expect(response.status).toBe(200);
@@ -77,7 +77,7 @@ describe('Instagram Sync Endpoint', () => {
       const response = await api.post('/instagram/publish-product', {
         productId: 1,
         caption: 'New arrival! 🔥',
-        hashtags: ['fashion', 'style', 'ootd']
+        hashtags: ['fashion', 'style', 'ootd'],
       });
 
       expect(response.status).toBe(200);

@@ -8,13 +8,20 @@ describe('Leads Endpoint', () => {
   let authToken: string;
 
   beforeAll(async () => {
-    const response = await api.post('/auth/login', { email: 'agent@example.com', password: 'password' });
+    const response = await api.post('/auth/login', {
+      email: 'agent@example.com',
+      password: 'password',
+    });
     authToken = response.data.data.access_token;
     api.defaults.headers.common['Authorization'] = `Bearer ${authToken}`;
   });
 
   it('should create lead', async () => {
-    const response = await api.post('/leads', { name: 'John Doe', email: 'john@example.com', propertyId: 1 });
+    const response = await api.post('/leads', {
+      name: 'John Doe',
+      email: 'john@example.com',
+      propertyId: 1,
+    });
     expect(response.status).toBe(200);
   });
 

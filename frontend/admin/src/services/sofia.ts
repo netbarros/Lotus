@@ -6,7 +6,7 @@
  */
 
 import axios, { AxiosInstance } from 'axios';
-import type { SofiaHealth, SofiaMetrics, IntentionRequest, GeneratedSolution } from '@types';
+import type { SofiaHealth, SofiaMetrics, IntentionRequest, GeneratedSolution } from '@/types';
 
 // ═══════════════════════════════════════════════════════════════════════════
 // SOFIA AI CLIENT
@@ -14,7 +14,7 @@ import type { SofiaHealth, SofiaMetrics, IntentionRequest, GeneratedSolution } f
 
 class SofiaAIClient {
   private client: AxiosInstance;
-  private healthCheckInterval?: NodeJS.Timeout;
+  private healthCheckInterval?: ReturnType<typeof setTimeout>;
 
   constructor() {
     this.client = axios.create({

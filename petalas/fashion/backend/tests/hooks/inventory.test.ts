@@ -9,12 +9,19 @@ describe('Inventory Hook', () => {
 
     it('should update stock status', () => {
       expect(updateStockStatus({ quantity: 0 }).stock_status).toBe('out_of_stock');
-      expect(updateStockStatus({ quantity: 5, low_stock_threshold: 10 }).stock_status).toBe('low_stock');
+      expect(updateStockStatus({ quantity: 5, low_stock_threshold: 10 }).stock_status).toBe(
+        'low_stock'
+      );
       expect(updateStockStatus({ quantity: 50 }).stock_status).toBe('in_stock');
     });
 
     it('should log inventory changes', () => {
-      const log = logInventoryChange({ product_id: 1, quantity: 10, previous_quantity: 5, reason: 'restock' });
+      const log = logInventoryChange({
+        product_id: 1,
+        quantity: 10,
+        previous_quantity: 5,
+        reason: 'restock',
+      });
       expect(log.change_amount).toBe(5);
       expect(log.change_type).toBe('increase');
     });
@@ -44,6 +51,6 @@ function logInventoryChange(data: any) {
   return {
     change_amount: Math.abs(change),
     change_type: change > 0 ? 'increase' : 'decrease',
-    ...data
+    ...data,
   };
 }

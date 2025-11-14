@@ -10,7 +10,7 @@ export default defineEndpoint((router, { services, database }) => {
         title,
         comment,
         images, // Array of image URLs
-        verified_purchase = false
+        verified_purchase = false,
       } = req.body;
 
       const tenant_id = req.accountability.tenant;
@@ -19,20 +19,18 @@ export default defineEndpoint((router, { services, database }) => {
       if (!product_id || !rating) {
         return res.status(400).json({
           error: 'Missing required fields',
-          required: ['product_id', 'rating']
+          required: ['product_id', 'rating'],
         });
       }
 
       if (rating < 1 || rating > 5) {
         return res.status(400).json({
-          error: 'Rating must be between 1 and 5'
+          error: 'Rating must be between 1 and 5',
         });
       }
 
       // Verify product exists
-      const product = await database('products')
-        .where({ id: product_id, tenant_id })
-        .first();
+      const product = await database('products').where({ id: product_id, tenant_id }).first();
 
       if (!product) {
         return res.status(404).json({ error: 'Product not found' });
@@ -47,7 +45,7 @@ export default defineEndpoint((router, { services, database }) => {
             'order_items.product_id': product_id,
             'orders.user_id': user_id,
             'orders.tenant_id': tenant_id,
-            'orders.payment_status': 'paid'
+            'orders.payment_status': 'paid',
           })
           .first();
 
@@ -63,7 +61,7 @@ export default defineEndpoint((router, { services, database }) => {
         if (existingReview) {
           return res.status(400).json({
             error: 'You have already reviewed this product',
-            review_id: existingReview.id
+            review_id: existingReview.id,
           });
         }
       }
@@ -83,7 +81,7 @@ export default defineEndpoint((router, { services, database }) => {
           status: isVerifiedPurchase ? 'approved' : 'pending', // Auto-approve verified purchases
           helpful_count: 0,
           created_at: new Date(),
-          updated_at: new Date()
+          updated_at: new Date(),
         })
         .returning('*');
 
@@ -99,9 +97,9 @@ export default defineEndpoint((router, { services, database }) => {
           product_id,
           rating,
           verified_purchase: isVerifiedPurchase,
-          status: review.status
+          status: review.status,
         }),
-        timestamp: new Date()
+        timestamp: new Date(),
       });
 
       res.json({
@@ -112,8 +110,8 @@ export default defineEndpoint((router, { services, database }) => {
         data: {
           review_id: review.id,
           status: review.status,
-          verified_purchase: review.verified_purchase
-        }
+          verified_purchase: review.verified_purchase,
+        },
       });
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -128,20 +126,16 @@ export default defineEndpoint((router, { services, database }) => {
         limit = 20,
         offset = 0,
         sort = 'recent', // 'recent', 'helpful', 'rating_high', 'rating_low'
-        rating_filter // Filter by specific rating (1-5)
+        rating_filter, // Filter by specific rating (1-5)
       } = req.query;
 
       let query = database('reviews')
-        .select(
-          'reviews.*',
-          'customers.name as customer_name',
-          'customers.email as customer_email'
-        )
+        .select('reviews.*', 'customers.name as customer_name', 'customers.email as customer_email')
         .leftJoin('customers', 'reviews.user_id', 'customers.id')
         .where({
           'reviews.product_id': req.params.product_id,
           'reviews.tenant_id': tenant_id,
-          'reviews.status': 'approved'
+          'reviews.status': 'approved',
         });
 
       // Apply rating filter
@@ -172,7 +166,7 @@ export default defineEndpoint((router, { services, database }) => {
         .where({
           product_id: req.params.product_id,
           tenant_id,
-          status: 'approved'
+          status: 'approved',
         })
         .first();
 
@@ -183,13 +177,13 @@ export default defineEndpoint((router, { services, database }) => {
         .where({
           product_id: req.params.product_id,
           tenant_id,
-          status: 'approved'
+          status: 'approved',
         })
         .groupBy('rating')
         .orderBy('rating', 'desc');
 
       res.json({
-        data: reviews.map(r => ({
+        data: reviews.map((r) => ({
           id: r.id,
           rating: r.rating,
           title: r.title,
@@ -199,19 +193,19 @@ export default defineEndpoint((router, { services, database }) => {
           helpful_count: r.helpful_count,
           customer: {
             name: r.customer_name || 'Anonymous',
-            email: r.customer_email
+            email: r.customer_email,
           },
-          created_at: r.created_at
+          created_at: r.created_at,
         })),
         meta: {
           total: parseInt(total.count),
           limit: parseInt(limit),
           offset: parseInt(offset),
-          distribution: distribution.map(d => ({
+          distribution: distribution.map((d) => ({
             rating: d.rating,
-            count: parseInt(d.count)
-          }))
-        }
+            count: parseInt(d.count),
+          })),
+        },
       });
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -223,23 +217,19 @@ export default defineEndpoint((router, { services, database }) => {
     try {
       const tenant_id = req.accountability.tenant;
 
-      const review = await database('reviews')
-        .where({ id: req.params.id, tenant_id })
-        .first();
+      const review = await database('reviews').where({ id: req.params.id, tenant_id }).first();
 
       if (!review) {
         return res.status(404).json({ error: 'Review not found' });
       }
 
       // Increment helpful count
-      await database('reviews')
-        .where({ id: req.params.id })
-        .increment('helpful_count', 1);
+      await database('reviews').where({ id: req.params.id }).increment('helpful_count', 1);
 
       res.json({
         success: true,
         message: 'Review marked as helpful',
-        helpful_count: review.helpful_count + 1
+        helpful_count: review.helpful_count + 1,
       });
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -274,12 +264,12 @@ export default defineEndpoint((router, { services, database }) => {
           comment: comment !== undefined ? comment : review.comment,
           images: images ? JSON.stringify(images) : review.images,
           status: 'pending', // Re-moderate after edit
-          updated_at: new Date()
+          updated_at: new Date(),
         });
 
       res.json({
         success: true,
-        message: 'Review updated and submitted for moderation'
+        message: 'Review updated and submitted for moderation',
       });
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -301,12 +291,10 @@ export default defineEndpoint((router, { services, database }) => {
       }
 
       // Soft delete
-      await database('reviews')
-        .where({ id: req.params.id })
-        .update({
-          status: 'deleted',
-          updated_at: new Date()
-        });
+      await database('reviews').where({ id: req.params.id }).update({
+        status: 'deleted',
+        updated_at: new Date(),
+      });
 
       // Emit event to trigger product stats recalculation
       await database('events').insert({
@@ -317,14 +305,14 @@ export default defineEndpoint((router, { services, database }) => {
         event_type: 'petala.fashion.review.deleted',
         event_data: JSON.stringify({
           review_id: req.params.id,
-          product_id: review.product_id
+          product_id: review.product_id,
         }),
-        timestamp: new Date()
+        timestamp: new Date(),
       });
 
       res.json({
         success: true,
-        message: 'Review deleted'
+        message: 'Review deleted',
       });
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -345,7 +333,7 @@ export default defineEndpoint((router, { services, database }) => {
         .where({
           product_id: req.params.product_id,
           tenant_id,
-          status: 'approved'
+          status: 'approved',
         })
         .first();
 
@@ -355,30 +343,32 @@ export default defineEndpoint((router, { services, database }) => {
         .where({
           product_id: req.params.product_id,
           tenant_id,
-          status: 'approved'
+          status: 'approved',
         })
         .groupBy('rating')
         .orderBy('rating', 'desc');
 
       // Calculate percentages
       const total = parseInt(stats.total_reviews || 0);
-      const distributionWithPercent = [1, 2, 3, 4, 5].map(rating => {
-        const item = distribution.find(d => d.rating === rating);
-        const count = item ? parseInt(item.count) : 0;
-        return {
-          rating,
-          count,
-          percentage: total > 0 ? ((count / total) * 100).toFixed(1) : '0.0'
-        };
-      }).reverse();
+      const distributionWithPercent = [1, 2, 3, 4, 5]
+        .map((rating) => {
+          const item = distribution.find((d) => d.rating === rating);
+          const count = item ? parseInt(item.count) : 0;
+          return {
+            rating,
+            count,
+            percentage: total > 0 ? ((count / total) * 100).toFixed(1) : '0.0',
+          };
+        })
+        .reverse();
 
       res.json({
         data: {
           total_reviews: total,
           average_rating: parseFloat(stats.average_rating || 0).toFixed(2),
           verified_count: parseInt(stats.verified_count || 0),
-          distribution: distributionWithPercent
-        }
+          distribution: distributionWithPercent,
+        },
       });
     } catch (error) {
       res.status(500).json({ error: error.message });

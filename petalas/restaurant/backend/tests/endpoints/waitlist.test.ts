@@ -9,13 +9,20 @@ describe('Waitlist Endpoint', () => {
   let waitlistId: string;
 
   beforeAll(async () => {
-    const response = await api.post('/auth/login', { email: 'customer@example.com', password: 'password' });
+    const response = await api.post('/auth/login', {
+      email: 'customer@example.com',
+      password: 'password',
+    });
     authToken = response.data.data.access_token;
     api.defaults.headers.common['Authorization'] = `Bearer ${authToken}`;
   });
 
   it('should add to waitlist', async () => {
-    const response = await api.post('/waitlist', { name: 'John Doe', partySize: 4, phone: '+1234567890' });
+    const response = await api.post('/waitlist', {
+      name: 'John Doe',
+      partySize: 4,
+      phone: '+1234567890',
+    });
     expect(response.status).toBe(200);
     expect(response.data.data).toHaveProperty('id');
     expect(response.data.data).toHaveProperty('estimatedWait');

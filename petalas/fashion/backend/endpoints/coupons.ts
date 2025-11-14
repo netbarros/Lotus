@@ -16,10 +16,10 @@ export default defineEndpoint((router, { services, database }) => {
         .where({
           code: code.toUpperCase(),
           tenant_id,
-          status: 'active'
+          status: 'active',
         })
         .where('valid_from', '<=', new Date())
-        .where(function() {
+        .where(function () {
           this.whereNull('valid_until').orWhere('valid_until', '>=', new Date());
         })
         .first();
@@ -27,7 +27,7 @@ export default defineEndpoint((router, { services, database }) => {
       if (!coupon) {
         return res.status(404).json({
           valid: false,
-          error: 'Invalid or expired coupon code'
+          error: 'Invalid or expired coupon code',
         });
       }
 
@@ -35,7 +35,7 @@ export default defineEndpoint((router, { services, database }) => {
       if (coupon.usage_limit && coupon.usage_count >= coupon.usage_limit) {
         return res.status(400).json({
           valid: false,
-          error: 'Coupon usage limit reached'
+          error: 'Coupon usage limit reached',
         });
       }
 
@@ -47,14 +47,14 @@ export default defineEndpoint((router, { services, database }) => {
             tenant_id,
             customer_email,
             coupon_id: coupon.id,
-            payment_status: 'paid'
+            payment_status: 'paid',
           })
           .first();
 
         if (parseInt(customerUsage.count) >= coupon.usage_limit_per_customer) {
           return res.status(400).json({
             valid: false,
-            error: 'You have already used this coupon the maximum number of times'
+            error: 'You have already used this coupon the maximum number of times',
           });
         }
       }
@@ -67,7 +67,9 @@ export default defineEndpoint((router, { services, database }) => {
             error: `Minimum order value of $${coupon.minimum_order_value} required`,
             minimum_required: parseFloat(coupon.minimum_order_value),
             current_total: parseFloat(cart_total),
-            difference: (parseFloat(coupon.minimum_order_value) - parseFloat(cart_total)).toFixed(2)
+            difference: (parseFloat(coupon.minimum_order_value) - parseFloat(cart_total)).toFixed(
+              2
+            ),
           });
         }
       }
@@ -79,7 +81,10 @@ export default defineEndpoint((router, { services, database }) => {
           discountAmount = parseFloat(cart_total) * (parseFloat(coupon.discount_value) / 100);
 
           // Apply max discount cap
-          if (coupon.max_discount_amount && discountAmount > parseFloat(coupon.max_discount_amount)) {
+          if (
+            coupon.max_discount_amount &&
+            discountAmount > parseFloat(coupon.max_discount_amount)
+          ) {
             discountAmount = parseFloat(coupon.max_discount_amount);
           }
         } else if (coupon.discount_type === 'fixed') {
@@ -94,12 +99,16 @@ export default defineEndpoint((router, { services, database }) => {
           discount_type: coupon.discount_type,
           discount_value: parseFloat(coupon.discount_value),
           discount_amount: cart_total ? discountAmount.toFixed(2) : null,
-          max_discount_amount: coupon.max_discount_amount ? parseFloat(coupon.max_discount_amount) : null,
+          max_discount_amount: coupon.max_discount_amount
+            ? parseFloat(coupon.max_discount_amount)
+            : null,
           free_shipping: coupon.discount_type === 'free_shipping',
           description: coupon.description,
           valid_until: coupon.valid_until,
-          remaining_uses: coupon.usage_limit ? coupon.usage_limit - coupon.usage_count : 'unlimited'
-        }
+          remaining_uses: coupon.usage_limit
+            ? coupon.usage_limit - coupon.usage_count
+            : 'unlimited',
+        },
       });
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -116,12 +125,12 @@ export default defineEndpoint((router, { services, database }) => {
         .select('*')
         .where({ tenant_id, status: 'active' })
         .where('valid_from', '<=', new Date())
-        .where(function() {
+        .where(function () {
           this.whereNull('valid_until').orWhere('valid_until', '>=', new Date());
         });
 
       // Only show coupons that haven't reached usage limit
-      query = query.where(function() {
+      query = query.where(function () {
         this.whereNull('usage_limit').orWhereRaw('usage_count < usage_limit');
       });
 
@@ -137,9 +146,9 @@ export default defineEndpoint((router, { services, database }) => {
           .whereNotNull('coupon_id')
           .groupBy('coupon_id');
 
-        const usageMap = new Map(customerOrders.map(o => [o.coupon_id, parseInt(o.usage_count)]));
+        const usageMap = new Map(customerOrders.map((o) => [o.coupon_id, parseInt(o.usage_count)]));
 
-        filteredCoupons = coupons.filter(coupon => {
+        filteredCoupons = coupons.filter((coupon) => {
           if (!coupon.usage_limit_per_customer) return true;
           const usage = usageMap.get(coupon.id) || 0;
           return usage < coupon.usage_limit_per_customer;
@@ -147,7 +156,7 @@ export default defineEndpoint((router, { services, database }) => {
       }
 
       res.json({
-        data: filteredCoupons.map(c => ({
+        data: filteredCoupons.map((c) => ({
           code: c.code,
           discount_type: c.discount_type,
           discount_value: parseFloat(c.discount_value),
@@ -156,11 +165,11 @@ export default defineEndpoint((router, { services, database }) => {
           valid_until: c.valid_until,
           usage_limit: c.usage_limit,
           usage_count: c.usage_count,
-          remaining: c.usage_limit ? c.usage_limit - c.usage_count : null
+          remaining: c.usage_limit ? c.usage_limit - c.usage_count : null,
         })),
         meta: {
-          count: filteredCoupons.length
-        }
+          count: filteredCoupons.length,
+        },
       });
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -177,7 +186,7 @@ export default defineEndpoint((router, { services, database }) => {
       if (!code || !cart_total) {
         return res.status(400).json({
           error: 'Missing required fields',
-          required: ['code', 'cart_total']
+          required: ['code', 'cart_total'],
         });
       }
 
@@ -187,7 +196,7 @@ export default defineEndpoint((router, { services, database }) => {
       if (!validation.valid) {
         return res.status(400).json({
           success: false,
-          error: validation.error
+          error: validation.error,
         });
       }
 
@@ -199,8 +208,8 @@ export default defineEndpoint((router, { services, database }) => {
         data: {
           code: validation.coupon.code,
           discount_amount: validation.discount_amount,
-          new_total: (parseFloat(cart_total) - validation.discount_amount).toFixed(2)
-        }
+          new_total: (parseFloat(cart_total) - validation.discount_amount).toFixed(2),
+        },
       });
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -224,9 +233,12 @@ export default defineEndpoint((router, { services, database }) => {
           database.raw('COUNT(orders.id) as usage_count'),
           database.raw('SUM(CAST(orders.discount AS DECIMAL)) as total_discount')
         )
-        .leftJoin('orders', function() {
-          this.on('coupons.id', '=', 'orders.coupon_id')
-            .andOnVal('orders.payment_status', '=', 'paid');
+        .leftJoin('orders', function () {
+          this.on('coupons.id', '=', 'orders.coupon_id').andOnVal(
+            'orders.payment_status',
+            '=',
+            'paid'
+          );
         })
         .where({ 'coupons.tenant_id': tenant_id })
         .where('orders.created_at', '>=', startDate)
@@ -234,16 +246,16 @@ export default defineEndpoint((router, { services, database }) => {
         .orderBy('usage_count', 'desc');
 
       res.json({
-        data: stats.map(s => ({
+        data: stats.map((s) => ({
           code: s.code,
           discount_type: s.discount_type,
           discount_value: parseFloat(s.discount_value),
           usage_count: parseInt(s.usage_count || 0),
-          total_discount: parseFloat(s.total_discount || 0).toFixed(2)
+          total_discount: parseFloat(s.total_discount || 0).toFixed(2),
         })),
         meta: {
-          period_days: parseInt(days)
-        }
+          period_days: parseInt(days),
+        },
       });
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -257,10 +269,10 @@ async function validateCoupon(database, tenant_id, code, cart_total, customer_id
     .where({
       code: code.toUpperCase(),
       tenant_id,
-      status: 'active'
+      status: 'active',
     })
     .where('valid_from', '<=', new Date())
-    .where(function() {
+    .where(function () {
       this.whereNull('valid_until').orWhere('valid_until', '>=', new Date());
     })
     .first();
@@ -281,7 +293,7 @@ async function validateCoupon(database, tenant_id, code, cart_total, customer_id
         tenant_id,
         user_id: customer_id,
         coupon_id: coupon.id,
-        payment_status: 'paid'
+        payment_status: 'paid',
       })
       .first();
 
@@ -291,10 +303,13 @@ async function validateCoupon(database, tenant_id, code, cart_total, customer_id
   }
 
   // Check minimum order value
-  if (coupon.minimum_order_value && parseFloat(cart_total) < parseFloat(coupon.minimum_order_value)) {
+  if (
+    coupon.minimum_order_value &&
+    parseFloat(cart_total) < parseFloat(coupon.minimum_order_value)
+  ) {
     return {
       valid: false,
-      error: `Minimum order value of $${coupon.minimum_order_value} required`
+      error: `Minimum order value of $${coupon.minimum_order_value} required`,
     };
   }
 
@@ -312,6 +327,6 @@ async function validateCoupon(database, tenant_id, code, cart_total, customer_id
   return {
     valid: true,
     coupon,
-    discount_amount: discountAmount
+    discount_amount: discountAmount,
   };
 }

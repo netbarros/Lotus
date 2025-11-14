@@ -59,7 +59,7 @@ export default defineHook(({ filter, action }, { services, database, getSchema }
         seated: ['completed'],
         completed: [],
         cancelled: [],
-        no_show: []
+        no_show: [],
       };
 
       if (input.status && meta.keys && meta.keys.length > 0) {
@@ -103,9 +103,9 @@ export default defineHook(({ filter, action }, { services, database, getSchema }
           party_size: meta.payload.party_size,
           reservation_date: meta.payload.reservation_date,
           reservation_time: meta.payload.reservation_time,
-          status: meta.payload.status
+          status: meta.payload.status,
         },
-        database
+        database,
       });
     }
   });
@@ -119,13 +119,14 @@ export default defineHook(({ filter, action }, { services, database, getSchema }
         await emitEvent({
           type: `petala.restaurant.reservation.${meta.payload.status}`,
           aggregateId: meta.keys[0],
-          tenantId: meta.payload.tenant_id || await getTenantId('reservations', meta.keys[0], database),
+          tenantId:
+            meta.payload.tenant_id || (await getTenantId('reservations', meta.keys[0], database)),
           data: {
             status: meta.payload.status,
             table_id: meta.payload.table_id,
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
           },
-          database
+          database,
         });
       }
     }
@@ -146,11 +147,7 @@ function generateConfirmationCode(): string {
 }
 
 async function getTenantId(collection: string, id: string, database: any): Promise<string> {
-  const result = await database
-    .select('tenant_id')
-    .from(collection)
-    .where('id', id)
-    .first();
+  const result = await database.select('tenant_id').from(collection).where('id', id).first();
   return result?.tenant_id;
 }
 
@@ -172,9 +169,9 @@ async function emitEvent(params: {
     metadata: JSON.stringify({
       timestamp: new Date().toISOString(),
       version: 1,
-      source: 'hook-reservations'
+      source: 'hook-reservations',
     }),
-    created_at: database.fn.now()
+    created_at: database.fn.now(),
   });
 }
 

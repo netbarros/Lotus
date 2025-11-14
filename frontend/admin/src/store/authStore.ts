@@ -6,7 +6,7 @@
 
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { User, AuthState } from '@types';
+import type { User, AuthState } from '@/types';
 import { api } from '@services/api';
 
 interface AuthStore extends AuthState {

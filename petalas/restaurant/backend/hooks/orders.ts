@@ -64,7 +64,7 @@ export default defineHook(({ filter, action }, { services, database, getSchema }
         out_for_delivery: ['delivered'],
         delivered: ['completed'],
         completed: [],
-        cancelled: []
+        cancelled: [],
       };
 
       if (input.status && meta.keys && meta.keys.length > 0) {
@@ -87,10 +87,14 @@ export default defineHook(({ filter, action }, { services, database, getSchema }
         served: 'served_at',
         delivered: 'delivered_at',
         completed: 'completed_at',
-        cancelled: 'cancelled_at'
+        cancelled: 'cancelled_at',
       };
 
-      if (input.status && statusTimestamps[input.status] && !input[statusTimestamps[input.status]]) {
+      if (
+        input.status &&
+        statusTimestamps[input.status] &&
+        !input[statusTimestamps[input.status]]
+      ) {
         input[statusTimestamps[input.status]] = new Date();
       }
     }
@@ -112,20 +116,18 @@ export default defineHook(({ filter, action }, { services, database, getSchema }
           table_id: meta.payload.table_id,
           total: meta.payload.total,
           items_count: meta.payload.items?.length || 0,
-          status: meta.payload.status
+          status: meta.payload.status,
         },
-        database
+        database,
       });
 
       // Update table status if dine-in
       if (meta.payload.table_id && meta.payload.order_type === 'dine_in') {
-        await database('tables')
-          .where('id', meta.payload.table_id)
-          .update({
-            status: 'occupied',
-            current_order_id: meta.key,
-            updated_at: database.fn.now()
-          });
+        await database('tables').where('id', meta.payload.table_id).update({
+          status: 'occupied',
+          current_order_id: meta.key,
+          updated_at: database.fn.now(),
+        });
       }
     }
   });
@@ -139,25 +141,23 @@ export default defineHook(({ filter, action }, { services, database, getSchema }
         await emitEvent({
           type: `petala.restaurant.order.${meta.payload.status}`,
           aggregateId: meta.keys[0],
-          tenantId: meta.payload.tenant_id || await getTenantId('orders', meta.keys[0], database),
+          tenantId: meta.payload.tenant_id || (await getTenantId('orders', meta.keys[0], database)),
           data: {
             status: meta.payload.status,
             order_number: meta.payload.order_number,
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
           },
-          database
+          database,
         });
       }
 
       // If order completed and table exists, mark table as needs cleaning
       if (meta.payload.status === 'completed' && meta.payload.table_id) {
-        await database('tables')
-          .where('id', meta.payload.table_id)
-          .update({
-            status: 'cleaning',
-            current_order_id: null,
-            updated_at: database.fn.now()
-          });
+        await database('tables').where('id', meta.payload.table_id).update({
+          status: 'cleaning',
+          current_order_id: null,
+          updated_at: database.fn.now(),
+        });
       }
     }
   });
@@ -168,11 +168,7 @@ export default defineHook(({ filter, action }, { services, database, getSchema }
  */
 
 async function getTenantId(collection: string, id: string, database: any): Promise<string> {
-  const result = await database
-    .select('tenant_id')
-    .from(collection)
-    .where('id', id)
-    .first();
+  const result = await database.select('tenant_id').from(collection).where('id', id).first();
   return result?.tenant_id;
 }
 
@@ -194,9 +190,9 @@ async function emitEvent(params: {
     metadata: JSON.stringify({
       timestamp: new Date().toISOString(),
       version: 1,
-      source: 'hook-orders'
+      source: 'hook-orders',
     }),
-    created_at: database.fn.now()
+    created_at: database.fn.now(),
   });
 }
 

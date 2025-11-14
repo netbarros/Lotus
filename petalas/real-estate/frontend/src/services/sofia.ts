@@ -44,7 +44,10 @@ class SofiaService {
    * @param context - Additional context (current property, search criteria, etc.)
    * @returns Sofia AI response with parsed intent and action
    */
-  async processIntention(intention: string, context?: SofiaIntention['context']): Promise<SofiaResponse> {
+  async processIntention(
+    intention: string,
+    context?: SofiaIntention['context']
+  ): Promise<SofiaResponse> {
     try {
       const response = await api.post('/sofia/intention', {
         intention,
@@ -214,9 +217,18 @@ class SofiaService {
     try {
       // Scrape multiple sources for comprehensive neighborhood data
       const tasks = [
-        this.scrapeData({ url: `https://walkscore.com/${address.city}/${address.state}`, dataType: 'neighborhood' }),
-        this.scrapeData({ url: `https://greatschools.org/search?zip=${address.zipcode}`, dataType: 'schools' }),
-        this.scrapeData({ url: `https://crimegrade.org/${address.city}-${address.state}`, dataType: 'crime' }),
+        this.scrapeData({
+          url: `https://walkscore.com/${address.city}/${address.state}`,
+          dataType: 'neighborhood',
+        }),
+        this.scrapeData({
+          url: `https://greatschools.org/search?zip=${address.zipcode}`,
+          dataType: 'schools',
+        }),
+        this.scrapeData({
+          url: `https://crimegrade.org/${address.city}-${address.state}`,
+          dataType: 'crime',
+        }),
       ];
 
       const [walkability, schools, crime] = await Promise.allSettled(tasks);

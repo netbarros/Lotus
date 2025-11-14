@@ -1,8 +1,7 @@
 # 🚀 MagicSaaS System-∞ - Operational Runbook
 
-**Version:** 3.1.0
-**Last Updated:** 2025-11-05
-**Audience:** DevOps, SRE, Production Support
+**Version:** 3.1.0 **Last Updated:** 2025-11-05 **Audience:** DevOps, SRE,
+Production Support
 
 ---
 
@@ -25,17 +24,17 @@
 
 ### Components
 
-| Component | Technology | Port | Purpose |
-|-----------|------------|------|---------|
-| Sofia AI | Node.js 22 + TypeScript | 3003 | AI Brain - Intention processing |
-| API Backend | Express + Prisma | 3001 | REST API |
-| Database | PostgreSQL 17 + pgVector + TimescaleDB | 5432 | Primary datastore |
-| Cache | Redis 7 | 6379 | Session + caching |
-| CMS | Directus | 8055 | Content management |
-| Metrics | Prometheus | 9090 | Metrics collection |
-| Dashboards | Grafana | 3002 | Visualization |
-| Tracing | Jaeger | 14268 | Distributed tracing |
-| Workflows | Inngest | 8288 | Serverless workflows |
+| Component   | Technology                             | Port  | Purpose                         |
+| ----------- | -------------------------------------- | ----- | ------------------------------- |
+| Sofia AI    | Node.js 22 + TypeScript                | 3003  | AI Brain - Intention processing |
+| API Backend | Express + Prisma                       | 3001  | REST API                        |
+| Database    | PostgreSQL 17 + pgVector + TimescaleDB | 5432  | Primary datastore               |
+| Cache       | Redis 7                                | 6379  | Session + caching               |
+| CMS         | Directus                               | 8055  | Content management              |
+| Metrics     | Prometheus                             | 9090  | Metrics collection              |
+| Dashboards  | Grafana                                | 3002  | Visualization                   |
+| Tracing     | Jaeger                                 | 14268 | Distributed tracing             |
+| Workflows   | Inngest                                | 8288  | Serverless workflows            |
 
 ### Service Dependencies
 
@@ -172,17 +171,20 @@ kubectl exec -it postgres-0 -n magicsaas-staging -- \
 ### Key Metrics
 
 **Application:**
+
 - `http_requests_total` - Total HTTP requests
 - `http_request_duration_ms` - Request latency
 - `intentions_processed_total` - Intentions processed by Sofia AI
 - `intentions_failed_total` - Failed intentions
 
 **Database:**
+
 - `pg_stat_database_numbackends` - Active connections
 - `pg_stat_database_xact_commit` - Transaction rate
 - `pg_stat_database_blks_hit / blks_read` - Cache hit ratio
 
 **Redis:**
+
 - `redis_memory_used_bytes` - Memory usage
 - `redis_keyspace_hits_total / misses_total` - Cache hit rate
 - `redis_connected_clients` - Active clients
@@ -199,15 +201,18 @@ Access: `https://grafana.softwarelotus.com.br`
 
 ### Alerts
 
-Prometheus alerts configured in `infrastructure/monitoring/prometheus/alerts.yml`
+Prometheus alerts configured in
+`infrastructure/monitoring/prometheus/alerts.yml`
 
 **Critical Alerts** (PagerDuty):
+
 - ServiceDown
 - HighMemoryUsage (>90%)
 - DatabaseReplicationLag (>30s)
 - RedisDown
 
 **Warning Alerts** (Slack):
+
 - HighErrorRate (>5%)
 - HighLatency (p95 >1s)
 - DatabaseConnectionsHigh (>80%)
@@ -222,6 +227,7 @@ Prometheus alerts configured in `infrastructure/monitoring/prometheus/alerts.yml
 **Symptoms:** Error rate >5% for 5+ minutes
 
 **Investigation:**
+
 ```bash
 # Check error logs
 kubectl logs -n magicsaas-staging -l app=sofia-ai --tail=100 | grep ERROR
@@ -237,6 +243,7 @@ kubectl describe pod sofia-ai-xxx -n magicsaas-staging
 ```
 
 **Resolution:**
+
 1. If recent deployment → Rollback
 2. If database issue → Scale up database
 3. If external API issue → Enable circuit breaker
@@ -247,6 +254,7 @@ kubectl describe pod sofia-ai-xxx -n magicsaas-staging
 **Symptoms:** p95 latency >1000ms
 
 **Investigation:**
+
 ```bash
 # Check CPU/Memory usage
 kubectl top pods -n magicsaas-staging -l app=sofia-ai
@@ -262,6 +270,7 @@ redis-cli --latency-history
 ```
 
 **Resolution:**
+
 1. Scale horizontally (increase replicas)
 2. Optimize slow queries (add indexes)
 3. Increase cache TTL
@@ -272,6 +281,7 @@ redis-cli --latency-history
 **Symptoms:** "too many connections" errors
 
 **Investigation:**
+
 ```bash
 # Check active connections
 SELECT count(*) FROM pg_stat_activity;
@@ -289,6 +299,7 @@ ORDER BY duration DESC;
 ```
 
 **Resolution:**
+
 1. Terminate idle connections
 2. Increase max_connections
 3. Optimize connection pooling
@@ -299,6 +310,7 @@ ORDER BY duration DESC;
 **Symptoms:** Redis evicting keys, OOM errors
 
 **Investigation:**
+
 ```bash
 # Check memory usage
 redis-cli INFO memory
@@ -311,6 +323,7 @@ redis-cli --bigkeys
 ```
 
 **Resolution:**
+
 1. Increase Redis memory limit
 2. Implement LRU eviction policy
 3. Reduce cache TTL
@@ -322,12 +335,12 @@ redis-cli --bigkeys
 
 ### Severity Levels
 
-| Level | Response Time | Example |
-|-------|--------------|---------|
-| P0 - Critical | 15 min | Complete outage, data loss |
-| P1 - High | 1 hour | Partial outage, degraded performance |
-| P2 - Medium | 4 hours | Feature broken, workaround available |
-| P3 - Low | 1 day | Minor bug, cosmetic issue |
+| Level         | Response Time | Example                              |
+| ------------- | ------------- | ------------------------------------ |
+| P0 - Critical | 15 min        | Complete outage, data loss           |
+| P1 - High     | 1 hour        | Partial outage, degraded performance |
+| P2 - Medium   | 4 hours       | Feature broken, workaround available |
+| P3 - Low      | 1 day         | Minor bug, cosmetic issue            |
 
 ### Incident Response Process
 
@@ -352,10 +365,12 @@ redis-cli --bigkeys
 ### Routine Maintenance Windows
 
 **Weekly:**
+
 - Sunday 02:00-04:00 UTC - Database backups
 - Saturday 03:00-05:00 UTC - OS patches
 
 **Monthly:**
+
 - First Sunday 01:00-05:00 UTC - Major updates
 
 ### Pre-Maintenance Checklist
@@ -387,12 +402,14 @@ redis-cli --bigkeys
 ### Horizontal Scaling (HPA)
 
 Sofia AI auto-scales based on CPU/Memory:
+
 - Min: 3 replicas
 - Max: 10 replicas
 - Target CPU: 70%
 - Target Memory: 80%
 
 **Manual scaling:**
+
 ```bash
 # Scale to specific replica count
 kubectl scale deployment/sofia-ai --replicas=5 -n magicsaas-staging
@@ -404,6 +421,7 @@ kubectl get hpa -n magicsaas-staging
 ### Vertical Scaling
 
 **Increase resources:**
+
 ```bash
 # Edit deployment
 kubectl edit deployment/sofia-ai -n magicsaas-staging
@@ -426,6 +444,7 @@ spec:
 ### Database Scaling
 
 **Read replicas:**
+
 ```bash
 # Add read replica
 kubectl scale statefulset/postgres --replicas=3 -n magicsaas-staging
@@ -455,10 +474,11 @@ cat /backups/postgres/latest.txt
 
 ### Recovery Procedures
 
-**RTO (Recovery Time Objective):** 4 hours
-**RPO (Recovery Point Objective):** 1 hour
+**RTO (Recovery Time Objective):** 4 hours **RPO (Recovery Point Objective):** 1
+hour
 
 **Restore from backup:**
+
 ```bash
 # 1. Download latest backup from S3
 aws s3 cp s3://magicsaas-backups/magicsaas_backup_20251105.sql.gz .
@@ -480,6 +500,7 @@ kubectl scale deployment/sofia-ai --replicas=3 -n magicsaas-staging
 ### Disaster Recovery
 
 **Cross-region failover:**
+
 1. DNS failover to DR region
 2. Promote replica to primary
 3. Update application config
@@ -492,6 +513,7 @@ kubectl scale deployment/sofia-ai --replicas=3 -n magicsaas-staging
 ### Access Control
 
 **Production access requires:**
+
 - MFA enabled
 - VPN connection
 - Bastion host SSH key
@@ -527,7 +549,5 @@ trufflehog git file://. --since-commit HEAD~10
 
 ## 📞 Contacts
 
-**On-call:** PagerDuty rotation
-**Slack:** #magicsaas-ops
-**Email:** ops@softwarelotus.com.br
-**Documentation:** https://docs.softwarelotus.com.br
+**On-call:** PagerDuty rotation **Slack:** #magicsaas-ops **Email:**
+ops@softwarelotus.com.br **Documentation:** https://docs.softwarelotus.com.br

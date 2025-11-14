@@ -10,7 +10,7 @@ export default defineEndpoint((router, { services, database, env }) => {
       if (!access_token || !instagram_business_account_id) {
         return res.status(400).json({
           error: 'Missing required fields',
-          required: ['access_token', 'instagram_business_account_id']
+          required: ['access_token', 'instagram_business_account_id'],
         });
       }
 
@@ -36,7 +36,7 @@ export default defineEndpoint((router, { services, database, env }) => {
           access_token: access_token, // TODO: Encrypt
           status: 'active',
           created_at: new Date(),
-          updated_at: new Date()
+          updated_at: new Date(),
         })
         .onConflict(['tenant_id', 'instagram_account_id'])
         .merge();
@@ -50,9 +50,9 @@ export default defineEndpoint((router, { services, database, env }) => {
         event_type: 'petala.fashion.instagram.connected',
         event_data: JSON.stringify({
           instagram_username: instagramAccount.username,
-          business_account_id: instagram_business_account_id
+          business_account_id: instagram_business_account_id,
         }),
-        timestamp: new Date()
+        timestamp: new Date(),
       });
 
       res.json({
@@ -60,8 +60,8 @@ export default defineEndpoint((router, { services, database, env }) => {
         message: 'Instagram account connected successfully',
         data: {
           instagram_username: instagramAccount.username,
-          instagram_account_id: instagramAccount.id
-        }
+          instagram_account_id: instagramAccount.id,
+        },
       });
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -82,14 +82,12 @@ export default defineEndpoint((router, { services, database, env }) => {
       if (!connection) {
         return res.status(400).json({
           error: 'Instagram account not connected',
-          message: 'Please connect your Instagram account first'
+          message: 'Please connect your Instagram account first',
         });
       }
 
       // Get products to sync
-      let query = database('products')
-        .select('*')
-        .where({ tenant_id, status: 'active' });
+      let query = database('products').select('*').where({ tenant_id, status: 'active' });
 
       if (product_ids && product_ids.length > 0) {
         query = query.whereIn('id', product_ids);
@@ -112,7 +110,7 @@ export default defineEndpoint((router, { services, database, env }) => {
             currency: 'USD',
             availability: product.inventory_quantity > 0 ? 'in stock' : 'out of stock',
             brand: product.brand_id || 'Unknown',
-            condition: 'new'
+            condition: 'new',
           };
 
           // Call Facebook Catalog API (mock for now)
@@ -131,7 +129,7 @@ export default defineEndpoint((router, { services, database, env }) => {
               instagram_account_id: connection.instagram_account_id,
               status: 'synced',
               synced_at: new Date(),
-              created_at: new Date()
+              created_at: new Date(),
             })
             .onConflict(['tenant_id', 'product_id', 'instagram_account_id'])
             .merge();
@@ -139,19 +137,19 @@ export default defineEndpoint((router, { services, database, env }) => {
           syncResults.push({
             product_id: product.id,
             product_name: product.name,
-            success: true
+            success: true,
           });
         } catch (error) {
           syncResults.push({
             product_id: product.id,
             product_name: product.name,
             success: false,
-            error: error.message
+            error: error.message,
           });
         }
       }
 
-      const successCount = syncResults.filter(r => r.success).length;
+      const successCount = syncResults.filter((r) => r.success).length;
 
       // Emit sync event
       await database('events').insert({
@@ -163,15 +161,15 @@ export default defineEndpoint((router, { services, database, env }) => {
         event_data: JSON.stringify({
           total_products: products.length,
           synced_count: successCount,
-          failed_count: products.length - successCount
+          failed_count: products.length - successCount,
         }),
-        timestamp: new Date()
+        timestamp: new Date(),
       });
 
       res.json({
         success: successCount > 0,
         message: `Synced ${successCount} of ${products.length} products`,
-        data: syncResults
+        data: syncResults,
       });
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -208,8 +206,8 @@ export default defineEndpoint((router, { services, database, env }) => {
         data: postsData.data || [],
         meta: {
           instagram_username: connection.instagram_username,
-          count: postsData.data?.length || 0
-        }
+          count: postsData.data?.length || 0,
+        },
       });
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -225,7 +223,7 @@ export default defineEndpoint((router, { services, database, env }) => {
       if (!post_id || !product_id) {
         return res.status(400).json({
           error: 'Missing required fields',
-          required: ['post_id', 'product_id']
+          required: ['post_id', 'product_id'],
         });
       }
 
@@ -239,9 +237,7 @@ export default defineEndpoint((router, { services, database, env }) => {
       }
 
       // Get product
-      const product = await database('products')
-        .where({ id: product_id, tenant_id })
-        .first();
+      const product = await database('products').where({ id: product_id, tenant_id }).first();
 
       if (!product) {
         return res.status(404).json({ error: 'Product not found' });
@@ -258,18 +254,17 @@ export default defineEndpoint((router, { services, database, env }) => {
       // });
 
       // Store tag relationship
-      await database('instagram_product_tags')
-        .insert({
-          id: database.raw('gen_random_uuid()'),
-          tenant_id,
-          post_id,
-          product_id,
-          created_at: new Date()
-        });
+      await database('instagram_product_tags').insert({
+        id: database.raw('gen_random_uuid()'),
+        tenant_id,
+        post_id,
+        product_id,
+        created_at: new Date(),
+      });
 
       res.json({
         success: true,
-        message: 'Product tagged in Instagram post'
+        message: 'Product tagged in Instagram post',
       });
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -323,19 +318,19 @@ export default defineEndpoint((router, { services, database, env }) => {
           period_days: parseInt(days),
           connection: {
             connected: !!connection,
-            instagram_username: connection?.instagram_username || null
+            instagram_username: connection?.instagram_username || null,
           },
           products: {
             synced_count: parseInt(syncedProducts.count || 0),
-            tagged_posts_count: parseInt(taggedPosts.count || 0)
+            tagged_posts_count: parseInt(taggedPosts.count || 0),
           },
-          top_tagged_products: topTaggedProducts.map(p => ({
+          top_tagged_products: topTaggedProducts.map((p) => ({
             id: p.id,
             name: p.name,
             slug: p.slug,
-            tags: parseInt(p.tag_count)
-          }))
-        }
+            tags: parseInt(p.tag_count),
+          })),
+        },
       });
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -394,12 +389,10 @@ export default defineEndpoint((router, { services, database, env }) => {
       }
 
       // Deactivate connection
-      await database('instagram_connections')
-        .where({ id: connection.id })
-        .update({
-          status: 'disconnected',
-          updated_at: new Date()
-        });
+      await database('instagram_connections').where({ id: connection.id }).update({
+        status: 'disconnected',
+        updated_at: new Date(),
+      });
 
       // Emit disconnection event
       await database('events').insert({
@@ -409,14 +402,14 @@ export default defineEndpoint((router, { services, database, env }) => {
         aggregate_id: connection.instagram_account_id,
         event_type: 'petala.fashion.instagram.disconnected',
         event_data: JSON.stringify({
-          instagram_username: connection.instagram_username
+          instagram_username: connection.instagram_username,
         }),
-        timestamp: new Date()
+        timestamp: new Date(),
       });
 
       res.json({
         success: true,
-        message: 'Instagram account disconnected'
+        message: 'Instagram account disconnected',
       });
     } catch (error) {
       res.status(500).json({ error: error.message });

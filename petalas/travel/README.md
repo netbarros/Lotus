@@ -1,14 +1,13 @@
 # ✈️ Pétala Travel
 
-**Version:** 1.0.0
-**Status:** ✅ Production-Ready
-**Category:** travel
+**Version:** 1.0.0 **Status:** ✅ Production-Ready **Category:** travel
 
 ---
 
 ## 📋 Overview
 
-Complete travel booking platform with flights, hotels, tours, itinerary builder, and payment processing
+Complete travel booking platform with flights, hotels, tours, itinerary builder,
+and payment processing
 
 ### Key Features
 
@@ -40,12 +39,14 @@ npm run dev
 ## 💰 Pricing
 
 ### Starter - $89/month
+
 - Up to 100 bookings/month
 - Hotel booking
 - Basic itinerary
 - Email support
 
 ### Professional - $189/month
+
 - Unlimited bookings
 - Flight integration
 - Tour packages
@@ -54,6 +55,7 @@ npm run dev
 - Priority support
 
 ### Enterprise - $459/month
+
 - Everything in Professional
 - White-label
 - API access
@@ -62,5 +64,4 @@ npm run dev
 
 ---
 
-**Built with ❤️ by Software Lotus**
-**Powered by MagicSaaS System-∞ & Sofia AI**
+**Built with ❤️ by Software Lotus** **Powered by MagicSaaS System-∞ & Sofia AI**

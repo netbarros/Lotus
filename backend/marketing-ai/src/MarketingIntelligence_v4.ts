@@ -16,9 +16,12 @@
 
 import { Redis } from 'ioredis';
 import { Pool } from 'pg';
-import { LangChainService } from '../../sofia-ai/src/integrations/langchain.service';
-import { LangfuseService } from '../../sofia-ai/src/integrations/langfuse.service';
-import { QdrantService } from '../../sofia-ai/src/integrations/qdrant.service';
+// Using stubs temporarily until cross-workspace typing is resolved
+import {
+  LangChainServiceStub as LangChainService,
+  LangfuseServiceStub as LangfuseService,
+  QdrantServiceStub as QdrantService,
+} from './stubs/services.stub';
 
 // ==================== TYPES ====================
 
@@ -57,7 +60,16 @@ export interface TargetAudience {
 }
 
 export interface Channel {
-  type: 'linkedin' | 'twitter' | 'instagram' | 'facebook' | 'email' | 'youtube' | 'tiktok' | 'google-ads' | 'meta-ads';
+  type:
+    | 'linkedin'
+    | 'twitter'
+    | 'instagram'
+    | 'facebook'
+    | 'email'
+    | 'youtube'
+    | 'tiktok'
+    | 'google-ads'
+    | 'meta-ads';
   budget?: number;
   frequency?: string;
   content?: string[];
@@ -88,7 +100,14 @@ export interface Lead {
 }
 
 export interface Interaction {
-  type: 'email_open' | 'email_click' | 'website_visit' | 'content_download' | 'webinar_attend' | 'demo_request' | 'trial_start';
+  type:
+    | 'email_open'
+    | 'email_click'
+    | 'website_visit'
+    | 'content_download'
+    | 'webinar_attend'
+    | 'demo_request'
+    | 'trial_start';
   timestamp: Date;
   metadata?: Record<string, any>;
 }
@@ -367,7 +386,8 @@ export class MarketingIntelligence_v4 {
       type: this.determineCampaignType(request.objective),
       status: 'draft',
       objective: request.objective,
-      targetAudience: request.targetAudience || await this.sofiaGenerateAudience(request.objective),
+      targetAudience:
+        request.targetAudience || (await this.sofiaGenerateAudience(request.objective)),
       budget: request.budget,
       startDate: new Date(),
       endDate: request.duration ? new Date(Date.now() + request.duration * 86400000) : undefined,
@@ -431,14 +451,19 @@ export class MarketingIntelligence_v4 {
       context: { objective },
     });
 
-    return response.targetAudience || {
-      segments: ['general'],
-      demographics: {},
-      behaviors: {},
-    };
+    return (
+      response.targetAudience || {
+        segments: ['general'],
+        demographics: {},
+        behaviors: {},
+      }
+    );
   }
 
-  private async sofiaSelectChannels(objective: string, preferredChannels?: string[]): Promise<Channel[]> {
+  private async sofiaSelectChannels(
+    objective: string,
+    preferredChannels?: string[]
+  ): Promise<Channel[]> {
     // Sofia AI selects optimal marketing channels
     const prompt = `For marketing objective: "${objective}", select the best marketing channels.
 
@@ -452,12 +477,14 @@ export class MarketingIntelligence_v4 {
       context: { objective, preferredChannels },
     });
 
-    return response.channels || [
-      { type: 'linkedin', budget: 0.3, frequency: '5x/week' },
-      { type: 'email', budget: 0.3, frequency: 'daily' },
-      { type: 'twitter', budget: 0.2, frequency: '3x/day' },
-      { type: 'google-ads', budget: 0.2, frequency: 'continuous' },
-    ];
+    return (
+      response.channels || [
+        { type: 'linkedin', budget: 0.3, frequency: '5x/week' },
+        { type: 'email', budget: 0.3, frequency: 'daily' },
+        { type: 'twitter', budget: 0.2, frequency: '3x/day' },
+        { type: 'google-ads', budget: 0.2, frequency: 'continuous' },
+      ]
+    );
   }
 
   private async sofiaGenerateKPIs(objective: string): Promise<KPI[]> {
@@ -474,7 +501,8 @@ export class MarketingIntelligence_v4 {
   private determineCampaignType(objective: string): Campaign['type'] {
     const lower = objective.toLowerCase();
     if (lower.includes('email')) return 'email';
-    if (lower.includes('social') || lower.includes('linkedin') || lower.includes('twitter')) return 'social';
+    if (lower.includes('social') || lower.includes('linkedin') || lower.includes('twitter'))
+      return 'social';
     if (lower.includes('ad') || lower.includes('google') || lower.includes('meta')) return 'ads';
     if (lower.includes('webinar')) return 'webinar';
     if (lower.includes('event')) return 'event';
@@ -578,10 +606,7 @@ export class MarketingIntelligence_v4 {
     if (cached) return JSON.parse(cached);
 
     // Query database
-    const result = await this.pool.query(
-      'SELECT * FROM marketing_leads WHERE id = $1',
-      [leadId]
-    );
+    const result = await this.pool.query('SELECT * FROM marketing_leads WHERE id = $1', [leadId]);
 
     if (result.rows.length === 0) return null;
 
@@ -684,7 +709,9 @@ export class MarketingIntelligence_v4 {
     );
 
     console.log(`✅ Sofia AI generated ${request.type}: ${contentPiece.title}`);
-    console.log(`   SEO Score: ${seoScore}/100 | Predicted Engagement: ${(engagementPrediction * 100).toFixed(1)}%`);
+    console.log(
+      `   SEO Score: ${seoScore}/100 | Predicted Engagement: ${(engagementPrediction * 100).toFixed(1)}%`
+    );
 
     return contentPiece;
   }
@@ -694,7 +721,7 @@ export class MarketingIntelligence_v4 {
     let score = 50; // Base score
 
     // Keyword density
-    keywords.forEach(keyword => {
+    keywords.forEach((keyword) => {
       const regex = new RegExp(keyword, 'gi');
       const matches = content.match(regex);
       if (matches) score += Math.min(10, matches.length * 2);
@@ -724,7 +751,9 @@ export class MarketingIntelligence_v4 {
 
   // ==================== ANALYTICS & INSIGHTS (Sofia AI Powered) ====================
 
-  async generateInsights(timeframe: 'day' | 'week' | 'month' | 'quarter' = 'week'): Promise<MarketingInsight[]> {
+  async generateInsights(
+    timeframe: 'day' | 'week' | 'month' | 'quarter' = 'week'
+  ): Promise<MarketingInsight[]> {
     console.log(`🧠 Sofia AI: Analyzing marketing data for insights (${timeframe})...`);
 
     // Sofia AI analyzes all marketing data
@@ -742,7 +771,8 @@ export class MarketingIntelligence_v4 {
     const insights: MarketingInsight[] = [];
 
     // Insight 1: Lead Quality Trend
-    const avgScore = leads.rows.reduce((sum, l) => sum + (l.score || 0), 0) / (leads.rows.length || 1);
+    const avgScore =
+      leads.rows.reduce((sum, l) => sum + (l.score || 0), 0) / (leads.rows.length || 1);
     if (avgScore > 70) {
       insights.push({
         id: crypto.randomUUID(),
@@ -763,13 +793,13 @@ export class MarketingIntelligence_v4 {
     }
 
     // Insight 2: Content Performance
-    const sofiaContent = content.rows.filter(c => c.sofia_generated);
+    const sofiaContent = content.rows.filter((c) => c.sofia_generated);
     if (sofiaContent.length > 0) {
       insights.push({
         id: crypto.randomUUID(),
         type: 'opportunity',
         title: 'Sofia AI Content Outperforming',
-        description: `Sofia-generated content shows ${(sofiaContent.length / content.rows.length * 100).toFixed(1)}% of total, with higher engagement predictions.`,
+        description: `Sofia-generated content shows ${((sofiaContent.length / content.rows.length) * 100).toFixed(1)}% of total, with higher engagement predictions.`,
         impact: 'high',
         confidence: 0.9,
         data: { sofiaContentCount: sofiaContent.length, totalContent: content.rows.length },
@@ -784,7 +814,7 @@ export class MarketingIntelligence_v4 {
     }
 
     // Insight 3: Campaign Optimization
-    const runningCampaigns = campaigns.rows.filter(c => c.status === 'running');
+    const runningCampaigns = campaigns.rows.filter((c) => c.status === 'running');
     if (runningCampaigns.length > 0) {
       insights.push({
         id: crypto.randomUUID(),
@@ -890,8 +920,10 @@ export class MarketingIntelligence_v4 {
       {
         name: 'awareness',
         enteredAt: lead.createdAt,
-        exitedAt: lead.interactions.find(i => i.type === 'content_download')?.timestamp,
-        actions: lead.interactions.filter(i => ['website_visit', 'email_open'].includes(i.type)).map(i => i.type),
+        exitedAt: lead.interactions.find((i) => i.type === 'content_download')?.timestamp,
+        actions: lead.interactions
+          .filter((i) => ['website_visit', 'email_open'].includes(i.type))
+          .map((i) => i.type),
         content: ['blog_posts', 'social_media'],
         conversions: 0,
       },
@@ -909,7 +941,10 @@ export class MarketingIntelligence_v4 {
     ];
   }
 
-  private async generateJourneyRecommendations(lead: Lead, stages: JourneyStage[]): Promise<string[]> {
+  private async generateJourneyRecommendations(
+    lead: Lead,
+    stages: JourneyStage[]
+  ): Promise<string[]> {
     // Sofia AI recommends next actions
     return [
       'Send personalized case study relevant to their industry',
@@ -950,7 +985,7 @@ export class MarketingIntelligence_v4 {
   }
 
   private calculateTimeInStage(stages: JourneyStage[], currentStage: string): number {
-    const stage = stages.find(s => s.name === currentStage);
+    const stage = stages.find((s) => s.name === currentStage);
     if (!stage) return 0;
 
     const exit = stage.exitedAt || new Date();

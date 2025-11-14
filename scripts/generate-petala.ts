@@ -50,19 +50,41 @@ const PETALA_CONFIGS: Record<string, PetalaConfig> = {
     displayName: 'Pétala Education',
     icon: '🎓',
     category: 'education',
-    description: 'Complete Learning Management System (LMS) with video lessons, quizzes, certificates, and gamification',
+    description:
+      'Complete Learning Management System (LMS) with video lessons, quizzes, certificates, and gamification',
     pricing: {
       starter: {
         price: 79,
-        features: ['Up to 10 courses', 'Unlimited students', 'Video hosting', 'Basic quizzes', 'Email support'],
+        features: [
+          'Up to 10 courses',
+          'Unlimited students',
+          'Video hosting',
+          'Basic quizzes',
+          'Email support',
+        ],
       },
       professional: {
         price: 149,
-        features: ['Unlimited courses', 'Advanced quizzes', 'Certificates', 'Gamification', 'Live classes', 'Analytics', 'Priority support'],
+        features: [
+          'Unlimited courses',
+          'Advanced quizzes',
+          'Certificates',
+          'Gamification',
+          'Live classes',
+          'Analytics',
+          'Priority support',
+        ],
       },
       enterprise: {
         price: 399,
-        features: ['Everything in Professional', 'White-label', 'API access', 'Custom integrations', 'SCORM support', 'Dedicated support'],
+        features: [
+          'Everything in Professional',
+          'White-label',
+          'API access',
+          'Custom integrations',
+          'SCORM support',
+          'Dedicated support',
+        ],
       },
     },
     techStack: {
@@ -74,7 +96,16 @@ const PETALA_CONFIGS: Record<string, PetalaConfig> = {
         payment: 'Stripe',
       },
     },
-    collections: ['courses', 'lessons', 'quizzes', 'enrollments', 'certificates', 'progress', 'instructors', 'categories'],
+    collections: [
+      'courses',
+      'lessons',
+      'quizzes',
+      'enrollments',
+      'certificates',
+      'progress',
+      'instructors',
+      'categories',
+    ],
     features: [
       'Course creation and management',
       'Video lessons with progress tracking',
@@ -90,7 +121,16 @@ const PETALA_CONFIGS: Record<string, PetalaConfig> = {
       'Multi-language support',
       'Mobile app (PWA)',
     ],
-    microPetalas: ['auth-basic', 'auth-social', 'payment-stripe', 'subscriptions', 'email-templates', 'video-player', 'pdf-generator', 'analytics-google'],
+    microPetalas: [
+      'auth-basic',
+      'auth-social',
+      'payment-stripe',
+      'subscriptions',
+      'email-templates',
+      'video-player',
+      'pdf-generator',
+      'analytics-google',
+    ],
     integrations: {
       video: ['Vimeo', 'YouTube', 'Wistia'],
       live: ['Zoom', 'Google Meet', 'Jitsi'],
@@ -105,19 +145,41 @@ const PETALA_CONFIGS: Record<string, PetalaConfig> = {
     displayName: 'Pétala Fitness',
     icon: '💪',
     category: 'fitness',
-    description: 'Complete fitness management platform with class scheduling, member management, workout tracking, and wearable integration',
+    description:
+      'Complete fitness management platform with class scheduling, member management, workout tracking, and wearable integration',
     pricing: {
       starter: {
         price: 89,
-        features: ['Up to 100 members', 'Class scheduling', 'Member check-in', 'Basic analytics', 'Email support'],
+        features: [
+          'Up to 100 members',
+          'Class scheduling',
+          'Member check-in',
+          'Basic analytics',
+          'Email support',
+        ],
       },
       professional: {
         price: 169,
-        features: ['Unlimited members', 'Workout tracking', 'Wearable sync', 'Nutrition plans', 'Video workouts', 'Analytics', 'Priority support'],
+        features: [
+          'Unlimited members',
+          'Workout tracking',
+          'Wearable sync',
+          'Nutrition plans',
+          'Video workouts',
+          'Analytics',
+          'Priority support',
+        ],
       },
       enterprise: {
         price: 449,
-        features: ['Everything in Professional', 'Multi-location', 'White-label app', 'API access', 'Custom integrations', 'Dedicated support'],
+        features: [
+          'Everything in Professional',
+          'Multi-location',
+          'White-label app',
+          'API access',
+          'Custom integrations',
+          'Dedicated support',
+        ],
       },
     },
     techStack: {
@@ -129,7 +191,17 @@ const PETALA_CONFIGS: Record<string, PetalaConfig> = {
         payment: 'Stripe',
       },
     },
-    collections: ['members', 'classes', 'trainers', 'workouts', 'exercises', 'nutrition_plans', 'attendance', 'memberships', 'payments'],
+    collections: [
+      'members',
+      'classes',
+      'trainers',
+      'workouts',
+      'exercises',
+      'nutrition_plans',
+      'attendance',
+      'memberships',
+      'payments',
+    ],
     features: [
       'Class scheduling and booking',
       'Member management and check-in',
@@ -144,7 +216,15 @@ const PETALA_CONFIGS: Record<string, PetalaConfig> = {
       'Analytics and reporting',
       'Mobile app (PWA)',
     ],
-    microPetalas: ['auth-basic', 'auth-social', 'payment-stripe', 'subscriptions', 'appointment-booking', 'video-player', 'analytics-google'],
+    microPetalas: [
+      'auth-basic',
+      'auth-social',
+      'payment-stripe',
+      'subscriptions',
+      'appointment-booking',
+      'video-player',
+      'analytics-google',
+    ],
     integrations: {
       wearables: ['Fitbit', 'Apple Health', 'Google Fit'],
       video: ['Vimeo', 'YouTube'],
@@ -158,19 +238,41 @@ const PETALA_CONFIGS: Record<string, PetalaConfig> = {
     displayName: 'Pétala Legal',
     icon: '⚖️',
     category: 'legal',
-    description: 'Complete legal practice management with case management, document management, time tracking, and e-signature',
+    description:
+      'Complete legal practice management with case management, document management, time tracking, and e-signature',
     pricing: {
       starter: {
         price: 129,
-        features: ['Up to 50 cases', 'Document management', 'Time tracking', 'Basic billing', 'Email support'],
+        features: [
+          'Up to 50 cases',
+          'Document management',
+          'Time tracking',
+          'Basic billing',
+          'Email support',
+        ],
       },
       professional: {
         price: 249,
-        features: ['Unlimited cases', 'E-signature', 'Court calendar', 'Client portal', 'Advanced billing', 'Analytics', 'Priority support'],
+        features: [
+          'Unlimited cases',
+          'E-signature',
+          'Court calendar',
+          'Client portal',
+          'Advanced billing',
+          'Analytics',
+          'Priority support',
+        ],
       },
       enterprise: {
         price: 599,
-        features: ['Everything in Professional', 'Multi-office', 'API access', 'Custom integrations', 'Compliance tools', 'Dedicated support'],
+        features: [
+          'Everything in Professional',
+          'Multi-office',
+          'API access',
+          'Custom integrations',
+          'Compliance tools',
+          'Dedicated support',
+        ],
       },
     },
     techStack: {
@@ -182,7 +284,17 @@ const PETALA_CONFIGS: Record<string, PetalaConfig> = {
         payment: 'Stripe',
       },
     },
-    collections: ['cases', 'clients', 'documents', 'tasks', 'time_entries', 'invoices', 'court_dates', 'contacts', 'notes'],
+    collections: [
+      'cases',
+      'clients',
+      'documents',
+      'tasks',
+      'time_entries',
+      'invoices',
+      'court_dates',
+      'contacts',
+      'notes',
+    ],
     features: [
       'Case and matter management',
       'Client relationship management',
@@ -197,7 +309,15 @@ const PETALA_CONFIGS: Record<string, PetalaConfig> = {
       'Trust accounting',
       'Analytics and reporting',
     ],
-    microPetalas: ['auth-basic', 'auth-2fa', 'payment-stripe', 'email-templates', 'e-signature', 'pdf-generator', 'case-timeline'],
+    microPetalas: [
+      'auth-basic',
+      'auth-2fa',
+      'payment-stripe',
+      'email-templates',
+      'e-signature',
+      'pdf-generator',
+      'case-timeline',
+    ],
     integrations: {
       signature: ['DocuSign', 'HelloSign'],
       storage: ['AWS S3', 'Box', 'Dropbox'],
@@ -211,7 +331,8 @@ const PETALA_CONFIGS: Record<string, PetalaConfig> = {
     displayName: 'Pétala Automotive',
     icon: '🚗',
     category: 'automotive',
-    description: 'Complete automotive dealership and service management with inventory, CRM, service orders, and test drive booking',
+    description:
+      'Complete automotive dealership and service management with inventory, CRM, service orders, and test drive booking',
     pricing: {
       starter: {
         price: 99,
@@ -219,11 +340,25 @@ const PETALA_CONFIGS: Record<string, PetalaConfig> = {
       },
       professional: {
         price: 199,
-        features: ['Unlimited inventory', 'Advanced CRM', 'Service orders', 'Parts management', 'Analytics', 'Priority support'],
+        features: [
+          'Unlimited inventory',
+          'Advanced CRM',
+          'Service orders',
+          'Parts management',
+          'Analytics',
+          'Priority support',
+        ],
       },
       enterprise: {
         price: 499,
-        features: ['Everything in Professional', 'Multi-location', 'DMS integration', 'API access', 'Custom integrations', 'Dedicated support'],
+        features: [
+          'Everything in Professional',
+          'Multi-location',
+          'DMS integration',
+          'API access',
+          'Custom integrations',
+          'Dedicated support',
+        ],
       },
     },
     techStack: {
@@ -234,7 +369,17 @@ const PETALA_CONFIGS: Record<string, PetalaConfig> = {
         storage: 'Cloudinary',
       },
     },
-    collections: ['vehicles', 'customers', 'leads', 'service_orders', 'parts', 'test_drives', 'sales', 'technicians', 'appointments'],
+    collections: [
+      'vehicles',
+      'customers',
+      'leads',
+      'service_orders',
+      'parts',
+      'test_drives',
+      'sales',
+      'technicians',
+      'appointments',
+    ],
     features: [
       'Vehicle inventory management',
       'VIN decoder integration',
@@ -247,7 +392,14 @@ const PETALA_CONFIGS: Record<string, PetalaConfig> = {
       'Service history',
       'Analytics and reporting',
     ],
-    microPetalas: ['auth-basic', 'auth-social', 'payment-stripe', 'appointment-booking', 'inventory-sync', 'analytics-google'],
+    microPetalas: [
+      'auth-basic',
+      'auth-social',
+      'payment-stripe',
+      'appointment-booking',
+      'inventory-sync',
+      'analytics-google',
+    ],
     integrations: {
       dms: ['DealerSocket', 'vAuto'],
       inventory: ['Autotrader', 'Cars.com'],
@@ -261,7 +413,8 @@ const PETALA_CONFIGS: Record<string, PetalaConfig> = {
     displayName: 'Pétala Finance',
     icon: '💰',
     category: 'finance',
-    description: 'Complete fintech platform with accounts, transactions, open banking, reporting, and compliance',
+    description:
+      'Complete fintech platform with accounts, transactions, open banking, reporting, and compliance',
     pricing: {
       starter: {
         price: 149,
@@ -269,11 +422,23 @@ const PETALA_CONFIGS: Record<string, PetalaConfig> = {
       },
       professional: {
         price: 349,
-        features: ['Unlimited transactions', 'Open banking', 'Advanced analytics', 'Multi-currency', 'Priority support'],
+        features: [
+          'Unlimited transactions',
+          'Open banking',
+          'Advanced analytics',
+          'Multi-currency',
+          'Priority support',
+        ],
       },
       enterprise: {
         price: 799,
-        features: ['Everything in Professional', 'White-label', 'API access', 'Compliance tools', 'Dedicated support'],
+        features: [
+          'Everything in Professional',
+          'White-label',
+          'API access',
+          'Compliance tools',
+          'Dedicated support',
+        ],
       },
     },
     techStack: {
@@ -284,7 +449,15 @@ const PETALA_CONFIGS: Record<string, PetalaConfig> = {
         payment: 'Stripe',
       },
     },
-    collections: ['accounts', 'transactions', 'budgets', 'categories', 'invoices', 'customers', 'tax_records'],
+    collections: [
+      'accounts',
+      'transactions',
+      'budgets',
+      'categories',
+      'invoices',
+      'customers',
+      'tax_records',
+    ],
     features: [
       'Multi-account management',
       'Transaction tracking',
@@ -297,7 +470,14 @@ const PETALA_CONFIGS: Record<string, PetalaConfig> = {
       'Analytics dashboard',
       'Audit trail',
     ],
-    microPetalas: ['auth-basic', 'auth-2fa', 'payment-stripe', 'invoicing', 'pdf-generator', 'analytics-google'],
+    microPetalas: [
+      'auth-basic',
+      'auth-2fa',
+      'payment-stripe',
+      'invoicing',
+      'pdf-generator',
+      'analytics-google',
+    ],
     integrations: {
       banking: ['Plaid', 'Yodlee'],
       payment: ['Stripe', 'PayPal'],
@@ -311,7 +491,8 @@ const PETALA_CONFIGS: Record<string, PetalaConfig> = {
     displayName: 'Pétala Travel',
     icon: '✈️',
     category: 'travel',
-    description: 'Complete travel booking platform with flights, hotels, tours, itinerary builder, and payment processing',
+    description:
+      'Complete travel booking platform with flights, hotels, tours, itinerary builder, and payment processing',
     pricing: {
       starter: {
         price: 89,
@@ -319,11 +500,24 @@ const PETALA_CONFIGS: Record<string, PetalaConfig> = {
       },
       professional: {
         price: 189,
-        features: ['Unlimited bookings', 'Flight integration', 'Tour packages', 'Itinerary builder', 'Analytics', 'Priority support'],
+        features: [
+          'Unlimited bookings',
+          'Flight integration',
+          'Tour packages',
+          'Itinerary builder',
+          'Analytics',
+          'Priority support',
+        ],
       },
       enterprise: {
         price: 459,
-        features: ['Everything in Professional', 'White-label', 'API access', 'GDS integration', 'Dedicated support'],
+        features: [
+          'Everything in Professional',
+          'White-label',
+          'API access',
+          'GDS integration',
+          'Dedicated support',
+        ],
       },
     },
     techStack: {
@@ -335,7 +529,16 @@ const PETALA_CONFIGS: Record<string, PetalaConfig> = {
         payment: 'Stripe',
       },
     },
-    collections: ['bookings', 'destinations', 'tours', 'hotels', 'flights', 'itineraries', 'travelers', 'reviews'],
+    collections: [
+      'bookings',
+      'destinations',
+      'tours',
+      'hotels',
+      'flights',
+      'itineraries',
+      'travelers',
+      'reviews',
+    ],
     features: [
       'Flight search and booking',
       'Hotel reservations',
@@ -348,7 +551,14 @@ const PETALA_CONFIGS: Record<string, PetalaConfig> = {
       'Booking management',
       'Analytics dashboard',
     ],
-    microPetalas: ['auth-basic', 'auth-social', 'payment-stripe', 'booking-calendar', 'maps-integration', 'analytics-google'],
+    microPetalas: [
+      'auth-basic',
+      'auth-social',
+      'payment-stripe',
+      'booking-calendar',
+      'maps-integration',
+      'analytics-google',
+    ],
     integrations: {
       flights: ['Amadeus', 'Sabre'],
       hotels: ['Booking.com', 'Expedia'],
@@ -362,7 +572,8 @@ const PETALA_CONFIGS: Record<string, PetalaConfig> = {
     displayName: 'Pétala Events',
     icon: '🎫',
     category: 'events',
-    description: 'Complete event management platform with ticketing, QR check-in, seat maps, and live streaming',
+    description:
+      'Complete event management platform with ticketing, QR check-in, seat maps, and live streaming',
     pricing: {
       starter: {
         price: 79,
@@ -370,11 +581,23 @@ const PETALA_CONFIGS: Record<string, PetalaConfig> = {
       },
       professional: {
         price: 149,
-        features: ['Unlimited tickets', 'Seat maps', 'Live streaming', 'Analytics', 'Priority support'],
+        features: [
+          'Unlimited tickets',
+          'Seat maps',
+          'Live streaming',
+          'Analytics',
+          'Priority support',
+        ],
       },
       enterprise: {
         price: 399,
-        features: ['Everything in Professional', 'White-label', 'API access', 'Custom integrations', 'Dedicated support'],
+        features: [
+          'Everything in Professional',
+          'White-label',
+          'API access',
+          'Custom integrations',
+          'Dedicated support',
+        ],
       },
     },
     techStack: {
@@ -386,7 +609,15 @@ const PETALA_CONFIGS: Record<string, PetalaConfig> = {
         qr: 'QRCode.js',
       },
     },
-    collections: ['events', 'tickets', 'attendees', 'venues', 'seat_maps', 'check_ins', 'organizers'],
+    collections: [
+      'events',
+      'tickets',
+      'attendees',
+      'venues',
+      'seat_maps',
+      'check_ins',
+      'organizers',
+    ],
     features: [
       'Event creation and management',
       'Ticket sales and pricing tiers',
@@ -399,7 +630,15 @@ const PETALA_CONFIGS: Record<string, PetalaConfig> = {
       'Analytics dashboard',
       'Mobile app (PWA)',
     ],
-    microPetalas: ['auth-basic', 'auth-social', 'payment-stripe', 'qr-code', 'ticket-generator', 'live-stream', 'analytics-google'],
+    microPetalas: [
+      'auth-basic',
+      'auth-social',
+      'payment-stripe',
+      'qr-code',
+      'ticket-generator',
+      'live-stream',
+      'analytics-google',
+    ],
     integrations: {
       payment: ['Stripe', 'PayPal'],
       streaming: ['Vimeo', 'YouTube Live'],
@@ -413,7 +652,8 @@ const PETALA_CONFIGS: Record<string, PetalaConfig> = {
     displayName: 'Pétala Logistics',
     icon: '🚚',
     category: 'logistics',
-    description: 'Complete logistics platform with order tracking, fleet GPS, route optimization, and proof of delivery',
+    description:
+      'Complete logistics platform with order tracking, fleet GPS, route optimization, and proof of delivery',
     pricing: {
       starter: {
         price: 99,
@@ -421,11 +661,24 @@ const PETALA_CONFIGS: Record<string, PetalaConfig> = {
       },
       professional: {
         price: 199,
-        features: ['Unlimited vehicles', 'GPS tracking', 'Route optimization', 'POD', 'Analytics', 'Priority support'],
+        features: [
+          'Unlimited vehicles',
+          'GPS tracking',
+          'Route optimization',
+          'POD',
+          'Analytics',
+          'Priority support',
+        ],
       },
       enterprise: {
         price: 499,
-        features: ['Everything in Professional', 'White-label', 'API access', 'Custom integrations', 'Dedicated support'],
+        features: [
+          'Everything in Professional',
+          'White-label',
+          'API access',
+          'Custom integrations',
+          'Dedicated support',
+        ],
       },
     },
     techStack: {
@@ -436,7 +689,15 @@ const PETALA_CONFIGS: Record<string, PetalaConfig> = {
         tracking: 'GPS devices',
       },
     },
-    collections: ['orders', 'vehicles', 'drivers', 'routes', 'deliveries', 'customers', 'warehouses'],
+    collections: [
+      'orders',
+      'vehicles',
+      'drivers',
+      'routes',
+      'deliveries',
+      'customers',
+      'warehouses',
+    ],
     features: [
       'Order management',
       'Fleet GPS tracking',
@@ -447,7 +708,14 @@ const PETALA_CONFIGS: Record<string, PetalaConfig> = {
       'Warehouse management',
       'Analytics dashboard',
     ],
-    microPetalas: ['auth-basic', 'payment-stripe', 'fleet-tracking', 'route-optimization', 'signature-capture', 'analytics-google'],
+    microPetalas: [
+      'auth-basic',
+      'payment-stripe',
+      'fleet-tracking',
+      'route-optimization',
+      'signature-capture',
+      'analytics-google',
+    ],
     integrations: {
       maps: ['Google Maps', 'Mapbox'],
       tracking: ['GPS devices', 'Geotab'],
@@ -460,7 +728,8 @@ const PETALA_CONFIGS: Record<string, PetalaConfig> = {
     displayName: 'Pétala Retail',
     icon: '🏪',
     category: 'retail',
-    description: 'Complete omnichannel retail platform with POS, inventory, e-commerce, and analytics',
+    description:
+      'Complete omnichannel retail platform with POS, inventory, e-commerce, and analytics',
     pricing: {
       starter: {
         price: 89,
@@ -468,11 +737,23 @@ const PETALA_CONFIGS: Record<string, PetalaConfig> = {
       },
       professional: {
         price: 179,
-        features: ['Unlimited POS', 'Advanced inventory', 'Omnichannel', 'Analytics', 'Priority support'],
+        features: [
+          'Unlimited POS',
+          'Advanced inventory',
+          'Omnichannel',
+          'Analytics',
+          'Priority support',
+        ],
       },
       enterprise: {
         price: 449,
-        features: ['Everything in Professional', 'Multi-location', 'White-label', 'API access', 'Dedicated support'],
+        features: [
+          'Everything in Professional',
+          'Multi-location',
+          'White-label',
+          'API access',
+          'Dedicated support',
+        ],
       },
     },
     techStack: {
@@ -483,7 +764,15 @@ const PETALA_CONFIGS: Record<string, PetalaConfig> = {
         pos: 'Custom POS',
       },
     },
-    collections: ['products', 'orders', 'customers', 'inventory', 'stores', 'transactions', 'employees'],
+    collections: [
+      'products',
+      'orders',
+      'customers',
+      'inventory',
+      'stores',
+      'transactions',
+      'employees',
+    ],
     features: [
       'Point of Sale (POS)',
       'Inventory management',
@@ -494,7 +783,14 @@ const PETALA_CONFIGS: Record<string, PetalaConfig> = {
       'Analytics dashboard',
       'Multi-location support',
     ],
-    microPetalas: ['auth-basic', 'payment-stripe', 'pos-integration', 'inventory-sync', 'omnichannel-orders', 'analytics-google'],
+    microPetalas: [
+      'auth-basic',
+      'payment-stripe',
+      'pos-integration',
+      'inventory-sync',
+      'omnichannel-orders',
+      'analytics-google',
+    ],
     integrations: {
       payment: ['Stripe', 'Square'],
       pos: ['Square', 'Clover'],
@@ -709,7 +1005,10 @@ function generateFrontendFiles(basePath: string, config: PetalaConfig): void {
     },
   };
 
-  fs.writeFileSync(path.join(basePath, 'frontend/package.json'), JSON.stringify(packageJson, null, 2));
+  fs.writeFileSync(
+    path.join(basePath, 'frontend/package.json'),
+    JSON.stringify(packageJson, null, 2)
+  );
 
   // Generate Sofia service
   const sofiaService = `import { api } from './api';
@@ -775,7 +1074,10 @@ function generateInfrastructureFiles(basePath: string, config: PetalaConfig): vo
   };
 
   const monitoringDir = path.join(basePath, 'infrastructure/monitoring');
-  fs.writeFileSync(path.join(monitoringDir, 'prometheus-rules.yaml'), JSON.stringify(prometheusRules, null, 2));
+  fs.writeFileSync(
+    path.join(monitoringDir, 'prometheus-rules.yaml'),
+    JSON.stringify(prometheusRules, null, 2)
+  );
 }
 
 // Main execution

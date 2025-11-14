@@ -80,7 +80,8 @@ git push
 - **Recomendado:** 2-3 demos para Sofia escolher os melhores componentes
 - **Máximo:** Todas as demos disponíveis no Metronic
 
-Quanto mais demos você adicionar, mais opções Sofia terá para escolher os melhores componentes!
+Quanto mais demos você adicionar, mais opções Sofia terá para escolher os
+melhores componentes!
 
 ---
 

@@ -13,248 +13,251 @@
  * @author MagicSaaS Architecture Team
  */
 
-import * as dotenv from 'dotenv'
-import * as path from 'path'
-import * as fs from 'fs'
+import * as dotenv from 'dotenv';
+import * as path from 'path';
+import * as fs from 'fs';
 
 // Load environment variables
-dotenv.config()
+dotenv.config();
 
 export interface BackendRuntimeConfig {
   // Environment
-  environment: 'development' | 'staging' | 'production' | 'test'
-  isDevelopment: boolean
-  isProduction: boolean
-  isTest: boolean
+  environment: 'development' | 'staging' | 'production' | 'test';
+  isDevelopment: boolean;
+  isProduction: boolean;
+  isTest: boolean;
 
   // Server
   server: {
-    port: number
-    host: string
-    protocol: 'http' | 'https'
-    baseUrl: string
-    corsOrigins: string[]
-  }
+    port: number;
+    host: string;
+    protocol: 'http' | 'https';
+    baseUrl: string;
+    corsOrigins: string[];
+  };
 
   // Database
   database: {
-    url: string
-    host: string
-    port: number
-    name: string
-    user: string
-    password: string
-    ssl: boolean
-    poolMin: number
-    poolMax: number
-  }
+    url: string;
+    host: string;
+    port: number;
+    name: string;
+    user: string;
+    password: string;
+    ssl: boolean;
+    poolMin: number;
+    poolMax: number;
+  };
 
   // Redis
   redis: {
-    host: string
-    port: number
-    password: string | null
-    db: number
-    url: string
-  }
+    host: string;
+    port: number;
+    password: string | null;
+    db: number;
+    url: string;
+  };
 
   // Directus
   directus: {
-    url: string
-    adminEmail: string
-    adminPassword: string
-    adminToken: string | null
-    key: string
-    secret: string
-  }
+    url: string;
+    adminEmail: string;
+    adminPassword: string;
+    adminToken: string | null;
+    key: string;
+    secret: string;
+  };
 
   // Sofia AI
   sofia: {
-    enabled: boolean
-    port: number
-    anthropicApiKey: string
+    enabled: boolean;
+    port: number;
+    anthropicApiKey: string;
     features: {
-      intentionEngine: boolean
-      uxValidation: boolean
-      seoOptimization: boolean
-      marketplace: boolean
-      metaOrchestration: boolean
-      adaptiveLearning: boolean
-    }
-  }
+      intentionEngine: boolean;
+      uxValidation: boolean;
+      seoOptimization: boolean;
+      marketplace: boolean;
+      metaOrchestration: boolean;
+      adaptiveLearning: boolean;
+    };
+  };
 
   // JWT
   jwt: {
-    secret: string
-    expiration: string
-    refreshExpiration: string
-  }
+    secret: string;
+    expiration: string;
+    refreshExpiration: string;
+  };
 
   // Security
   security: {
-    encryptionKey: string
-    rateLimitWindowMs: number
-    rateLimitMaxRequests: number
-    enableCors: boolean
-    allowedOrigins: string[]
-  }
+    encryptionKey: string;
+    rateLimitWindowMs: number;
+    rateLimitMaxRequests: number;
+    enableCors: boolean;
+    allowedOrigins: string[];
+  };
 
   // Logging
   logging: {
-    level: 'debug' | 'info' | 'warn' | 'error'
-    enableConsole: boolean
-    enableFile: boolean
-    filePath: string
-  }
+    level: 'debug' | 'info' | 'warn' | 'error';
+    enableConsole: boolean;
+    enableFile: boolean;
+    filePath: string;
+  };
 
   // Email
   email: {
-    enabled: boolean
-    from: string
-    fromName: string
+    enabled: boolean;
+    from: string;
+    fromName: string;
     smtp: {
-      host: string
-      port: number
-      user: string
-      pass: string
-      secure: boolean
-    } | null
+      host: string;
+      port: number;
+      user: string;
+      pass: string;
+      secure: boolean;
+    } | null;
     postmark: {
-      apiKey: string
-    } | null
-  }
+      apiKey: string;
+    } | null;
+  };
 
   // Storage
   storage: {
-    provider: 'local' | 's3' | 'cloudinary'
+    provider: 'local' | 's3' | 'cloudinary';
     local: {
-      path: string
-    }
+      path: string;
+    };
     s3: {
-      bucket: string
-      region: string
-      accessKeyId: string
-      secretAccessKey: string
-    } | null
+      bucket: string;
+      region: string;
+      accessKeyId: string;
+      secretAccessKey: string;
+    } | null;
     cloudinary: {
-      cloudName: string
-      apiKey: string
-      apiSecret: string
-    } | null
-  }
+      cloudName: string;
+      apiKey: string;
+      apiSecret: string;
+    } | null;
+  };
 
   // Payment
   payment: {
     stripe: {
-      enabled: boolean
-      secretKey: string
-      webhookSecret: string
-    }
+      enabled: boolean;
+      secretKey: string;
+      webhookSecret: string;
+    };
     mercadoPago: {
-      enabled: boolean
-      accessToken: string
-    }
-  }
+      enabled: boolean;
+      accessToken: string;
+    };
+  };
 
   // Observability
   observability: {
     prometheus: {
-      enabled: boolean
-      port: number
-    }
+      enabled: boolean;
+      port: number;
+    };
     grafana: {
-      enabled: boolean
-      port: number
-      adminUser: string
-      adminPassword: string
-    }
+      enabled: boolean;
+      port: number;
+      adminUser: string;
+      adminPassword: string;
+    };
     sentry: {
-      enabled: boolean
-      dsn: string
-      environment: string
-      tracesSampleRate: number
-    }
-  }
+      enabled: boolean;
+      dsn: string;
+      environment: string;
+      tracesSampleRate: number;
+    };
+  };
 
   // Feature Flags
   features: {
-    enableVoiceAssistant: boolean
-    enableBlockchain: boolean
-    enableQuantum: boolean
-    enableFederatedLearning: boolean
-    enableMobileSDK: boolean
-    enableEdgeComputing: boolean
-  }
+    enableVoiceAssistant: boolean;
+    enableBlockchain: boolean;
+    enableQuantum: boolean;
+    enableFederatedLearning: boolean;
+    enableMobileSDK: boolean;
+    enableEdgeComputing: boolean;
+  };
 
   // Compliance
   compliance: {
-    gdprEnabled: boolean
-    lgpdEnabled: boolean
-    hipaaEnabled: boolean
-    dataRetentionDays: number
-    auditLogEnabled: boolean
-  }
+    gdprEnabled: boolean;
+    lgpdEnabled: boolean;
+    hipaaEnabled: boolean;
+    dataRetentionDays: number;
+    auditLogEnabled: boolean;
+  };
 }
 
 /**
  * Get environment variable with default
  */
 function env(key: string, defaultValue: string = ''): string {
-  return process.env[key] || defaultValue
+  return process.env[key] || defaultValue;
 }
 
 /**
  * Get environment variable as number
  */
 function envNumber(key: string, defaultValue: number = 0): number {
-  const value = process.env[key]
-  return value ? parseInt(value, 10) : defaultValue
+  const value = process.env[key];
+  return value ? parseInt(value, 10) : defaultValue;
 }
 
 /**
  * Get environment variable as boolean
  */
 function envBoolean(key: string, defaultValue: boolean = false): boolean {
-  const value = process.env[key]
-  if (!value) return defaultValue
-  return value.toLowerCase() === 'true' || value === '1'
+  const value = process.env[key];
+  if (!value) return defaultValue;
+  return value.toLowerCase() === 'true' || value === '1';
 }
 
 /**
  * Detect environment
  */
 function detectEnvironment(): BackendRuntimeConfig['environment'] {
-  const nodeEnv = env('NODE_ENV', 'development')
+  const nodeEnv = env('NODE_ENV', 'development');
 
-  if (nodeEnv === 'test') return 'test'
-  if (nodeEnv === 'production') return 'production'
-  if (nodeEnv === 'staging') return 'staging'
+  if (nodeEnv === 'test') return 'test';
+  if (nodeEnv === 'production') return 'production';
+  if (nodeEnv === 'staging') return 'staging';
 
-  return 'development'
+  return 'development';
 }
 
 /**
  * Parse CORS origins
  */
 function parseCorsOrigins(): string[] {
-  const origins = env('ALLOWED_ORIGINS', 'http://localhost:3001,http://localhost:3002')
-  return origins.split(',').map(o => o.trim()).filter(Boolean)
+  const origins = env('ALLOWED_ORIGINS', 'http://localhost:3001,http://localhost:3002');
+  return origins
+    .split(',')
+    .map((o) => o.trim())
+    .filter(Boolean);
 }
 
 /**
  * Create Backend Runtime Configuration
  */
 export function createBackendRuntimeConfig(): BackendRuntimeConfig {
-  const environment = detectEnvironment()
-  const isDevelopment = environment === 'development'
-  const isProduction = environment === 'production'
-  const isTest = environment === 'test'
+  const environment = detectEnvironment();
+  const isDevelopment = environment === 'development';
+  const isProduction = environment === 'production';
+  const isTest = environment === 'test';
 
   // Server configuration
-  const serverPort = envNumber('PORT', envNumber('SOFIA_PORT', 3003))
-  const serverHost = env('HOST', '0.0.0.0')
-  const serverProtocol = envBoolean('HTTPS_ENABLED') ? 'https' : 'http'
-  const appUrl = env('APP_URL', `http://localhost:${serverPort}`)
+  const serverPort = envNumber('PORT', envNumber('SOFIA_PORT', 3003));
+  const serverHost = env('HOST', '0.0.0.0');
+  const serverProtocol = envBoolean('HTTPS_ENABLED') ? 'https' : 'http';
+  const appUrl = env('APP_URL', `http://localhost:${serverPort}`);
 
   const config: BackendRuntimeConfig = {
     // Environment
@@ -269,7 +272,7 @@ export function createBackendRuntimeConfig(): BackendRuntimeConfig {
       host: serverHost,
       protocol: serverProtocol,
       baseUrl: appUrl,
-      corsOrigins: parseCorsOrigins()
+      corsOrigins: parseCorsOrigins(),
     },
 
     // Database
@@ -282,7 +285,7 @@ export function createBackendRuntimeConfig(): BackendRuntimeConfig {
       password: env('POSTGRES_PASSWORD', 'changeme'),
       ssl: envBoolean('DATABASE_SSL', false),
       poolMin: envNumber('DATABASE_POOL_MIN', 2),
-      poolMax: envNumber('DATABASE_POOL_MAX', 10)
+      poolMax: envNumber('DATABASE_POOL_MAX', 10),
     },
 
     // Redis
@@ -291,7 +294,7 @@ export function createBackendRuntimeConfig(): BackendRuntimeConfig {
       port: envNumber('REDIS_PORT', 6379),
       password: env('REDIS_PASSWORD') || null,
       db: envNumber('REDIS_DB', 0),
-      url: env('REDIS_URL', 'redis://localhost:6379')
+      url: env('REDIS_URL', 'redis://localhost:6379'),
     },
 
     // Directus
@@ -301,7 +304,7 @@ export function createBackendRuntimeConfig(): BackendRuntimeConfig {
       adminPassword: env('DIRECTUS_ADMIN_PASSWORD', 'Admin123!'),
       adminToken: env('DIRECTUS_ADMIN_TOKEN') || null,
       key: env('DIRECTUS_KEY', 'changeme-random-key'),
-      secret: env('DIRECTUS_SECRET', 'changeme-random-secret')
+      secret: env('DIRECTUS_SECRET', 'changeme-random-secret'),
     },
 
     // Sofia AI
@@ -315,15 +318,15 @@ export function createBackendRuntimeConfig(): BackendRuntimeConfig {
         seoOptimization: envBoolean('FEATURE_SEO_OPTIMIZATION', true),
         marketplace: envBoolean('FEATURE_MARKETPLACE', true),
         metaOrchestration: envBoolean('FEATURE_META_ORCHESTRATION', true),
-        adaptiveLearning: envBoolean('FEATURE_ADAPTIVE_LEARNING', true)
-      }
+        adaptiveLearning: envBoolean('FEATURE_ADAPTIVE_LEARNING', true),
+      },
     },
 
     // JWT
     jwt: {
       secret: env('JWT_SECRET', 'changeme-super-secret-jwt-key'),
       expiration: env('JWT_EXPIRATION', '7d'),
-      refreshExpiration: env('JWT_REFRESH_EXPIRATION', '30d')
+      refreshExpiration: env('JWT_REFRESH_EXPIRATION', '30d'),
     },
 
     // Security
@@ -332,15 +335,15 @@ export function createBackendRuntimeConfig(): BackendRuntimeConfig {
       rateLimitWindowMs: envNumber('RATE_LIMIT_WINDOW_MS', 60000),
       rateLimitMaxRequests: envNumber('RATE_LIMIT_MAX_REQUESTS', 100),
       enableCors: envBoolean('CORS_ENABLED', true),
-      allowedOrigins: parseCorsOrigins()
+      allowedOrigins: parseCorsOrigins(),
     },
 
     // Logging
     logging: {
-      level: (env('LOG_LEVEL', 'info') as any),
+      level: env('LOG_LEVEL', 'info') as any,
       enableConsole: envBoolean('LOG_CONSOLE', true),
       enableFile: envBoolean('LOG_FILE', isProduction),
-      filePath: env('LOG_FILE_PATH', path.join(process.cwd(), 'logs', 'app.log'))
+      filePath: env('LOG_FILE_PATH', path.join(process.cwd(), 'logs', 'app.log')),
     },
 
     // Email
@@ -348,35 +351,43 @@ export function createBackendRuntimeConfig(): BackendRuntimeConfig {
       enabled: envBoolean('EMAIL_ENABLED', false),
       from: env('EMAIL_FROM', 'noreply@softwarelotus.com.br'),
       fromName: env('EMAIL_FROM_NAME', 'MagicSaaS'),
-      smtp: env('SMTP_HOST') ? {
-        host: env('SMTP_HOST'),
-        port: envNumber('SMTP_PORT', 587),
-        user: env('SMTP_USER'),
-        pass: env('SMTP_PASS'),
-        secure: envBoolean('SMTP_SECURE', true)
-      } : null,
-      postmark: env('POSTMARK_API_KEY') ? {
-        apiKey: env('POSTMARK_API_KEY')
-      } : null
+      smtp: env('SMTP_HOST')
+        ? {
+            host: env('SMTP_HOST'),
+            port: envNumber('SMTP_PORT', 587),
+            user: env('SMTP_USER'),
+            pass: env('SMTP_PASS'),
+            secure: envBoolean('SMTP_SECURE', true),
+          }
+        : null,
+      postmark: env('POSTMARK_API_KEY')
+        ? {
+            apiKey: env('POSTMARK_API_KEY'),
+          }
+        : null,
     },
 
     // Storage
     storage: {
-      provider: (env('STORAGE_PROVIDER', 'local') as any),
+      provider: env('STORAGE_PROVIDER', 'local') as any,
       local: {
-        path: env('STORAGE_LOCAL_PATH', path.join(process.cwd(), 'uploads'))
+        path: env('STORAGE_LOCAL_PATH', path.join(process.cwd(), 'uploads')),
       },
-      s3: env('AWS_S3_BUCKET') ? {
-        bucket: env('AWS_S3_BUCKET'),
-        region: env('AWS_REGION', 'us-east-1'),
-        accessKeyId: env('AWS_ACCESS_KEY_ID'),
-        secretAccessKey: env('AWS_SECRET_ACCESS_KEY')
-      } : null,
-      cloudinary: env('CLOUDINARY_CLOUD_NAME') ? {
-        cloudName: env('CLOUDINARY_CLOUD_NAME'),
-        apiKey: env('CLOUDINARY_API_KEY'),
-        apiSecret: env('CLOUDINARY_API_SECRET')
-      } : null
+      s3: env('AWS_S3_BUCKET')
+        ? {
+            bucket: env('AWS_S3_BUCKET'),
+            region: env('AWS_REGION', 'us-east-1'),
+            accessKeyId: env('AWS_ACCESS_KEY_ID'),
+            secretAccessKey: env('AWS_SECRET_ACCESS_KEY'),
+          }
+        : null,
+      cloudinary: env('CLOUDINARY_CLOUD_NAME')
+        ? {
+            cloudName: env('CLOUDINARY_CLOUD_NAME'),
+            apiKey: env('CLOUDINARY_API_KEY'),
+            apiSecret: env('CLOUDINARY_API_SECRET'),
+          }
+        : null,
     },
 
     // Payment
@@ -384,32 +395,32 @@ export function createBackendRuntimeConfig(): BackendRuntimeConfig {
       stripe: {
         enabled: envBoolean('STRIPE_ENABLED', false),
         secretKey: env('STRIPE_SECRET_KEY', ''),
-        webhookSecret: env('STRIPE_WEBHOOK_SECRET', '')
+        webhookSecret: env('STRIPE_WEBHOOK_SECRET', ''),
       },
       mercadoPago: {
         enabled: envBoolean('MERCADO_PAGO_ENABLED', false),
-        accessToken: env('MERCADO_PAGO_ACCESS_TOKEN', '')
-      }
+        accessToken: env('MERCADO_PAGO_ACCESS_TOKEN', ''),
+      },
     },
 
     // Observability
     observability: {
       prometheus: {
         enabled: envBoolean('PROMETHEUS_ENABLED', true),
-        port: envNumber('PROMETHEUS_PORT', 9090)
+        port: envNumber('PROMETHEUS_PORT', 9090),
       },
       grafana: {
         enabled: envBoolean('GRAFANA_ENABLED', isDevelopment),
         port: envNumber('GRAFANA_PORT', 3002),
         adminUser: env('GRAFANA_ADMIN_USER', 'admin'),
-        adminPassword: env('GRAFANA_ADMIN_PASSWORD', 'admin')
+        adminPassword: env('GRAFANA_ADMIN_PASSWORD', 'admin'),
       },
       sentry: {
         enabled: envBoolean('SENTRY_ENABLED', isProduction),
         dsn: env('SENTRY_DSN', ''),
         environment: environment,
-        tracesSampleRate: parseFloat(env('SENTRY_TRACES_SAMPLE_RATE', '1.0'))
-      }
+        tracesSampleRate: parseFloat(env('SENTRY_TRACES_SAMPLE_RATE', '1.0')),
+      },
     },
 
     // Feature Flags
@@ -419,7 +430,7 @@ export function createBackendRuntimeConfig(): BackendRuntimeConfig {
       enableQuantum: envBoolean('ENABLE_QUANTUM', false),
       enableFederatedLearning: envBoolean('ENABLE_FEDERATED_LEARNING', false),
       enableMobileSDK: envBoolean('ENABLE_MOBILE_SDK', true),
-      enableEdgeComputing: envBoolean('ENABLE_EDGE_COMPUTING', true)
+      enableEdgeComputing: envBoolean('ENABLE_EDGE_COMPUTING', true),
     },
 
     // Compliance
@@ -428,50 +439,53 @@ export function createBackendRuntimeConfig(): BackendRuntimeConfig {
       lgpdEnabled: envBoolean('LGPD_ENABLED', true),
       hipaaEnabled: envBoolean('HIPAA_ENABLED', false),
       dataRetentionDays: envNumber('DATA_RETENTION_DAYS', 2555),
-      auditLogEnabled: envBoolean('AUDIT_LOG_ENABLED', true)
-    }
-  }
+      auditLogEnabled: envBoolean('AUDIT_LOG_ENABLED', true),
+    },
+  };
 
-  return config
+  return config;
 }
 
 /**
  * Validate configuration
  */
 export function validateBackendConfig(config: BackendRuntimeConfig): void {
-  const errors: string[] = []
+  const errors: string[] = [];
 
   // Required fields
   if (!config.sofia.anthropicApiKey && config.sofia.enabled) {
-    errors.push('ANTHROPIC_API_KEY is required when Sofia AI is enabled')
+    errors.push('ANTHROPIC_API_KEY is required when Sofia AI is enabled');
   }
 
   if (!config.jwt.secret || config.jwt.secret.includes('changeme')) {
-    errors.push('JWT_SECRET must be set to a secure value')
+    errors.push('JWT_SECRET must be set to a secure value');
   }
 
   if (!config.security.encryptionKey || config.security.encryptionKey.includes('changeme')) {
-    errors.push('ENCRYPTION_KEY must be set to a secure value')
+    errors.push('ENCRYPTION_KEY must be set to a secure value');
   }
 
   if (config.isProduction) {
-    if (config.directus.adminPassword.includes('changeme') || config.directus.adminPassword === 'Admin123!') {
-      errors.push('DIRECTUS_ADMIN_PASSWORD must be changed for production')
+    if (
+      config.directus.adminPassword.includes('changeme') ||
+      config.directus.adminPassword === 'Admin123!'
+    ) {
+      errors.push('DIRECTUS_ADMIN_PASSWORD must be changed for production');
     }
 
     if (!config.observability.sentry.dsn && config.observability.sentry.enabled) {
-      errors.push('SENTRY_DSN is required when Sentry is enabled in production')
+      errors.push('SENTRY_DSN is required when Sentry is enabled in production');
     }
   }
 
   if (errors.length > 0) {
-    console.error('❌ Configuration validation failed:')
-    errors.forEach(error => console.error(`   - ${error}`))
+    console.error('❌ Configuration validation failed:');
+    errors.forEach((error) => console.error(`   - ${error}`));
 
     if (config.isProduction) {
-      throw new Error('Invalid production configuration')
+      throw new Error('Invalid production configuration');
     } else {
-      console.warn('⚠️  Running with invalid configuration (development mode)')
+      console.warn('⚠️  Running with invalid configuration (development mode)');
     }
   }
 }
@@ -479,37 +493,41 @@ export function validateBackendConfig(config: BackendRuntimeConfig): void {
 /**
  * Singleton instance
  */
-let _backendConfig: BackendRuntimeConfig | null = null
+let _backendConfig: BackendRuntimeConfig | null = null;
 
 /**
  * Get Backend Runtime Configuration
  */
 export function getBackendRuntimeConfig(): BackendRuntimeConfig {
   if (!_backendConfig) {
-    _backendConfig = createBackendRuntimeConfig()
+    _backendConfig = createBackendRuntimeConfig();
 
     // Validate
-    validateBackendConfig(_backendConfig)
+    validateBackendConfig(_backendConfig);
 
     // Log in development
     if (_backendConfig.isDevelopment) {
-      console.log('🌸 Backend Runtime Configuration:')
-      console.log(`   Environment: ${_backendConfig.environment}`)
-      console.log(`   Server: ${_backendConfig.server.protocol}://${_backendConfig.server.host}:${_backendConfig.server.port}`)
-      console.log(`   Database: ${_backendConfig.database.host}:${_backendConfig.database.port}/${_backendConfig.database.name}`)
-      console.log(`   Redis: ${_backendConfig.redis.host}:${_backendConfig.redis.port}`)
-      console.log(`   Sofia AI: ${_backendConfig.sofia.enabled ? 'Enabled' : 'Disabled'}`)
+      console.log('🌸 Backend Runtime Configuration:');
+      console.log(`   Environment: ${_backendConfig.environment}`);
+      console.log(
+        `   Server: ${_backendConfig.server.protocol}://${_backendConfig.server.host}:${_backendConfig.server.port}`
+      );
+      console.log(
+        `   Database: ${_backendConfig.database.host}:${_backendConfig.database.port}/${_backendConfig.database.name}`
+      );
+      console.log(`   Redis: ${_backendConfig.redis.host}:${_backendConfig.redis.port}`);
+      console.log(`   Sofia AI: ${_backendConfig.sofia.enabled ? 'Enabled' : 'Disabled'}`);
     }
   }
 
-  return _backendConfig
+  return _backendConfig;
 }
 
 /**
  * Reset config (for testing)
  */
 export function resetBackendConfig(): void {
-  _backendConfig = null
+  _backendConfig = null;
 }
 
-export default getBackendRuntimeConfig
+export default getBackendRuntimeConfig;

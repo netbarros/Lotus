@@ -3,22 +3,22 @@
  * Integrates Sofia AI assistant with Restaurant-specific features
  */
 
-import apiClient from './api'
+import apiClient from './api';
 import type {
   SofiaMessage,
   SofiaIntent,
   SofiaResponse,
   SofiaQuickAction,
-  RestaurantSofiaContext
-} from '../types/sofia'
+  RestaurantSofiaContext,
+} from '../types/sofia';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8055'
-const TENANT_ID = import.meta.env.VITE_TENANT_ID || 'default'
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8055';
+const TENANT_ID = import.meta.env.VITE_TENANT_ID || 'default';
 
 export class SofiaService {
-  private conversationId: string | null = null
-  private context: RestaurantSofiaContext = {}
-  private messageHistory: SofiaMessage[] = []
+  private conversationId: string | null = null;
+  private context: RestaurantSofiaContext = {};
+  private messageHistory: SofiaMessage[] = [];
 
   /**
    * Initialize Sofia session
@@ -28,14 +28,14 @@ export class SofiaService {
       const response = await apiClient.post('/petalas/restaurant/sofia/session', {
         user_id: userId,
         tenant_id: TENANT_ID,
-        petala: 'restaurant'
-      })
+        petala: 'restaurant',
+      });
 
-      this.conversationId = response.data.conversation_id
-      this.context = response.data.context || {}
+      this.conversationId = response.data.conversation_id;
+      this.context = response.data.context || {};
     } catch (error) {
-      console.error('Failed to initialize Sofia session:', error)
-      throw error
+      console.error('Failed to initialize Sofia session:', error);
+      throw error;
     }
   }
 
@@ -44,22 +44,22 @@ export class SofiaService {
    */
   async sendMessage(message: string): Promise<SofiaResponse> {
     if (!this.conversationId) {
-      await this.initialize()
+      await this.initialize();
     }
 
     try {
       const response = await apiClient.post('/petalas/restaurant/sofia/message', {
         conversation_id: this.conversationId,
         message,
-        context: this.context
-      })
+        context: this.context,
+      });
 
       // Update context with response
       if (response.data.context) {
         this.context = {
           ...this.context,
-          ...response.data.context
-        }
+          ...response.data.context,
+        };
       }
 
       // Add to message history
@@ -67,8 +67,8 @@ export class SofiaService {
         id: Date.now().toString(),
         role: 'user',
         content: message,
-        timestamp: new Date()
-      })
+        timestamp: new Date(),
+      });
 
       this.messageHistory.push({
         id: response.data.message_id,
@@ -76,13 +76,13 @@ export class SofiaService {
         content: response.data.message,
         timestamp: new Date(),
         actions: response.data.actions,
-        suggestions: response.data.suggestions
-      })
+        suggestions: response.data.suggestions,
+      });
 
-      return response.data
+      return response.data;
     } catch (error) {
-      console.error('Failed to send message to Sofia:', error)
-      throw error
+      console.error('Failed to send message to Sofia:', error);
+      throw error;
     }
   }
 
@@ -90,22 +90,22 @@ export class SofiaService {
    * Make a reservation via Sofia
    */
   async makeReservation(details?: {
-    date?: string
-    time?: string
-    party_size?: number
-    special_requests?: string
+    date?: string;
+    time?: string;
+    party_size?: number;
+    special_requests?: string;
   }): Promise<any> {
     try {
       const response = await apiClient.post('/petalas/restaurant/sofia/reservation', {
         conversation_id: this.conversationId,
         details,
-        context: this.context
-      })
+        context: this.context,
+      });
 
-      return response.data
+      return response.data;
     } catch (error) {
-      console.error('Sofia reservation failed:', error)
-      throw error
+      console.error('Sofia reservation failed:', error);
+      throw error;
     }
   }
 
@@ -113,21 +113,21 @@ export class SofiaService {
    * Get menu recommendations from Sofia
    */
   async getMenuRecommendations(preferences?: {
-    dietary_restrictions?: string[]
-    cuisine_preference?: string
-    price_range?: { min: number; max: number }
+    dietary_restrictions?: string[];
+    cuisine_preference?: string;
+    price_range?: { min: number; max: number };
   }): Promise<any[]> {
     try {
       const response = await apiClient.post('/petalas/restaurant/sofia/menu-recommendations', {
         conversation_id: this.conversationId,
         preferences,
-        context: this.context
-      })
+        context: this.context,
+      });
 
-      return response.data.recommendations || []
+      return response.data.recommendations || [];
     } catch (error) {
-      console.error('Sofia menu recommendations failed:', error)
-      return []
+      console.error('Sofia menu recommendations failed:', error);
+      return [];
     }
   }
 
@@ -139,13 +139,13 @@ export class SofiaService {
       const response = await apiClient.post('/petalas/restaurant/sofia/order', {
         conversation_id: this.conversationId,
         order_type: orderType,
-        context: this.context
-      })
+        context: this.context,
+      });
 
-      return response.data
+      return response.data;
     } catch (error) {
-      console.error('Sofia order placement failed:', error)
-      throw error
+      console.error('Sofia order placement failed:', error);
+      throw error;
     }
   }
 
@@ -159,13 +159,13 @@ export class SofiaService {
         date,
         time,
         party_size: partySize,
-        context: this.context
-      })
+        context: this.context,
+      });
 
-      return response.data
+      return response.data;
     } catch (error) {
-      console.error('Sofia table availability check failed:', error)
-      throw error
+      console.error('Sofia table availability check failed:', error);
+      throw error;
     }
   }
 
@@ -176,13 +176,13 @@ export class SofiaService {
     try {
       const response = await apiClient.post('/petalas/restaurant/sofia/chef-recommendations', {
         conversation_id: this.conversationId,
-        context: this.context
-      })
+        context: this.context,
+      });
 
-      return response.data.recommendations || []
+      return response.data.recommendations || [];
     } catch (error) {
-      console.error('Sofia chef recommendations failed:', error)
-      return []
+      console.error('Sofia chef recommendations failed:', error);
+      return [];
     }
   }
 
@@ -193,22 +193,22 @@ export class SofiaService {
     this.context = {
       ...this.context,
       ...newContext,
-      updated_at: new Date().toISOString()
-    }
+      updated_at: new Date().toISOString(),
+    };
   }
 
   /**
    * Get current context
    */
   getContext(): RestaurantSofiaContext {
-    return this.context
+    return this.context;
   }
 
   /**
    * Get message history
    */
   getMessageHistory(): SofiaMessage[] {
-    return this.messageHistory
+    return this.messageHistory;
   }
 
   /**
@@ -217,15 +217,15 @@ export class SofiaService {
   async clearConversation(): Promise<void> {
     if (this.conversationId) {
       try {
-        await apiClient.delete(`/petalas/restaurant/sofia/session/${this.conversationId}`)
+        await apiClient.delete(`/petalas/restaurant/sofia/session/${this.conversationId}`);
       } catch (error) {
-        console.error('Failed to clear Sofia conversation:', error)
+        console.error('Failed to clear Sofia conversation:', error);
       }
     }
 
-    this.conversationId = null
-    this.context = {}
-    this.messageHistory = []
+    this.conversationId = null;
+    this.context = {};
+    this.messageHistory = [];
   }
 
   /**
@@ -237,21 +237,21 @@ export class SofiaService {
         id: 'reservation',
         label: 'Fazer reserva',
         icon: '📅',
-        action: 'make_reservation'
+        action: 'make_reservation',
       },
       {
         id: 'menu',
         label: 'Ver cardápio',
         icon: '📖',
-        action: 'view_menu'
+        action: 'view_menu',
       },
       {
         id: 'order',
         label: 'Fazer pedido',
         icon: '🍽️',
-        action: 'place_order'
-      }
-    ]
+        action: 'place_order',
+      },
+    ];
 
     // Add context-specific actions
     if (this.context.current_view === 'menu') {
@@ -259,8 +259,8 @@ export class SofiaService {
         id: 'recommendations',
         label: 'Recomendações',
         icon: '⭐',
-        action: 'get_recommendations'
-      })
+        action: 'get_recommendations',
+      });
     }
 
     if (this.context.has_reservation) {
@@ -268,51 +268,35 @@ export class SofiaService {
         id: 'modify_reservation',
         label: 'Modificar reserva',
         icon: '✏️',
-        action: 'modify_reservation'
-      })
+        action: 'modify_reservation',
+      });
     }
 
-    return baseActions
+    return baseActions;
   }
 
   /**
    * Get Restaurant-specific suggestions based on context
    */
   getSuggestions(): string[] {
-    const suggestions: string[] = []
+    const suggestions: string[] = [];
 
     if (this.context.current_view === 'home') {
-      suggestions.push(
-        'Fazer uma reserva',
-        'Ver cardápio do dia',
-        'Ver promoções'
-      )
+      suggestions.push('Fazer uma reserva', 'Ver cardápio do dia', 'Ver promoções');
     } else if (this.context.current_view === 'menu') {
-      suggestions.push(
-        'Qual é o prato do dia?',
-        'Recomendar entrada',
-        'Opções vegetarianas'
-      )
+      suggestions.push('Qual é o prato do dia?', 'Recomendar entrada', 'Opções vegetarianas');
     } else if (this.context.current_view === 'reservation') {
-      suggestions.push(
-        'Mesa para 2 pessoas',
-        'Horários disponíveis hoje',
-        'Mesa perto da janela'
-      )
+      suggestions.push('Mesa para 2 pessoas', 'Horários disponíveis hoje', 'Mesa perto da janela');
     } else if (this.context.has_order) {
-      suggestions.push(
-        'Status do pedido',
-        'Tempo de espera',
-        'Adicionar mais itens'
-      )
+      suggestions.push('Status do pedido', 'Tempo de espera', 'Adicionar mais itens');
     }
 
-    return suggestions
+    return suggestions;
   }
 }
 
 // Export singleton instance
-export const sofiaService = new SofiaService()
+export const sofiaService = new SofiaService();
 
 // Export default
-export default sofiaService
+export default sofiaService;

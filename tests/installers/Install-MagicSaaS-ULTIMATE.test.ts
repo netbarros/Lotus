@@ -28,9 +28,10 @@ describe('Install-MagicSaaS-ULTIMATE.ps1', () => {
     });
 
     it('should have PowerShell shebang or encoding', () => {
-      const hasEncoding = installerContent.includes('# coding:') ||
-                         installerContent.includes('UTF-8') ||
-                         installerContent.startsWith('#!');
+      const hasEncoding =
+        installerContent.includes('# coding:') ||
+        installerContent.includes('UTF-8') ||
+        installerContent.startsWith('#!');
 
       // PowerShell files may not have shebang
       expect(installerContent).toBeTruthy();
@@ -43,8 +44,8 @@ describe('Install-MagicSaaS-ULTIMATE.ps1', () => {
     });
 
     it('should claim ZERO LACUNAS', () => {
-      const hasZeroLacunas = installerContent.includes('ZERO LACUNAS') ||
-                             installerContent.includes('COMPLETE');
+      const hasZeroLacunas =
+        installerContent.includes('ZERO LACUNAS') || installerContent.includes('COMPLETE');
       expect(hasZeroLacunas).toBe(true);
     });
 
@@ -330,10 +331,11 @@ describe('Install-MagicSaaS-ULTIMATE.ps1', () => {
 
   describe('Security Best Practices', () => {
     it('should generate random secrets', () => {
-      const hasRandomGeneration = installerContent.includes('SecureRandom') ||
-                                   installerContent.includes('Get-Random') ||
-                                   installerContent.includes('New-Guid') ||
-                                   installerContent.includes('[System.IO.Path]::GetRandomFileName');
+      const hasRandomGeneration =
+        installerContent.includes('SecureRandom') ||
+        installerContent.includes('Get-Random') ||
+        installerContent.includes('New-Guid') ||
+        installerContent.includes('[System.IO.Path]::GetRandomFileName');
 
       expect(hasRandomGeneration).toBe(true);
     });
@@ -375,46 +377,49 @@ describe('Install-MagicSaaS-ULTIMATE.ps1', () => {
 
   describe('Installation Steps', () => {
     it('should check Docker installation', () => {
-      const checksDocker = installerContent.includes('docker') ||
-                          installerContent.includes('Docker');
+      const checksDocker =
+        installerContent.includes('docker') || installerContent.includes('Docker');
       expect(checksDocker).toBe(true);
     });
 
     it('should start Docker Compose', () => {
-      const startsCompose = installerContent.includes('docker-compose') ||
-                           installerContent.includes('docker compose');
+      const startsCompose =
+        installerContent.includes('docker-compose') || installerContent.includes('docker compose');
       expect(startsCompose).toBe(true);
     });
 
     it('should verify services health', () => {
-      const checksHealth = installerContent.includes('health') ||
-                          installerContent.includes('healthy');
+      const checksHealth =
+        installerContent.includes('health') || installerContent.includes('healthy');
       expect(checksHealth).toBe(true);
     });
   });
 
   describe('Error Handling', () => {
     it('should have error handling', () => {
-      const hasErrorHandling = installerContent.includes('try') ||
-                              installerContent.includes('catch') ||
-                              installerContent.includes('trap') ||
-                              installerContent.includes('ErrorAction');
+      const hasErrorHandling =
+        installerContent.includes('try') ||
+        installerContent.includes('catch') ||
+        installerContent.includes('trap') ||
+        installerContent.includes('ErrorAction');
       expect(hasErrorHandling).toBe(true);
     });
   });
 
   describe('User Communication', () => {
     it('should provide progress feedback', () => {
-      const hasProgress = installerContent.includes('Write-Host') ||
-                         installerContent.includes('Write-Output') ||
-                         installerContent.includes('echo');
+      const hasProgress =
+        installerContent.includes('Write-Host') ||
+        installerContent.includes('Write-Output') ||
+        installerContent.includes('echo');
       expect(hasProgress).toBe(true);
     });
 
     it('should show success message', () => {
-      const hasSuccess = installerContent.toLowerCase().includes('success') ||
-                        installerContent.includes('✅') ||
-                        installerContent.includes('completed');
+      const hasSuccess =
+        installerContent.toLowerCase().includes('success') ||
+        installerContent.includes('✅') ||
+        installerContent.includes('completed');
       expect(hasSuccess).toBe(true);
     });
   });

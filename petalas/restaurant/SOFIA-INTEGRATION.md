@@ -2,7 +2,10 @@
 
 ## Overview
 
-Sofia is the universal AI persona powering all interactions across the MagicSaaS System-∞. For Pétala Restaurant, Sofia provides intelligent dining assistance, natural language reservations, personalized menu recommendations, and contextual guidance throughout the customer's dining journey.
+Sofia is the universal AI persona powering all interactions across the MagicSaaS
+System-∞. For Pétala Restaurant, Sofia provides intelligent dining assistance,
+natural language reservations, personalized menu recommendations, and contextual
+guidance throughout the customer's dining journey.
 
 ## Features
 
@@ -39,7 +42,8 @@ Sofia provides personalized menu suggestions based on:
 
 Sofia guides customers through their dining experience:
 
-- **Reservation Making**: "Mesa para 2 pessoas hoje à noite?" → Sofia shows availability
+- **Reservation Making**: "Mesa para 2 pessoas hoje à noite?" → Sofia shows
+  availability
 - **Menu Exploration**: "O que vocês recomendam?" → Sofia suggests chef specials
 - **Dietary Questions**: "Tem opções vegetarianas?" → Sofia filters menu
 - **Order Placement**: "Quero pedir o prato do dia" → Sofia processes order
@@ -74,41 +78,41 @@ For takeout and delivery orders:
 
 ## Restaurant-Specific Intents
 
-| Intent | Examples | Actions |
-|--------|----------|---------|
-| `make_reservation` | "Mesa para 4", "Reservar hoje" | Creates reservation with availability check |
-| `modify_reservation` | "Mudar para 8 pessoas", "Adiar 1 hora" | Updates existing reservation |
-| `cancel_reservation` | "Cancelar reserva", "Desmarcar" | Cancels with confirmation |
-| `view_menu` | "Ver cardápio", "O que tem?" | Shows menu with filters |
-| `place_order` | "Fazer pedido", "Quero pedir" | Initiates order flow |
-| `track_order` | "Cadê meu pedido?", "Quanto tempo falta?" | Shows order status |
-| `get_recommendations` | "O que você recomenda?", "Prato do dia?" | Personalized suggestions |
-| `check_availability` | "Tem mesa disponível?", "Horários livres?" | Real-time table check |
-| `ask_dietary` | "Opções veganas?", "Sem glúten?" | Filters by dietary needs |
-| `chef_special` | "Especial do chef", "Prato destaque" | Shows featured dishes |
+| Intent                | Examples                                   | Actions                                     |
+| --------------------- | ------------------------------------------ | ------------------------------------------- |
+| `make_reservation`    | "Mesa para 4", "Reservar hoje"             | Creates reservation with availability check |
+| `modify_reservation`  | "Mudar para 8 pessoas", "Adiar 1 hora"     | Updates existing reservation                |
+| `cancel_reservation`  | "Cancelar reserva", "Desmarcar"            | Cancels with confirmation                   |
+| `view_menu`           | "Ver cardápio", "O que tem?"               | Shows menu with filters                     |
+| `place_order`         | "Fazer pedido", "Quero pedir"              | Initiates order flow                        |
+| `track_order`         | "Cadê meu pedido?", "Quanto tempo falta?"  | Shows order status                          |
+| `get_recommendations` | "O que você recomenda?", "Prato do dia?"   | Personalized suggestions                    |
+| `check_availability`  | "Tem mesa disponível?", "Horários livres?" | Real-time table check                       |
+| `ask_dietary`         | "Opções veganas?", "Sem glúten?"           | Filters by dietary needs                    |
+| `chef_special`        | "Especial do chef", "Prato destaque"       | Shows featured dishes                       |
 
 ## Context Tracking
 
 ```typescript
 interface RestaurantSofiaContext {
   // User info
-  customer_name?: string
-  customer_phone?: string
+  customer_name?: string;
+  customer_phone?: string;
 
   // Current state
-  current_view?: 'home' | 'menu' | 'reservation' | 'order'
-  has_reservation?: boolean
-  has_order?: boolean
+  current_view?: 'home' | 'menu' | 'reservation' | 'order';
+  has_reservation?: boolean;
+  has_order?: boolean;
 
   // Preferences
-  dietary_restrictions?: ['vegetarian', 'gluten-free']
-  spice_level?: 'mild' | 'medium' | 'spicy'
-  allergens?: string[]
-  favorite_dishes?: string[]
+  dietary_restrictions?: ['vegetarian', 'gluten-free'];
+  spice_level?: 'mild' | 'medium' | 'spicy';
+  allergens?: string[];
+  favorite_dishes?: string[];
 
   // Behavior
-  visit_frequency?: 'first-time' | 'occasional' | 'regular'
-  preferred_table?: 'window' | 'outdoor' | 'private'
+  visit_frequency?: 'first-time' | 'occasional' | 'regular';
+  preferred_table?: 'window' | 'outdoor' | 'private';
 }
 ```
 
@@ -134,32 +138,32 @@ interface RestaurantSofiaContext {
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted } from 'vue'
-import { useSofia } from '@/composables/useSofia'
-import SofiaFloatingButton from '@/../../shared/sofia/components/SofiaFloatingButton.vue'
+import { computed, onMounted } from 'vue';
+import { useSofia } from '@/composables/useSofia';
+import SofiaFloatingButton from '@/../../shared/sofia/components/SofiaFloatingButton.vue';
 
-const sofia = useSofia()
+const sofia = useSofia();
 
 const sofiaStatus = computed(() => {
-  if (sofia.state.value.listening) return 'listening'
-  if (sofia.state.value.loading) return 'thinking'
-  return 'idle'
-})
+  if (sofia.state.value.listening) return 'listening';
+  if (sofia.state.value.loading) return 'thinking';
+  return 'idle';
+});
 
 onMounted(() => {
   sofia.updateContext({
     current_view: 'home',
-    restaurant_id: 'main_location'
-  })
-})
+    restaurant_id: 'main_location',
+  });
+});
 
 const handleSofiaMessage = async (message: string) => {
-  await sofia.sendMessage(message)
-}
+  await sofia.sendMessage(message);
+};
 
 const handleSofiaAction = async (action: string) => {
-  await sofia.executeAction(action)
-}
+  await sofia.executeAction(action);
+};
 </script>
 ```
 
@@ -185,8 +189,8 @@ const reservation = await sofia.makeReservation({
   date: '2025-11-07',
   time: '20:00',
   party_size: 4,
-  special_requests: 'Window table, birthday celebration'
-})
+  special_requests: 'Window table, birthday celebration',
+});
 ```
 
 ### Get Menu Recommendations
@@ -195,14 +199,14 @@ const reservation = await sofia.makeReservation({
 const recommendations = await sofia.getMenuRecommendations({
   dietary_restrictions: ['vegetarian'],
   cuisine_preference: 'italian',
-  price_range: { min: 0, max: 50 }
-})
+  price_range: { min: 0, max: 50 },
+});
 ```
 
 ### Place Order
 
 ```typescript
-const order = await sofia.placeOrder('takeout')
+const order = await sofia.placeOrder('takeout');
 ```
 
 ### Check Table Availability
@@ -212,7 +216,7 @@ const availability = await sofia.checkTableAvailability(
   '2025-11-07',
   '20:00',
   4
-)
+);
 ```
 
 ## Configuration
@@ -228,21 +232,25 @@ SOFIA_PROACTIVE=true
 ## Quick Actions by View
 
 ### Home View
+
 - 📅 Fazer reserva
 - 📖 Ver cardápio
 - 🍽️ Fazer pedido
 
 ### Menu View
+
 - ⭐ Ver recomendações
 - 👨‍🍳 Especial do chef
 - 🌱 Opções vegetarianas
 
 ### Reservation View
+
 - 🕐 Ver horários disponíveis
 - 📍 Escolher localização
 - ✏️ Modificar reserva
 
 ### Order View
+
 - 📦 Rastrear pedido
 - ➕ Adicionar mais itens
 - 💰 Ver conta
@@ -261,6 +269,7 @@ Sofia tracks for Restaurant:
 ## Example Conversations
 
 **Making a Reservation:**
+
 ```
 User: "Preciso de uma mesa para jantar"
 Sofia: "Com certeza! Para quantas pessoas e que dia você prefere?"
@@ -271,6 +280,7 @@ Sofia: "Ótimo! Reserva confirmada para 4 pessoas amanhã às 20h, mesa próxima
 ```
 
 **Menu Recommendations:**
+
 ```
 User: "O que você recomenda para vegetarianos?"
 Sofia: "Temos opções deliciosas! Nosso Risoto de Funghi é um dos favoritos, e hoje temos um Prato Especial do Chef com legumes da estação. Quer saber mais sobre algum?"

@@ -27,12 +27,15 @@
 ## 📝 Description
 
 ### Current Behavior
+
 <!-- What is currently happening? -->
 
 ### Expected Behavior
+
 <!-- What should happen instead? -->
 
 ### Actual Behavior
+
 <!-- What actually happens? -->
 
 ---
@@ -52,14 +55,17 @@
 <!-- Describe your proposed solution -->
 
 ### Why This Feature?
+
 <!-- What problem does it solve? -->
 
 ### Use Cases
+
 1.
 2.
 3.
 
 ### Alternatives Considered
+
 <!-- What alternatives did you consider? -->
 
 ---
@@ -69,6 +75,7 @@
 **MagicSaaS Version**:
 
 **Operating System**:
+
 - [ ] Windows (version: )
 - [ ] macOS (version: )
 - [ ] Linux (distro: )
@@ -76,6 +83,7 @@
 **Node.js Version**:
 
 **Browser** (if applicable):
+
 - [ ] Chrome (version: )
 - [ ] Firefox (version: )
 - [ ] Safari (version: )
@@ -88,18 +96,21 @@
 ## 📊 Impact
 
 **Severity**:
+
 - [ ] 🔴 Critical (blocks usage)
 - [ ] 🟠 High (major functionality broken)
 - [ ] 🟡 Medium (workaround exists)
 - [ ] 🟢 Low (cosmetic, minor)
 
 **Users Affected**:
+
 - [ ] All users
 - [ ] Some users (%)
 - [ ] Specific configuration only
 - [ ] Just me
 
 **Frequency**:
+
 - [ ] Always
 - [ ] Often
 - [ ] Sometimes
@@ -128,17 +139,18 @@
 ## 🔬 Additional Context
 
 ### What I've Tried
+
 -
 -
 
 ### Related Issues/PRs
+
 - #
 - #
 
 ### External Resources
--
 
----
+- ***
 
 ## ✅ Checklist
 
@@ -163,13 +175,12 @@
 
 <!-- Maintainers will add appropriate labels -->
 
-Suggested labels:
--
--
+## Suggested labels:
 
----
+- ***
 
-**Priority** (for maintainers):
+  **Priority** (for maintainers):
+
 - [ ] P0 - Critical (fix immediately)
 - [ ] P1 - High (fix in current sprint)
 - [ ] P2 - Medium (fix in next sprint)
@@ -179,7 +190,7 @@ Suggested labels:
 
 **Assignee** (for maintainers): @
 
-**Milestone** (for maintainers): Q_ 2026
+**Milestone** (for maintainers): Q\_ 2026
 
 ---
 

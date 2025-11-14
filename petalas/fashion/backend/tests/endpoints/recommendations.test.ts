@@ -10,7 +10,7 @@ describe('Recommendations Endpoint', () => {
   beforeAll(async () => {
     const response = await api.post('/auth/login', {
       email: 'customer@example.com',
-      password: 'password'
+      password: 'password',
     });
     authToken = response.data.data.access_token;
     api.defaults.headers.common['Authorization'] = `Bearer ${authToken}`;
@@ -50,7 +50,7 @@ describe('Recommendations Endpoint', () => {
       const response = await api.post('/recommendations/feedback', {
         productId: 1,
         action: 'clicked',
-        recommendationType: 'personalized'
+        recommendationType: 'personalized',
       });
 
       expect(response.status).toBe(200);

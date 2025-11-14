@@ -8,12 +8,7 @@
   "pricing": {
     "starter": {
       "price": 79,
-      "features": [
-        "Up to 500 tickets/event",
-        "QR check-in",
-        "Basic reporting",
-        "Email support"
-      ]
+      "features": ["Up to 500 tickets/event", "QR check-in", "Basic reporting", "Email support"]
     },
     "professional": {
       "price": 149,
@@ -76,23 +71,11 @@
     "Mobile app (PWA)"
   ],
   "integrations": {
-    "payment": [
-      "Stripe",
-      "PayPal"
-    ],
-    "streaming": [
-      "Vimeo",
-      "YouTube Live"
-    ],
-    "email": [
-      "Mailchimp",
-      "SendGrid"
-    ]
+    "payment": ["Stripe", "PayPal"],
+    "streaming": ["Vimeo", "YouTube Live"],
+    "email": ["Mailchimp", "SendGrid"]
   },
-  "compliance": [
-    "GDPR",
-    "PCI DSS"
-  ],
+  "compliance": ["GDPR", "PCI DSS"],
   "status": "production-ready",
   "createdAt": "2025-11-10",
   "updatedAt": "2025-11-10"

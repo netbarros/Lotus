@@ -1,5 +1,5 @@
 {
-  "annotations": {"list": []},
+  "annotations": { "list": [] },
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
@@ -7,41 +7,63 @@
   "panels": [
     {
       "datasource": "Prometheus",
-      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0},
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
       "id": 1,
-      "targets": [{"expr": "sum(rate(http_requests_total[5m])) by (service)", "legendFormat": "{{service}}"}],
+      "targets": [
+        { "expr": "sum(rate(http_requests_total[5m])) by (service)", "legendFormat": "{{service}}" }
+      ],
       "title": "API - Request Rate (All Services)",
       "type": "graph"
     },
     {
       "datasource": "Prometheus",
-      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0},
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
       "id": 2,
-      "targets": [{"expr": "sum(rate(http_requests_total{status=~\"5..\"}[5m])) / sum(rate(http_requests_total[5m]))", "legendFormat": "Error Rate"}],
+      "targets": [
+        {
+          "expr": "sum(rate(http_requests_total{status=~\"5..\"}[5m])) / sum(rate(http_requests_total[5m]))",
+          "legendFormat": "Error Rate"
+        }
+      ],
       "title": "API - Error Rate",
       "type": "gauge"
     },
     {
       "datasource": "Prometheus",
-      "gridPos": {"h": 8, "w": 8, "x": 0, "y": 8},
+      "gridPos": { "h": 8, "w": 8, "x": 0, "y": 8 },
       "id": 3,
-      "targets": [{"expr": "histogram_quantile(0.50, rate(http_request_duration_ms_bucket[5m]))", "legendFormat": "p50"}],
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.50, rate(http_request_duration_ms_bucket[5m]))",
+          "legendFormat": "p50"
+        }
+      ],
       "title": "API - Latency p50",
       "type": "gauge"
     },
     {
       "datasource": "Prometheus",
-      "gridPos": {"h": 8, "w": 8, "x": 8, "y": 8},
+      "gridPos": { "h": 8, "w": 8, "x": 8, "y": 8 },
       "id": 4,
-      "targets": [{"expr": "histogram_quantile(0.95, rate(http_request_duration_ms_bucket[5m]))", "legendFormat": "p95"}],
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.95, rate(http_request_duration_ms_bucket[5m]))",
+          "legendFormat": "p95"
+        }
+      ],
       "title": "API - Latency p95",
       "type": "gauge"
     },
     {
       "datasource": "Prometheus",
-      "gridPos": {"h": 8, "w": 8, "x": 16, "y": 8},
+      "gridPos": { "h": 8, "w": 8, "x": 16, "y": 8 },
       "id": 5,
-      "targets": [{"expr": "histogram_quantile(0.99, rate(http_request_duration_ms_bucket[5m]))", "legendFormat": "p99"}],
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.99, rate(http_request_duration_ms_bucket[5m]))",
+          "legendFormat": "p99"
+        }
+      ],
       "title": "API - Latency p99",
       "type": "gauge"
     }
@@ -50,7 +72,7 @@
   "schemaVersion": 27,
   "style": "dark",
   "tags": ["magicsaas", "api", "overview"],
-  "time": {"from": "now-1h", "to": "now"},
+  "time": { "from": "now-1h", "to": "now" },
   "title": "📡 API Overview - All Services",
   "uid": "api-overview",
   "version": 1

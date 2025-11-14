@@ -11,7 +11,7 @@ describe('Coupons Endpoint', () => {
   beforeAll(async () => {
     const response = await api.post('/auth/login', {
       email: 'admin@example.com',
-      password: 'password'
+      password: 'password',
     });
     authToken = response.data.data.access_token;
     api.defaults.headers.common['Authorization'] = `Bearer ${authToken}`;
@@ -32,7 +32,7 @@ describe('Coupons Endpoint', () => {
         min_purchase: 100,
         max_uses: 100,
         valid_from: '2025-06-01',
-        valid_until: '2025-08-31'
+        valid_until: '2025-08-31',
       };
 
       const response = await api.post('/coupons', couponData);
@@ -47,7 +47,7 @@ describe('Coupons Endpoint', () => {
     it('should validate coupon code', async () => {
       const response = await api.post('/coupons/validate', {
         code: 'SUMMER2025',
-        cartTotal: 150
+        cartTotal: 150,
       });
 
       expect(response.status).toBe(200);
@@ -56,17 +56,19 @@ describe('Coupons Endpoint', () => {
     });
 
     it('should reject invalid coupon', async () => {
-      await expect(api.post('/coupons/validate', {
-        code: 'INVALID',
-        cartTotal: 150
-      })).rejects.toThrow();
+      await expect(
+        api.post('/coupons/validate', {
+          code: 'INVALID',
+          cartTotal: 150,
+        })
+      ).rejects.toThrow();
     });
   });
 
   describe('POST /coupons/:id/apply', () => {
     it('should apply coupon to order', async () => {
       const response = await api.post(`/coupons/${testCouponId}/apply`, {
-        orderId: 1
+        orderId: 1,
       });
 
       expect(response.status).toBe(200);

@@ -47,9 +47,7 @@ export default defineHook(({ filter, action }, { services, database }) => {
    */
   action('items.create', async (meta) => {
     if (meta.collection === 'menu_items' && meta.payload && meta.payload.menu_id) {
-      await database('menus')
-        .where('id', meta.payload.menu_id)
-        .increment('items_count', 1);
+      await database('menus').where('id', meta.payload.menu_id).increment('items_count', 1);
     }
   });
 
@@ -58,9 +56,7 @@ export default defineHook(({ filter, action }, { services, database }) => {
    */
   action('items.delete', async (meta) => {
     if (meta.collection === 'menu_items' && meta.payload && meta.payload.menu_id) {
-      await database('menus')
-        .where('id', meta.payload.menu_id)
-        .decrement('items_count', 1);
+      await database('menus').where('id', meta.payload.menu_id).decrement('items_count', 1);
     }
   });
 });

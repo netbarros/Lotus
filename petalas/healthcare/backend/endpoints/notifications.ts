@@ -16,7 +16,7 @@ export default defineEndpoint((router, { database }) => {
         recipient: to,
         message,
         status: 'sent',
-        sent_at: database.fn.now()
+        sent_at: database.fn.now(),
       });
 
       res.json({ success: true });
@@ -35,7 +35,7 @@ export default defineEndpoint((router, { database }) => {
         message,
         staff_id,
         read: false,
-        created_at: database.fn.now()
+        created_at: database.fn.now(),
       });
 
       res.json({ success: true });
@@ -46,8 +46,8 @@ export default defineEndpoint((router, { database }) => {
 });
 
 function generateUUID() {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
-    const r = Math.random() * 16 | 0;
-    return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+    const r = (Math.random() * 16) | 0;
+    return (c === 'x' ? r : (r & 0x3) | 0x8).toString(16);
   });
 }

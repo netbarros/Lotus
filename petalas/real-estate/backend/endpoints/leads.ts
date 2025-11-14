@@ -51,7 +51,7 @@ export default defineEndpoint({
 
         res.json({
           data: lead,
-          message: 'Thank you for your inquiry! An agent will contact you shortly.'
+          message: 'Thank you for your inquiry! An agent will contact you shortly.',
         });
       } catch (error: any) {
         if (error.name === 'ZodError') {

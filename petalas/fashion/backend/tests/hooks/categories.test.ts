@@ -38,7 +38,10 @@ describe('Categories Hook', () => {
 
 function processCategoryCreate(input: any) {
   if (input.name && !input.slug) {
-    input.slug = input.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+    input.slug = input.name
+      .toLowerCase()
+      .replace(/\s+/g, '-')
+      .replace(/[^a-z0-9-]/g, '');
   }
   if (input.parent_id === undefined) {
     input.parent_id = null;

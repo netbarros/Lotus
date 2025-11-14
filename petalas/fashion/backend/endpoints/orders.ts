@@ -7,9 +7,7 @@ export default defineEndpoint((router, { services, database }) => {
       const tenant_id = req.accountability.tenant;
       const user_id = req.accountability.user;
 
-      const order = await database('orders')
-        .where({ id: req.params.id, tenant_id })
-        .first();
+      const order = await database('orders').where({ id: req.params.id, tenant_id }).first();
 
       if (!order) {
         return res.status(404).json({ error: 'Order not found' });
@@ -37,18 +35,18 @@ export default defineEndpoint((router, { services, database }) => {
           order_number: order.order_number,
           status: {
             payment: order.payment_status,
-            fulfillment: order.fulfillment_status
+            fulfillment: order.fulfillment_status,
           },
           customer: {
             email: order.customer_email,
             name: order.customer_name,
-            phone: order.customer_phone
+            phone: order.customer_phone,
           },
           addresses: {
             billing: order.billing_address ? JSON.parse(order.billing_address) : null,
-            shipping: order.shipping_address ? JSON.parse(order.shipping_address) : null
+            shipping: order.shipping_address ? JSON.parse(order.shipping_address) : null,
           },
-          items: items.map(item => ({
+          items: items.map((item) => ({
             id: item.id,
             product_id: item.product_id,
             product_name: item.product_name,
@@ -57,7 +55,7 @@ export default defineEndpoint((router, { services, database }) => {
             variant_id: item.variant_id,
             quantity: item.quantity,
             price: parseFloat(item.price).toFixed(2),
-            subtotal: parseFloat(item.subtotal).toFixed(2)
+            subtotal: parseFloat(item.subtotal).toFixed(2),
           })),
           totals: {
             subtotal: parseFloat(order.subtotal).toFixed(2),
@@ -65,23 +63,23 @@ export default defineEndpoint((router, { services, database }) => {
             tax: parseFloat(order.tax || 0).toFixed(2),
             shipping: parseFloat(order.shipping || 0).toFixed(2),
             total: parseFloat(order.total).toFixed(2),
-            currency: order.currency
+            currency: order.currency,
           },
           payment: {
             method: order.payment_method,
             transaction_id: order.payment_transaction_id,
-            paid_at: order.paid_at
+            paid_at: order.paid_at,
           },
           shipping: {
             carrier: order.shipping_carrier,
             tracking_number: order.tracking_number,
             shipped_at: order.shipped_at,
-            delivered_at: order.delivered_at
+            delivered_at: order.delivered_at,
           },
           notes: order.notes,
           created_at: order.created_at,
-          updated_at: order.updated_at
-        }
+          updated_at: order.updated_at,
+        },
       });
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -95,9 +93,7 @@ export default defineEndpoint((router, { services, database }) => {
       const tenant_id = req.accountability.tenant;
       const user_id = req.accountability.user;
 
-      const order = await database('orders')
-        .where({ id: req.params.id, tenant_id })
-        .first();
+      const order = await database('orders').where({ id: req.params.id, tenant_id }).first();
 
       if (!order) {
         return res.status(404).json({ error: 'Order not found' });
@@ -112,7 +108,7 @@ export default defineEndpoint((router, { services, database }) => {
       if (order.payment_status === 'paid' && order.fulfillment_status === 'shipped') {
         return res.status(400).json({
           error: 'Order cannot be cancelled - already shipped',
-          message: 'Please contact support for returns'
+          message: 'Please contact support for returns',
         });
       }
 
@@ -127,12 +123,11 @@ export default defineEndpoint((router, { services, database }) => {
           payment_status: 'cancelled',
           fulfillment_status: 'cancelled',
           notes: reason ? `Cancelled: ${reason}` : 'Cancelled by customer',
-          updated_at: new Date()
+          updated_at: new Date(),
         });
 
       // Restore inventory
-      const orderItems = await database('order_items')
-        .where({ order_id: req.params.id });
+      const orderItems = await database('order_items').where({ order_id: req.params.id });
 
       for (const item of orderItems) {
         await database('products')
@@ -151,14 +146,14 @@ export default defineEndpoint((router, { services, database }) => {
           order_id: req.params.id,
           order_number: order.order_number,
           reason,
-          cancelled_by: user_id ? 'customer' : 'admin'
+          cancelled_by: user_id ? 'customer' : 'admin',
         }),
-        timestamp: new Date()
+        timestamp: new Date(),
       });
 
       res.json({
         success: true,
-        message: 'Order cancelled successfully'
+        message: 'Order cancelled successfully',
       });
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -172,9 +167,7 @@ export default defineEndpoint((router, { services, database }) => {
       const tenant_id = req.accountability.tenant;
       const user_id = req.accountability.user;
 
-      const order = await database('orders')
-        .where({ id: req.params.id, tenant_id })
-        .first();
+      const order = await database('orders').where({ id: req.params.id, tenant_id }).first();
 
       if (!order) {
         return res.status(404).json({ error: 'Order not found' });
@@ -189,17 +182,19 @@ export default defineEndpoint((router, { services, database }) => {
       if (order.payment_status !== 'paid') {
         return res.status(400).json({
           error: 'Order must be paid to request refund',
-          current_status: order.payment_status
+          current_status: order.payment_status,
         });
       }
 
       // Check refund window (e.g., 30 days)
-      const daysSincePurchase = Math.floor((Date.now() - new Date(order.paid_at).getTime()) / (1000 * 60 * 60 * 24));
+      const daysSincePurchase = Math.floor(
+        (Date.now() - new Date(order.paid_at).getTime()) / (1000 * 60 * 60 * 24)
+      );
       if (daysSincePurchase > 30) {
         return res.status(400).json({
           error: 'Refund window expired',
           days_since_purchase: daysSincePurchase,
-          refund_window: 30
+          refund_window: 30,
         });
       }
 
@@ -209,11 +204,14 @@ export default defineEndpoint((router, { services, database }) => {
         // Partial refund
         const orderItems = await database('order_items')
           .where({ order_id: req.params.id })
-          .whereIn('id', items.map(i => i.item_id));
+          .whereIn(
+            'id',
+            items.map((i) => i.item_id)
+          );
 
         refundAmount = orderItems.reduce((sum, item) => {
-          const refundQty = items.find(i => i.item_id === item.id)?.quantity || item.quantity;
-          return sum + (parseFloat(item.price) * refundQty);
+          const refundQty = items.find((i) => i.item_id === item.id)?.quantity || item.quantity;
+          return sum + parseFloat(item.price) * refundQty;
         }, 0);
       }
 
@@ -228,17 +226,15 @@ export default defineEndpoint((router, { services, database }) => {
           status: 'pending',
           items: items ? JSON.stringify(items) : null,
           created_at: new Date(),
-          updated_at: new Date()
+          updated_at: new Date(),
         })
         .returning('*');
 
       // Update order status
-      await database('orders')
-        .where({ id: req.params.id })
-        .update({
-          payment_status: 'refund_pending',
-          updated_at: new Date()
-        });
+      await database('orders').where({ id: req.params.id }).update({
+        payment_status: 'refund_pending',
+        updated_at: new Date(),
+      });
 
       // Emit refund request event
       await database('events').insert({
@@ -251,9 +247,9 @@ export default defineEndpoint((router, { services, database }) => {
           order_id: req.params.id,
           refund_id: refund.id,
           amount: refundAmount,
-          reason
+          reason,
         }),
-        timestamp: new Date()
+        timestamp: new Date(),
       });
 
       res.json({
@@ -262,8 +258,8 @@ export default defineEndpoint((router, { services, database }) => {
         data: {
           refund_id: refund.id,
           amount: refundAmount.toFixed(2),
-          status: 'pending'
-        }
+          status: 'pending',
+        },
       });
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -276,9 +272,7 @@ export default defineEndpoint((router, { services, database }) => {
       const tenant_id = req.accountability.tenant;
       const user_id = req.accountability.user;
 
-      const order = await database('orders')
-        .where({ id: req.params.id, tenant_id })
-        .first();
+      const order = await database('orders').where({ id: req.params.id, tenant_id }).first();
 
       if (!order) {
         return res.status(404).json({ error: 'Order not found' });
@@ -290,9 +284,7 @@ export default defineEndpoint((router, { services, database }) => {
       }
 
       // Get order items
-      const items = await database('order_items')
-        .select('*')
-        .where({ order_id: req.params.id });
+      const items = await database('order_items').select('*').where({ order_id: req.params.id });
 
       // Generate invoice HTML (in production, use PDF library like pdfkit or puppeteer)
       const invoiceHtml = generateInvoiceHTML(order, items);
@@ -310,9 +302,7 @@ export default defineEndpoint((router, { services, database }) => {
       const { event_type, event_data } = req.body;
       const tenant_id = req.accountability.tenant;
 
-      const order = await database('orders')
-        .where({ id: req.params.id, tenant_id })
-        .first();
+      const order = await database('orders').where({ id: req.params.id, tenant_id }).first();
 
       if (!order) {
         return res.status(404).json({ error: 'Order not found' });
@@ -328,14 +318,14 @@ export default defineEndpoint((router, { services, database }) => {
         event_data: JSON.stringify({
           order_id: req.params.id,
           order_number: order.order_number,
-          ...event_data
+          ...event_data,
         }),
-        timestamp: new Date()
+        timestamp: new Date(),
       });
 
       res.json({
         success: true,
-        message: 'Event tracked successfully'
+        message: 'Event tracked successfully',
       });
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -391,14 +381,18 @@ function generateInvoiceHTML(order, items) {
       </tr>
     </thead>
     <tbody>
-      ${items.map(item => `
+      ${items
+        .map(
+          (item) => `
         <tr>
           <td>${item.product_name}</td>
           <td>${item.quantity}</td>
           <td>$${parseFloat(item.price).toFixed(2)}</td>
           <td>$${parseFloat(item.subtotal).toFixed(2)}</td>
         </tr>
-      `).join('')}
+      `
+        )
+        .join('')}
     </tbody>
   </table>
 

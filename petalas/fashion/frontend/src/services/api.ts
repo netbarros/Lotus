@@ -1,35 +1,35 @@
-import axios, { type AxiosInstance } from 'axios'
+import axios, { type AxiosInstance } from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8055'
-const TENANT_ID = import.meta.env.VITE_TENANT_ID || 'default'
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8055';
+const TENANT_ID = import.meta.env.VITE_TENANT_ID || 'default';
 
 // Create axios instance
 const apiClient: AxiosInstance = axios.create({
   baseURL: API_URL,
   timeout: 30000,
   headers: {
-    'Content-Type': 'application/json'
-  }
-})
+    'Content-Type': 'application/json',
+  },
+});
 
 // Request interceptor
 apiClient.interceptors.request.use(
   (config) => {
     // Add auth token from localStorage
-    const token = localStorage.getItem('auth_token')
+    const token = localStorage.getItem('auth_token');
     if (token) {
-      config.headers.Authorization = `Bearer ${token}`
+      config.headers.Authorization = `Bearer ${token}`;
     }
 
     // Add tenant ID
-    config.headers['X-Tenant-ID'] = TENANT_ID
+    config.headers['X-Tenant-ID'] = TENANT_ID;
 
-    return config
+    return config;
   },
   (error) => {
-    return Promise.reject(error)
+    return Promise.reject(error);
   }
-)
+);
 
 // Response interceptor
 apiClient.interceptors.response.use(
@@ -37,64 +37,59 @@ apiClient.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       // Redirect to login on 401
-      localStorage.removeItem('auth_token')
-      localStorage.removeItem('auth_user')
-      window.location.href = '/login'
+      localStorage.removeItem('auth_token');
+      localStorage.removeItem('auth_user');
+      window.location.href = '/login';
     }
-    return Promise.reject(error)
+    return Promise.reject(error);
   }
-)
+);
 
 // Products API
 export const productsApi = {
   list: (params?: { limit?: number; offset?: number; status?: string }) =>
     apiClient.get('/petalas/fashion/products', { params }),
 
-  getById: (id: string) =>
-    apiClient.get(`/petalas/fashion/products/${id}`),
+  getById: (id: string) => apiClient.get(`/petalas/fashion/products/${id}`),
 
   search: (query: string) =>
-    apiClient.get('/petalas/fashion/products', { params: { search: query } })
-}
+    apiClient.get('/petalas/fashion/products', { params: { search: query } }),
+};
 
 // Cart API
 export const cartApi = {
-  get: () =>
-    apiClient.get('/petalas/fashion/cart'),
+  get: () => apiClient.get('/petalas/fashion/cart'),
 
   add: (productId: string, quantity: number, variantId?: string) =>
     apiClient.post('/petalas/fashion/cart/add', {
       product_id: productId,
       quantity,
-      variant_id: variantId
+      variant_id: variantId,
     }),
 
   update: (itemId: string, quantity: number) =>
     apiClient.put(`/petalas/fashion/cart/${itemId}`, { quantity }),
 
-  remove: (itemId: string) =>
-    apiClient.delete(`/petalas/fashion/cart/${itemId}`),
+  remove: (itemId: string) => apiClient.delete(`/petalas/fashion/cart/${itemId}`),
 
-  clear: () =>
-    apiClient.delete('/petalas/fashion/cart')
-}
+  clear: () => apiClient.delete('/petalas/fashion/cart'),
+};
 
 // Checkout API
 export const checkoutApi = {
   create: (data: {
-    billing_address: any
-    shipping_address: any
-    payment_method: string
-    coupon_code?: string
-    customer_email?: string
-    customer_name?: string
-    customer_phone?: string
-  }) =>
-    apiClient.post('/petalas/fashion/checkout', data),
+    billing_address: any;
+    shipping_address: any;
+    payment_method: string;
+    coupon_code?: string;
+    customer_email?: string;
+    customer_name?: string;
+    customer_phone?: string;
+  }) => apiClient.post('/petalas/fashion/checkout', data),
 
   validate: (data: { coupon_code?: string }) =>
-    apiClient.post('/petalas/fashion/checkout/validate', data)
-}
+    apiClient.post('/petalas/fashion/checkout/validate', data),
+};
 
 // Payment API
 export const paymentApi = {
@@ -102,33 +97,31 @@ export const paymentApi = {
     apiClient.post('/petalas/fashion/payment', {
       order_id: orderId,
       payment_method: paymentMethod,
-      payment_data: paymentData
+      payment_data: paymentData,
     }),
 
-  getStatus: (orderId: string) =>
-    apiClient.get(`/petalas/fashion/payment/${orderId}/status`)
-}
+  getStatus: (orderId: string) => apiClient.get(`/petalas/fashion/payment/${orderId}/status`),
+};
 
 // Reviews API
 export const reviewsApi = {
-  list: (productId: string, params?: { limit?: number; offset?: number; sort?: string; rating_filter?: number }) =>
-    apiClient.get(`/petalas/fashion/reviews/${productId}`, { params }),
+  list: (
+    productId: string,
+    params?: { limit?: number; offset?: number; sort?: string; rating_filter?: number }
+  ) => apiClient.get(`/petalas/fashion/reviews/${productId}`, { params }),
 
   create: (data: {
-    product_id: string
-    rating: number
-    title?: string
-    comment?: string
-    images?: string[]
-  }) =>
-    apiClient.post('/petalas/fashion/reviews', data),
+    product_id: string;
+    rating: number;
+    title?: string;
+    comment?: string;
+    images?: string[];
+  }) => apiClient.post('/petalas/fashion/reviews', data),
 
-  markHelpful: (reviewId: string) =>
-    apiClient.post(`/petalas/fashion/reviews/${reviewId}/helpful`),
+  markHelpful: (reviewId: string) => apiClient.post(`/petalas/fashion/reviews/${reviewId}/helpful`),
 
-  getStats: (productId: string) =>
-    apiClient.get(`/petalas/fashion/reviews/stats/${productId}`)
-}
+  getStats: (productId: string) => apiClient.get(`/petalas/fashion/reviews/stats/${productId}`),
+};
 
 // Recommendations API
 export const recommendationsApi = {
@@ -139,14 +132,13 @@ export const recommendationsApi = {
     apiClient.post('/petalas/fashion/recommendations/feedback', {
       product_id: productId,
       action,
-      context
-    })
-}
+      context,
+    }),
+};
 
 // Customers API
 export const customersApi = {
-  getProfile: () =>
-    apiClient.get('/petalas/fashion/customers/profile'),
+  getProfile: () => apiClient.get('/petalas/fashion/customers/profile'),
 
   updateProfile: (data: { name?: string; phone?: string; addresses?: any; preferences?: any }) =>
     apiClient.put('/petalas/fashion/customers/profile', data),
@@ -154,20 +146,18 @@ export const customersApi = {
   getOrders: (params?: { limit?: number; offset?: number; status?: string }) =>
     apiClient.get('/petalas/fashion/customers/orders', { params }),
 
-  addAddress: (address: any) =>
-    apiClient.post('/petalas/fashion/customers/addresses', { address }),
+  addAddress: (address: any) => apiClient.post('/petalas/fashion/customers/addresses', { address }),
 
   updateAddress: (addressId: string, address: any) =>
     apiClient.put(`/petalas/fashion/customers/addresses/${addressId}`, { address }),
 
   deleteAddress: (addressId: string) =>
-    apiClient.delete(`/petalas/fashion/customers/addresses/${addressId}`)
-}
+    apiClient.delete(`/petalas/fashion/customers/addresses/${addressId}`),
+};
 
 // Orders API
 export const ordersApi = {
-  get: (orderId: string) =>
-    apiClient.get(`/petalas/fashion/orders/${orderId}`),
+  get: (orderId: string) => apiClient.get(`/petalas/fashion/orders/${orderId}`),
 
   cancel: (orderId: string, reason?: string) =>
     apiClient.put(`/petalas/fashion/orders/${orderId}/cancel`, { reason }),
@@ -176,13 +166,12 @@ export const ordersApi = {
     apiClient.post(`/petalas/fashion/orders/${orderId}/refund`, { reason, items }),
 
   getInvoice: (orderId: string) =>
-    apiClient.get(`/petalas/fashion/orders/${orderId}/invoice`, { responseType: 'blob' })
-}
+    apiClient.get(`/petalas/fashion/orders/${orderId}/invoice`, { responseType: 'blob' }),
+};
 
 // Loyalty API
 export const loyaltyApi = {
-  getStatus: () =>
-    apiClient.get('/petalas/fashion/loyalty/status'),
+  getStatus: () => apiClient.get('/petalas/fashion/loyalty/status'),
 
   redeem: (points: number, type: string) =>
     apiClient.post('/petalas/fashion/loyalty/redeem', { points, type }),
@@ -190,9 +179,8 @@ export const loyaltyApi = {
   getHistory: (params?: { limit?: number }) =>
     apiClient.get('/petalas/fashion/loyalty/history', { params }),
 
-  getRewards: () =>
-    apiClient.get('/petalas/fashion/loyalty/rewards')
-}
+  getRewards: () => apiClient.get('/petalas/fashion/loyalty/rewards'),
+};
 
 // Coupons API
 export const couponsApi = {
@@ -200,12 +188,12 @@ export const couponsApi = {
     apiClient.post('/petalas/fashion/coupons/validate', {
       code,
       cart_total: cartTotal,
-      customer_email: customerEmail
+      customer_email: customerEmail,
     }),
 
   getActive: (params?: { customer_email?: string }) =>
-    apiClient.get('/petalas/fashion/coupons/active', { params })
-}
+    apiClient.get('/petalas/fashion/coupons/active', { params }),
+};
 
 // Shipping API
 export const shippingApi = {
@@ -213,15 +201,15 @@ export const shippingApi = {
     apiClient.post('/petalas/fashion/shipping/calculate', {
       destination,
       items,
-      coupon_code: couponCode
+      coupon_code: couponCode,
     }),
 
   track: (orderId?: string, trackingNumber?: string) =>
     apiClient.post('/petalas/fashion/shipping/track', {
       order_id: orderId,
-      tracking_number: trackingNumber
-    })
-}
+      tracking_number: trackingNumber,
+    }),
+};
 
 // Analytics API
 export const analyticsApi = {
@@ -232,15 +220,15 @@ export const analyticsApi = {
     apiClient.get('/petalas/fashion/analytics/products', { params }),
 
   getCustomers: (params?: { segment?: string }) =>
-    apiClient.get('/petalas/fashion/analytics/customers', { params })
-}
+    apiClient.get('/petalas/fashion/analytics/customers', { params }),
+};
 
 // AR Try-On API
 export const arApi = {
   startSession: (productId: string, customerMeasurements?: any) =>
     apiClient.post('/petalas/fashion/ar/session', {
       product_id: productId,
-      customer_measurements: customerMeasurements
+      customer_measurements: customerMeasurements,
     }),
 
   updateSession: (sessionId: string, action: string, data?: any) =>
@@ -254,8 +242,8 @@ export const arApi = {
       session_id: sessionId,
       rating,
       comment,
-      issues
-    })
-}
+      issues,
+    }),
+};
 
-export default apiClient
+export default apiClient;

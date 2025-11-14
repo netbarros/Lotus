@@ -13,10 +13,12 @@ describe('Coupons Hook', () => {
     });
 
     it('should validate discount value', () => {
-      expect(() => validateDiscount({ discount_type: 'percentage', discount_value: 150 }))
-        .toThrow('Percentage discount cannot exceed 100');
-      expect(() => validateDiscount({ discount_type: 'fixed', discount_value: -10 }))
-        .toThrow('Discount value must be positive');
+      expect(() => validateDiscount({ discount_type: 'percentage', discount_value: 150 })).toThrow(
+        'Percentage discount cannot exceed 100'
+      );
+      expect(() => validateDiscount({ discount_type: 'fixed', discount_value: -10 })).toThrow(
+        'Discount value must be positive'
+      );
     });
   });
 

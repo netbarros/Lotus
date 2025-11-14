@@ -8,7 +8,8 @@
 
 - [ ] 🐛 Bug fix (non-breaking change which fixes an issue)
 - [ ] ✨ New feature (non-breaking change which adds functionality)
-- [ ] 💥 Breaking change (fix or feature that would cause existing functionality to not work as expected)
+- [ ] 💥 Breaking change (fix or feature that would cause existing functionality
+      to not work as expected)
 - [ ] 📝 Documentation update
 - [ ] 🎨 UI/UX improvement
 - [ ] ⚡ Performance improvement
@@ -22,9 +23,7 @@
 
 <!-- Link related issues using #issue_number -->
 
-Closes #
-Fixes #
-Related to #
+Closes # Fixes # Related to #
 
 ---
 
@@ -34,18 +33,18 @@ Related to #
 
 -
 -
--
-
----
+- ***
 
 ## 📸 Screenshots (if applicable)
 
 <!-- Add screenshots for UI changes -->
 
 ### Before
+
 <!-- Screenshot -->
 
 ### After
+
 <!-- Screenshot -->
 
 ---
@@ -53,6 +52,7 @@ Related to #
 ## ✅ Checklist
 
 ### Code Quality
+
 - [ ] My code follows the project's style guidelines
 - [ ] I have performed a self-review of my code
 - [ ] I have commented my code, particularly in hard-to-understand areas
@@ -62,6 +62,7 @@ Related to #
 - [ ] New and existing unit tests pass locally with my changes
 
 ### Testing
+
 - [ ] Unit tests added/updated
 - [ ] Integration tests added/updated
 - [ ] E2E tests added/updated (if applicable)
@@ -69,17 +70,20 @@ Related to #
 - [ ] Test coverage maintained/improved (target: 95%+)
 
 ### Documentation
+
 - [ ] README updated (if applicable)
 - [ ] API documentation updated (if applicable)
 - [ ] Inline code documentation added
 - [ ] Changelog updated
 
 ### Performance
+
 - [ ] No significant performance regression
 - [ ] Database queries optimized (if applicable)
 - [ ] API response time acceptable (< 100ms p95)
 
 ### Security
+
 - [ ] No security vulnerabilities introduced
 - [ ] Input validation added (if applicable)
 - [ ] Authentication/authorization checked (if applicable)
@@ -92,26 +96,28 @@ Related to #
 <!-- How should reviewers test this PR? -->
 
 ### Prerequisites
+
 ```bash
 # List prerequisites
 ```
 
 ### Steps to Test
+
 1.
 2.
 3.
 
 ### Expected Results
--
--
 
----
+-
+- ***
 
 ## 📊 Performance Impact
 
 <!-- Describe any performance implications -->
 
 ### Metrics (if applicable)
+
 - **API Latency**: before / after
 - **Database Queries**: before / after
 - **Memory Usage**: before / after
@@ -124,11 +130,13 @@ Related to #
 <!-- How should users migrate from old version? -->
 
 ### Before (Old Way)
+
 ```typescript
 // Old code
 ```
 
 ### After (New Way)
+
 ```typescript
 // New code
 ```
@@ -145,11 +153,9 @@ Related to #
 
 <!-- Specific areas you want reviewers to focus on -->
 
-Please pay special attention to:
--
--
+## Please pay special attention to:
 
----
+- ***
 
 ## 🔗 Related PRs
 
@@ -161,7 +167,9 @@ Please pay special attention to:
 ---
 
 **By submitting this PR, I confirm that:**
-- ✅ I have read and followed the [Contributing Guidelines](../04-development/contributing.md)
+
+- ✅ I have read and followed the
+  [Contributing Guidelines](../04-development/contributing.md)
 - ✅ My code is ready for review
 - ✅ All tests pass locally
 - ✅ I am available to address review comments
@@ -169,6 +177,7 @@ Please pay special attention to:
 ---
 
 **Merge checklist (for maintainers)**:
+
 - [ ] Code review approved (2+ approvals)
 - [ ] All tests passing in CI
 - [ ] No conflicts with base branch

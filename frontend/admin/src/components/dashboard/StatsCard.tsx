@@ -44,11 +44,7 @@ export function StatsCard({
       <div className="card-header pt-5">
         <div className="card-title d-flex flex-column">
           <span className="fs-2hx fw-bold text-dark me-2 lh-1 ls-n2">
-            {loading ? (
-              <span className="spinner-border spinner-border-sm"></span>
-            ) : (
-              formatValue()
-            )}
+            {loading ? <span className="spinner-border spinner-border-sm"></span> : formatValue()}
           </span>
           <span className="text-gray-400 pt-1 fw-semibold fs-6">{title}</span>
         </div>

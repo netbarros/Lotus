@@ -6,6 +6,7 @@
 
 import { useSofiaHealth } from '@hooks/useSofiaHealth';
 import { formatNumber, formatDuration } from '@utils/format';
+import type { SofiaHealth } from '@/types';
 
 export function SofiaHealthWidget() {
   const { health, isLoading } = useSofiaHealth();
@@ -23,16 +24,27 @@ export function SofiaHealthWidget() {
   }
 
   const statusColor =
-    health?.status === 'healthy' ? 'success' :
-    health?.status === 'degraded' ? 'warning' :
-    'danger';
+    health?.status === 'healthy' ? 'success' : health?.status === 'degraded' ? 'warning' : 'danger';
 
   const uptime = health?.uptime ? formatDuration(health.uptime) : 'N/A';
   const successRate = health?.metrics
     ? ((health.metrics.successfulRequests / health.metrics.totalRequests) * 100).toFixed(1)
     : 0;
 
-  const components = health?.components || {};
+  const components: SofiaHealth['components'] = health?.components || {
+    IntentionEngine: false,
+    UXValidator: false,
+    SEOOptimizer: false,
+    DirectusOrchestrator: false,
+    MarketplaceManager: false,
+    DecisionLogger: false,
+    EventStore: false,
+    Metrics: false,
+    LangChain: false,
+    Langfuse: false,
+    Qdrant: false,
+    pgVector: false,
+  };
   const activeComponents = Object.values(components).filter(Boolean).length;
   const totalComponents = Object.keys(components).length;
 
@@ -99,9 +111,7 @@ export function SofiaHealthWidget() {
 
         <div className="mb-7">
           <div className="d-flex align-items-center mb-5">
-            <span className="fs-6 fw-semibold text-gray-800 flex-grow-1">
-              Components Active
-            </span>
+            <span className="fs-6 fw-semibold text-gray-800 flex-grow-1">Components Active</span>
             <span className="badge badge-light-primary">
               {activeComponents}/{totalComponents}
             </span>
@@ -139,7 +149,9 @@ export function SofiaHealthWidget() {
 function ComponentStatus({ name, active }: { name: string; active: boolean }) {
   return (
     <div className="d-flex align-items-center">
-      <span className={`bullet bullet-vertical h-20px bg-${active ? 'success' : 'danger'} me-3`}></span>
+      <span
+        className={`bullet bullet-vertical h-20px bg-${active ? 'success' : 'danger'} me-3`}
+      ></span>
       <span className="fs-7 text-gray-700">{name}</span>
       <span className="ms-auto">
         {active ? (

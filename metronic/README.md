@@ -1,7 +1,6 @@
 # 🎨 Metronic Framework Repository
 
-**Versão:** 1.0
-**Gerenciado por:** Sofia AI - Intelligent Component Manager
+**Versão:** 1.0 **Gerenciado por:** Sofia AI - Intelligent Component Manager
 
 ---
 
@@ -47,6 +46,7 @@ git push
 ### Passo 3: Execute o Instalador
 
 O instalador DEFINITIVO vai automaticamente:
+
 - ✅ Detectar as demos disponíveis
 - ✅ Catalogar todos os componentes
 - ✅ Analisar dependências

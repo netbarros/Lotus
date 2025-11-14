@@ -84,24 +84,11 @@
     "Mobile app (PWA)"
   ],
   "integrations": {
-    "wearables": [
-      "Fitbit",
-      "Apple Health",
-      "Google Fit"
-    ],
-    "video": [
-      "Vimeo",
-      "YouTube"
-    ],
-    "payment": [
-      "Stripe",
-      "PayPal"
-    ]
+    "wearables": ["Fitbit", "Apple Health", "Google Fit"],
+    "video": ["Vimeo", "YouTube"],
+    "payment": ["Stripe", "PayPal"]
   },
-  "compliance": [
-    "GDPR",
-    "HIPAA (optional)"
-  ],
+  "compliance": ["GDPR", "HIPAA (optional)"],
   "status": "production-ready",
   "createdAt": "2025-11-10",
   "updatedAt": "2025-11-10"

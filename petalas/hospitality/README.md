@@ -1,15 +1,18 @@
 # 🏨 Pétala Hospitality - Complete Hotel & Resort Management Solution
 
-**Version:** 1.0.0
-**Status:** ✅ Production-Ready
-**Category:** Hospitality & Tourism
-**License:** Proprietary
+**Version:** 1.0.0 **Status:** ✅ Production-Ready **Category:** Hospitality &
+Tourism **License:** Proprietary
 
 ---
 
 ## 📋 Overview
 
-**Pétala Hospitality** is a complete, production-ready hotel and resort management solution designed for hotels, resorts, vacation rentals, hostels, and hospitality businesses. Built on the MagicSaaS System-∞ Cognitive Mesh OS with Sofia AI v4.0 integration, it provides state-of-the-art features including reservations, guest management, housekeeping, revenue management, channel management, and AI-powered occupancy optimization.
+**Pétala Hospitality** is a complete, production-ready hotel and resort
+management solution designed for hotels, resorts, vacation rentals, hostels, and
+hospitality businesses. Built on the MagicSaaS System-∞ Cognitive Mesh OS with
+Sofia AI v4.0 integration, it provides state-of-the-art features including
+reservations, guest management, housekeeping, revenue management, channel
+management, and AI-powered occupancy optimization.
 
 ### 🎯 Target Audience
 
@@ -22,10 +25,12 @@
 
 ### ⭐ Key Features
 
-1. ✅ **Sofia AI Assistant** - Conversational booking with natural language, personalized recommendations, and intelligent pricing
+1. ✅ **Sofia AI Assistant** - Conversational booking with natural language,
+   personalized recommendations, and intelligent pricing
 2. ✅ **Online Reservations** - Real-time booking engine with calendar view
 3. ✅ **Room Management** - Room types, inventory, availability, pricing
-4. ✅ **Guest Profiles** - Preferences, history, loyalty status, special requests
+4. ✅ **Guest Profiles** - Preferences, history, loyalty status, special
+   requests
 5. ✅ **Channel Manager** - Sync with Booking.com, Airbnb, Expedia, OTAs
 6. ✅ **Dynamic Pricing** - AI-powered revenue management
 7. ✅ **Housekeeping** - Room status, cleaning schedules, maintenance
@@ -45,9 +50,11 @@
 
 ### 🧠 Sofia AI v4.0 Integration
 
-Hospitality pétala includes complete **Sofia AI v4.0** integration powered by LangChain, Langfuse, Qdrant, and pgVector:
+Hospitality pétala includes complete **Sofia AI v4.0** integration powered by
+LangChain, Langfuse, Qdrant, and pgVector:
 
 #### AI-Powered Features:
+
 - **Dynamic Pricing & Revenue Management** - Sofia optimizes pricing based on:
   - Historical occupancy patterns
   - Local events and seasonality
@@ -87,13 +94,16 @@ Hospitality pétala includes complete **Sofia AI v4.0** integration powered by L
   - Booking source optimization
 
 #### Database Integration:
-- `petala_customers` - Guest profiles with AI customer scores, lifetime value, loyalty tier
+
+- `petala_customers` - Guest profiles with AI customer scores, lifetime value,
+  loyalty tier
 - `petala_products` - Room types, amenities, packages with AI demand forecasting
 - `petala_appointments` - Event space bookings, spa appointments
 - `petala_orders` - POS transactions (F&B, room charges, extras)
 - `petala_reviews` - Guest feedback with sentiment analysis
 - `sofia_petala_insights` - AI-generated revenue and operational insights
-- `sofia_embeddings_universal` - Vector search for semantic guest preference matching
+- `sofia_embeddings_universal` - Vector search for semantic guest preference
+  matching
 
 All data synchronized with Sofia AI v4.0 for real-time intelligence.
 
@@ -104,6 +114,7 @@ All data synchronized with Sofia AI v4.0 for real-time intelligence.
 ### Tech Stack
 
 **Backend:**
+
 - Node.js 22+ with TypeScript
 - PostgreSQL 17+ with pgVector extension
 - Redis 8+ for caching and real-time features
@@ -112,6 +123,7 @@ All data synchronized with Sofia AI v4.0 for real-time intelligence.
 - Qdrant for vector search
 
 **Frontend:**
+
 - React 18+ with TypeScript
 - Metronic 9 components
 - TailwindCSS for styling
@@ -119,6 +131,7 @@ All data synchronized with Sofia AI v4.0 for real-time intelligence.
 - PWA support
 
 **AI & Intelligence:**
+
 - Sofia AI v4.0 Core
 - Anthropic Claude API
 - Langfuse for observability
@@ -126,6 +139,7 @@ All data synchronized with Sofia AI v4.0 for real-time intelligence.
 - TimescaleDB for time-series analytics
 
 **Integrations:**
+
 - Stripe for payments
 - Booking.com, Airbnb, Expedia APIs
 - Twilio for SMS
@@ -189,13 +203,16 @@ curl -X POST http://localhost:3003/api/intentions \
 
 Hospitality pétala uses the universal tables:
 
-- **petala_customers** - Guest profiles with preferences, loyalty status, visit history
-- **petala_products** - Room types (Standard, Deluxe, Suite), packages, amenities
+- **petala_customers** - Guest profiles with preferences, loyalty status, visit
+  history
+- **petala_products** - Room types (Standard, Deluxe, Suite), packages,
+  amenities
 - **petala_orders** - Reservations and POS transactions (F&B, services)
 - **petala_appointments** - Event space bookings, spa reservations
 - **petala_reviews** - Guest feedback with ratings and photos
 
 All tables include Sofia AI fields:
+
 - `ai_customer_score` - Guest quality score (0-1)
 - `ai_lifetime_value_prediction` - Predicted total revenue per guest
 - `ai_churn_risk` - Risk of guest not returning (0-1)
@@ -220,7 +237,8 @@ Sofia AI tracks and optimizes:
 9. **Channel Performance** - Revenue by booking source
 10. **Staff Efficiency** - Rooms cleaned per hour, check-in time
 
-All metrics available in real-time dashboards with AI insights and recommendations.
+All metrics available in real-time dashboards with AI insights and
+recommendations.
 
 ---
 
@@ -240,11 +258,11 @@ All metrics available in real-time dashboards with AI insights and recommendatio
 
 Hospitality pétala is available as part of MagicSaaS subscription:
 
-| Plan | Price | Rooms | Features |
-|------|-------|-------|----------|
-| **Starter** | $29/mo | Up to 10 rooms | Basic reservations, POS, Sofia AI |
-| **Professional** | $99/mo | Up to 50 rooms | Channel manager, dynamic pricing, SMS |
-| **Enterprise** | $299/mo | Unlimited rooms | Multi-property, API, white-label, custom integrations |
+| Plan             | Price   | Rooms           | Features                                              |
+| ---------------- | ------- | --------------- | ----------------------------------------------------- |
+| **Starter**      | $29/mo  | Up to 10 rooms  | Basic reservations, POS, Sofia AI                     |
+| **Professional** | $99/mo  | Up to 50 rooms  | Channel manager, dynamic pricing, SMS                 |
+| **Enterprise**   | $299/mo | Unlimited rooms | Multi-property, API, white-label, custom integrations |
 
 ---
 
@@ -261,6 +279,7 @@ Hospitality pétala is available as part of MagicSaaS subscription:
 ## 🤝 Support
 
 For technical support:
+
 - **Email:** support@softwarelotus.com.br
 - **Documentation:** https://docs.softwarelotus.com.br
 - **Issues:** https://github.com/netbarros/Lotus/issues
@@ -271,7 +290,8 @@ For technical support:
 
 © 2025 Software Lotus. All rights reserved.
 
-Hospitality pétala is proprietary enterprise software. Part of MagicSaaS System-∞.
+Hospitality pétala is proprietary enterprise software. Part of MagicSaaS
+System-∞.
 
 ---
 

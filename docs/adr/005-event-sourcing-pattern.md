@@ -1,9 +1,8 @@
 # ADR-005: Event Sourcing Pattern for State Management
 
-**Status:** ✅ Accepted
-**Date:** 2025-11-06
-**Deciders:** Sofia Lotus AI, Architecture Team
-**Technical Story:** Audit-first architecture for MagicSaaS System-∞
+**Status:** ✅ Accepted **Date:** 2025-11-06 **Deciders:** Sofia Lotus AI,
+Architecture Team **Technical Story:** Audit-first architecture for MagicSaaS
+System-∞
 
 ---
 
@@ -11,13 +10,16 @@
 
 MagicSaaS System-∞ must provide **complete auditability** for:
 
-- **Regulatory Compliance:** SOC2 (audit logs), GDPR (data lineage), ISO27001 (change tracking)
-- **AI Transparency:** Every Sofia AI decision must be traceable ("why did AI generate this SaaS?")
+- **Regulatory Compliance:** SOC2 (audit logs), GDPR (data lineage), ISO27001
+  (change tracking)
+- **AI Transparency:** Every Sofia AI decision must be traceable ("why did AI
+  generate this SaaS?")
 - **Debugging:** Root cause analysis for production issues
 - **Data Recovery:** Ability to restore state to any point in time
 - **Event Replay:** Test new features against historical data
 
-**Question:** How do we capture **every state change** in a scalable, queryable, immutable way?
+**Question:** How do we capture **every state change** in a scalable, queryable,
+immutable way?
 
 ---
 
@@ -36,7 +38,9 @@ MagicSaaS System-∞ must provide **complete auditability** for:
 ## Considered Options
 
 ### Option 1: Traditional Audit Logs (Application-Level)
+
 **Implementation:**
+
 ```typescript
 // Log every change manually
 await db.auditLog.create({
@@ -49,11 +53,13 @@ await db.auditLog.create({
 ```
 
 **Pros:**
+
 - Simple to implement
 - Works with any database
 - Low complexity
 
 **Cons:**
+
 - ❌ **Not Immutable:** Audit logs can be deleted (no true immutability)
 - ❌ **Incomplete:** Developers forget to log some changes
 - ❌ **No Time Travel:** Can't reconstruct past state (only diff)
@@ -61,7 +67,9 @@ await db.auditLog.create({
 - ❌ **Not Queryable:** Hard to answer "show all events for user X"
 
 ### Option 2: Database Triggers (Automatic Audit)
+
 **Implementation:**
+
 ```sql
 -- Trigger on users table
 CREATE TRIGGER users_audit_trigger
@@ -71,11 +79,13 @@ EXECUTE FUNCTION audit_log_function();
 ```
 
 **Pros:**
+
 - Automatic (no developer action required)
 - Captures all changes
 - Works for legacy apps
 
 **Cons:**
+
 - ❌ **Not Event-Driven:** Triggers are database-specific (no event bus)
 - ❌ **Performance Overhead:** Triggers slow down writes
 - ❌ **Limited Context:** Can't capture "why" (business context)
@@ -83,17 +93,21 @@ EXECUTE FUNCTION audit_log_function();
 - ❌ **Vendor Lock-In:** Triggers tied to PostgreSQL (not portable)
 
 ### Option 3: Change Data Capture (CDC) - Debezium/Kafka
+
 **Implementation:**
+
 ```
 PostgreSQL → Debezium → Kafka → Event Store
 ```
 
 **Pros:**
+
 - Captures all database changes automatically
 - Scalable (Kafka)
 - Real-time streaming
 
 **Cons:**
+
 - ❌ **Complex Infrastructure:** Need Kafka + Debezium + Kafka Connect
 - ❌ **No Business Context:** Only captures raw SQL changes (no "intention")
 - ❌ **Latency:** CDC has ~100ms lag (not suitable for real-time decisions)
@@ -103,6 +117,7 @@ PostgreSQL → Debezium → Kafka → Event Store
 ### Option 4: **Event Sourcing Pattern** (CHOSEN) ✅
 
 **Concept:**
+
 - **Don't store current state** → **store sequence of events**
 - **Events are facts:** "UserRegistered", "IntentionSubmitted", "SaaSGenerated"
 - **Immutable:** Events never change (append-only)
@@ -110,11 +125,12 @@ PostgreSQL → Debezium → Kafka → Event Store
 - **Event store:** PostgreSQL + TimescaleDB (time-series optimized)
 
 **Example:**
+
 ```typescript
 // Traditional approach (CRUD)
 await db.user.update({
   where: { id: userId },
-  data: { email: 'new@example.com' }
+  data: { email: 'new@example.com' },
 });
 
 // Event Sourcing approach
@@ -126,23 +142,24 @@ await eventStore.append({
     oldEmail: 'old@example.com',
     newEmail: 'new@example.com',
     changedBy: currentUser.id,
-    reason: 'User requested email change'
+    reason: 'User requested email change',
   },
   metadata: {
     timestamp: new Date(),
     correlationId: requestId,
-    causationId: previousEventId
-  }
+    causationId: previousEventId,
+  },
 });
 
 // Update projection (derived state)
 await db.user.update({
   where: { id: userId },
-  data: { email: 'new@example.com' }
+  data: { email: 'new@example.com' },
 });
 ```
 
 **Pros:**
+
 - ✅ **Immutability:** Events are append-only (true audit trail)
 - ✅ **Complete History:** Every state change captured (GDPR Article 15)
 - ✅ **Time Travel:** Replay events to reconstruct state at any point
@@ -153,10 +170,12 @@ await db.user.update({
 - ✅ **Cost Efficient:** No external infrastructure (Kafka not needed)
 
 **Cons:**
+
 - ⚠️ **Complexity:** Need to maintain projections (derived state)
 - ⚠️ **Storage:** Events grow linearly (need retention policy)
 - ⚠️ **Learning Curve:** Team must understand event sourcing patterns
-- ⚠️ **Eventual Consistency:** Projections may lag behind events (mitigated with async workers)
+- ⚠️ **Eventual Consistency:** Projections may lag behind events (mitigated with
+  async workers)
 
 ---
 
@@ -169,15 +188,19 @@ await db.user.update({
 **Compliance is Non-Negotiable**
 
 For enterprise SaaS, **audit trails are legally required**:
+
 - **SOC2:** "System must log all changes to sensitive data"
-- **GDPR Article 15:** "Data subject has right to know how their data was processed"
+- **GDPR Article 15:** "Data subject has right to know how their data was
+  processed"
 - **ISO27001:** "Change management requires complete traceability"
 
 **Application-level audit logs (Option 1) fail because:**
+
 - Developers forget to log changes → incomplete audit trail → SOC2 failure
 - Audit logs can be deleted → not immutable → not legally valid
 
 **Event Sourcing (Option 4) succeeds because:**
+
 - **Events are first-class citizens** → impossible to forget
 - **Immutable by design** → legally valid audit trail
 - **Complete context** → captures "why" (e.g., "User requested GDPR export")
@@ -258,7 +281,10 @@ export class EventStoreService {
   /**
    * Replay events to reconstruct state
    */
-  async replayStream<T>(streamId: string, reducer: EventReducer<T>): Promise<T> {
+  async replayStream<T>(
+    streamId: string,
+    reducer: EventReducer<T>
+  ): Promise<T> {
     const events = await this.getStream(streamId);
     return events.reduce(reducer, {} as T);
   }
@@ -272,7 +298,7 @@ export class EventStoreService {
 export class UserRegisteredEvent {
   readonly eventType = 'UserRegistered';
   constructor(
-    public readonly streamId: string,  // "user-123"
+    public readonly streamId: string, // "user-123"
     public readonly data: {
       userId: string;
       email: string;
@@ -287,7 +313,7 @@ export class UserRegisteredEvent {
 export class IntentionSubmittedEvent {
   readonly eventType = 'IntentionSubmitted';
   constructor(
-    public readonly streamId: string,  // "intention-456"
+    public readonly streamId: string, // "intention-456"
     public readonly data: {
       intentionId: string;
       userId: string;
@@ -302,7 +328,7 @@ export class IntentionSubmittedEvent {
 export class SaaSGeneratedEvent {
   readonly eventType = 'SaaSGenerated';
   constructor(
-    public readonly streamId: string,  // "saas-789"
+    public readonly streamId: string, // "saas-789"
     public readonly data: {
       saasId: string;
       intentionId: string;
@@ -321,7 +347,9 @@ export class SaaSGeneratedEvent {
 ```typescript
 // backend/api/src/event-handlers/user-projection.handler.ts
 @EventsHandler(UserRegisteredEvent)
-export class UserProjectionHandler implements IEventHandler<UserRegisteredEvent> {
+export class UserProjectionHandler
+  implements IEventHandler<UserRegisteredEvent>
+{
   constructor(private readonly prisma: PrismaService) {}
 
   /**
@@ -375,7 +403,8 @@ async getUserStateAt(userId: string, timestamp: Date): Promise<User> {
 
 ## Event Sourcing + CQRS Pattern
 
-We combine **Event Sourcing** with **CQRS** (Command Query Responsibility Segregation):
+We combine **Event Sourcing** with **CQRS** (Command Query Responsibility
+Segregation):
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -408,8 +437,10 @@ We combine **Event Sourcing** with **CQRS** (Command Query Responsibility Segreg
 ```
 
 **Benefits:**
+
 - **Write Performance:** Event appends are fast (no complex joins)
-- **Read Performance:** Projections are optimized for queries (indexes, denormalization)
+- **Read Performance:** Projections are optimized for queries (indexes,
+  denormalization)
 - **Scalability:** Write DB can be separate from read DB
 
 ---
@@ -419,24 +450,31 @@ We combine **Event Sourcing** with **CQRS** (Command Query Responsibility Segreg
 ### Positive
 
 - ✅ **Auditability:** 100% of state changes captured (SOC2 compliant)
-- ✅ **GDPR Compliance:** Article 15 (data access), Article 17 (right to be forgotten) via event log
+- ✅ **GDPR Compliance:** Article 15 (data access), Article 17 (right to be
+  forgotten) via event log
 - ✅ **Debugging:** Root cause analysis for production issues (replay events)
-- ✅ **Time Travel:** Restored production bug by replaying events to exact failure moment
-- ✅ **AI Transparency:** Every Sofia AI decision logged with confidence, reasoning
-- ✅ **Performance:** TimescaleDB handles 10M+ events/day with <10ms write latency
+- ✅ **Time Travel:** Restored production bug by replaying events to exact
+  failure moment
+- ✅ **AI Transparency:** Every Sofia AI decision logged with confidence,
+  reasoning
+- ✅ **Performance:** TimescaleDB handles 10M+ events/day with <10ms write
+  latency
 
 ### Negative
 
 - ⚠️ **Storage Growth:** Events grow linearly (200GB/year for 10K tenants)
-  - **Mitigation:** TimescaleDB compression (70% reduction), 7-year retention policy
+  - **Mitigation:** TimescaleDB compression (70% reduction), 7-year retention
+    policy
 - ⚠️ **Complexity:** Developers must understand events + projections
   - **Mitigation:** Training, code templates, examples
 - ⚠️ **Eventual Consistency:** Projections lag behind events (~100ms)
-  - **Mitigation:** Most queries use projections (acceptable), critical queries use event store directly
+  - **Mitigation:** Most queries use projections (acceptable), critical queries
+    use event store directly
 
 ### Neutral
 
-- 📊 **Monitoring:** Added Prometheus metrics: `event_store_writes_total`, `projection_lag_seconds`
+- 📊 **Monitoring:** Added Prometheus metrics: `event_store_writes_total`,
+  `projection_lag_seconds`
 - 🔄 **Schema Evolution:** Need to handle event schema changes (versioning)
   - **Mitigation:** Event versioning (event_version column)
 - 📚 **Documentation:** Documented event catalog (all event types)
@@ -453,20 +491,22 @@ We combine **Event Sourcing** with **CQRS** (Command Query Responsibility Segreg
 
 ### Performance Benchmarks
 
-| Metric | Target | Actual | Status |
-|--------|--------|--------|--------|
-| Event Write Latency (p95) | < 20ms | 8ms | ✅ |
-| Event Query Latency (p95) | < 50ms | 35ms | ✅ |
-| Events/Day | 10M | 12M | ✅ |
-| Storage Growth | < 300GB/year | 180GB/year | ✅ |
-| Projection Lag | < 200ms | 120ms | ✅ |
+| Metric                    | Target       | Actual     | Status |
+| ------------------------- | ------------ | ---------- | ------ |
+| Event Write Latency (p95) | < 20ms       | 8ms        | ✅     |
+| Event Query Latency (p95) | < 50ms       | 35ms       | ✅     |
+| Events/Day                | 10M          | 12M        | ✅     |
+| Storage Growth            | < 300GB/year | 180GB/year | ✅     |
+| Projection Lag            | < 200ms      | 120ms      | ✅     |
 
 ### Case Study: Production Bug Root Cause Analysis
 
 **Bug:** User reported "SaaS generation failed but was charged"
 
 **Root Cause Analysis via Event Replay:**
-1. Query: `SELECT * FROM event_store WHERE stream_id = 'user-789' AND created_at BETWEEN '2026-03-15' AND '2026-03-16'`
+
+1. Query:
+   `SELECT * FROM event_store WHERE stream_id = 'user-789' AND created_at BETWEEN '2026-03-15' AND '2026-03-16'`
 2. Events found:
    - `IntentionSubmittedEvent` (09:15:32)
    - `PaymentProcessedEvent` (09:15:45)
@@ -507,5 +547,5 @@ If Event Sourcing proves insufficient at 1B+ events:
 
 ---
 
-**Last Reviewed:** 2025-11-06
-**Next Review:** Q3 2026 (after 1B event milestone)
+**Last Reviewed:** 2025-11-06 **Next Review:** Q3 2026 (after 1B event
+milestone)

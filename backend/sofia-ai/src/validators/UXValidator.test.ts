@@ -67,11 +67,7 @@ describe('UXValidator', () => {
 
   describe('competitorResearch', () => {
     it('should analyze competitor UX', async () => {
-      const competitors = [
-        'competitor1.com',
-        'competitor2.com',
-        'competitor3.com',
-      ];
+      const competitors = ['competitor1.com', 'competitor2.com', 'competitor3.com'];
 
       const mockAnalysis = {
         competitors: competitors.length,

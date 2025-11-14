@@ -12,7 +12,7 @@
 export const sofiaImports = `
 import { useSofia } from '@/composables/useSofia'
 import SofiaFloatingButton from '@/../../shared/sofia/components/SofiaFloatingButton.vue'
-`
+`;
 
 // ====================
 // TEMPLATE: Sofia setup code to add to script
@@ -38,7 +38,7 @@ const handleSofiaMessage = async (message: string) => {
 const handleSofiaAction = async (action: string) => {
   await sofia.executeAction(action)
 }
-`
+`;
 
 // ====================
 // TEMPLATE: Sofia component to add before closing div
@@ -55,7 +55,7 @@ export const sofiaComponent = `
   @send-message="handleSofiaMessage"
   @action="handleSofiaAction"
 />
-`
+`;
 
 // ====================
 // VIEW-SPECIFIC CONTEXT UPDATES
@@ -133,8 +133,8 @@ sofia.updateContext({
   current_section: 'order_detail',
   current_order_id: route.params.id as string
 })
-`
-}
+`,
+};
 
 // ====================
 // COMPLETE INTEGRATION GUIDE
@@ -167,12 +167,12 @@ For each view file, follow these steps:
    - Component is added to template
 
 ==========================================
-`
+`;
 
 export default {
   sofiaImports,
   sofiaSetup,
   sofiaComponent,
   contextUpdates,
-  integrationSteps
-}
+  integrationSteps,
+};

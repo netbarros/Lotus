@@ -15,7 +15,8 @@ https://api.magicsaas.ai (production)
 
 ## 🔒 Authentication
 
-Currently, Sofia AI API is **open for development**. Production deployment will require:
+Currently, Sofia AI API is **open for development**. Production deployment will
+require:
 
 ```http
 Authorization: Bearer <token>
@@ -30,6 +31,7 @@ Authorization: Bearer <token>
 Health check endpoint.
 
 **Response** `200 OK`:
+
 ```json
 {
   "status": "healthy",
@@ -53,6 +55,7 @@ Health check endpoint.
 Prometheus metrics endpoint.
 
 **Response** `200 OK` (text/plain):
+
 ```
 # HELP sofia_intentions_total Total intentions processed
 # TYPE sofia_intentions_total counter
@@ -75,6 +78,7 @@ sofia_generation_duration_seconds_bucket{le="5"} 120
 Generate complete SaaS architecture from natural language intention.
 
 **Request Body**:
+
 ```json
 {
   "intention": "Create a SaaS for gym management",
@@ -98,6 +102,7 @@ Generate complete SaaS architecture from natural language intention.
 ```
 
 **Response** `200 OK`:
+
 ```json
 {
   "success": true,
@@ -136,7 +141,11 @@ Generate complete SaaS architecture from natural language intention.
           { "name": "id", "type": "uuid", "primary": true },
           { "name": "name", "type": "varchar(255)" },
           { "name": "slug", "type": "varchar(100)", "unique": true },
-          { "name": "plan", "type": "enum", "values": ["starter", "pro", "enterprise"] },
+          {
+            "name": "plan",
+            "type": "enum",
+            "values": ["starter", "pro", "enterprise"]
+          },
           { "name": "created_at", "type": "timestamp" }
         ],
         "indexes": ["slug"],
@@ -148,7 +157,11 @@ Generate complete SaaS architecture from natural language intention.
           { "name": "id", "type": "uuid", "primary": true },
           { "name": "tenant_id", "type": "uuid", "foreign": "tenants.id" },
           { "name": "email", "type": "varchar(255)", "unique": true },
-          { "name": "role", "type": "enum", "values": ["admin", "trainer", "member"] }
+          {
+            "name": "role",
+            "type": "enum",
+            "values": ["admin", "trainer", "member"]
+          }
         ]
       },
       {
@@ -214,6 +227,7 @@ Generate complete SaaS architecture from natural language intention.
 ```
 
 **Error Response** `400 Bad Request`:
+
 ```json
 {
   "success": false,
@@ -231,6 +245,7 @@ Generate complete SaaS architecture from natural language intention.
 Validate UX/UI of components.
 
 **Request Body**:
+
 ```json
 {
   "component": "LoginForm",
@@ -244,6 +259,7 @@ Validate UX/UI of components.
 ```
 
 **Response** `200 OK`:
+
 ```json
 {
   "success": true,
@@ -309,6 +325,7 @@ Validate UX/UI of components.
 Optimize SEO for pages.
 
 **Request Body**:
+
 ```json
 {
   "page": {
@@ -326,6 +343,7 @@ Optimize SEO for pages.
 ```
 
 **Response** `200 OK`:
+
 ```json
 {
   "success": true,
@@ -375,11 +393,13 @@ Optimize SEO for pages.
 List all available pétalas.
 
 **Query Parameters**:
+
 - `vertical` (optional): Filter by vertical
 - `limit` (optional): Max results (default: 20)
 - `offset` (optional): Pagination offset
 
 **Response** `200 OK`:
+
 ```json
 {
   "success": true,
@@ -392,7 +412,7 @@ List all available pétalas.
       "icon": "💬",
       "color": "#25D366",
       "vertical": "communication",
-      "basePrice": 99.00,
+      "basePrice": 99.0,
       "currency": "BRL",
       "features": [
         "Automated messages",
@@ -414,6 +434,7 @@ List all available pétalas.
 Create checkout session.
 
 **Request Body**:
+
 ```json
 {
   "tenantId": "tenant_123",
@@ -433,6 +454,7 @@ Create checkout session.
 ```
 
 **Response** `200 OK`:
+
 ```json
 {
   "success": true,
@@ -441,18 +463,18 @@ Create checkout session.
     {
       "productId": "petala_whatsapp",
       "name": "WhatsApp Integration",
-      "price": 99.00,
+      "price": 99.0,
       "quantity": 1
     }
   ],
-  "subtotal": 99.00,
+  "subtotal": 99.0,
   "discount": {
     "code": "LAUNCH50",
-    "amount": 49.50,
+    "amount": 49.5,
     "type": "percentage"
   },
-  "tax": 9.90,
-  "total": 59.40,
+  "tax": 9.9,
+  "total": 59.4,
   "currency": "BRL",
   "expiresAt": "2025-11-05T11:30:00Z",
   "paymentMethods": ["credit_card", "pix", "boleto"]
@@ -464,6 +486,7 @@ Create checkout session.
 Process payment.
 
 **Request Body**:
+
 ```json
 {
   "sessionId": "checkout_abc123",
@@ -475,6 +498,7 @@ Process payment.
 ```
 
 **Response** `200 OK`:
+
 ```json
 {
   "success": true,
@@ -496,11 +520,13 @@ Process payment.
 Get decision logs.
 
 **Query Parameters**:
+
 - `projectId` (optional): Filter by project
 - `component` (optional): Filter by component
 - `limit` (optional): Max results (default: 50)
 
 **Response** `200 OK`:
+
 ```json
 {
   "success": true,
@@ -531,17 +557,18 @@ Get decision logs.
 
 ## 🚨 Error Codes
 
-| Code | Description |
-|------|-------------|
-| `400` | Bad Request - Invalid input |
-| `401` | Unauthorized - Missing/invalid token |
-| `403` | Forbidden - Insufficient permissions |
-| `404` | Not Found - Resource doesn't exist |
+| Code  | Description                             |
+| ----- | --------------------------------------- |
+| `400` | Bad Request - Invalid input             |
+| `401` | Unauthorized - Missing/invalid token    |
+| `403` | Forbidden - Insufficient permissions    |
+| `404` | Not Found - Resource doesn't exist      |
 | `429` | Too Many Requests - Rate limit exceeded |
-| `500` | Internal Server Error |
-| `503` | Service Unavailable - Dependency down |
+| `500` | Internal Server Error                   |
+| `503` | Service Unavailable - Dependency down   |
 
 **Error Response Format**:
+
 ```json
 {
   "success": false,
@@ -560,15 +587,16 @@ Get decision logs.
 
 ## 📊 Rate Limits
 
-| Endpoint | Limit |
-|----------|-------|
-| `/api/intention/generate` | 10 req/min |
-| `/api/ux/validate` | 30 req/min |
-| `/api/seo/optimize` | 30 req/min |
-| `/api/marketplace/*` | 60 req/min |
-| Other endpoints | 100 req/min |
+| Endpoint                  | Limit       |
+| ------------------------- | ----------- |
+| `/api/intention/generate` | 10 req/min  |
+| `/api/ux/validate`        | 30 req/min  |
+| `/api/seo/optimize`       | 30 req/min  |
+| `/api/marketplace/*`      | 60 req/min  |
+| Other endpoints           | 100 req/min |
 
 **Rate Limit Headers**:
+
 ```http
 X-RateLimit-Limit: 10
 X-RateLimit-Remaining: 7
@@ -577,4 +605,5 @@ X-RateLimit-Reset: 1699182000
 
 ---
 
-**[← Voltar ao Índice](../00-INDEX.md)** | **[Próximo: Directus API →](./directus-api.md)**
+**[← Voltar ao Índice](../00-INDEX.md)** |
+**[Próximo: Directus API →](./directus-api.md)**

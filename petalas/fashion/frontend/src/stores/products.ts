@@ -1,70 +1,70 @@
-import { defineStore } from 'pinia'
-import { ref } from 'vue'
-import type { Product, ProductFilters } from '@/types'
+import { defineStore } from 'pinia';
+import { ref } from 'vue';
+import type { Product, ProductFilters } from '@/types';
 
 export const useProductsStore = defineStore('products', () => {
   // State
-  const products = ref<Product[]>([])
-  const currentProduct = ref<Product | null>(null)
-  const loading = ref(false)
-  const total = ref(0)
+  const products = ref<Product[]>([]);
+  const currentProduct = ref<Product | null>(null);
+  const loading = ref(false);
+  const total = ref(0);
   const filters = ref<ProductFilters>({
     category: null,
     minPrice: null,
     maxPrice: null,
     brand: null,
-    status: 'active'
-  })
+    status: 'active',
+  });
 
   // Actions
   async function fetchProducts(params?: { limit?: number; offset?: number }) {
-    loading.value = true
+    loading.value = true;
     try {
       // API call would go here
       // const response = await api.products.list(params)
 
       // Mock data
-      products.value = []
-      total.value = 0
+      products.value = [];
+      total.value = 0;
 
-      return { success: true }
+      return { success: true };
     } catch (error) {
-      return { success: false, error }
+      return { success: false, error };
     } finally {
-      loading.value = false
+      loading.value = false;
     }
   }
 
   async function fetchProductBySlug(slug: string) {
-    loading.value = true
+    loading.value = true;
     try {
       // API call would go here
       // const response = await api.products.getBySlug(slug)
 
-      currentProduct.value = null
+      currentProduct.value = null;
 
-      return { success: true }
+      return { success: true };
     } catch (error) {
-      return { success: false, error }
+      return { success: false, error };
     } finally {
-      loading.value = false
+      loading.value = false;
     }
   }
 
   async function searchProducts(query: string) {
-    loading.value = true
+    loading.value = true;
     try {
       // API call would go here
-      return { success: true }
+      return { success: true };
     } catch (error) {
-      return { success: false, error }
+      return { success: false, error };
     } finally {
-      loading.value = false
+      loading.value = false;
     }
   }
 
   function setFilters(newFilters: Partial<ProductFilters>) {
-    filters.value = { ...filters.value, ...newFilters }
+    filters.value = { ...filters.value, ...newFilters };
   }
 
   function clearFilters() {
@@ -73,8 +73,8 @@ export const useProductsStore = defineStore('products', () => {
       minPrice: null,
       maxPrice: null,
       brand: null,
-      status: 'active'
-    }
+      status: 'active',
+    };
   }
 
   return {
@@ -89,6 +89,6 @@ export const useProductsStore = defineStore('products', () => {
     fetchProductBySlug,
     searchProducts,
     setFilters,
-    clearFilters
-  }
-})
+    clearFilters,
+  };
+});

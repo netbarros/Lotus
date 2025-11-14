@@ -8,7 +8,10 @@ describe('Restaurant Payment Endpoint', () => {
   let authToken: string;
 
   beforeAll(async () => {
-    const response = await api.post('/auth/login', { email: 'customer@example.com', password: 'password' });
+    const response = await api.post('/auth/login', {
+      email: 'customer@example.com',
+      password: 'password',
+    });
     authToken = response.data.data.access_token;
     api.defaults.headers.common['Authorization'] = `Bearer ${authToken}`;
   });
@@ -20,12 +23,21 @@ describe('Restaurant Payment Endpoint', () => {
   });
 
   it('should process payment', async () => {
-    const response = await api.post('/payment/process', { paymentIntentId: 'pi_test123', paymentMethod: 'pm_test' });
+    const response = await api.post('/payment/process', {
+      paymentIntentId: 'pi_test123',
+      paymentMethod: 'pm_test',
+    });
     expect(response.status).toBe(200);
   });
 
   it('should split bill', async () => {
-    const response = await api.post('/payment/split-bill', { orderId: 1, splits: [{ customerId: 1, amount: 2500 }, { customerId: 2, amount: 2500 }] });
+    const response = await api.post('/payment/split-bill', {
+      orderId: 1,
+      splits: [
+        { customerId: 1, amount: 2500 },
+        { customerId: 2, amount: 2500 },
+      ],
+    });
     expect(response.status).toBe(200);
   });
 
@@ -35,7 +47,11 @@ describe('Restaurant Payment Endpoint', () => {
   });
 
   it('should refund payment', async () => {
-    const response = await api.post('/payment/refund', { orderId: 1, amount: 5000, reason: 'customer_request' });
+    const response = await api.post('/payment/refund', {
+      orderId: 1,
+      amount: 5000,
+      reason: 'customer_request',
+    });
     expect(response.status).toBe(200);
   });
 });

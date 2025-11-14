@@ -10,7 +10,7 @@ describe('Analytics Endpoint', () => {
   beforeAll(async () => {
     const response = await api.post('/auth/login', {
       email: 'admin@example.com',
-      password: 'password'
+      password: 'password',
     });
     authToken = response.data.data.access_token;
     api.defaults.headers.common['Authorization'] = `Bearer ${authToken}`;
@@ -82,7 +82,7 @@ describe('Analytics Endpoint', () => {
         type: 'sales',
         format: 'csv',
         from: '2025-01-01',
-        to: '2025-12-31'
+        to: '2025-12-31',
       });
 
       expect(response.status).toBe(200);

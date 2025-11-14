@@ -7,7 +7,7 @@ export default defineEndpoint((router, { services, database, env }) => {
       const {
         order_id,
         payment_method, // 'stripe', 'mercadopago', 'pix'
-        payment_data // Payment-specific data (token, card info, etc.)
+        payment_data, // Payment-specific data (token, card info, etc.)
       } = req.body;
 
       const tenant_id = req.accountability.tenant;
@@ -15,14 +15,12 @@ export default defineEndpoint((router, { services, database, env }) => {
       if (!order_id || !payment_method) {
         return res.status(400).json({
           error: 'Missing required fields',
-          required: ['order_id', 'payment_method']
+          required: ['order_id', 'payment_method'],
         });
       }
 
       // Get order
-      const order = await database('orders')
-        .where({ id: order_id, tenant_id })
-        .first();
+      const order = await database('orders').where({ id: order_id, tenant_id }).first();
 
       if (!order) {
         return res.status(404).json({ error: 'Order not found' });
@@ -48,7 +46,7 @@ export default defineEndpoint((router, { services, database, env }) => {
         default:
           return res.status(400).json({
             error: 'Invalid payment method',
-            supported: ['stripe', 'mercadopago', 'pix']
+            supported: ['stripe', 'mercadopago', 'pix'],
           });
       }
 
@@ -61,7 +59,7 @@ export default defineEndpoint((router, { services, database, env }) => {
             payment_transaction_id: paymentResult.transaction_id,
             payment_data: JSON.stringify(paymentResult.payment_data),
             paid_at: paymentResult.status === 'paid' ? new Date() : null,
-            updated_at: new Date()
+            updated_at: new Date(),
           });
 
         // If paid, trigger order processing flow (inventory decrement, email, etc.)
@@ -79,9 +77,9 @@ export default defineEndpoint((router, { services, database, env }) => {
               payment_method,
               amount: order.total,
               currency: order.currency,
-              transaction_id: paymentResult.transaction_id
+              transaction_id: paymentResult.transaction_id,
             }),
-            timestamp: new Date()
+            timestamp: new Date(),
           });
         }
 
@@ -93,8 +91,8 @@ export default defineEndpoint((router, { services, database, env }) => {
             payment_status: paymentResult.status,
             transaction_id: paymentResult.transaction_id,
             ...(paymentResult.qr_code && { qr_code: paymentResult.qr_code }),
-            ...(paymentResult.pix_code && { pix_code: paymentResult.pix_code })
-          }
+            ...(paymentResult.pix_code && { pix_code: paymentResult.pix_code }),
+          },
         });
       } else {
         // Payment failed
@@ -103,12 +101,12 @@ export default defineEndpoint((router, { services, database, env }) => {
           .update({
             payment_status: 'failed',
             payment_data: JSON.stringify({ error: paymentResult.error }),
-            updated_at: new Date()
+            updated_at: new Date(),
           });
 
         res.status(400).json({
           error: 'Payment failed',
-          message: paymentResult.error
+          message: paymentResult.error,
         });
       }
     } catch (error) {
@@ -122,7 +120,16 @@ export default defineEndpoint((router, { services, database, env }) => {
       const tenant_id = req.accountability.tenant;
 
       const order = await database('orders')
-        .select('id', 'order_number', 'payment_status', 'payment_method', 'payment_transaction_id', 'total', 'currency', 'paid_at')
+        .select(
+          'id',
+          'order_number',
+          'payment_status',
+          'payment_method',
+          'payment_transaction_id',
+          'total',
+          'currency',
+          'paid_at'
+        )
         .where({ id: req.params.order_id, tenant_id })
         .first();
 
@@ -139,8 +146,8 @@ export default defineEndpoint((router, { services, database, env }) => {
           transaction_id: order.payment_transaction_id,
           amount: order.total,
           currency: order.currency,
-          paid_at: order.paid_at
-        }
+          paid_at: order.paid_at,
+        },
       });
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -163,13 +170,11 @@ export default defineEndpoint((router, { services, database, env }) => {
       if (eventType === 'checkout.session.completed' || eventType === 'payment_intent.succeeded') {
         const orderId = session.metadata?.order_id;
         if (orderId) {
-          await database('orders')
-            .where({ id: orderId })
-            .update({
-              payment_status: 'paid',
-              paid_at: new Date(),
-              updated_at: new Date()
-            });
+          await database('orders').where({ id: orderId }).update({
+            payment_status: 'paid',
+            paid_at: new Date(),
+            updated_at: new Date(),
+          });
         }
       }
 
@@ -210,18 +215,14 @@ export default defineEndpoint((router, { services, database, env }) => {
 
       // Verify webhook authenticity
       // Find order by transaction ID
-      const order = await database('orders')
-        .where({ payment_transaction_id: txid })
-        .first();
+      const order = await database('orders').where({ payment_transaction_id: txid }).first();
 
       if (order && status === 'CONCLUIDA') {
-        await database('orders')
-          .where({ id: order.id })
-          .update({
-            payment_status: 'paid',
-            paid_at: new Date(),
-            updated_at: new Date()
-          });
+        await database('orders').where({ id: order.id }).update({
+          payment_status: 'paid',
+          paid_at: new Date(),
+          updated_at: new Date(),
+        });
 
         // Emit payment completed event
         await database('events').insert({
@@ -233,9 +234,9 @@ export default defineEndpoint((router, { services, database, env }) => {
           event_data: JSON.stringify({
             order_id: order.id,
             payment_method: 'pix',
-            transaction_id: txid
+            transaction_id: txid,
           }),
-          timestamp: new Date()
+          timestamp: new Date(),
         });
       }
 
@@ -267,12 +268,12 @@ async function processStripePayment(order, paymentData, env) {
       status: 'paid',
       transaction_id: 'stripe_' + Date.now(),
       message: 'Payment processed successfully via Stripe',
-      payment_data: { method: 'stripe' }
+      payment_data: { method: 'stripe' },
     };
   } catch (error) {
     return {
       success: false,
-      error: error.message
+      error: error.message,
     };
   }
 }
@@ -298,12 +299,12 @@ async function processMercadoPagoPayment(order, paymentData, env) {
       status: 'paid',
       transaction_id: 'mp_' + Date.now(),
       message: 'Payment processed successfully via Mercado Pago',
-      payment_data: { method: 'mercadopago' }
+      payment_data: { method: 'mercadopago' },
     };
   } catch (error) {
     return {
       success: false,
-      error: error.message
+      error: error.message,
     };
   }
 }
@@ -320,8 +321,14 @@ async function generatePixQRCode(order, paymentData, env) {
 
     // Mock response
     const txid = 'pix_' + Date.now();
-    const qrCode = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII='; // Mock QR code
-    const pixCode = '00020126580014br.gov.bcb.pix0136' + txid + '52040000530398654' + order.total + '5802BR6009SAO PAULO';
+    const qrCode =
+      'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII='; // Mock QR code
+    const pixCode =
+      '00020126580014br.gov.bcb.pix0136' +
+      txid +
+      '52040000530398654' +
+      order.total +
+      '5802BR6009SAO PAULO';
 
     return {
       success: true,
@@ -332,13 +339,13 @@ async function generatePixQRCode(order, paymentData, env) {
       pix_code: pixCode,
       payment_data: {
         method: 'pix',
-        expires_at: new Date(Date.now() + 3600000).toISOString()
-      }
+        expires_at: new Date(Date.now() + 3600000).toISOString(),
+      },
     };
   } catch (error) {
     return {
       success: false,
-      error: error.message
+      error: error.message,
     };
   }
 }

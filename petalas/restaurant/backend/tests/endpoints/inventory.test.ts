@@ -8,7 +8,10 @@ describe('Restaurant Inventory Endpoint', () => {
   let authToken: string;
 
   beforeAll(async () => {
-    const response = await api.post('/auth/login', { email: 'admin@example.com', password: 'password' });
+    const response = await api.post('/auth/login', {
+      email: 'admin@example.com',
+      password: 'password',
+    });
     authToken = response.data.data.access_token;
     api.defaults.headers.common['Authorization'] = `Bearer ${authToken}`;
   });
@@ -32,7 +35,11 @@ describe('Restaurant Inventory Endpoint', () => {
   });
 
   it('should track inventory usage', async () => {
-    const response = await api.post('/inventory/track-usage', { itemId: 1, quantity: 2, orderId: 1 });
+    const response = await api.post('/inventory/track-usage', {
+      itemId: 1,
+      quantity: 2,
+      orderId: 1,
+    });
     expect(response.status).toBe(200);
   });
 });

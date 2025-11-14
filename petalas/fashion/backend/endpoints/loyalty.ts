@@ -11,9 +11,7 @@ export default defineEndpoint((router, { services, database }) => {
         return res.status(401).json({ error: 'Authentication required' });
       }
 
-      const customer = await database('customers')
-        .where({ id: user_id, tenant_id })
-        .first();
+      const customer = await database('customers').where({ id: user_id, tenant_id }).first();
 
       if (!customer) {
         return res.status(404).json({ error: 'Customer not found' });
@@ -21,10 +19,40 @@ export default defineEndpoint((router, { services, database }) => {
 
       // Tier configuration
       const tiers = {
-        bronze: { min: 0, max: 500, discount: 0, pointsMultiplier: 1, benefits: ['Early access to new collections'] },
-        silver: { min: 500, max: 1500, discount: 5, pointsMultiplier: 1.25, benefits: ['5% discount', 'Free shipping on orders $50+', 'Birthday gift'] },
-        gold: { min: 1500, max: 5000, discount: 10, pointsMultiplier: 1.5, benefits: ['10% discount', 'Free shipping', 'Priority support', 'Exclusive sales access'] },
-        platinum: { min: 5000, max: Infinity, discount: 15, pointsMultiplier: 2, benefits: ['15% discount', 'Free shipping + returns', 'VIP support', 'Personal stylist', 'Exclusive events'] }
+        bronze: {
+          min: 0,
+          max: 500,
+          discount: 0,
+          pointsMultiplier: 1,
+          benefits: ['Early access to new collections'],
+        },
+        silver: {
+          min: 500,
+          max: 1500,
+          discount: 5,
+          pointsMultiplier: 1.25,
+          benefits: ['5% discount', 'Free shipping on orders $50+', 'Birthday gift'],
+        },
+        gold: {
+          min: 1500,
+          max: 5000,
+          discount: 10,
+          pointsMultiplier: 1.5,
+          benefits: ['10% discount', 'Free shipping', 'Priority support', 'Exclusive sales access'],
+        },
+        platinum: {
+          min: 5000,
+          max: Infinity,
+          discount: 15,
+          pointsMultiplier: 2,
+          benefits: [
+            '15% discount',
+            'Free shipping + returns',
+            'VIP support',
+            'Personal stylist',
+            'Exclusive events',
+          ],
+        },
       };
 
       const currentTier = tiers[customer.loyalty_tier] || tiers.bronze;
@@ -42,27 +70,29 @@ export default defineEndpoint((router, { services, database }) => {
             name: customer.loyalty_tier,
             discount_percentage: currentTier.discount,
             points_multiplier: currentTier.pointsMultiplier,
-            benefits: currentTier.benefits
+            benefits: currentTier.benefits,
           },
           points: {
             balance: customer.loyalty_points,
             value_usd: (customer.loyalty_points * 0.01).toFixed(2), // $0.01 per point
-            expires_at: null // Could implement point expiration
+            expires_at: null, // Could implement point expiration
           },
-          next_tier: nextTier ? {
-            name: nextTierName,
-            discount_percentage: nextTier.discount,
-            required_spending: nextTier.min,
-            remaining: (nextTier.min - totalSpent).toFixed(2),
-            progress_percentage: Math.min(100, progress).toFixed(1)
-          } : null,
+          next_tier: nextTier
+            ? {
+                name: nextTierName,
+                discount_percentage: nextTier.discount,
+                required_spending: nextTier.min,
+                remaining: (nextTier.min - totalSpent).toFixed(2),
+                progress_percentage: Math.min(100, progress).toFixed(1),
+              }
+            : null,
           lifetime: {
             total_spent: totalSpent.toFixed(2),
             total_orders: customer.orders_count,
             points_earned: customer.loyalty_points,
-            tier_since: customer.updated_at
-          }
-        }
+            tier_since: customer.updated_at,
+          },
+        },
       });
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -82,13 +112,11 @@ export default defineEndpoint((router, { services, database }) => {
 
       if (!points || points < 100) {
         return res.status(400).json({
-          error: 'Minimum 100 points required for redemption'
+          error: 'Minimum 100 points required for redemption',
         });
       }
 
-      const customer = await database('customers')
-        .where({ id: user_id, tenant_id })
-        .first();
+      const customer = await database('customers').where({ id: user_id, tenant_id }).first();
 
       if (!customer) {
         return res.status(404).json({ error: 'Customer not found' });
@@ -98,7 +126,7 @@ export default defineEndpoint((router, { services, database }) => {
         return res.status(400).json({
           error: 'Insufficient points',
           available: customer.loyalty_points,
-          requested: points
+          requested: points,
         });
       }
 
@@ -125,21 +153,19 @@ export default defineEndpoint((router, { services, database }) => {
             usage_count: 0,
             status: 'active',
             created_at: new Date(),
-            updated_at: new Date()
+            updated_at: new Date(),
           });
           break;
 
         default:
           return res.status(400).json({
             error: 'Invalid redemption type',
-            supported: ['discount', 'product', 'gift_card']
+            supported: ['discount', 'product', 'gift_card'],
           });
       }
 
       // Deduct points
-      await database('customers')
-        .where({ id: user_id })
-        .decrement('loyalty_points', points);
+      await database('customers').where({ id: user_id }).decrement('loyalty_points', points);
 
       // Record redemption
       await database('loyalty_redemptions').insert({
@@ -150,7 +176,7 @@ export default defineEndpoint((router, { services, database }) => {
         type: type,
         value: redemptionValue,
         coupon_code: couponCode,
-        created_at: new Date()
+        created_at: new Date(),
       });
 
       // Emit redemption event
@@ -165,9 +191,9 @@ export default defineEndpoint((router, { services, database }) => {
           points,
           type,
           value: redemptionValue,
-          coupon_code: couponCode
+          coupon_code: couponCode,
         }),
-        timestamp: new Date()
+        timestamp: new Date(),
       });
 
       res.json({
@@ -178,8 +204,8 @@ export default defineEndpoint((router, { services, database }) => {
           new_balance: customer.loyalty_points - points,
           type,
           value: redemptionValue,
-          coupon_code: couponCode
-        }
+          coupon_code: couponCode,
+        },
       });
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -204,7 +230,7 @@ export default defineEndpoint((router, { services, database }) => {
           tenant_id,
           aggregate_type: 'customer',
           aggregate_id: user_id,
-          event_type: 'petala.fashion.loyalty.earned'
+          event_type: 'petala.fashion.loyalty.earned',
         })
         .orderBy('timestamp', 'desc')
         .limit(limit);
@@ -218,7 +244,7 @@ export default defineEndpoint((router, { services, database }) => {
 
       // Combine and sort
       const history = [
-        ...earnings.map(e => {
+        ...earnings.map((e) => {
           const data = JSON.parse(e.event_data);
           return {
             id: e.id,
@@ -226,25 +252,25 @@ export default defineEndpoint((router, { services, database }) => {
             points: data.points_earned,
             description: data.source || 'Purchase',
             order_id: data.order_id,
-            timestamp: e.timestamp
+            timestamp: e.timestamp,
           };
         }),
-        ...redemptions.map(r => ({
+        ...redemptions.map((r) => ({
           id: r.id,
           type: 'redeemed',
           points: -r.points,
           description: `Redeemed for ${r.type}`,
           value: r.value,
           coupon_code: r.coupon_code,
-          timestamp: r.created_at
-        }))
+          timestamp: r.created_at,
+        })),
       ].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
 
       res.json({
         data: history.slice(0, limit),
         meta: {
-          count: history.length
-        }
+          count: history.length,
+        },
       });
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -264,7 +290,7 @@ export default defineEndpoint((router, { services, database }) => {
           name: '$1 Discount',
           points_required: 100,
           value: 1,
-          description: 'Redeem 100 points for $1 off your next purchase'
+          description: 'Redeem 100 points for $1 off your next purchase',
         },
         {
           id: 'discount_500',
@@ -272,7 +298,7 @@ export default defineEndpoint((router, { services, database }) => {
           name: '$5 Discount',
           points_required: 500,
           value: 5,
-          description: 'Redeem 500 points for $5 off your next purchase'
+          description: 'Redeem 500 points for $5 off your next purchase',
         },
         {
           id: 'discount_1000',
@@ -280,7 +306,7 @@ export default defineEndpoint((router, { services, database }) => {
           name: '$10 Discount',
           points_required: 1000,
           value: 10,
-          description: 'Redeem 1000 points for $10 off your next purchase'
+          description: 'Redeem 1000 points for $10 off your next purchase',
         },
         {
           id: 'free_shipping',
@@ -288,7 +314,7 @@ export default defineEndpoint((router, { services, database }) => {
           name: 'Free Shipping',
           points_required: 200,
           value: null,
-          description: 'Redeem 200 points for free shipping on your next order'
+          description: 'Redeem 200 points for free shipping on your next order',
         },
         {
           id: 'early_access',
@@ -296,29 +322,27 @@ export default defineEndpoint((router, { services, database }) => {
           name: 'Early Sale Access',
           points_required: 300,
           value: null,
-          description: 'Get 24-hour early access to our next sale'
-        }
+          description: 'Get 24-hour early access to our next sale',
+        },
       ];
 
       // Get customer points to show what they can afford
       const user_id = req.accountability.user;
       let customerPoints = 0;
       if (user_id) {
-        const customer = await database('customers')
-          .where({ id: user_id, tenant_id })
-          .first();
+        const customer = await database('customers').where({ id: user_id, tenant_id }).first();
         customerPoints = customer?.loyalty_points || 0;
       }
 
       res.json({
-        data: rewards.map(reward => ({
+        data: rewards.map((reward) => ({
           ...reward,
           affordable: customerPoints >= reward.points_required,
-          points_needed: Math.max(0, reward.points_required - customerPoints)
+          points_needed: Math.max(0, reward.points_required - customerPoints),
         })),
         meta: {
-          customer_points: customerPoints
-        }
+          customer_points: customerPoints,
+        },
       });
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -332,7 +356,15 @@ export default defineEndpoint((router, { services, database }) => {
       const { period = 'all_time', limit = 10 } = req.query; // 'all_time', 'month', 'year'
 
       let query = database('customers')
-        .select('id', 'name', 'email', 'loyalty_tier', 'loyalty_points', 'total_spent', 'orders_count')
+        .select(
+          'id',
+          'name',
+          'email',
+          'loyalty_tier',
+          'loyalty_points',
+          'total_spent',
+          'orders_count'
+        )
         .where({ tenant_id });
 
       // Apply period filter if needed
@@ -348,9 +380,7 @@ export default defineEndpoint((router, { services, database }) => {
         query = query.where('created_at', '>=', yearStart);
       }
 
-      const leaderboard = await query
-        .orderBy('loyalty_points', 'desc')
-        .limit(limit);
+      const leaderboard = await query.orderBy('loyalty_points', 'desc').limit(limit);
 
       res.json({
         data: leaderboard.map((customer, index) => ({
@@ -360,12 +390,12 @@ export default defineEndpoint((router, { services, database }) => {
           tier: customer.loyalty_tier,
           points: customer.loyalty_points,
           total_spent: parseFloat(customer.total_spent || 0).toFixed(2),
-          orders_count: customer.orders_count
+          orders_count: customer.orders_count,
         })),
         meta: {
           period,
-          count: leaderboard.length
-        }
+          count: leaderboard.length,
+        },
       });
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -381,22 +411,18 @@ export default defineEndpoint((router, { services, database }) => {
       if (!customer_id || !points || !reason) {
         return res.status(400).json({
           error: 'Missing required fields',
-          required: ['customer_id', 'points', 'reason']
+          required: ['customer_id', 'points', 'reason'],
         });
       }
 
-      const customer = await database('customers')
-        .where({ id: customer_id, tenant_id })
-        .first();
+      const customer = await database('customers').where({ id: customer_id, tenant_id }).first();
 
       if (!customer) {
         return res.status(404).json({ error: 'Customer not found' });
       }
 
       // Award points
-      await database('customers')
-        .where({ id: customer_id })
-        .increment('loyalty_points', points);
+      await database('customers').where({ id: customer_id }).increment('loyalty_points', points);
 
       // Emit bonus event
       await database('events').insert({
@@ -409,9 +435,9 @@ export default defineEndpoint((router, { services, database }) => {
           customer_id,
           points,
           reason,
-          awarded_by: req.accountability.user
+          awarded_by: req.accountability.user,
         }),
-        timestamp: new Date()
+        timestamp: new Date(),
       });
 
       res.json({
@@ -420,8 +446,8 @@ export default defineEndpoint((router, { services, database }) => {
         data: {
           customer_id,
           points_awarded: points,
-          new_balance: customer.loyalty_points + points
-        }
+          new_balance: customer.loyalty_points + points,
+        },
       });
     } catch (error) {
       res.status(500).json({ error: error.message });

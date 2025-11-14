@@ -28,7 +28,7 @@ export default defineHook(({ filter, action }, { database }) => {
       const stats = await database('reviews')
         .where({
           restaurant_id: meta.payload.restaurant_id,
-          status: 'approved'
+          status: 'approved',
         })
         .select(
           database.raw('AVG(rating) as avg_rating'),
@@ -37,12 +37,10 @@ export default defineHook(({ filter, action }, { database }) => {
         .first();
 
       if (stats) {
-        await database('restaurants')
-          .where('id', meta.payload.restaurant_id)
-          .update({
-            average_rating: stats.avg_rating,
-            total_reviews: stats.total_reviews
-          });
+        await database('restaurants').where('id', meta.payload.restaurant_id).update({
+          average_rating: stats.avg_rating,
+          total_reviews: stats.total_reviews,
+        });
       }
     }
   });

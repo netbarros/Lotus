@@ -15,7 +15,7 @@ const redis = new Redis({
   host: process.env.REDIS_HOST || 'redis-service',
   port: parseInt(process.env.REDIS_PORT || '6379'),
   password: process.env.REDIS_PASSWORD,
-  enableOfflineQueue: false
+  enableOfflineQueue: false,
 });
 
 /**
@@ -25,7 +25,7 @@ const redis = new Redis({
 const globalLimiter = new RateLimiterRedis({
   storeClient: redis,
   keyPrefix: 'rl:global',
-  points: 100,  // Number of requests
+  points: 100, // Number of requests
   duration: 60, // Per 60 seconds
   blockDuration: 60 * 5, // Block for 5 minutes if exceeded
 });
@@ -164,8 +164,8 @@ export default ({ app }: any) => {
           error: {
             message: 'Too many requests. Please try again later.',
             code: 'RATE_LIMIT_EXCEEDED',
-            retryAfter: Math.ceil(error.msBeforeNext / 1000)
-          }
+            retryAfter: Math.ceil(error.msBeforeNext / 1000),
+          },
         });
       }
 
@@ -186,7 +186,7 @@ export async function resetRateLimit(identifier: string): Promise<void> {
     endpointLimiter.delete(identifier),
     searchLimiter.delete(identifier),
     uploadLimiter.delete(identifier),
-    checkoutLimiter.delete(identifier)
+    checkoutLimiter.delete(identifier),
   ]);
 }
 
@@ -200,7 +200,7 @@ export async function getRateLimitStatus(identifier: string): Promise<any> {
     endpointLimiter.get(identifier),
     searchLimiter.get(identifier),
     uploadLimiter.get(identifier),
-    checkoutLimiter.get(identifier)
+    checkoutLimiter.get(identifier),
   ]);
 
   return {
@@ -209,6 +209,6 @@ export async function getRateLimitStatus(identifier: string): Promise<any> {
     endpoint: endpoint?.remainingPoints || 50,
     search: search?.remainingPoints || 20,
     upload: upload?.remainingPoints || 10,
-    checkout: checkout?.remainingPoints || 3
+    checkout: checkout?.remainingPoints || 3,
   };
 }

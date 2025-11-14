@@ -1,14 +1,13 @@
 # 🚗 Pétala Automotive
 
-**Version:** 1.0.0
-**Status:** ✅ Production-Ready
-**Category:** automotive
+**Version:** 1.0.0 **Status:** ✅ Production-Ready **Category:** automotive
 
 ---
 
 ## 📋 Overview
 
-Complete automotive dealership and service management with inventory, CRM, service orders, and test drive booking
+Complete automotive dealership and service management with inventory, CRM,
+service orders, and test drive booking
 
 ### Key Features
 
@@ -40,12 +39,14 @@ npm run dev
 ## 💰 Pricing
 
 ### Starter - $99/month
+
 - Up to 100 vehicles
 - Basic CRM
 - Service scheduling
 - Email support
 
 ### Professional - $199/month
+
 - Unlimited inventory
 - Advanced CRM
 - Service orders
@@ -54,6 +55,7 @@ npm run dev
 - Priority support
 
 ### Enterprise - $499/month
+
 - Everything in Professional
 - Multi-location
 - DMS integration
@@ -63,5 +65,4 @@ npm run dev
 
 ---
 
-**Built with ❤️ by Software Lotus**
-**Powered by MagicSaaS System-∞ & Sofia AI**
+**Built with ❤️ by Software Lotus** **Powered by MagicSaaS System-∞ & Sofia AI**

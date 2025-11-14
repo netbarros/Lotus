@@ -8,12 +8,7 @@
   "pricing": {
     "starter": {
       "price": 99,
-      "features": [
-        "Up to 100 vehicles",
-        "Basic CRM",
-        "Service scheduling",
-        "Email support"
-      ]
+      "features": ["Up to 100 vehicles", "Basic CRM", "Service scheduling", "Email support"]
     },
     "professional": {
       "price": 199,
@@ -78,23 +73,11 @@
     "Analytics and reporting"
   ],
   "integrations": {
-    "dms": [
-      "DealerSocket",
-      "vAuto"
-    ],
-    "inventory": [
-      "Autotrader",
-      "Cars.com"
-    ],
-    "payment": [
-      "Stripe",
-      "PayPal"
-    ]
+    "dms": ["DealerSocket", "vAuto"],
+    "inventory": ["Autotrader", "Cars.com"],
+    "payment": ["Stripe", "PayPal"]
   },
-  "compliance": [
-    "GDPR",
-    "Truth in Lending Act"
-  ],
+  "compliance": ["GDPR", "Truth in Lending Act"],
   "status": "production-ready",
   "createdAt": "2025-11-10",
   "updatedAt": "2025-11-10"

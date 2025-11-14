@@ -3,41 +3,41 @@
  */
 
 export interface ComponentDecision {
-  component: string
+  component: string;
   selected: {
-    demo: string
-    path: string
-    score: number
-  }
-  reason: string
+    demo: string;
+    path: string;
+    score: number;
+  };
+  reason: string;
   alternatives: Array<{
-    demo: string
-    score: number
-  }>
-  confidence: number
-  timestamp: Date
+    demo: string;
+    score: number;
+  }>;
+  confidence: number;
+  timestamp: Date;
 }
 
 export interface AnalysisResult {
-  quality: number
-  complexity: number
-  performance: number
-  maintainability: number
-  lines: number
-  dependencies: string[]
+  quality: number;
+  complexity: number;
+  performance: number;
+  maintainability: number;
+  lines: number;
+  dependencies: string[];
 }
 
 export interface Agent {
-  id: string
-  type: string
-  layer: number
-  capabilities: string[]
+  id: string;
+  type: string;
+  layer: number;
+  capabilities: string[];
 }
 
 export interface ComponentInfo {
-  name: string
-  demo: string
-  path: string
-  content: string
-  fullPath: string
+  name: string;
+  demo: string;
+  path: string;
+  content: string;
+  fullPath: string;
 }

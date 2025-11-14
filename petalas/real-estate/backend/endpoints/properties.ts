@@ -3,7 +3,9 @@ import { z } from 'zod';
 
 const searchSchema = z.object({
   query: z.string().optional(),
-  property_type: z.enum(['house', 'apartment', 'condo', 'townhouse', 'land', 'commercial', 'multi_family']).optional(),
+  property_type: z
+    .enum(['house', 'apartment', 'condo', 'townhouse', 'land', 'commercial', 'multi_family'])
+    .optional(),
   listing_type: z.enum(['sale', 'rent']).optional(),
   min_price: z.number().optional(),
   max_price: z.number().optional(),
@@ -98,8 +100,16 @@ export default defineEndpoint({
         if (params.lat && params.lng && params.radius) {
           const radiusInDegrees = params.radius / 69; // Approximate miles to degrees
           filter._and = [
-            { 'address->coordinates->lat': { _between: [params.lat - radiusInDegrees, params.lat + radiusInDegrees] } },
-            { 'address->coordinates->lng': { _between: [params.lng - radiusInDegrees, params.lng + radiusInDegrees] } },
+            {
+              'address->coordinates->lat': {
+                _between: [params.lat - radiusInDegrees, params.lat + radiusInDegrees],
+              },
+            },
+            {
+              'address->coordinates->lng': {
+                _between: [params.lng - radiusInDegrees, params.lng + radiusInDegrees],
+              },
+            },
           ];
         }
 

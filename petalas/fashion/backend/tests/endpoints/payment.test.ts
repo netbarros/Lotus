@@ -10,7 +10,7 @@ describe('Payment Endpoint', () => {
   beforeAll(async () => {
     const response = await api.post('/auth/login', {
       email: 'customer@example.com',
-      password: 'password'
+      password: 'password',
     });
     authToken = response.data.data.access_token;
     api.defaults.headers.common['Authorization'] = `Bearer ${authToken}`;
@@ -21,7 +21,7 @@ describe('Payment Endpoint', () => {
       const response = await api.post('/payment/create-intent', {
         amount: 10000, // $100.00
         currency: 'usd',
-        orderId: 1
+        orderId: 1,
       });
 
       expect(response.status).toBe(200);
@@ -34,7 +34,7 @@ describe('Payment Endpoint', () => {
     it('should confirm payment', async () => {
       const response = await api.post('/payment/confirm', {
         paymentIntentId: 'pi_test123',
-        paymentMethod: 'pm_test123'
+        paymentMethod: 'pm_test123',
       });
 
       expect(response.status).toBe(200);
@@ -47,7 +47,7 @@ describe('Payment Endpoint', () => {
       const response = await api.post('/payment/refund', {
         paymentIntentId: 'pi_test123',
         amount: 5000, // $50.00
-        reason: 'customer_request'
+        reason: 'customer_request',
       });
 
       expect(response.status).toBe(200);
@@ -69,7 +69,7 @@ describe('Payment Endpoint', () => {
     it('should save payment method', async () => {
       const response = await api.post('/payment/save-method', {
         paymentMethod: 'pm_test123',
-        setDefault: true
+        setDefault: true,
       });
 
       expect(response.status).toBe(200);

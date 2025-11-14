@@ -8,13 +8,21 @@ describe('Scheduler Endpoint', () => {
   let authToken: string;
 
   beforeAll(async () => {
-    const response = await api.post('/auth/login', { email: 'admin@example.com', password: 'password' });
+    const response = await api.post('/auth/login', {
+      email: 'admin@example.com',
+      password: 'password',
+    });
     authToken = response.data.data.access_token;
     api.defaults.headers.common['Authorization'] = `Bearer ${authToken}`;
   });
 
   it('should create staff schedule', async () => {
-    const response = await api.post('/scheduler/shifts', { staffId: 1, date: '2025-12-01', startTime: '09:00', endTime: '17:00' });
+    const response = await api.post('/scheduler/shifts', {
+      staffId: 1,
+      date: '2025-12-01',
+      startTime: '09:00',
+      endTime: '17:00',
+    });
     expect(response.status).toBe(200);
   });
 
@@ -25,7 +33,11 @@ describe('Scheduler Endpoint', () => {
   });
 
   it('should mark staff availability', async () => {
-    const response = await api.post('/scheduler/availability', { staffId: 1, date: '2025-12-01', available: true });
+    const response = await api.post('/scheduler/availability', {
+      staffId: 1,
+      date: '2025-12-01',
+      available: true,
+    });
     expect(response.status).toBe(200);
   });
 });

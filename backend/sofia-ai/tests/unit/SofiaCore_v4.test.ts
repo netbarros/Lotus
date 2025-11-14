@@ -96,7 +96,7 @@ describe('SofiaCore_v4', () => {
 
     it('should track uptime', async () => {
       const health1 = await sofia.getHealth();
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise((resolve) => setTimeout(resolve, 100));
       const health2 = await sofia.getHealth();
 
       expect(health2.uptime).toBeGreaterThan(health1.uptime);
@@ -160,9 +160,7 @@ describe('SofiaCore_v4', () => {
       const context = createMockContext();
       const intention = '';
 
-      await expect(
-        sofia.processIntention(intention, context)
-      ).rejects.toThrow();
+      await expect(sofia.processIntention(intention, context)).rejects.toThrow();
     });
 
     it('should generate solution structure', async () => {
@@ -304,12 +302,14 @@ describe('SofiaCore_v4', () => {
     });
 
     it('should handle concurrent requests', async () => {
-      const promises = Array(10).fill(null).map(() => sofia.getHealth());
+      const promises = Array(10)
+        .fill(null)
+        .map(() => sofia.getHealth());
 
       const results = await Promise.all(promises);
 
       expect(results).toHaveLength(10);
-      results.forEach(result => {
+      results.forEach((result) => {
         expect(result).toHaveProperty('status');
       });
     });

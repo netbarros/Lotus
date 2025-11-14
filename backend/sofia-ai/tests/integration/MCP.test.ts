@@ -127,10 +127,7 @@ describe('MCP Service Integration Tests', () => {
     });
 
     it('should bulk create resources', async () => {
-      const items = [
-        { name: 'Item 1' },
-        { name: 'Item 2' },
-      ];
+      const items = [{ name: 'Item 1' }, { name: 'Item 2' }];
 
       const results = await mcp.bulkCreate('petalas', items);
       expect(results).toHaveLength(2);
@@ -139,22 +136,14 @@ describe('MCP Service Integration Tests', () => {
 
   describe('Sync Operations', () => {
     it('should sync between connections', async () => {
-      const result = await mcp.sync(
-        'source-connection',
-        'target-connection',
-        ['petalas', 'users']
-      );
+      const result = await mcp.sync('source-connection', 'target-connection', ['petalas', 'users']);
 
       expect(result).toHaveProperty('synced');
       expect(result).toHaveProperty('errors');
     });
 
     it('should handle sync errors gracefully', async () => {
-      const result = await mcp.sync(
-        'invalid-source',
-        'invalid-target',
-        ['non-existent']
-      );
+      const result = await mcp.sync('invalid-source', 'invalid-target', ['non-existent']);
 
       expect(result.errors.length).toBeGreaterThan(0);
     });

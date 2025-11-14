@@ -3,27 +3,29 @@
  * Classifies user intent from natural language
  */
 
-import { SofiaIntent } from './SofiaEngine'
+import { SofiaIntent } from './SofiaEngine';
 
 export class IntentClassifier {
-  private petala: string
+  private petala: string;
 
   constructor(petala: string) {
-    this.petala = petala
+    this.petala = petala;
   }
 
   async classify(message: string, context?: Record<string, any>): Promise<SofiaIntent> {
-    const lowerMessage = message.toLowerCase()
+    const lowerMessage = message.toLowerCase();
 
     // Fashion-specific intents
     if (this.petala === 'fashion') {
-      if (this.matchesPattern(lowerMessage, ['buscar', 'procurar', 'encontrar', 'mostrar', 'ver'])) {
+      if (
+        this.matchesPattern(lowerMessage, ['buscar', 'procurar', 'encontrar', 'mostrar', 'ver'])
+      ) {
         return {
           intent: 'search_products',
           confidence: 0.9,
           entities: this.extractSearchEntities(lowerMessage),
-          context: context || {}
-        }
+          context: context || {},
+        };
       }
 
       if (this.matchesPattern(lowerMessage, ['adicionar', 'carrinho', 'comprar'])) {
@@ -31,8 +33,8 @@ export class IntentClassifier {
           intent: 'add_to_cart',
           confidence: 0.85,
           entities: {},
-          context: context || {}
-        }
+          context: context || {},
+        };
       }
 
       if (this.matchesPattern(lowerMessage, ['recomendar', 'sugerir', 'combinar'])) {
@@ -40,8 +42,8 @@ export class IntentClassifier {
           intent: 'get_recommendations',
           confidence: 0.88,
           entities: {},
-          context: context || {}
-        }
+          context: context || {},
+        };
       }
 
       if (this.matchesPattern(lowerMessage, ['pedido', 'entrega', 'rastrear'])) {
@@ -49,8 +51,8 @@ export class IntentClassifier {
           intent: 'track_order',
           confidence: 0.92,
           entities: this.extractOrderEntities(lowerMessage),
-          context: context || {}
-        }
+          context: context || {},
+        };
       }
     }
 
@@ -61,8 +63,8 @@ export class IntentClassifier {
           intent: 'make_reservation',
           confidence: 0.9,
           entities: this.extractReservationEntities(lowerMessage),
-          context: context || {}
-        }
+          context: context || {},
+        };
       }
 
       if (this.matchesPattern(lowerMessage, ['cardápio', 'menu', 'prato'])) {
@@ -70,8 +72,8 @@ export class IntentClassifier {
           intent: 'view_menu',
           confidence: 0.88,
           entities: {},
-          context: context || {}
-        }
+          context: context || {},
+        };
       }
 
       if (this.matchesPattern(lowerMessage, ['pedir', 'delivery', 'entregar'])) {
@@ -79,8 +81,8 @@ export class IntentClassifier {
           intent: 'place_order',
           confidence: 0.9,
           entities: {},
-          context: context || {}
-        }
+          context: context || {},
+        };
       }
     }
 
@@ -89,38 +91,38 @@ export class IntentClassifier {
       intent: 'general_inquiry',
       confidence: 0.5,
       entities: {},
-      context: context || {}
-    }
+      context: context || {},
+    };
   }
 
   private matchesPattern(text: string, keywords: string[]): boolean {
-    return keywords.some(keyword => text.includes(keyword))
+    return keywords.some((keyword) => text.includes(keyword));
   }
 
   private extractSearchEntities(message: string): Record<string, any> {
     return {
       query: message,
-      filters: {}
-    }
+      filters: {},
+    };
   }
 
   private extractOrderEntities(message: string): Record<string, any> {
-    const orderNumberMatch = message.match(/\b\d{6,}\b/)
+    const orderNumberMatch = message.match(/\b\d{6,}\b/);
     return {
-      order_id: orderNumberMatch ? orderNumberMatch[0] : null
-    }
+      order_id: orderNumberMatch ? orderNumberMatch[0] : null,
+    };
   }
 
   private extractReservationEntities(message: string): Record<string, any> {
     // Simple extraction - can be enhanced with NLP
-    const entities: Record<string, any> = {}
+    const entities: Record<string, any> = {};
 
     // Extract party size
-    const partySizeMatch = message.match(/(\d+)\s*(pessoa|pessoas|people)/)
+    const partySizeMatch = message.match(/(\d+)\s*(pessoa|pessoas|people)/);
     if (partySizeMatch) {
-      entities.party_size = parseInt(partySizeMatch[1])
+      entities.party_size = parseInt(partySizeMatch[1]);
     }
 
-    return entities
+    return entities;
   }
 }

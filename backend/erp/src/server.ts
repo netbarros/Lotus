@@ -36,7 +36,7 @@ const pgConfig = {
   connectionTimeoutMillis: 10000,
 };
 
-const app = express();
+const app: express.Application = express();
 
 app.use(helmet());
 app.use(cors({ origin: process.env.CORS_ORIGIN || '*', credentials: true }));
@@ -81,7 +81,7 @@ async function initializeServices(): Promise<void> {
 }
 
 // Health check
-app.get('/health', async (req: Request, res: Response) => {
+app.get('/health', async (_req: Request, res: Response) => {
   try {
     await redis.ping();
     await pool.query('SELECT 1');
@@ -99,7 +99,7 @@ app.get('/health', async (req: Request, res: Response) => {
 });
 
 // Status endpoint
-app.get('/status', async (req: Request, res: Response) => {
+app.get('/status', async (_req: Request, res: Response) => {
   try {
     const status = await erp.getStatus();
     res.status(200).json(status);
@@ -141,7 +141,7 @@ app.post('/api/inventory/items', async (req: Request, res: Response) => {
   }
 });
 
-app.get('/api/inventory/low-stock', async (req: Request, res: Response) => {
+app.get('/api/inventory/low-stock', async (_req: Request, res: Response) => {
   try {
     const items = await erp.inventory.getLowStockItems();
     res.status(200).json(items);
@@ -218,7 +218,7 @@ app.use((req: Request, res: Response) => {
 });
 
 // Error handler
-app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
+app.use((error: Error, _req: Request, res: Response, _next: NextFunction) => {
   console.error('Error:', error);
   res.status(500).json({
     error: 'Internal Server Error',

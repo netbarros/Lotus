@@ -1,43 +1,43 @@
-import { beforeAll, afterEach, afterAll, vi } from 'vitest'
-import { cleanup } from '@testing-library/vue'
-import '@testing-library/jest-dom/vitest'
+import { beforeAll, afterEach, afterAll, vi } from 'vitest';
+import { cleanup } from '@testing-library/vue';
+import '@testing-library/jest-dom/vitest';
 
 // Mock localStorage
 const localStorageMock = (() => {
-  let store: Record<string, string> = {}
+  let store: Record<string, string> = {};
 
   return {
     getItem: (key: string) => store[key] || null,
     setItem: (key: string, value: string) => {
-      store[key] = value.toString()
+      store[key] = value.toString();
     },
     removeItem: (key: string) => {
-      delete store[key]
+      delete store[key];
     },
     clear: () => {
-      store = {}
-    }
-  }
-})()
+      store = {};
+    },
+  };
+})();
 
 Object.defineProperty(window, 'localStorage', {
-  value: localStorageMock
-})
+  value: localStorageMock,
+});
 
 // Mock window.location
-delete (window as any).location
-window.location = { href: '', reload: vi.fn() } as any
+delete (window as any).location;
+window.location = { href: '', reload: vi.fn() } as any;
 
 // Cleanup after each test
 afterEach(() => {
-  cleanup()
-  localStorage.clear()
-})
+  cleanup();
+  localStorage.clear();
+});
 
 beforeAll(() => {
   // Setup
-})
+});
 
 afterAll(() => {
   // Teardown
-})
+});

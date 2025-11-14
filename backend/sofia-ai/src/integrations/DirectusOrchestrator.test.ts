@@ -263,10 +263,7 @@ describe('DirectusOrchestrator', () => {
           { status: { _eq: 'active' } },
           { created_at: { _gte: '2024-01-01' } },
           {
-            _or: [
-              { priority: { _eq: 'high' } },
-              { priority: { _eq: 'critical' } },
-            ],
+            _or: [{ priority: { _eq: 'high' } }, { priority: { _eq: 'critical' } }],
           },
         ],
       };

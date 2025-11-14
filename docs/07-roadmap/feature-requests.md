@@ -17,29 +17,35 @@
 ```
 
 **Template**:
+
 ```markdown
 ## Feature Request: [Título Descritivo]
 
 ### Problem Statement
-Descreva o problema que esta feature resolve.
-Exemplo: "Como desenvolvedor, preciso...porque..."
+
+Descreva o problema que esta feature resolve. Exemplo: "Como desenvolvedor,
+preciso...porque..."
 
 ### Proposed Solution
-Descreva sua solução proposta.
-Seja específico mas flexível.
+
+Descreva sua solução proposta. Seja específico mas flexível.
 
 ### Alternatives Considered
+
 Quais alternativas você considerou?
 
 ### Use Cases
+
 Liste 2-3 casos de uso concretos.
 
 ### Impact
+
 - Users affected: [Low/Medium/High]
 - Priority: [Low/Medium/High/Critical]
 - Effort: [Small/Medium/Large]
 
 ### Additional Context
+
 Screenshots, mockups, links, etc.
 ```
 
@@ -94,20 +100,20 @@ Body: Use template acima
 
 ### **Top 10 Community Requests**
 
-| # | Feature | Votes | Status | ETA |
-|---|---------|-------|--------|-----|
-| 1 | **Python Support** | 234 | 🔄 In Progress | Q2 2026 |
-| 2 | **Terraform Export** | 187 | 📋 Planned | Q2 2026 |
-| 3 | **Multi-Language UI** | 156 | 📋 Planned | Q3 2026 |
-| 4 | **Advanced Analytics** | 142 | 📋 Planned | Q2 2026 |
-| 5 | **Custom AI Models** | 128 | 📋 Planned | Q3 2026 |
-| 6 | **Git Integration** | 115 | ✅ Completed | Q1 2026 |
-| 7 | **Real-time Collab** | 98 | 📋 Planned | Q3 2026 |
-| 8 | **A/B Testing** | 87 | 📋 Planned | Q2 2026 |
-| 9 | **Mobile App** | 76 | 🔄 In Progress | Q2 2026 |
-| 10 | **API Versioning** | 65 | 📋 Planned | Q2 2026 |
+| #   | Feature                | Votes | Status         | ETA     |
+| --- | ---------------------- | ----- | -------------- | ------- |
+| 1   | **Python Support**     | 234   | 🔄 In Progress | Q2 2026 |
+| 2   | **Terraform Export**   | 187   | 📋 Planned     | Q2 2026 |
+| 3   | **Multi-Language UI**  | 156   | 📋 Planned     | Q3 2026 |
+| 4   | **Advanced Analytics** | 142   | 📋 Planned     | Q2 2026 |
+| 5   | **Custom AI Models**   | 128   | 📋 Planned     | Q3 2026 |
+| 6   | **Git Integration**    | 115   | ✅ Completed   | Q1 2026 |
+| 7   | **Real-time Collab**   | 98    | 📋 Planned     | Q3 2026 |
+| 8   | **A/B Testing**        | 87    | 📋 Planned     | Q2 2026 |
+| 9   | **Mobile App**         | 76    | 🔄 In Progress | Q2 2026 |
+| 10  | **API Versioning**     | 65    | 📋 Planned     | Q2 2026 |
 
-*Atualizado: 2025-11-05*
+_Atualizado: 2025-11-05_
 
 ---
 
@@ -120,6 +126,7 @@ Pague para ter sua feature priorizada ou desenvolva e ganhe recompensas.
 ### **Como Funciona**
 
 **Opção A: Sponsor Feature**
+
 ```
 1. Escolha feature da lista
 2. Defina bounty (ex: R$ 5,000)
@@ -128,6 +135,7 @@ Pague para ter sua feature priorizada ou desenvolva e ganhe recompensas.
 ```
 
 **Opção B: Develop Feature**
+
 ```
 1. Escolha feature com bounty
 2. Desenvolva (fork + PR)
@@ -137,10 +145,10 @@ Pague para ter sua feature priorizada ou desenvolva e ganhe recompensas.
 
 ### **Current Bounties**
 
-| Feature | Bounty | Sponsor | Deadline |
-|---------|--------|---------|----------|
-| **Python Support** | R$ 10,000 | TechCorp | Jun 2026 |
-| **Terraform Export** | R$ 5,000 | DevOps Inc | May 2026 |
+| Feature              | Bounty    | Sponsor    | Deadline |
+| -------------------- | --------- | ---------- | -------- |
+| **Python Support**   | R$ 10,000 | TechCorp   | Jun 2026 |
+| **Terraform Export** | R$ 5,000  | DevOps Inc | May 2026 |
 | **Custom AI Models** | R$ 15,000 | AI Startup | Sep 2026 |
 
 ---
@@ -148,6 +156,7 @@ Pague para ter sua feature priorizada ou desenvolva e ganhe recompensas.
 ## 🎨 Feature Ideas (Brainstorm)
 
 ### **Frontend**
+
 - [ ] Visual workflow builder (no-code)
 - [ ] Component marketplace
 - [ ] Design system generator
@@ -155,6 +164,7 @@ Pague para ter sua feature priorizada ou desenvolva e ganhe recompensas.
 - [ ] Storybook integration
 
 ### **Backend**
+
 - [ ] gRPC support
 - [ ] Message queues (Kafka, RabbitMQ)
 - [ ] Caching strategies (advanced)
@@ -162,6 +172,7 @@ Pague para ter sua feature priorizada ou desenvolva e ganhe recompensas.
 - [ ] API versioning
 
 ### **AI & ML**
+
 - [ ] Custom model training
 - [ ] Fine-tuning on your data
 - [ ] Multi-model ensembles
@@ -169,6 +180,7 @@ Pague para ter sua feature priorizada ou desenvolva e ganhe recompensas.
 - [ ] AutoML integration
 
 ### **Integration**
+
 - [ ] Zapier integration
 - [ ] Make (Integromat)
 - [ ] n8n workflows
@@ -176,6 +188,7 @@ Pague para ter sua feature priorizada ou desenvolva e ganhe recompensas.
 - [ ] GitLab CI/CD
 
 ### **DevOps**
+
 - [ ] Terraform export
 - [ ] CloudFormation export
 - [ ] Pulumi export
@@ -183,6 +196,7 @@ Pague para ter sua feature priorizada ou desenvolva e ganhe recompensas.
 - [ ] FluxCD integration
 
 ### **Security**
+
 - [ ] Penetration testing (automated)
 - [ ] Vulnerability scanning
 - [ ] Secrets management (Vault)
@@ -190,6 +204,7 @@ Pague para ter sua feature priorizada ou desenvolva e ganhe recompensas.
 - [ ] SIEM integration
 
 ### **Testing**
+
 - [ ] Visual regression testing
 - [ ] Load testing (k6)
 - [ ] Chaos engineering
@@ -197,6 +212,7 @@ Pague para ter sua feature priorizada ou desenvolva e ganhe recompensas.
 - [ ] Mutation testing
 
 ### **Mobile**
+
 - [ ] React Native export
 - [ ] Flutter export
 - [ ] Progressive Web App
@@ -204,6 +220,7 @@ Pague para ter sua feature priorizada ou desenvolva e ganhe recompensas.
 - [ ] Push notifications
 
 ### **Marketplace**
+
 - [ ] Pétala subscriptions
 - [ ] Bundle deals
 - [ ] Freemium pétalas
@@ -217,6 +234,7 @@ Pague para ter sua feature priorizada ou desenvolva e ganhe recompensas.
 Para manter foco, algumas features não serão implementadas:
 
 ### **Out of Scope**
+
 - ❌ WordPress plugin (different target)
 - ❌ Desktop-only apps (web-first)
 - ❌ Game development (different domain)
@@ -246,21 +264,27 @@ Para manter foco, algumas features não serão implementadas:
 ## 💬 FAQ
 
 ### **Q: Quantas features posso sugerir?**
+
 A: Ilimitadas! Mas foque em qualidade > quantidade.
 
 ### **Q: Minha feature será implementada?**
+
 A: Se tiver validação (votos, bounty, uso claro), sim!
 
 ### **Q: Quanto tempo leva?**
+
 A: 2-12 semanas após priorização.
 
 ### **Q: Posso desenvolver eu mesmo?**
+
 A: Sim! Contribuições são bem-vindas.
 
 ### **Q: Como saber o status?**
+
 A: Acompanhe a issue no GitHub.
 
 ### **Q: E se minha ideia for rejeitada?**
+
 A: Explicaremos o motivo e sugeriremos alternativas.
 
 ---
@@ -268,7 +292,8 @@ A: Explicaremos o motivo e sugeriremos alternativas.
 ## 🎯 Próximos Passos
 
 1. ✅ [Veja features no roadmap](./q2-2026.md)
-2. ✅ [Vote em features existentes](https://github.com/netbarros/Lotus/issues?q=is%3Aissue+is%3Aopen+label%3Afeature-request)
+2. ✅
+   [Vote em features existentes](https://github.com/netbarros/Lotus/issues?q=is%3Aissue+is%3Aopen+label%3Afeature-request)
 3. ✅ [Submeta sua ideia](https://github.com/netbarros/Lotus/issues/new/choose)
 4. ✅ [Junte-se ao Discord](https://discord.gg/magicsaas)
 

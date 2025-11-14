@@ -26,12 +26,13 @@ export default defineEndpoint({
 
         // Calculate date range
         const now = new Date();
-        const rangeHours = {
-          '24h': 24,
-          '7d': 24 * 7,
-          '30d': 24 * 30,
-          '90d': 24 * 90,
-        }[dateRange as string] || 24 * 30;
+        const rangeHours =
+          {
+            '24h': 24,
+            '7d': 24 * 7,
+            '30d': 24 * 30,
+            '90d': 24 * 90,
+          }[dateRange as string] || 24 * 30;
 
         const startDate = new Date(now.getTime() - rangeHours * 60 * 60 * 1000);
 
@@ -150,8 +151,8 @@ export default defineEndpoint({
           ]);
 
           // Get DAU/MAU from Redis (tracked by Sofia AI)
-          const dau = await redis.get('metrics:dau') || '0';
-          const mau = await redis.get('metrics:mau') || '0';
+          const dau = (await redis.get('metrics:dau')) || '0';
+          const mau = (await redis.get('metrics:mau')) || '0';
 
           userMetrics = {
             totalUsers: totalUsers[0]?.count?.id || 0,
@@ -330,12 +331,18 @@ export default defineEndpoint({
             .join('\n');
 
           res.setHeader('Content-Type', 'text/csv');
-          res.setHeader('Content-Disposition', `attachment; filename="magicsaas-dashboard-${Date.now()}.csv"`);
+          res.setHeader(
+            'Content-Disposition',
+            `attachment; filename="magicsaas-dashboard-${Date.now()}.csv"`
+          );
           res.send(`Metric,Value\n${csv}`);
         } else {
           // Return JSON
           res.setHeader('Content-Type', 'application/json');
-          res.setHeader('Content-Disposition', `attachment; filename="magicsaas-dashboard-${Date.now()}.json"`);
+          res.setHeader(
+            'Content-Disposition',
+            `attachment; filename="magicsaas-dashboard-${Date.now()}.json"`
+          );
           res.json(metricsData);
         }
       } catch (error) {

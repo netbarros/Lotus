@@ -23,22 +23,22 @@ export default defineHook(({ filter, action }, { database }) => {
         tenant_id: meta.payload.tenant_id,
         data: JSON.stringify({
           mrn: meta.payload.mrn,
-          name: `${meta.payload.first_name} ${meta.payload.last_name}`
+          name: `${meta.payload.first_name} ${meta.payload.last_name}`,
         }),
         metadata: JSON.stringify({
           timestamp: new Date().toISOString(),
           version: 1,
-          source: 'hook-patients'
+          source: 'hook-patients',
         }),
-        created_at: database.fn.now()
+        created_at: database.fn.now(),
       });
     }
   });
 });
 
 function generateUUID() {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
-    const r = Math.random() * 16 | 0;
-    return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+    const r = (Math.random() * 16) | 0;
+    return (c === 'x' ? r : (r & 0x3) | 0x8).toString(16);
   });
 }

@@ -7,9 +7,7 @@ import { defineEndpoint } from '@directus/extensions-sdk';
 export default defineEndpoint((router, { database }) => {
   router.get('/:id', async (req, res) => {
     try {
-      const restaurant = await database('restaurants')
-        .where({ id: req.params.id })
-        .first();
+      const restaurant = await database('restaurants').where({ id: req.params.id }).first();
 
       if (!restaurant) return res.status(404).json({ error: 'Restaurant not found' });
 

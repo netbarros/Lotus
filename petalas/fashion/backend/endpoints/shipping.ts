@@ -7,7 +7,7 @@ export default defineEndpoint((router, { services, database, env }) => {
       const {
         destination, // { country, state, city, postal_code }
         items, // Array of { product_id, quantity }
-        coupon_code
+        coupon_code,
       } = req.body;
 
       const tenant_id = req.accountability.tenant;
@@ -15,12 +15,12 @@ export default defineEndpoint((router, { services, database, env }) => {
       if (!destination || !items || items.length === 0) {
         return res.status(400).json({
           error: 'Missing required fields',
-          required: ['destination', 'items']
+          required: ['destination', 'items'],
         });
       }
 
       // Get products to calculate weight/dimensions
-      const productIds = items.map(item => item.product_id);
+      const productIds = items.map((item) => item.product_id);
       const products = await database('products')
         .select('id', 'weight', 'dimensions')
         .where({ tenant_id })
@@ -29,7 +29,7 @@ export default defineEndpoint((router, { services, database, env }) => {
       // Calculate total weight
       let totalWeight = 0;
       for (const item of items) {
-        const product = products.find(p => p.id === item.product_id);
+        const product = products.find((p) => p.id === item.product_id);
         if (product && product.weight) {
           totalWeight += parseFloat(product.weight) * item.quantity;
         }
@@ -39,16 +39,19 @@ export default defineEndpoint((router, { services, database, env }) => {
       const shippingZones = await database('shipping_zones')
         .select('*')
         .where({ tenant_id, status: 'active' })
-        .where(function() {
-          this.where('countries', 'like', `%${destination.country}%`)
-            .orWhere('countries', 'like', '%*%'); // Wildcard for all countries
+        .where(function () {
+          this.where('countries', 'like', `%${destination.country}%`).orWhere(
+            'countries',
+            'like',
+            '%*%'
+          ); // Wildcard for all countries
         })
         .orderBy('priority', 'asc');
 
       if (shippingZones.length === 0) {
         return res.status(400).json({
           error: 'No shipping available to destination',
-          destination
+          destination,
         });
       }
 
@@ -68,13 +71,16 @@ export default defineEndpoint((router, { services, database, env }) => {
               break;
 
             case 'weight':
-              rate = parseFloat(method.base_rate) + (totalWeight * parseFloat(method.rate_per_kg || 0));
+              rate =
+                parseFloat(method.base_rate) + totalWeight * parseFloat(method.rate_per_kg || 0);
               break;
 
             case 'tiered':
               // Tiered pricing based on weight brackets
               const tiers = method.tiers || [];
-              const tier = tiers.find(t => totalWeight >= t.min_weight && totalWeight <= t.max_weight);
+              const tier = tiers.find(
+                (t) => totalWeight >= t.min_weight && totalWeight <= t.max_weight
+              );
               rate = tier ? parseFloat(tier.rate) : parseFloat(method.base_rate || 0);
               break;
 
@@ -96,10 +102,10 @@ export default defineEndpoint((router, { services, database, env }) => {
               .where({
                 code: coupon_code.toUpperCase(),
                 tenant_id,
-                status: 'active'
+                status: 'active',
               })
               .where('valid_from', '<=', new Date())
-              .where(function() {
+              .where(function () {
                 this.whereNull('valid_until').orWhere('valid_until', '>=', new Date());
               })
               .first();
@@ -118,7 +124,7 @@ export default defineEndpoint((router, { services, database, env }) => {
             carrier: method.carrier || 'Standard',
             delivery_time: method.delivery_time || '5-7 business days',
             rate: rate.toFixed(2),
-            currency: 'USD'
+            currency: 'USD',
           });
         }
       }
@@ -131,8 +137,8 @@ export default defineEndpoint((router, { services, database, env }) => {
           rates,
           destination,
           total_weight: totalWeight.toFixed(2),
-          weight_unit: 'kg'
-        }
+          weight_unit: 'kg',
+        },
       });
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -147,19 +153,15 @@ export default defineEndpoint((router, { services, database, env }) => {
 
       if (!order_id && !tracking_number) {
         return res.status(400).json({
-          error: 'Either order_id or tracking_number is required'
+          error: 'Either order_id or tracking_number is required',
         });
       }
 
       let order;
       if (order_id) {
-        order = await database('orders')
-          .where({ id: order_id, tenant_id })
-          .first();
+        order = await database('orders').where({ id: order_id, tenant_id }).first();
       } else {
-        order = await database('orders')
-          .where({ tracking_number, tenant_id })
-          .first();
+        order = await database('orders').where({ tracking_number, tenant_id }).first();
       }
 
       if (!order) {
@@ -174,8 +176,8 @@ export default defineEndpoint((router, { services, database, env }) => {
             order_number: order.order_number,
             status: order.fulfillment_status,
             tracking_available: false,
-            message: 'Tracking information not yet available'
-          }
+            message: 'Tracking information not yet available',
+          },
         });
       }
 
@@ -195,8 +197,8 @@ export default defineEndpoint((router, { services, database, env }) => {
           status: trackingInfo.status,
           estimated_delivery: trackingInfo.estimated_delivery,
           tracking_events: trackingInfo.events,
-          tracking_url: trackingInfo.tracking_url
-        }
+          tracking_url: trackingInfo.tracking_url,
+        },
       });
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -214,13 +216,13 @@ export default defineEndpoint((router, { services, database, env }) => {
         .orderBy('priority', 'asc');
 
       res.json({
-        data: zones.map(z => ({
+        data: zones.map((z) => ({
           id: z.id,
           name: z.name,
           countries: z.countries ? JSON.parse(z.countries) : [],
           methods: z.methods ? JSON.parse(z.methods) : [],
-          priority: z.priority
-        }))
+          priority: z.priority,
+        })),
       });
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -235,9 +237,7 @@ export default defineEndpoint((router, { services, database, env }) => {
       // Verify webhook authenticity (depends on carrier)
 
       // Find order by tracking number
-      const order = await database('orders')
-        .where({ tracking_number })
-        .first();
+      const order = await database('orders').where({ tracking_number }).first();
 
       if (order) {
         // Map carrier status to our fulfillment status
@@ -261,7 +261,7 @@ export default defineEndpoint((router, { services, database, env }) => {
           .update({
             fulfillment_status: fulfillmentStatus,
             delivered_at: status === 'delivered' ? new Date() : order.delivered_at,
-            updated_at: new Date()
+            updated_at: new Date(),
           });
 
         // Emit event
@@ -276,9 +276,9 @@ export default defineEndpoint((router, { services, database, env }) => {
             tracking_number,
             status: fulfillmentStatus,
             carrier,
-            events
+            events,
           }),
-          timestamp: new Date()
+          timestamp: new Date(),
         });
       }
 
@@ -291,7 +291,7 @@ export default defineEndpoint((router, { services, database, env }) => {
 
 // Helper: Calculate cart total for free shipping threshold
 async function calculateCartTotal(database, tenant_id, items) {
-  const productIds = items.map(item => item.product_id);
+  const productIds = items.map((item) => item.product_id);
   const products = await database('products')
     .select('id', 'price')
     .where({ tenant_id })
@@ -299,7 +299,7 @@ async function calculateCartTotal(database, tenant_id, items) {
 
   let total = 0;
   for (const item of items) {
-    const product = products.find(p => p.id === item.product_id);
+    const product = products.find((p) => p.id === item.product_id);
     if (product) {
       total += parseFloat(product.price) * item.quantity;
     }
@@ -327,20 +327,20 @@ async function getCarrierTracking(carrier, trackingNumber, env) {
         timestamp: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
         status: 'picked_up',
         location: 'Origin facility',
-        description: 'Package picked up by carrier'
+        description: 'Package picked up by carrier',
       },
       {
         timestamp: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
         status: 'in_transit',
         location: 'Distribution center',
-        description: 'Package in transit'
+        description: 'Package in transit',
       },
       {
         timestamp: new Date().toISOString(),
         status: 'out_for_delivery',
         location: 'Local facility',
-        description: 'Out for delivery'
-      }
-    ]
+        description: 'Out for delivery',
+      },
+    ],
   };
 }

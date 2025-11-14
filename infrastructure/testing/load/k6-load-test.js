@@ -26,10 +26,10 @@ const activeUsers = new Gauge('active_users');
 // ═══════════════════════════════════════════════════════════════════════════
 
 const PERFORMANCE_BUDGETS = {
-  api_p95: 200,        // 200ms p95 latency
-  api_p99: 500,        // 500ms p99 latency
-  sofia_p95: 300000,   // 5 minutes (300 seconds) for intention processing
-  error_rate: 0.001,   // 0.1% error rate
+  api_p95: 200, // 200ms p95 latency
+  api_p99: 500, // 500ms p99 latency
+  sofia_p95: 300000, // 5 minutes (300 seconds) for intention processing
+  error_rate: 0.001, // 0.1% error rate
   success_rate: 0.999, // 99.9% success rate
 };
 
@@ -53,11 +53,11 @@ export const options = {
       executor: 'ramping-vus',
       startVUs: 0,
       stages: [
-        { duration: '2m', target: 50 },   // Ramp up to 50 users
-        { duration: '5m', target: 50 },   // Stay at 50 for 5 minutes
-        { duration: '2m', target: 100 },  // Ramp to 100
-        { duration: '5m', target: 100 },  // Stay at 100
-        { duration: '2m', target: 0 },    // Ramp down
+        { duration: '2m', target: 50 }, // Ramp up to 50 users
+        { duration: '5m', target: 50 }, // Stay at 50 for 5 minutes
+        { duration: '2m', target: 100 }, // Ramp to 100
+        { duration: '5m', target: 100 }, // Stay at 100
+        { duration: '2m', target: 0 }, // Ramp down
       ],
       startTime: '1m',
       tags: { scenario: 'load' },
@@ -83,9 +83,9 @@ export const options = {
       executor: 'ramping-vus',
       startVUs: 0,
       stages: [
-        { duration: '10s', target: 500 },  // Sudden spike
-        { duration: '1m', target: 500 },   // Sustain
-        { duration: '10s', target: 0 },    // Drop
+        { duration: '10s', target: 500 }, // Sudden spike
+        { duration: '1m', target: 500 }, // Sustain
+        { duration: '10s', target: 0 }, // Drop
       ],
       startTime: '40m',
       tags: { scenario: 'spike' },
@@ -108,8 +108,8 @@ export const options = {
       preAllocatedVUs: 10,
       maxVUs: 50,
       stages: [
-        { duration: '5m', target: 10 },   // 10 intentions/min
-        { duration: '10m', target: 20 },  // 20 intentions/min
+        { duration: '5m', target: 10 }, // 10 intentions/min
+        { duration: '10m', target: 20 }, // 20 intentions/min
         { duration: '5m', target: 10 },
       ],
       startTime: '3h',
@@ -120,23 +120,23 @@ export const options = {
 
   thresholds: {
     // API Response Time Thresholds (Performance Budgets)
-    'http_req_duration': [
-      `p(95)<${PERFORMANCE_BUDGETS.api_p95}`,      // p95 < 200ms
-      `p(99)<${PERFORMANCE_BUDGETS.api_p99}`,      // p99 < 500ms
+    http_req_duration: [
+      `p(95)<${PERFORMANCE_BUDGETS.api_p95}`, // p95 < 200ms
+      `p(99)<${PERFORMANCE_BUDGETS.api_p99}`, // p99 < 500ms
     ],
-    'http_req_duration{scenario:smoke}': ['p(95)<100'],  // Smoke test should be fast
+    'http_req_duration{scenario:smoke}': ['p(95)<100'], // Smoke test should be fast
 
     // Error Rate Thresholds
-    'http_req_failed': [`rate<${PERFORMANCE_BUDGETS.error_rate}`],  // <0.1% errors
-    'errors': [`rate<${PERFORMANCE_BUDGETS.error_rate}`],
+    http_req_failed: [`rate<${PERFORMANCE_BUDGETS.error_rate}`], // <0.1% errors
+    errors: [`rate<${PERFORMANCE_BUDGETS.error_rate}`],
 
     // Success Rate Thresholds
-    'checks': [`rate>${PERFORMANCE_BUDGETS.success_rate}`],  // >99.9% success
+    checks: [`rate>${PERFORMANCE_BUDGETS.success_rate}`], // >99.9% success
 
     // Sofia AI Thresholds
-    'sofia_intention_duration': [
-      `p(95)<${PERFORMANCE_BUDGETS.sofia_p95}`,    // p95 < 5 minutes
-      'p(99)<600000',  // p99 < 10 minutes
+    sofia_intention_duration: [
+      `p(95)<${PERFORMANCE_BUDGETS.sofia_p95}`, // p95 < 5 minutes
+      'p(99)<600000', // p99 < 10 minutes
     ],
   },
 };
@@ -153,12 +153,16 @@ const DIRECTUS_URL = __ENV.DIRECTUS_URL || 'http://localhost:8055';
 // ═══════════════════════════════════════════════════════════════════════════
 
 function authenticate() {
-  const loginRes = http.post(`${BASE_URL}/api/auth/login`, JSON.stringify({
-    email: 'test@magicsaas.com',
-    password: 'test123456',
-  }), {
-    headers: { 'Content-Type': 'application/json' },
-  });
+  const loginRes = http.post(
+    `${BASE_URL}/api/auth/login`,
+    JSON.stringify({
+      email: 'test@magicsaas.com',
+      password: 'test123456',
+    }),
+    {
+      headers: { 'Content-Type': 'application/json' },
+    }
+  );
 
   check(loginRes, {
     'login successful': (r) => r.status === 200,
@@ -173,7 +177,7 @@ function authenticate() {
 function makeAuthHeaders(token) {
   return {
     'Content-Type': 'application/json',
-    'Authorization': `Bearer ${token}`,
+    Authorization: `Bearer ${token}`,
   };
 }
 
@@ -181,11 +185,11 @@ function makeAuthHeaders(token) {
 // DEFAULT SCENARIO - Mixed API Workload
 // ═══════════════════════════════════════════════════════════════════════════
 
-export default function() {
+export default function () {
   const token = authenticate();
   const headers = makeAuthHeaders(token);
 
-  group('API Health Checks', function() {
+  group('API Health Checks', function () {
     const healthRes = http.get(`${BASE_URL}/health`);
     const startTime = new Date();
 
@@ -198,7 +202,7 @@ export default function() {
     errorRate.add(healthRes.status !== 200);
   });
 
-  group('User Profile Operations', function() {
+  group('User Profile Operations', function () {
     // GET profile
     const profileRes = http.get(`${BASE_URL}/api/users/me`, { headers });
     check(profileRes, {
@@ -206,16 +210,20 @@ export default function() {
     });
 
     // UPDATE profile
-    const updateRes = http.patch(`${BASE_URL}/api/users/me`, JSON.stringify({
-      first_name: `User${randomIntBetween(1, 10000)}`,
-    }), { headers });
+    const updateRes = http.patch(
+      `${BASE_URL}/api/users/me`,
+      JSON.stringify({
+        first_name: `User${randomIntBetween(1, 10000)}`,
+      }),
+      { headers }
+    );
 
     check(updateRes, {
       'profile updated': (r) => r.status === 200,
     });
   });
 
-  group('Directus CMS Operations', function() {
+  group('Directus CMS Operations', function () {
     // List collections
     const collectionsRes = http.get(`${DIRECTUS_URL}/collections`, { headers });
     check(collectionsRes, {
@@ -229,7 +237,7 @@ export default function() {
     });
   });
 
-  group('Sofia AI - Simple Intention', function() {
+  group('Sofia AI - Simple Intention', function () {
     const intention = {
       description: `Create a simple landing page for ${randomString(10)}`,
       type: 'landing_page',
@@ -237,7 +245,9 @@ export default function() {
     };
 
     const intentionStart = new Date();
-    const intentionRes = http.post(`${BASE_URL}/api/sofia/intention`, JSON.stringify(intention), { headers });
+    const intentionRes = http.post(`${BASE_URL}/api/sofia/intention`, JSON.stringify(intention), {
+      headers,
+    });
     sofiaIntentionDuration.add(new Date() - intentionStart);
 
     check(intentionRes, {
@@ -366,11 +376,15 @@ export function handleSummary(data) {
 
   // Check performance budgets
   if (data.metrics.http_req_duration?.values?.['p(95)'] > PERFORMANCE_BUDGETS.api_p95) {
-    budgetViolations.push(`API p95 latency: ${data.metrics.http_req_duration.values['p(95)']}ms (budget: ${PERFORMANCE_BUDGETS.api_p95}ms)`);
+    budgetViolations.push(
+      `API p95 latency: ${data.metrics.http_req_duration.values['p(95)']}ms (budget: ${PERFORMANCE_BUDGETS.api_p95}ms)`
+    );
   }
 
   if (data.metrics.http_req_failed?.values?.rate > PERFORMANCE_BUDGETS.error_rate) {
-    budgetViolations.push(`Error rate: ${(data.metrics.http_req_failed.values.rate * 100).toFixed(2)}% (budget: ${PERFORMANCE_BUDGETS.error_rate * 100}%)`);
+    budgetViolations.push(
+      `Error rate: ${(data.metrics.http_req_failed.values.rate * 100).toFixed(2)}% (budget: ${PERFORMANCE_BUDGETS.error_rate * 100}%)`
+    );
   }
 
   const summary = {
@@ -381,7 +395,7 @@ export function handleSummary(data) {
 
   if (budgetViolations.length > 0) {
     console.error('❌ PERFORMANCE BUDGET VIOLATIONS:');
-    budgetViolations.forEach(v => console.error(`   - ${v}`));
+    budgetViolations.forEach((v) => console.error(`   - ${v}`));
   } else {
     console.log('✅ ALL PERFORMANCE BUDGETS MET');
   }
@@ -408,18 +422,22 @@ function generateHTMLReport(data, violations) {
   <h1>MagicSaaS System-∞ Load Test Results</h1>
   <p><strong>Date:</strong> ${new Date().toISOString()}</p>
 
-  ${violations.length > 0 ? `
+  ${
+    violations.length > 0
+      ? `
     <div class="violation">
       <h2>⚠️ Performance Budget Violations</h2>
       <ul>
-        ${violations.map(v => `<li>${v}</li>`).join('')}
+        ${violations.map((v) => `<li>${v}</li>`).join('')}
       </ul>
     </div>
-  ` : `
+  `
+      : `
     <div class="success">
       <h2>✅ All Performance Budgets Met</h2>
     </div>
-  `}
+  `
+  }
 
   <h2>Summary Statistics</h2>
   <table>

@@ -1,28 +1,27 @@
 # 🏥 Pétala Healthcare - Complete Healthcare Platform
 
-**Version:** 1.0.0
-**Status:** ✅ Production-Ready (HIPAA-Compliant)
+**Version:** 1.0.0 **Status:** ✅ Production-Ready (HIPAA-Compliant)
 **Category:** Health Tech
 
 ---
 
 ## 📋 Overview
 
-Pétala Healthcare is a comprehensive, HIPAA-compliant healthcare platform with telemedicine, Electronic Health Records (EHR), appointment scheduling, e-prescription, and complete patient management.
+Pétala Healthcare is a comprehensive, HIPAA-compliant healthcare platform with
+telemedicine, Electronic Health Records (EHR), appointment scheduling,
+e-prescription, and complete patient management.
 
 ### Key Features
 
-✅ **Patient Management (EHR)** - Complete electronic health records
-✅ **Telemedicine** - HD video consultations (Twilio)
-✅ **Appointment Scheduling** - Calendar with reminders
-✅ **E-Prescription** - Digital prescription management
-✅ **Lab Results & Imaging** - DICOM viewer support
-✅ **HIPAA Compliance** - Full PHI encryption and audit logs
-✅ **Insurance Claims** - Automated claims processing
-✅ **Billing & Invoicing** - Complete revenue cycle management
-✅ **Patient Portal** - Self-service access to records
-✅ **Digital Consent Forms** - E-signature integration
-✅ **Wearable Integration** - Fitbit, Apple Health sync
+✅ **Patient Management (EHR)** - Complete electronic health records ✅
+**Telemedicine** - HD video consultations (Twilio) ✅ **Appointment
+Scheduling** - Calendar with reminders ✅ **E-Prescription** - Digital
+prescription management ✅ **Lab Results & Imaging** - DICOM viewer support ✅
+**HIPAA Compliance** - Full PHI encryption and audit logs ✅ **Insurance
+Claims** - Automated claims processing ✅ **Billing & Invoicing** - Complete
+revenue cycle management ✅ **Patient Portal** - Self-service access to records
+✅ **Digital Consent Forms** - E-signature integration ✅ **Wearable
+Integration** - Fitbit, Apple Health sync
 
 ---
 
@@ -43,17 +42,14 @@ Pétala Healthcare is a comprehensive, HIPAA-compliant healthcare platform with 
 
 ### Installation
 
-\`\`\`bash
-cd petalas/healthcare/frontend
-npm install
-npm run dev
-\`\`\`
+\`\`\`bash cd petalas/healthcare/frontend npm install npm run dev \`\`\`
 
 ---
 
 ## 💰 Pricing
 
 ### Starter - $149/month
+
 - Up to 50 patients
 - Appointment scheduling
 - Basic EHR
@@ -61,6 +57,7 @@ npm run dev
 - Email support
 
 ### Professional - $349/month
+
 - Unlimited patients
 - Complete EHR system
 - E-prescription
@@ -70,6 +67,7 @@ npm run dev
 - Priority support
 
 ### Enterprise - $799/month
+
 - Everything in Professional
 - Multi-location support
 - Hospital integration
@@ -80,6 +78,5 @@ npm run dev
 
 ---
 
-**Built with ❤️ by Software Lotus**
-**Powered by MagicSaaS System-∞ & Sofia AI**
+**Built with ❤️ by Software Lotus** **Powered by MagicSaaS System-∞ & Sofia AI**
 **HIPAA-Compliant | SOC 2 Type II**

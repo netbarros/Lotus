@@ -8,7 +8,7 @@ import { useState } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { sofia } from '@services/sofia';
 import { useSofiaHealth } from '@hooks/useSofiaHealth';
-import type { IntentionRequest } from '@types';
+import type { IntentionRequest } from '@/types';
 
 export function SofiaDashboard() {
   const { health, isLoading: healthLoading } = useSofiaHealth();
@@ -109,9 +109,10 @@ export function SofiaDashboard() {
               <div className="text-gray-800 fw-bold fs-2 mb-2">Successful</div>
               <div className="text-gray-400 fw-semibold fs-7">
                 {metrics
-                  ? ((metrics.metrics.successfulRequests / metrics.metrics.totalRequests) * 100).toFixed(
-                      1
-                    )
+                  ? (
+                      (metrics.metrics.successfulRequests / metrics.metrics.totalRequests) *
+                      100
+                    ).toFixed(1)
                   : 0}
                 % success rate
               </div>
@@ -247,9 +248,7 @@ export function SofiaDashboard() {
             <div className="card-header border-0 pt-5">
               <h3 className="card-title align-items-start flex-column">
                 <span className="card-label fw-bold fs-3 mb-1">AI Stack Status</span>
-                <span className="text-muted mt-1 fw-semibold fs-7">
-                  v4.0 Components health
-                </span>
+                <span className="text-muted mt-1 fw-semibold fs-7">v4.0 Components health</span>
               </h3>
             </div>
             <div className="card-body">
@@ -296,9 +295,7 @@ function ComponentCard({
     <div className="d-flex align-items-center">
       <div className={`symbol symbol-50px symbol-light-${active ? 'success' : 'danger'} me-5`}>
         <span className="symbol-label">
-          <i
-            className={`ki-duotone ki-abstract-26 fs-2x text-${active ? 'success' : 'danger'}`}
-          >
+          <i className={`ki-duotone ki-abstract-26 fs-2x text-${active ? 'success' : 'danger'}`}>
             <span className="path1"></span>
             <span className="path2"></span>
           </i>

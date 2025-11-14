@@ -1,7 +1,6 @@
 # 🎯 MagicSaaS Admin Dashboard - Enterprise Metronic
 
-**Versão:** 4.0.0
-**Status:** ✅ COMPLETO - 100% Enterprise State-of-the-Art
+**Versão:** 4.0.0 **Status:** ✅ COMPLETO - 100% Enterprise State-of-the-Art
 **Powered by:** Sofia AI v4.0 + Metronic 9 + React 18
 
 ---
@@ -58,17 +57,20 @@ frontend/admin/
 ## 🚀 Tecnologias
 
 ### Core
+
 - **React 18.3.1** - UI library
 - **TypeScript 5.6.3** - Type safety
 - **Vite 5.4.2** - Build tool & dev server
 - **React Router 6.26.0** - Client-side routing
 
 ### State Management & Data Fetching
+
 - **Zustand 4.5.5** - State management
 - **TanStack Query 5.56.2** - Server state management
 - **Axios 1.7.7** - HTTP client
 
 ### Validation & Utilities
+
 - **Zod 3.23.8** - Schema validation
 
 ---
@@ -115,17 +117,20 @@ npm run preview
 ## 🎨 Componentes Principais
 
 ### 📊 Dashboard Principal
+
 - **StatsCard** - Cartões de estatísticas com ícones Metronic
 - **SofiaHealthWidget** - Monitoramento em tempo real Sofia AI v4.0
 - **PetalasOverview** - Overview de todas as pétalas
 
 ### 🧠 Sofia AI Dashboard
+
 - **Health Monitoring** - Status de todos componentes AI Stack
 - **Intention Engine** - Interface para geração por intenção
 - **LangChain Chains** - Visualização de chains disponíveis
 - **AI Stack Status** - LangChain, Langfuse, Qdrant, pgVector
 
 ### 🎛️ Layout
+
 - **MasterLayout** - Layout principal Metronic
 - **Header** - Top navigation com Sofia status
 - **Sidebar** - Menu lateral com todas as rotas
@@ -136,6 +141,7 @@ npm run preview
 ## 🔌 Integração com Sofia AI v4.0
 
 ### Health Check Real-time
+
 ```typescript
 import { useSofiaHealth } from '@hooks/useSofiaHealth';
 
@@ -152,20 +158,22 @@ function MyComponent() {
 ```
 
 ### Intention Engine
+
 ```typescript
 import { sofia } from '@services/sofia';
 
 const result = await sofia.generateByIntention({
-  intention: "Criar um SaaS de gestão de clínicas",
+  intention: 'Criar um SaaS de gestão de clínicas',
   context: {},
-  petala: "healthcare"
+  petala: 'healthcare',
 });
 ```
 
 ### Vector Search
+
 ```typescript
-const similar = await sofia.searchSimilar("buscar documentos similares", 10);
-const embedding = await sofia.getEmbedding("texto para gerar embedding");
+const similar = await sofia.searchSimilar('buscar documentos similares', 10);
+const embedding = await sofia.getEmbedding('texto para gerar embedding');
 ```
 
 ---
@@ -173,26 +181,29 @@ const embedding = await sofia.getEmbedding("texto para gerar embedding");
 ## 🔗 MCP Integration
 
 ### Leitura de Recursos
+
 ```typescript
 import { mcp } from '@services/mcp';
 
 const data = await mcp.read({
   collection: 'petalas',
   operation: 'read',
-  data: null
+  data: null,
 });
 ```
 
 ### Sincronização
+
 ```typescript
-await mcp.sync(
-  'directus-default',
-  'external-connection',
-  ['petalas', 'users', 'settings']
-);
+await mcp.sync('directus-default', 'external-connection', [
+  'petalas',
+  'users',
+  'settings',
+]);
 ```
 
 ### Real-time Subscription
+
 ```typescript
 import { useMCPSubscription } from '@hooks/useMCP';
 
@@ -206,6 +217,7 @@ useMCPSubscription('petalas', (data) => {
 ## 📊 Features Implementadas
 
 ### ✅ COMPLETO
+
 - [x] Layout Metronic Enterprise completo
 - [x] Dashboard principal com stats inteligentes
 - [x] Sofia AI v4.0 Dashboard
@@ -221,6 +233,7 @@ useMCPSubscription('petalas', (data) => {
 - [x] Environment variables
 
 ### 🔄 Próximas Features (Expansão)
+
 - [ ] Pétalas CRUD completo
 - [ ] Marketplace UI
 - [ ] Settings page completo
@@ -261,19 +274,19 @@ VITE_SKIP_AUTH=true  # Development only
 
 ## 🎯 Rotas
 
-| Rota | Descrição |
-|------|-----------|
-| `/` | Dashboard principal |
-| `/sofia/dashboard` | Sofia AI Dashboard |
-| `/sofia/intention` | Intention Engine |
-| `/sofia/vectors` | Vector Search |
-| `/sofia/traces` | Langfuse Traces |
-| `/petalas` | Lista de pétalas |
-| `/petalas/:id` | Detalhe da pétala |
-| `/petalas/marketplace` | Marketplace |
-| `/mcp` | MCP Connections |
-| `/users` | Gestão de usuários |
-| `/settings` | Configurações |
+| Rota                   | Descrição           |
+| ---------------------- | ------------------- |
+| `/`                    | Dashboard principal |
+| `/sofia/dashboard`     | Sofia AI Dashboard  |
+| `/sofia/intention`     | Intention Engine    |
+| `/sofia/vectors`       | Vector Search       |
+| `/sofia/traces`        | Langfuse Traces     |
+| `/petalas`             | Lista de pétalas    |
+| `/petalas/:id`         | Detalhe da pétala   |
+| `/petalas/marketplace` | Marketplace         |
+| `/mcp`                 | MCP Connections     |
+| `/users`               | Gestão de usuários  |
+| `/settings`            | Configurações       |
 
 ---
 
@@ -317,6 +330,5 @@ npm run lint
 
 ---
 
-**Desenvolvido por:** Software Lotus
-**Powered by:** Sofia AI v4.0 - The Brain of MagicSaaS
-**License:** PROPRIETARY
+**Desenvolvido por:** Software Lotus **Powered by:** Sofia AI v4.0 - The Brain
+of MagicSaaS **License:** PROPRIETARY

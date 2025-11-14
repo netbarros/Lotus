@@ -21,11 +21,7 @@
     "user": "magicsaas_finance",
     "ssl": true,
     "poolSize": 20,
-    "extensions": [
-      "uuid-ossp",
-      "pgcrypto",
-      "vector"
-    ]
+    "extensions": ["uuid-ossp", "pgcrypto", "vector"]
   },
   "cache": {
     "type": "redis",
@@ -62,21 +58,14 @@
     "chatbot": {
       "enabled": true,
       "model": "gpt-4",
-      "languages": [
-        "en",
-        "pt-BR",
-        "es"
-      ],
+      "languages": ["en", "pt-BR", "es"],
       "fallbackToHuman": true
     }
   },
   "features": {
     "auth": {
       "jwt": true,
-      "oauth": [
-        "google",
-        "facebook"
-      ],
+      "oauth": ["google", "facebook"],
       "twoFactor": false,
       "sso": false
     },
@@ -114,9 +103,7 @@
     },
     "cors": {
       "enabled": true,
-      "origin": [
-        "https://finance.softwarelotus.com.br"
-      ],
+      "origin": ["https://finance.softwarelotus.com.br"],
       "credentials": true
     },
     "helmet": {
@@ -132,13 +119,7 @@
     },
     "rbac": {
       "enabled": true,
-      "roles": [
-        "owner",
-        "admin",
-        "editor",
-        "viewer",
-        "api"
-      ],
+      "roles": ["owner", "admin", "editor", "viewer", "api"],
       "defaultRole": "viewer"
     },
     "rls": {
@@ -156,9 +137,7 @@
     "grafana": {
       "enabled": true,
       "port": 3000,
-      "dashboards": [
-        "petala-finance.json"
-      ]
+      "dashboards": ["petala-finance.json"]
     },
     "jaeger": {
       "enabled": true,
@@ -174,9 +153,7 @@
     },
     "alerts": {
       "enabled": true,
-      "channels": [
-        "slack"
-      ],
+      "channels": ["slack"],
       "thresholds": {
         "errorRate": 0.05,
         "latencyP95": 500,
@@ -188,11 +165,7 @@
   "performance": {
     "caching": {
       "enabled": true,
-      "strategies": [
-        "memory",
-        "redis",
-        "cdn"
-      ],
+      "strategies": ["memory", "redis", "cdn"],
       "ttl": {
         "default": 3600
       }
