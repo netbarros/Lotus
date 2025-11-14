@@ -1,1 +1,0 @@
-{"version":3,"file":"services.stub.d.ts","sourceRoot":"","sources":["services.stub.ts"],"names":[],"mappings":"AAAA;;;GAGG;AAEH,qBAAa,oBAAoB;IACzB,SAAS;;;IAIT,gBAAgB,CAAC,SAAS,EAAE,GAAG,EAAE,QAAQ,CAAC,EAAE,GAAG,GAAG,OAAO,CAAC,GAAG,CAAC;CAWrE;AAED,qBAAa,mBAAmB;IACxB,WAAW,CAAC,SAAS,EAAE,GAAG;CAGjC;AAED,qBAAa,iBAAiB;IACtB,MAAM,CAAC,MAAM,EAAE,MAAM;;;CAG5B"}

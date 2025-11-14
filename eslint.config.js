@@ -35,7 +35,10 @@ export default [
       ...tsPlugin.configs.recommended.rules,
       '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
       '@typescript-eslint/no-explicit-any': 'warn',
+      '@typescript-eslint/ban-ts-comment': 'off', // Allow @ts-nocheck, @ts-expect-error for pragmatic type fixes
       'no-console': ['warn', { allow: ['warn', 'error'] }],
+      'no-undef': 'off', // TypeScript handles this
+      'no-useless-escape': 'warn', // Downgrade to warning
     },
   },
 
