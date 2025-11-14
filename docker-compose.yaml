@@ -414,4 +414,379 @@ networks:
     driver: bridge
     ipam:
       config:
+
+  # ===================================================
+  # 🌸 PÉTALAS (Industry-Specific Microservices)
+  # All 16 industry-specific extensions powered by Sofia AI
+  # ===================================================
+
+  # Pétala: Automotive
+  petala-automotive:
+    build:
+      context: ./petalas/automotive
+      dockerfile: Dockerfile
+    container_name: magicsaas-petala-automotive
+    restart: unless-stopped
+    environment:
+      DIRECTUS_URL: http://directus:8055
+      SOFIA_AI_URL: http://sofia-ai:3002
+      POSTGRES_HOST: postgres
+      POSTGRES_DB: ${POSTGRES_DB:-magicsaas}
+      POSTGRES_USER: ${POSTGRES_USER:-magicsaas_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+      PETALA_NAME: automotive
+    depends_on:
+      - postgres
+      - directus
+    networks:
+      - magicsaas-network
+
+  # Pétala: Beauty
+  petala-beauty:
+    build:
+      context: ./petalas/beauty
+      dockerfile: Dockerfile
+    container_name: magicsaas-petala-beauty
+    restart: unless-stopped
+    environment:
+      DIRECTUS_URL: http://directus:8055
+      SOFIA_AI_URL: http://sofia-ai:3002
+      POSTGRES_HOST: postgres
+      POSTGRES_DB: ${POSTGRES_DB:-magicsaas}
+      POSTGRES_USER: ${POSTGRES_USER:-magicsaas_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+      PETALA_NAME: beauty
+    depends_on:
+      - postgres
+      - directus
+    networks:
+      - magicsaas-network
+
+  # Pétala: Creator
+  petala-creator:
+    build:
+      context: ./petalas/creator
+      dockerfile: Dockerfile
+    container_name: magicsaas-petala-creator
+    restart: unless-stopped
+    environment:
+      DIRECTUS_URL: http://directus:8055
+      SOFIA_AI_URL: http://sofia-ai:3002
+      POSTGRES_HOST: postgres
+      POSTGRES_DB: ${POSTGRES_DB:-magicsaas}
+      POSTGRES_USER: ${POSTGRES_USER:-magicsaas_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+      PETALA_NAME: creator
+    depends_on:
+      - postgres
+      - directus
+    networks:
+      - magicsaas-network
+
+  # Pétala: Education
+  petala-education:
+    build:
+      context: ./petalas/education
+      dockerfile: Dockerfile
+    container_name: magicsaas-petala-education
+    restart: unless-stopped
+    environment:
+      DIRECTUS_URL: http://directus:8055
+      SOFIA_AI_URL: http://sofia-ai:3002
+      POSTGRES_HOST: postgres
+      POSTGRES_DB: ${POSTGRES_DB:-magicsaas}
+      POSTGRES_USER: ${POSTGRES_USER:-magicsaas_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+      PETALA_NAME: education
+    depends_on:
+      - postgres
+      - directus
+    networks:
+      - magicsaas-network
+
+  # Pétala: Events
+  petala-events:
+    build:
+      context: ./petalas/events
+      dockerfile: Dockerfile
+    container_name: magicsaas-petala-events
+    restart: unless-stopped
+    environment:
+      DIRECTUS_URL: http://directus:8055
+      SOFIA_AI_URL: http://sofia-ai:3002
+      POSTGRES_HOST: postgres
+      POSTGRES_DB: ${POSTGRES_DB:-magicsaas}
+      POSTGRES_USER: ${POSTGRES_USER:-magicsaas_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+      PETALA_NAME: events
+    depends_on:
+      - postgres
+      - directus
+    networks:
+      - magicsaas-network
+
+  # Pétala: Fashion
+  petala-fashion:
+    build:
+      context: ./petalas/fashion
+      dockerfile: Dockerfile
+    container_name: magicsaas-petala-fashion
+    restart: unless-stopped
+    environment:
+      DIRECTUS_URL: http://directus:8055
+      SOFIA_AI_URL: http://sofia-ai:3002
+      POSTGRES_HOST: postgres
+      POSTGRES_DB: ${POSTGRES_DB:-magicsaas}
+      POSTGRES_USER: ${POSTGRES_USER:-magicsaas_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+      PETALA_NAME: fashion
+    depends_on:
+      - postgres
+      - directus
+    networks:
+      - magicsaas-network
+
+  # Pétala: Finance
+  petala-finance:
+    build:
+      context: ./petalas/finance
+      dockerfile: Dockerfile
+    container_name: magicsaas-petala-finance
+    restart: unless-stopped
+    environment:
+      DIRECTUS_URL: http://directus:8055
+      SOFIA_AI_URL: http://sofia-ai:3002
+      POSTGRES_HOST: postgres
+      POSTGRES_DB: ${POSTGRES_DB:-magicsaas}
+      POSTGRES_USER: ${POSTGRES_USER:-magicsaas_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+      PETALA_NAME: finance
+    depends_on:
+      - postgres
+      - directus
+    networks:
+      - magicsaas-network
+
+  # Pétala: Fitness
+  petala-fitness:
+    build:
+      context: ./petalas/fitness
+      dockerfile: Dockerfile
+    container_name: magicsaas-petala-fitness
+    restart: unless-stopped
+    environment:
+      DIRECTUS_URL: http://directus:8055
+      SOFIA_AI_URL: http://sofia-ai:3002
+      POSTGRES_HOST: postgres
+      POSTGRES_DB: ${POSTGRES_DB:-magicsaas}
+      POSTGRES_USER: ${POSTGRES_USER:-magicsaas_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+      PETALA_NAME: fitness
+    depends_on:
+      - postgres
+      - directus
+    networks:
+      - magicsaas-network
+
+  # Pétala: Healthcare
+  petala-healthcare:
+    build:
+      context: ./petalas/healthcare
+      dockerfile: Dockerfile
+    container_name: magicsaas-petala-healthcare
+    restart: unless-stopped
+    environment:
+      DIRECTUS_URL: http://directus:8055
+      SOFIA_AI_URL: http://sofia-ai:3002
+      POSTGRES_HOST: postgres
+      POSTGRES_DB: ${POSTGRES_DB:-magicsaas}
+      POSTGRES_USER: ${POSTGRES_USER:-magicsaas_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+      PETALA_NAME: healthcare
+    depends_on:
+      - postgres
+      - directus
+    networks:
+      - magicsaas-network
+
+  # Pétala: Hospitality
+  petala-hospitality:
+    build:
+      context: ./petalas/hospitality
+      dockerfile: Dockerfile
+    container_name: magicsaas-petala-hospitality
+    restart: unless-stopped
+    environment:
+      DIRECTUS_URL: http://directus:8055
+      SOFIA_AI_URL: http://sofia-ai:3002
+      POSTGRES_HOST: postgres
+      POSTGRES_DB: ${POSTGRES_DB:-magicsaas}
+      POSTGRES_USER: ${POSTGRES_USER:-magicsaas_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+      PETALA_NAME: hospitality
+    depends_on:
+      - postgres
+      - directus
+    networks:
+      - magicsaas-network
+
+  # Pétala: Legal
+  petala-legal:
+    build:
+      context: ./petalas/legal
+      dockerfile: Dockerfile
+    container_name: magicsaas-petala-legal
+    restart: unless-stopped
+    environment:
+      DIRECTUS_URL: http://directus:8055
+      SOFIA_AI_URL: http://sofia-ai:3002
+      POSTGRES_HOST: postgres
+      POSTGRES_DB: ${POSTGRES_DB:-magicsaas}
+      POSTGRES_USER: ${POSTGRES_USER:-magicsaas_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+      PETALA_NAME: legal
+    depends_on:
+      - postgres
+      - directus
+    networks:
+      - magicsaas-network
+
+  # Pétala: Logistics
+  petala-logistics:
+    build:
+      context: ./petalas/logistics
+      dockerfile: Dockerfile
+    container_name: magicsaas-petala-logistics
+    restart: unless-stopped
+    environment:
+      DIRECTUS_URL: http://directus:8055
+      SOFIA_AI_URL: http://sofia-ai:3002
+      POSTGRES_HOST: postgres
+      POSTGRES_DB: ${POSTGRES_DB:-magicsaas}
+      POSTGRES_USER: ${POSTGRES_USER:-magicsaas_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+      PETALA_NAME: logistics
+    depends_on:
+      - postgres
+      - directus
+    networks:
+      - magicsaas-network
+
+  # Pétala: Real Estate
+  petala-real-estate:
+    build:
+      context: ./petalas/real-estate
+      dockerfile: Dockerfile
+    container_name: magicsaas-petala-real-estate
+    restart: unless-stopped
+    environment:
+      DIRECTUS_URL: http://directus:8055
+      SOFIA_AI_URL: http://sofia-ai:3002
+      POSTGRES_HOST: postgres
+      POSTGRES_DB: ${POSTGRES_DB:-magicsaas}
+      POSTGRES_USER: ${POSTGRES_USER:-magicsaas_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+      PETALA_NAME: real-estate
+    depends_on:
+      - postgres
+      - directus
+    networks:
+      - magicsaas-network
+
+  # Pétala: Restaurant
+  petala-restaurant:
+    build:
+      context: ./petalas/restaurant
+      dockerfile: Dockerfile
+    container_name: magicsaas-petala-restaurant
+    restart: unless-stopped
+    environment:
+      DIRECTUS_URL: http://directus:8055
+      SOFIA_AI_URL: http://sofia-ai:3002
+      POSTGRES_HOST: postgres
+      POSTGRES_DB: ${POSTGRES_DB:-magicsaas}
+      POSTGRES_USER: ${POSTGRES_USER:-magicsaas_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+      PETALA_NAME: restaurant
+    depends_on:
+      - postgres
+      - directus
+    networks:
+      - magicsaas-network
+
+  # Pétala: Retail
+  petala-retail:
+    build:
+      context: ./petalas/retail
+      dockerfile: Dockerfile
+    container_name: magicsaas-petala-retail
+    restart: unless-stopped
+    environment:
+      DIRECTUS_URL: http://directus:8055
+      SOFIA_AI_URL: http://sofia-ai:3002
+      POSTGRES_HOST: postgres
+      POSTGRES_DB: ${POSTGRES_DB:-magicsaas}
+      POSTGRES_USER: ${POSTGRES_USER:-magicsaas_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+      PETALA_NAME: retail
+    depends_on:
+      - postgres
+      - directus
+    networks:
+      - magicsaas-network
+
+  # Pétala: Travel
+  petala-travel:
+    build:
+      context: ./petalas/travel
+      dockerfile: Dockerfile
+    container_name: magicsaas-petala-travel
+    restart: unless-stopped
+    environment:
+      DIRECTUS_URL: http://directus:8055
+      SOFIA_AI_URL: http://sofia-ai:3002
+      POSTGRES_HOST: postgres
+      POSTGRES_DB: ${POSTGRES_DB:-magicsaas}
+      POSTGRES_USER: ${POSTGRES_USER:-magicsaas_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+      PETALA_NAME: travel
+    depends_on:
+      - postgres
+      - directus
+    networks:
+      - magicsaas-network
+
+# =====================================================
+# VOLUMES
+# =====================================================
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  qdrant_data:
+    driver: local
+  directus_uploads:
+    driver: local
+  directus_extensions:
+    driver: local
+  sofia_ai_node_modules:
+    driver: local
+  marketing_ai_node_modules:
+    driver: local
+  erp_node_modules:
+    driver: local
+  frontend_admin_node_modules:
+    driver: local
+  frontend_admin_next:
+    driver: local
+
+# =====================================================
+# NETWORKS
+# =====================================================
+networks:
+  magicsaas-network:
+    driver: bridge
+    ipam:
+      config:
         - subnet: 172.25.0.0/16
