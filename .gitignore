@@ -110,3 +110,13 @@ infrastructure/kubernetes/secrets/
 # Generated files
 backend/api/prisma/migrations/*_*
 *.generated.ts
+
+# Compiled files in src/ (should only be in dist/)
+backend/**/src/**/*.js
+backend/**/src/**/*.d.ts.map
+backend/**/src/**/*.js.map
+# But allow type augmentation files
+!backend/api/src/types/**/*.d.ts
+!backend/sofia-ai/src/types/**/*.d.ts
+!backend/marketing-ai/src/types/**/*.d.ts
+!backend/erp/src/types/**/*.d.ts
