@@ -1,0 +1,78 @@
+{
+  "id": "flow-fashion-abandoned-cart",
+  "name": "Fashion - Abandoned Cart Recovery",
+  "icon": "shopping_bag",
+  "color": "#EF4444",
+  "description": "Automated abandoned cart recovery emails sent 1 hour, 24 hours, and 72 hours after cart abandonment",
+  "status": "active",
+  "trigger": "schedule",
+  "accountability": "all",
+  "options": {
+    "cron": "0 * * * *",
+    "timezone": "UTC"
+  },
+  "operation": "2h1l4g8k-9i7j-0l5h-g4k3-8j0i5l7k2g9h",
+  "date_created": "2025-11-06T00:00:00Z",
+  "operations": [
+    {
+      "id": "2h1l4g8k-9i7j-0l5h-g4k3-8j0i5l7k2g9h",
+      "name": "Find Abandoned Carts",
+      "key": "find_abandoned_carts",
+      "type": "request",
+      "options": {
+        "method": "GET",
+        "url": "http://localhost:8055/petalas/fashion/cart/abandoned"
+      },
+      "resolve": "3i2m5h9l-0j8k-1m6i-h5l4-9k1j6m8l3h0i",
+      "flow": "flow-fashion-abandoned-cart"
+    },
+    {
+      "id": "3i2m5h9l-0j8k-1m6i-h5l4-9k1j6m8l3h0i",
+      "name": "Loop Through Carts",
+      "key": "loop_carts",
+      "type": "transform",
+      "options": {
+        "json": "{{$last.data}}"
+      },
+      "resolve": "4j3n6i0m-1k9l-2n7j-i6m5-0l2k7n9m4i1j",
+      "flow": "flow-fashion-abandoned-cart"
+    },
+    {
+      "id": "4j3n6i0m-1k9l-2n7j-i6m5-0l2k7n9m4i1j",
+      "name": "Send Recovery Email",
+      "key": "send_recovery_email",
+      "type": "mail",
+      "options": {
+        "to": "{{$last.email}}",
+        "subject": "Your cart is waiting! Complete your purchase now",
+        "type": "template",
+        "template": "abandoned-cart-recovery",
+        "data": {
+          "customer_name": "{{$last.customer_name}}",
+          "cart_items": "{{$last.items}}",
+          "cart_total": "{{$last.total}}",
+          "cart_url": "https://{{$last.tenant_domain}}/cart",
+          "coupon_code": "{{$last.recovery_coupon}}"
+        }
+      },
+      "resolve": "5k4o7j1n-2l0m-3o8k-j7n6-1m3l8o0n5j2k",
+      "flow": "flow-fashion-abandoned-cart"
+    },
+    {
+      "id": "5k4o7j1n-2l0m-3o8k-j7n6-1m3l8o0n5j2k",
+      "name": "Mark Cart as Recovery Sent",
+      "key": "mark_recovery_sent",
+      "type": "request",
+      "options": {
+        "method": "PATCH",
+        "url": "http://localhost:8055/petalas/fashion/cart/{{$last.id}}",
+        "body": {
+          "recovery_email_sent": true,
+          "recovery_email_sent_at": "{{$now}}"
+        }
+      },
+      "resolve": null,
+      "flow": "flow-fashion-abandoned-cart"
+    }
+  ]
+}

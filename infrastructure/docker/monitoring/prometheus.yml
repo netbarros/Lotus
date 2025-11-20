@@ -1,0 +1,122 @@
+# ==============================================================================
+# PROMETHEUS CONFIGURATION
+# MagicSaaS System-∞ - Monitoring & Observability
+# ==============================================================================
+
+global:
+  scrape_interval: 15s # Scrape targets every 15 seconds
+  scrape_timeout: 10s # Timeout after 10 seconds
+  evaluation_interval: 15s # Evaluate rules every 15 seconds
+
+  # Attach these labels to any time series or alerts
+  external_labels:
+    cluster: 'magicsaas-dev'
+    environment: 'development'
+
+# Alertmanager configuration (optional - uncomment if needed)
+# alerting:
+#   alertmanagers:
+#     - static_configs:
+#         - targets:
+#           - alertmanager:9093
+
+# Load rules once and periodically evaluate them
+rule_files:
+  - "/etc/prometheus/slo-rules.yml"
+  - "/etc/prometheus/alerts.yml"
+
+# Scrape configurations
+scrape_configs:
+  # ===========================================================================
+  # PROMETHEUS SELF-MONITORING
+  # ===========================================================================
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+        labels:
+          service: 'prometheus'
+          layer: 'observability'
+
+  # ===========================================================================
+  # SOFIA AI v3.0 - THE BRAIN
+  # ===========================================================================
+  - job_name: 'sofia-ai'
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['sofia-ai:3003']
+        labels:
+          service: 'sofia-ai'
+          layer: 'layer-10-intelligence'
+          component: 'cognitive-brain'
+
+  # ===========================================================================
+  # DIRECTUS - HEADLESS CMS
+  # ===========================================================================
+  # Note: Directus doesn't expose Prometheus metrics by default
+  # You would need to add a metrics exporter
+  # - job_name: 'directus'
+  #   static_configs:
+  #     - targets: ['directus:8055']
+
+  # ===========================================================================
+  # BACKEND API (when implemented)
+  # ===========================================================================
+  # - job_name: 'backend-api'
+  #   metrics_path: '/metrics'
+  #   static_configs:
+  #     - targets: ['backend-api:3000']
+  #       labels:
+  #         service: 'backend-api'
+  #         layer: 'api-gateway'
+
+  # ===========================================================================
+  # POSTGRESQL DATABASE
+  # ===========================================================================
+  - job_name: 'postgres'
+    static_configs:
+      - targets: ['postgres-exporter:9187']
+        labels:
+          service: 'postgres'
+          layer: 'layer-03-data'
+          component: 'database'
+
+  # ===========================================================================
+  # REDIS CACHE
+  # ===========================================================================
+  - job_name: 'redis'
+    static_configs:
+      - targets: ['redis-exporter:9121']
+        labels:
+          service: 'redis'
+          layer: 'layer-03-cache'
+          component: 'cache'
+
+  # ===========================================================================
+  # INNGEST - SERVERLESS WORKFLOWS
+  # ===========================================================================
+  # - job_name: 'inngest'
+  #   metrics_path: '/metrics'
+  #   static_configs:
+  #     - targets: ['inngest:8288']
+  #       labels:
+  #         service: 'inngest'
+  #         layer: 'workflows'
+
+  # ===========================================================================
+  # NODE EXPORTER (if added for host metrics)
+  # ===========================================================================
+  # - job_name: 'node'
+  #   static_configs:
+  #     - targets: ['node-exporter:9100']
+  #       labels:
+  #         service: 'node-exporter'
+  #         layer: 'infrastructure'
+
+# ==============================================================================
+# REMOTE WRITE (optional - for long-term storage)
+# ==============================================================================
+# remote_write:
+#   - url: "https://your-prometheus-remote-storage/api/v1/write"
+#     basic_auth:
+#       username: "username"
+#       password: "password"

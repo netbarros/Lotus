@@ -1,0 +1,20 @@
+{
+  "groups": [
+    {
+      "name": "petala_logistics",
+      "rules": [
+        {
+          "alert": "PetalaPétalaLogisticsDown",
+          "expr": "up{job=\"petala-logistics\"} == 0",
+          "for": "5m",
+          "labels": {
+            "severity": "critical"
+          },
+          "annotations": {
+            "summary": "Pétala Pétala Logistics is down"
+          }
+        }
+      ]
+    }
+  ]
+}

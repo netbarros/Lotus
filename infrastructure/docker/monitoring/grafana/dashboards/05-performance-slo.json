@@ -1,0 +1,426 @@
+{
+  "dashboard": {
+    "title": "MagicSaaS System-∞ - Performance & SLO Compliance",
+    "uid": "magicsaas-performance-slo",
+    "version": 1,
+    "tags": ["magicsaas", "performance", "slo", "sla", "error-budget"],
+    "timezone": "browser",
+    "editable": true,
+    "time": {
+      "from": "now-30d",
+      "to": "now"
+    },
+    "refresh": "1m",
+    "panels": [
+      {
+        "id": 1,
+        "title": "SLO Compliance Dashboard - 30 Day Window",
+        "type": "row",
+        "gridPos": { "x": 0, "y": 0, "w": 24, "h": 1 },
+        "collapsed": false
+      },
+      {
+        "id": 2,
+        "title": "System Uptime SLO (Target: 99.95%)",
+        "type": "stat",
+        "gridPos": { "x": 0, "y": 1, "w": 6, "h": 6 },
+        "targets": [
+          {
+            "expr": "(1 - (sum(increase(up{job=\"sofia-ai\"}[30d])) / (30 * 24 * 60 * 12))) * 100",
+            "legendFormat": "Uptime %",
+            "refId": "A"
+          }
+        ],
+        "options": {
+          "colorMode": "background",
+          "graphMode": "area"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percent",
+            "decimals": 3,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                { "value": 0, "color": "red" },
+                { "value": 99.5, "color": "yellow" },
+                { "value": 99.95, "color": "green" }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 3,
+        "title": "API Success Rate SLO (Target: 99.9%)",
+        "type": "stat",
+        "gridPos": { "x": 6, "y": 1, "w": 6, "h": 6 },
+        "targets": [
+          {
+            "expr": "(sum(rate(http_requests_total{status!~\"5..\"}[30d])) / sum(rate(http_requests_total[30d]))) * 100",
+            "legendFormat": "Success Rate %",
+            "refId": "A"
+          }
+        ],
+        "options": {
+          "colorMode": "background",
+          "graphMode": "area"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percent",
+            "decimals": 3,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                { "value": 0, "color": "red" },
+                { "value": 99.0, "color": "yellow" },
+                { "value": 99.9, "color": "green" }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 4,
+        "title": "API Latency p95 SLO (Target: <200ms)",
+        "type": "stat",
+        "gridPos": { "x": 12, "y": 1, "w": 6, "h": 6 },
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, rate(http_request_duration_seconds_bucket{job=\"sofia-ai\"}[30d])) * 1000",
+            "legendFormat": "p95 Latency (ms)",
+            "refId": "A"
+          }
+        ],
+        "options": {
+          "colorMode": "background",
+          "graphMode": "area"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "unit": "ms",
+            "decimals": 1,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                { "value": 0, "color": "green" },
+                { "value": 200, "color": "yellow" },
+                { "value": 500, "color": "red" }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 5,
+        "title": "Error Rate SLO (Target: <0.1%)",
+        "type": "stat",
+        "gridPos": { "x": 18, "y": 1, "w": 6, "h": 6 },
+        "targets": [
+          {
+            "expr": "(sum(rate(http_requests_total{status=~\"5..\"}[30d])) / sum(rate(http_requests_total[30d]))) * 100",
+            "legendFormat": "Error Rate %",
+            "refId": "A"
+          }
+        ],
+        "options": {
+          "colorMode": "background",
+          "graphMode": "area"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percent",
+            "decimals": 3,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                { "value": 0, "color": "green" },
+                { "value": 0.1, "color": "yellow" },
+                { "value": 1.0, "color": "red" }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 6,
+        "title": "Error Budget Status - 30 Day Window",
+        "type": "row",
+        "gridPos": { "x": 0, "y": 7, "w": 24, "h": 1 },
+        "collapsed": false
+      },
+      {
+        "id": 7,
+        "title": "Error Budget Remaining (System Uptime)",
+        "type": "gauge",
+        "gridPos": { "x": 0, "y": 8, "w": 8, "h": 8 },
+        "targets": [
+          {
+            "expr": "(1 - ((1 - (sum(up{job=\"sofia-ai\"}) / count(up{job=\"sofia-ai\"}))) / 0.0005)) * 100",
+            "legendFormat": "Budget Remaining %",
+            "refId": "A"
+          }
+        ],
+        "options": {
+          "showThresholdLabels": true,
+          "showThresholdMarkers": true
+        },
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percent",
+            "min": 0,
+            "max": 100,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                { "value": 0, "color": "red" },
+                { "value": 25, "color": "orange" },
+                { "value": 50, "color": "yellow" },
+                { "value": 75, "color": "green" }
+              ]
+            }
+          }
+        },
+        "description": "0% = budget exhausted, 100% = budget intact. Target error budget: 0.05% (21.6 min/month)"
+      },
+      {
+        "id": 8,
+        "title": "Error Budget Burn Rate - Last 1h",
+        "type": "graph",
+        "gridPos": { "x": 8, "y": 8, "w": 8, "h": 8 },
+        "targets": [
+          {
+            "expr": "(1 - avg(up{job=\"sofia-ai\"})) / 0.0005",
+            "legendFormat": "Current Burn Rate",
+            "refId": "A"
+          }
+        ],
+        "yaxes": [{ "format": "short", "label": "Burn Rate Multiplier" }, { "format": "short" }],
+        "alert": {
+          "name": "SLO Fast Burn Rate",
+          "conditions": [
+            {
+              "evaluator": { "type": "gt", "params": [14.4] },
+              "query": { "params": ["A", "1h", "now"] }
+            }
+          ],
+          "frequency": "1m",
+          "handler": 1,
+          "message": "CRITICAL: Error budget burning at 14.4x rate - will exhaust in 50 hours",
+          "noDataState": "no_data",
+          "executionErrorState": "alerting"
+        },
+        "description": "1x = normal, >14.4x = critical (exhausts 30d budget in 50h)"
+      },
+      {
+        "id": 9,
+        "title": "Error Budget Consumption Trend (30d)",
+        "type": "graph",
+        "gridPos": { "x": 16, "y": 8, "w": 8, "h": 8 },
+        "targets": [
+          {
+            "expr": "100 - ((1 - ((1 - avg_over_time(up{job=\"sofia-ai\"}[30d])) / 0.0005)) * 100)",
+            "legendFormat": "Budget Consumed %",
+            "refId": "A"
+          }
+        ],
+        "yaxes": [
+          { "format": "percent", "label": "Budget Consumed", "min": 0, "max": 100 },
+          { "format": "short" }
+        ]
+      },
+      {
+        "id": 10,
+        "title": "Performance Budgets & Metrics",
+        "type": "row",
+        "gridPos": { "x": 0, "y": 16, "w": 24, "h": 1 },
+        "collapsed": false
+      },
+      {
+        "id": 11,
+        "title": "Time to First Byte (TTFB) - p50, p95, p99",
+        "type": "graph",
+        "gridPos": { "x": 0, "y": 17, "w": 8, "h": 8 },
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.50, rate(http_request_ttfb_seconds_bucket[5m])) * 1000",
+            "legendFormat": "p50 TTFB",
+            "refId": "A"
+          },
+          {
+            "expr": "histogram_quantile(0.95, rate(http_request_ttfb_seconds_bucket[5m])) * 1000",
+            "legendFormat": "p95 TTFB",
+            "refId": "B"
+          },
+          {
+            "expr": "histogram_quantile(0.99, rate(http_request_ttfb_seconds_bucket[5m])) * 1000",
+            "legendFormat": "p99 TTFB",
+            "refId": "C"
+          }
+        ],
+        "yaxes": [{ "format": "ms", "label": "TTFB (ms)" }, { "format": "short" }]
+      },
+      {
+        "id": 12,
+        "title": "Database Query Performance (p95, p99)",
+        "type": "graph",
+        "gridPos": { "x": 8, "y": 17, "w": 8, "h": 8 },
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, rate(pg_stat_statements_mean_time_seconds_bucket[5m])) * 1000",
+            "legendFormat": "PostgreSQL p95",
+            "refId": "A"
+          },
+          {
+            "expr": "histogram_quantile(0.99, rate(pg_stat_statements_mean_time_seconds_bucket[5m])) * 1000",
+            "legendFormat": "PostgreSQL p99",
+            "refId": "B"
+          }
+        ],
+        "yaxes": [{ "format": "ms", "label": "Query Time (ms)" }, { "format": "short" }],
+        "description": "Target: p95 <50ms, p99 <100ms"
+      },
+      {
+        "id": 13,
+        "title": "Cache Hit Ratio (Target: >95%)",
+        "type": "graph",
+        "gridPos": { "x": 16, "y": 17, "w": 8, "h": 8 },
+        "targets": [
+          {
+            "expr": "rate(redis_keyspace_hits_total[5m]) / (rate(redis_keyspace_hits_total[5m]) + rate(redis_keyspace_misses_total[5m])) * 100",
+            "legendFormat": "Redis Hit Ratio %",
+            "refId": "A"
+          }
+        ],
+        "yaxes": [
+          { "format": "percent", "label": "Hit Ratio %", "min": 0, "max": 100 },
+          { "format": "short" }
+        ]
+      },
+      {
+        "id": 14,
+        "title": "Apdex Score (Application Performance Index)",
+        "type": "gauge",
+        "gridPos": { "x": 0, "y": 25, "w": 8, "h": 8 },
+        "targets": [
+          {
+            "expr": "(sum(rate(http_requests_total{duration_bucket=\"satisfied\"}[5m])) + (sum(rate(http_requests_total{duration_bucket=\"tolerating\"}[5m])) / 2)) / sum(rate(http_requests_total[5m]))",
+            "legendFormat": "Apdex Score",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "short",
+            "decimals": 2,
+            "min": 0,
+            "max": 1,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                { "value": 0, "color": "red" },
+                { "value": 0.5, "color": "yellow" },
+                { "value": 0.85, "color": "green" }
+              ]
+            }
+          }
+        },
+        "description": "Apdex: 0-0.5=Unacceptable, 0.5-0.7=Poor, 0.7-0.85=Fair, 0.85-0.94=Good, 0.94-1.0=Excellent"
+      },
+      {
+        "id": 15,
+        "title": "Frontend Performance - Core Web Vitals",
+        "type": "graph",
+        "gridPos": { "x": 8, "y": 25, "w": 16, "h": 8 },
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.75, rate(web_vitals_lcp_seconds_bucket[5m])) * 1000",
+            "legendFormat": "LCP p75 (Largest Contentful Paint)",
+            "refId": "A"
+          },
+          {
+            "expr": "histogram_quantile(0.75, rate(web_vitals_fid_seconds_bucket[5m])) * 1000",
+            "legendFormat": "FID p75 (First Input Delay)",
+            "refId": "B"
+          },
+          {
+            "expr": "histogram_quantile(0.75, rate(web_vitals_cls_bucket[5m]))",
+            "legendFormat": "CLS p75 (Cumulative Layout Shift)",
+            "refId": "C"
+          }
+        ],
+        "yaxes": [{ "format": "ms", "label": "Time (ms) / Score" }, { "format": "short" }],
+        "description": "Core Web Vitals - LCP <2.5s (good), FID <100ms (good), CLS <0.1 (good)"
+      },
+      {
+        "id": 16,
+        "title": "Sofia AI Processing Performance",
+        "type": "graph",
+        "gridPos": { "x": 0, "y": 33, "w": 12, "h": 8 },
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.50, rate(sofia_intention_processing_duration_seconds_bucket[5m]))",
+            "legendFormat": "p50 Processing Time",
+            "refId": "A"
+          },
+          {
+            "expr": "histogram_quantile(0.95, rate(sofia_intention_processing_duration_seconds_bucket[5m]))",
+            "legendFormat": "p95 Processing Time",
+            "refId": "B"
+          },
+          {
+            "expr": "histogram_quantile(0.99, rate(sofia_intention_processing_duration_seconds_bucket[5m]))",
+            "legendFormat": "p99 Processing Time",
+            "refId": "C"
+          }
+        ],
+        "yaxes": [{ "format": "s", "label": "Processing Time" }, { "format": "short" }],
+        "description": "SLO Target: p95 <300s (5 minutes)"
+      },
+      {
+        "id": 17,
+        "title": "Throughput - Requests per Second",
+        "type": "graph",
+        "gridPos": { "x": 12, "y": 33, "w": 12, "h": 8 },
+        "targets": [
+          {
+            "expr": "sum(rate(http_requests_total{job=\"sofia-ai\"}[5m]))",
+            "legendFormat": "Total RPS",
+            "refId": "A"
+          },
+          {
+            "expr": "sum(rate(http_requests_total{job=\"sofia-ai\",status=~\"2..\"}[5m]))",
+            "legendFormat": "Success RPS (2xx)",
+            "refId": "B"
+          },
+          {
+            "expr": "sum(rate(http_requests_total{job=\"sofia-ai\",status=~\"5..\"}[5m]))",
+            "legendFormat": "Error RPS (5xx)",
+            "refId": "C"
+          }
+        ],
+        "yaxes": [{ "format": "reqps", "label": "Requests/sec" }, { "format": "short" }]
+      },
+      {
+        "id": 18,
+        "title": "SLA Compliance by Tier",
+        "type": "table",
+        "gridPos": { "x": 0, "y": 41, "w": 24, "h": 8 },
+        "targets": [
+          {
+            "expr": "avg by (tier) ((sum by (tier) (rate(http_requests_total{status!~\"5..\"}[30d])) / sum by (tier) (rate(http_requests_total[30d]))) * 100)",
+            "legendFormat": "{{tier}}",
+            "refId": "A",
+            "format": "table"
+          }
+        ],
+        "options": {
+          "showHeader": true,
+          "sortBy": [{ "displayName": "tier", "desc": false }]
+        },
+        "description": "SLA Targets: Enterprise 99.9%, Professional 99.5%, Starter 99.0%"
+      }
+    ]
+  }
+}

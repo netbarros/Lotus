@@ -1,0 +1,71 @@
+{
+  "id": "flow-restaurant-review-request",
+  "name": "Restaurant - Review Request",
+  "icon": "star_rate",
+  "color": "#F59E0B",
+  "description": "Automated review request flow: post-dining feedback collection, rating prompts, review moderation, rewards",
+  "status": "active",
+  "trigger": "event",
+  "accountability": "all",
+  "options": {
+    "type": "action",
+    "scope": ["items.update"],
+    "collections": ["orders"]
+  },
+  "operation": "rev-1a2b3c4d-5e6f-7g8h-9i0j-1k2l3m4n5o6p",
+  "date_created": "2025-11-07T00:00:00Z",
+  "user_created": null,
+  "operations": [
+    {
+      "id": "rev-1a2b3c4d-5e6f-7g8h-9i0j-1k2l3m4n5o6p",
+      "name": "Order Completed?",
+      "key": "is_completed",
+      "type": "condition",
+      "position_x": 10,
+      "position_y": 10,
+      "options": {
+        "filter": {
+          "$trigger": {
+            "payload": {
+              "status": {
+                "_eq": "completed"
+              }
+            }
+          }
+        }
+      },
+      "resolve": "rev-2b3c4d5e-6f7g-8h9i-0j1k-2l3m4n5o6p7q",
+      "reject": null,
+      "flow": "flow-restaurant-review-request",
+      "date_created": "2025-11-07T00:00:00Z",
+      "user_created": null
+    },
+    {
+      "id": "rev-2b3c4d5e-6f7g-8h9i-0j1k-2l3m4n5o6p7q",
+      "name": "Wait 2 Hours After Meal",
+      "key": "schedule_request",
+      "type": "operation",
+      "position_x": 10,
+      "position_y": 30,
+      "options": {
+        "method": "POST",
+        "url": "http://localhost:8055/petalas/restaurant/scheduler/create",
+        "body": {
+          "type": "review_request",
+          "order_id": "{{$trigger.payload.id}}",
+          "execute_at": "{{$trigger.payload.completed_at + 7200000}}",
+          "data": {
+            "customer_id": "{{$trigger.payload.customer_id}}",
+            "customer_email": "{{$trigger.payload.customer_email}}",
+            "restaurant_id": "{{$trigger.payload.restaurant_id}}"
+          }
+        }
+      },
+      "resolve": null,
+      "reject": null,
+      "flow": "flow-restaurant-review-request",
+      "date_created": "2025-11-07T00:00:00Z",
+      "user_created": null
+    }
+  ]
+}

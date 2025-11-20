@@ -1,0 +1,237 @@
+{
+  "id": "flow-restaurant-reservation-confirmation",
+  "name": "Restaurant - Reservation Confirmation",
+  "icon": "event_seat",
+  "color": "#F59E0B",
+  "description": "Complete reservation confirmation flow: generate confirmation code, send emails, update table availability, set reminders",
+  "status": "active",
+  "trigger": "event",
+  "accountability": "all",
+  "options": {
+    "type": "action",
+    "scope": ["items.create"],
+    "collections": ["reservations"]
+  },
+  "operation": "res-1a2b3c4d-5e6f-7g8h-9i0j-1k2l3m4n5o6p",
+  "date_created": "2025-11-07T00:00:00Z",
+  "user_created": null,
+  "operations": [
+    {
+      "id": "res-1a2b3c4d-5e6f-7g8h-9i0j-1k2l3m4n5o6p",
+      "name": "Generate Confirmation Code",
+      "key": "generate_code",
+      "type": "operation",
+      "position_x": 10,
+      "position_y": 10,
+      "options": {
+        "method": "POST",
+        "url": "http://localhost:8055/petalas/restaurant/reservations/generate-code",
+        "headers": [
+          {
+            "header": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "reservation_id": "{{$trigger.payload.id}}"
+        }
+      },
+      "resolve": "res-2b3c4d5e-6f7g-8h9i-0j1k-2l3m4n5o6p7q",
+      "reject": null,
+      "flow": "flow-restaurant-reservation-confirmation",
+      "date_created": "2025-11-07T00:00:00Z",
+      "user_created": null
+    },
+    {
+      "id": "res-2b3c4d5e-6f7g-8h9i-0j1k-2l3m4n5o6p7q",
+      "name": "Check Table Availability",
+      "key": "check_availability",
+      "type": "operation",
+      "position_x": 10,
+      "position_y": 30,
+      "options": {
+        "method": "POST",
+        "url": "http://localhost:8055/petalas/restaurant/tables/check-availability",
+        "body": {
+          "restaurant_id": "{{$trigger.payload.restaurant_id}}",
+          "reservation_date": "{{$trigger.payload.reservation_date}}",
+          "reservation_time": "{{$trigger.payload.reservation_time}}",
+          "party_size": "{{$trigger.payload.party_size}}",
+          "duration_minutes": "{{$trigger.payload.duration_minutes}}"
+        }
+      },
+      "resolve": "res-3c4d5e6f-7g8h-9i0j-1k2l-3m4n5o6p7q8r",
+      "reject": "res-fail-1",
+      "flow": "flow-restaurant-reservation-confirmation",
+      "date_created": "2025-11-07T00:00:00Z",
+      "user_created": null
+    },
+    {
+      "id": "res-3c4d5e6f-7g8h-9i0j-1k2l-3m4n5o6p7q8r",
+      "name": "Send Confirmation Email",
+      "key": "send_confirmation",
+      "type": "mail",
+      "position_x": 10,
+      "position_y": 50,
+      "options": {
+        "to": "{{$trigger.payload.customer_email}}",
+        "subject": "Reserva Confirmada - {{$trigger.payload.restaurant.name}}",
+        "type": "template",
+        "template": "reservation-confirmation",
+        "data": {
+          "confirmation_code": "{{$last.confirmation_code}}",
+          "customer_name": "{{$trigger.payload.customer_name}}",
+          "restaurant_name": "{{$trigger.payload.restaurant.name}}",
+          "reservation_date": "{{$trigger.payload.reservation_date}}",
+          "reservation_time": "{{$trigger.payload.reservation_time}}",
+          "party_size": "{{$trigger.payload.party_size}}",
+          "special_requests": "{{$trigger.payload.special_requests}}",
+          "occasion": "{{$trigger.payload.occasion}}",
+          "phone": "{{$trigger.payload.customer_phone}}"
+        }
+      },
+      "resolve": "res-4d5e6f7g-8h9i-0j1k-2l3m-4n5o6p7q8r9s",
+      "reject": null,
+      "flow": "flow-restaurant-reservation-confirmation",
+      "date_created": "2025-11-07T00:00:00Z",
+      "user_created": null
+    },
+    {
+      "id": "res-4d5e6f7g-8h9i-0j1k-2l3m-4n5o6p7q8r9s",
+      "name": "Send SMS Confirmation",
+      "key": "send_sms",
+      "type": "webhook",
+      "position_x": 10,
+      "position_y": 70,
+      "options": {
+        "method": "POST",
+        "url": "http://localhost:8055/petalas/restaurant/notifications/sms",
+        "body": {
+          "to": "{{$trigger.payload.customer_phone}}",
+          "message": "Reserva confirmada! Código: {{$last.confirmation_code}}. {{$trigger.payload.restaurant.name}} - {{$trigger.payload.reservation_date}} às {{$trigger.payload.reservation_time}} para {{$trigger.payload.party_size}} pessoas."
+        }
+      },
+      "resolve": "res-5e6f7g8h-9i0j-1k2l-3m4n-5o6p7q8r9s0t",
+      "reject": null,
+      "flow": "flow-restaurant-reservation-confirmation",
+      "date_created": "2025-11-07T00:00:00Z",
+      "user_created": null
+    },
+    {
+      "id": "res-5e6f7g8h-9i0j-1k2l-3m4n-5o6p7q8r9s0t",
+      "name": "Schedule Reminder (24h before)",
+      "key": "schedule_reminder",
+      "type": "operation",
+      "position_x": 10,
+      "position_y": 90,
+      "options": {
+        "method": "POST",
+        "url": "http://localhost:8055/petalas/restaurant/scheduler/create",
+        "body": {
+          "type": "reservation_reminder",
+          "reservation_id": "{{$trigger.payload.id}}",
+          "execute_at": "{{$trigger.payload.reservation_date - 86400000}}",
+          "data": {
+            "customer_email": "{{$trigger.payload.customer_email}}",
+            "customer_phone": "{{$trigger.payload.customer_phone}}",
+            "confirmation_code": "{{$last.confirmation_code}}"
+          }
+        }
+      },
+      "resolve": "res-6f7g8h9i-0j1k-2l3m-4n5o-6p7q8r9s0t1u",
+      "reject": null,
+      "flow": "flow-restaurant-reservation-confirmation",
+      "date_created": "2025-11-07T00:00:00Z",
+      "user_created": null
+    },
+    {
+      "id": "res-6f7g8h9i-0j1k-2l3m-4n5o-6p7q8r9s0t1u",
+      "name": "Update Reservation Status",
+      "key": "update_status",
+      "type": "operation",
+      "position_x": 10,
+      "position_y": 110,
+      "options": {
+        "method": "PATCH",
+        "url": "http://localhost:8055/items/reservations/{{$trigger.payload.id}}",
+        "body": {
+          "status": "confirmed",
+          "confirmation_sent_at": "{{$now}}"
+        }
+      },
+      "resolve": "res-7g8h9i0j-1k2l-3m4n-5o6p-7q8r9s0t1u2v",
+      "reject": null,
+      "flow": "flow-restaurant-reservation-confirmation",
+      "date_created": "2025-11-07T00:00:00Z",
+      "user_created": null
+    },
+    {
+      "id": "res-7g8h9i0j-1k2l-3m4n-5o6p-7q8r9s0t1u2v",
+      "name": "Emit Reservation Created Event",
+      "key": "emit_event",
+      "type": "webhook",
+      "position_x": 10,
+      "position_y": 130,
+      "options": {
+        "method": "POST",
+        "url": "http://localhost:8055/events",
+        "headers": [
+          {
+            "header": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "type": "petala.restaurant.reservation.created",
+          "aggregateId": "{{$trigger.payload.id}}",
+          "tenantId": "{{$trigger.payload.tenant_id}}",
+          "userId": "{{$trigger.payload.customer_id}}",
+          "data": {
+            "confirmation_code": "{{$last.confirmation_code}}",
+            "restaurant_id": "{{$trigger.payload.restaurant_id}}",
+            "reservation_date": "{{$trigger.payload.reservation_date}}",
+            "reservation_time": "{{$trigger.payload.reservation_time}}",
+            "party_size": "{{$trigger.payload.party_size}}",
+            "occasion": "{{$trigger.payload.occasion}}"
+          },
+          "metadata": {
+            "timestamp": "{{$now}}",
+            "version": 1,
+            "source": "flow-restaurant-reservation-confirmation"
+          }
+        }
+      },
+      "resolve": null,
+      "reject": null,
+      "flow": "flow-restaurant-reservation-confirmation",
+      "date_created": "2025-11-07T00:00:00Z",
+      "user_created": null
+    },
+    {
+      "id": "res-fail-1",
+      "name": "Send Unavailability Notice",
+      "key": "send_unavailable",
+      "type": "mail",
+      "position_x": 30,
+      "position_y": 30,
+      "options": {
+        "to": "{{$trigger.payload.customer_email}}",
+        "subject": "Reserva Pendente - {{$trigger.payload.restaurant.name}}",
+        "type": "template",
+        "template": "reservation-unavailable",
+        "data": {
+          "customer_name": "{{$trigger.payload.customer_name}}",
+          "restaurant_name": "{{$trigger.payload.restaurant.name}}",
+          "requested_date": "{{$trigger.payload.reservation_date}}",
+          "requested_time": "{{$trigger.payload.reservation_time}}",
+          "party_size": "{{$trigger.payload.party_size}}"
+        }
+      },
+      "resolve": null,
+      "reject": null,
+      "flow": "flow-restaurant-reservation-confirmation",
+      "date_created": "2025-11-07T00:00:00Z",
+      "user_created": null
+    }
+  ]
+}

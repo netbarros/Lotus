@@ -1,0 +1,71 @@
+{
+  "annotations": { "list": [] },
+  "editable": true,
+  "gnetId": null,
+  "graphTooltip": 0,
+  "id": null,
+  "panels": [
+    {
+      "datasource": "Prometheus",
+      "gridPos": { "h": 8, "w": 8, "x": 0, "y": 0 },
+      "id": 1,
+      "targets": [{ "expr": "magicsaas_projects_created_total", "legendFormat": "Total Projects" }],
+      "title": "Projects Created",
+      "type": "stat"
+    },
+    {
+      "datasource": "Prometheus",
+      "gridPos": { "h": 8, "w": 8, "x": 8, "y": 0 },
+      "id": 2,
+      "targets": [
+        { "expr": "magicsaas_saas_generated_total", "legendFormat": "Total SaaS Generated" }
+      ],
+      "title": "SaaS Generated",
+      "type": "stat"
+    },
+    {
+      "datasource": "Prometheus",
+      "gridPos": { "h": 8, "w": 8, "x": 16, "y": 0 },
+      "id": 3,
+      "targets": [{ "expr": "magicsaas_active_users", "legendFormat": "Active Users" }],
+      "title": "Active Users",
+      "type": "stat"
+    },
+    {
+      "datasource": "Prometheus",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 8 },
+      "id": 4,
+      "targets": [
+        { "expr": "rate(magicsaas_projects_created_total[24h])", "legendFormat": "Projects/day" }
+      ],
+      "title": "Project Creation Rate",
+      "type": "graph"
+    },
+    {
+      "datasource": "Prometheus",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 8 },
+      "id": 5,
+      "targets": [{ "expr": "magicsaas_marketplace_revenue_total", "legendFormat": "Revenue" }],
+      "title": "Marketplace Revenue",
+      "type": "graph"
+    },
+    {
+      "datasource": "Prometheus",
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 16 },
+      "id": 6,
+      "targets": [
+        { "expr": "magicsaas_petala_downloads_total", "legendFormat": "{{petala_name}}" }
+      ],
+      "title": "Pétalas - Download Count",
+      "type": "graph"
+    }
+  ],
+  "refresh": "30s",
+  "schemaVersion": 27,
+  "style": "dark",
+  "tags": ["magicsaas", "business", "kpis"],
+  "time": { "from": "now-7d", "to": "now" },
+  "title": "📊 Business Metrics - KPIs",
+  "uid": "business-metrics",
+  "version": 1
+}

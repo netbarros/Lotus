@@ -1,0 +1,182 @@
+openapi: 3.0.3
+info:
+  title: Pétala Restaurant API
+  version: 1.0.0
+  description: Complete restaurant management API with reservations, orders, tables, and Sofia AI integration
+
+servers:
+  - url: http://localhost:8055/petalas/restaurant
+    description: Development server
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+
+  schemas:
+    Reservation:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        tenant_id: { type: string }
+        restaurant_id: { type: string }
+        customer_name: { type: string }
+        customer_email: { type: string, format: email }
+        customer_phone: { type: string }
+        reservation_date: { type: string, format: date }
+        reservation_time: { type: string, format: time }
+        party_size: { type: integer, minimum: 1, maximum: 20 }
+        status: { type: string, enum: [pending, confirmed, seated, completed, cancelled, no_show] }
+        confirmation_code: { type: string }
+      required: [tenant_id, restaurant_id, customer_name, customer_phone, reservation_date, reservation_time, party_size]
+
+    Order:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        order_number: { type: string }
+        tenant_id: { type: string }
+        restaurant_id: { type: string }
+        table_id: { type: string }
+        items: { type: array }
+        order_type: { type: string, enum: [dine_in, takeout, delivery] }
+        status: { type: string }
+        total: { type: number, format: double }
+
+paths:
+  /reservations:
+    post:
+      tags: [Reservations]
+      summary: Create reservation
+      security: [{ BearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Reservation'
+      responses:
+        '200':
+          description: Reservation created successfully
+
+  /reservations/check-availability:
+    post:
+      tags: [Reservations]
+      summary: Check table availability
+      security: [{ BearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                restaurant_id: { type: string }
+                reservation_date: { type: string, format: date }
+                reservation_time: { type: string, format: time }
+                party_size: { type: integer }
+      responses:
+        '200':
+          description: Availability checked
+
+  /orders:
+    post:
+      tags: [Orders]
+      summary: Create order
+      security: [{ BearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Order'
+      responses:
+        '200':
+          description: Order created
+
+  /menu:
+    get:
+      tags: [Menu]
+      summary: List menus
+      security: [{ BearerAuth: [] }]
+      parameters:
+        - name: tenant_id
+          in: query
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: List of menus
+
+  /menu/{id}/items:
+    get:
+      tags: [Menu]
+      summary: Get menu items
+      security: [{ BearerAuth: [] }]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+        - name: available_only
+          in: query
+          schema: { type: boolean }
+      responses:
+        '200':
+          description: Menu items list
+
+  /tables:
+    get:
+      tags: [Tables]
+      summary: List tables
+      security: [{ BearerAuth: [] }]
+      parameters:
+        - name: restaurant_id
+          in: query
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: Tables list
+
+  /waitlist:
+    post:
+      tags: [Waitlist]
+      summary: Add to waitlist
+      security: [{ BearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                tenant_id: { type: string }
+                restaurant_id: { type: string }
+                customer_name: { type: string }
+                customer_phone: { type: string }
+                party_size: { type: integer }
+      responses:
+        '200':
+          description: Added to waitlist
+
+  /reviews:
+    post:
+      tags: [Reviews]
+      summary: Submit review
+      security: [{ BearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                tenant_id: { type: string }
+                restaurant_id: { type: string }
+                rating: { type: integer, minimum: 1, maximum: 5 }
+                comment: { type: string }
+      responses:
+        '200':
+          description: Review submitted

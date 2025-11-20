@@ -1,0 +1,331 @@
+{
+  "id": "flow-restaurant-waitlist-management",
+  "name": "Restaurant - Waitlist Management",
+  "icon": "queue",
+  "color": "#EF4444",
+  "description": "Automated waitlist management: customer notifications, position updates, table matching, no-show handling",
+  "status": "active",
+  "trigger": "event",
+  "accountability": "all",
+  "options": {
+    "type": "action",
+    "scope": ["items.create", "items.update"],
+    "collections": ["waitlist"]
+  },
+  "operation": "wait-1a2b3c4d-5e6f-7g8h-9i0j-1k2l3m4n5o6p",
+  "date_created": "2025-11-07T00:00:00Z",
+  "user_created": null,
+  "operations": [
+    {
+      "id": "wait-1a2b3c4d-5e6f-7g8h-9i0j-1k2l3m4n5o6p",
+      "name": "Is New Waitlist Entry?",
+      "key": "is_new_entry",
+      "type": "condition",
+      "position_x": 10,
+      "position_y": 10,
+      "options": {
+        "filter": {
+          "$trigger": {
+            "event": {
+              "_eq": "items.create"
+            }
+          }
+        }
+      },
+      "resolve": "wait-2b3c4d5e-6f7g-8h9i-0j1k-2l3m4n5o6p7q",
+      "reject": "wait-5e6f7g8h-9i0j-1k2l-3m4n-5o6p7q8r9s0t",
+      "flow": "flow-restaurant-waitlist-management",
+      "date_created": "2025-11-07T00:00:00Z",
+      "user_created": null
+    },
+    {
+      "id": "wait-2b3c4d5e-6f7g-8h9i-0j1k-2l3m4n5o6p7q",
+      "name": "Calculate Wait Position",
+      "key": "calculate_position",
+      "type": "operation",
+      "position_x": 30,
+      "position_y": 30,
+      "options": {
+        "method": "GET",
+        "url": "http://localhost:8055/petalas/restaurant/waitlist/position/{{$trigger.payload.id}}"
+      },
+      "resolve": "wait-3c4d5e6f-7g8h-9i0j-1k2l-3m4n5o6p7q8r",
+      "reject": null,
+      "flow": "flow-restaurant-waitlist-management",
+      "date_created": "2025-11-07T00:00:00Z",
+      "user_created": null
+    },
+    {
+      "id": "wait-3c4d5e6f-7g8h-9i0j-1k2l-3m4n5o6p7q8r",
+      "name": "Estimate Wait Time",
+      "key": "estimate_time",
+      "type": "operation",
+      "position_x": 30,
+      "position_y": 50,
+      "options": {
+        "method": "POST",
+        "url": "http://localhost:8055/petalas/restaurant/waitlist/estimate",
+        "body": {
+          "party_size": "{{$trigger.payload.party_size}}",
+          "restaurant_id": "{{$trigger.payload.restaurant_id}}",
+          "current_position": "{{$last.position}}"
+        }
+      },
+      "resolve": "wait-4d5e6f7g-8h9i-0j1k-2l3m-4n5o6p7q8r9s",
+      "reject": null,
+      "flow": "flow-restaurant-waitlist-management",
+      "date_created": "2025-11-07T00:00:00Z",
+      "user_created": null
+    },
+    {
+      "id": "wait-4d5e6f7g-8h9i-0j1k-2l3m-4n5o6p7q8r9s",
+      "name": "Send Waitlist Confirmation",
+      "key": "send_confirmation",
+      "type": "mail",
+      "position_x": 30,
+      "position_y": 70,
+      "options": {
+        "to": "{{$trigger.payload.customer_email}}",
+        "subject": "Você está na lista de espera - {{$trigger.payload.restaurant.name}}",
+        "type": "template",
+        "template": "waitlist-confirmation",
+        "data": {
+          "customer_name": "{{$trigger.payload.customer_name}}",
+          "restaurant_name": "{{$trigger.payload.restaurant.name}}",
+          "position": "{{$last.position}}",
+          "party_size": "{{$trigger.payload.party_size}}",
+          "estimated_wait": "{{$last.estimated_minutes}}",
+          "waitlist_id": "{{$trigger.payload.id}}"
+        }
+      },
+      "resolve": "wait-sms-1",
+      "reject": null,
+      "flow": "flow-restaurant-waitlist-management",
+      "date_created": "2025-11-07T00:00:00Z",
+      "user_created": null
+    },
+    {
+      "id": "wait-sms-1",
+      "name": "Send SMS Confirmation",
+      "key": "send_sms",
+      "type": "webhook",
+      "position_x": 30,
+      "position_y": 90,
+      "options": {
+        "method": "POST",
+        "url": "http://localhost:8055/petalas/restaurant/notifications/sms",
+        "body": {
+          "to": "{{$trigger.payload.customer_phone}}",
+          "message": "Lista de espera confirmada! Posição: {{$last.position}}. Tempo estimado: ~{{$last.estimated_minutes}} min. {{$trigger.payload.restaurant.name}}"
+        }
+      },
+      "resolve": "wait-end",
+      "reject": null,
+      "flow": "flow-restaurant-waitlist-management",
+      "date_created": "2025-11-07T00:00:00Z",
+      "user_created": null
+    },
+    {
+      "id": "wait-5e6f7g8h-9i0j-1k2l-3m4n-5o6p7q8r9s0t",
+      "name": "Status Changed to Called?",
+      "key": "is_called",
+      "type": "condition",
+      "position_x": 10,
+      "position_y": 30,
+      "options": {
+        "filter": {
+          "$trigger": {
+            "payload": {
+              "status": {
+                "_eq": "called"
+              }
+            }
+          }
+        }
+      },
+      "resolve": "wait-6f7g8h9i-0j1k-2l3m-4n5o-6p7q8r9s0t1u",
+      "reject": "wait-9i0j1k2l-3m4n-5o6p-7q8r-9s0t1u2v3w4x",
+      "flow": "flow-restaurant-waitlist-management",
+      "date_created": "2025-11-07T00:00:00Z",
+      "user_created": null
+    },
+    {
+      "id": "wait-6f7g8h9i-0j1k-2l3m-4n5o-6p7q8r9s0t1u",
+      "name": "Send Table Ready Notification",
+      "key": "send_table_ready",
+      "type": "mail",
+      "position_x": 30,
+      "position_y": 50,
+      "options": {
+        "to": "{{$trigger.payload.customer_email}}",
+        "subject": "Sua mesa está pronta! - {{$trigger.payload.restaurant.name}}",
+        "type": "template",
+        "template": "table-ready",
+        "data": {
+          "customer_name": "{{$trigger.payload.customer_name}}",
+          "restaurant_name": "{{$trigger.payload.restaurant.name}}",
+          "table_number": "{{$trigger.payload.assigned_table.number}}",
+          "party_size": "{{$trigger.payload.party_size}}"
+        }
+      },
+      "resolve": "wait-7g8h9i0j-1k2l-3m4n-5o6p-7q8r9s0t1u2v",
+      "reject": null,
+      "flow": "flow-restaurant-waitlist-management",
+      "date_created": "2025-11-07T00:00:00Z",
+      "user_created": null
+    },
+    {
+      "id": "wait-7g8h9i0j-1k2l-3m4n-5o6p-7q8r9s0t1u2v",
+      "name": "Send SMS Alert",
+      "key": "send_sms_alert",
+      "type": "webhook",
+      "position_x": 30,
+      "position_y": 70,
+      "options": {
+        "method": "POST",
+        "url": "http://localhost:8055/petalas/restaurant/notifications/sms",
+        "body": {
+          "to": "{{$trigger.payload.customer_phone}}",
+          "message": "🎉 Sua mesa está pronta! Mesa {{$trigger.payload.assigned_table.number}}. Por favor dirija-se ao host. {{$trigger.payload.restaurant.name}}"
+        }
+      },
+      "resolve": "wait-8h9i0j1k-2l3m-4n5o-6p7q-8r9s0t1u2v3w",
+      "reject": null,
+      "flow": "flow-restaurant-waitlist-management",
+      "date_created": "2025-11-07T00:00:00Z",
+      "user_created": null
+    },
+    {
+      "id": "wait-8h9i0j1k-2l3m-4n5o-6p7q-8r9s0t1u2v3w",
+      "name": "Schedule No-Show Check",
+      "key": "schedule_noshow",
+      "type": "operation",
+      "position_x": 30,
+      "position_y": 90,
+      "options": {
+        "method": "POST",
+        "url": "http://localhost:8055/petalas/restaurant/scheduler/create",
+        "body": {
+          "type": "waitlist_noshow_check",
+          "waitlist_id": "{{$trigger.payload.id}}",
+          "execute_at": "{{$now + 600000}}",
+          "data": {
+            "table_id": "{{$trigger.payload.assigned_table_id}}"
+          }
+        }
+      },
+      "resolve": "wait-end",
+      "reject": null,
+      "flow": "flow-restaurant-waitlist-management",
+      "date_created": "2025-11-07T00:00:00Z",
+      "user_created": null
+    },
+    {
+      "id": "wait-9i0j1k2l-3m4n-5o6p-7q8r-9s0t1u2v3w4x",
+      "name": "Status Changed to Seated?",
+      "key": "is_seated",
+      "type": "condition",
+      "position_x": 10,
+      "position_y": 50,
+      "options": {
+        "filter": {
+          "$trigger": {
+            "payload": {
+              "status": {
+                "_eq": "seated"
+              }
+            }
+          }
+        }
+      },
+      "resolve": "wait-seated-1",
+      "reject": "wait-cancelled-1",
+      "flow": "flow-restaurant-waitlist-management",
+      "date_created": "2025-11-07T00:00:00Z",
+      "user_created": null
+    },
+    {
+      "id": "wait-seated-1",
+      "name": "Update Position for Others",
+      "key": "update_positions",
+      "type": "operation",
+      "position_x": 30,
+      "position_y": 70,
+      "options": {
+        "method": "POST",
+        "url": "http://localhost:8055/petalas/restaurant/waitlist/recalculate-positions",
+        "body": {
+          "restaurant_id": "{{$trigger.payload.restaurant_id}}",
+          "removed_id": "{{$trigger.payload.id}}"
+        }
+      },
+      "resolve": "wait-end",
+      "reject": null,
+      "flow": "flow-restaurant-waitlist-management",
+      "date_created": "2025-11-07T00:00:00Z",
+      "user_created": null
+    },
+    {
+      "id": "wait-cancelled-1",
+      "name": "Is Cancelled or No-Show?",
+      "key": "is_cancelled",
+      "type": "condition",
+      "position_x": 10,
+      "position_y": 70,
+      "options": {
+        "filter": {
+          "$trigger": {
+            "payload": {
+              "status": {
+                "_in": ["cancelled", "no_show"]
+              }
+            }
+          }
+        }
+      },
+      "resolve": "wait-seated-1",
+      "reject": "wait-end",
+      "flow": "flow-restaurant-waitlist-management",
+      "date_created": "2025-11-07T00:00:00Z",
+      "user_created": null
+    },
+    {
+      "id": "wait-end",
+      "name": "Emit Waitlist Event",
+      "key": "emit_event",
+      "type": "webhook",
+      "position_x": 10,
+      "position_y": 150,
+      "options": {
+        "method": "POST",
+        "url": "http://localhost:8055/events",
+        "headers": [
+          {
+            "header": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "type": "petala.restaurant.waitlist.status_changed",
+          "aggregateId": "{{$trigger.payload.id}}",
+          "tenantId": "{{$trigger.payload.tenant_id}}",
+          "data": {
+            "status": "{{$trigger.payload.status}}",
+            "party_size": "{{$trigger.payload.party_size}}",
+            "restaurant_id": "{{$trigger.payload.restaurant_id}}"
+          },
+          "metadata": {
+            "timestamp": "{{$now}}",
+            "version": 1,
+            "source": "flow-restaurant-waitlist-management"
+          }
+        }
+      },
+      "resolve": null,
+      "reject": null,
+      "flow": "flow-restaurant-waitlist-management",
+      "date_created": "2025-11-07T00:00:00Z",
+      "user_created": null
+    }
+  ]
+}

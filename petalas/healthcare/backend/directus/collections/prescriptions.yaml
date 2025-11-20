@@ -1,0 +1,161 @@
+# Pétala Healthcare - Prescriptions Collection
+# Medication prescriptions and pharmacy orders
+
+collections:
+  - collection: prescriptions
+    meta:
+      group: petala_healthcare
+      icon: medication
+      note: Medication prescriptions
+      display_template: "{{medication_name}} - {{patient.first_name}} {{patient.last_name}}"
+      sort: 4
+
+    schema:
+      schema:
+        name: prescriptions
+        comment: Patient prescriptions
+
+      fields:
+        - field: id
+          type: uuid
+          schema:
+            is_primary_key: true
+
+        - field: status
+          type: string
+          schema:
+            default_value: pending
+          meta:
+            interface: select-dropdown
+            options:
+              choices:
+                - { text: Pending, value: pending }
+                - { text: Sent to Pharmacy, value: sent }
+                - { text: Ready for Pickup, value: ready }
+                - { text: Picked Up, value: picked_up }
+                - { text: Delivered, value: delivered }
+                - { text: Cancelled, value: cancelled }
+                - { text: Expired, value: expired }
+
+        - field: tenant_id
+          type: uuid
+          schema:
+            is_nullable: false
+
+        - field: patient_id
+          type: uuid
+          schema:
+            is_nullable: false
+          meta:
+            interface: select-dropdown-m2o
+            required: true
+
+        - field: provider_id
+          type: uuid
+          schema:
+            is_nullable: false
+          meta:
+            interface: select-dropdown-m2o
+            required: true
+
+        - field: appointment_id
+          type: uuid
+          meta:
+            interface: select-dropdown-m2o
+
+        - field: prescription_number
+          type: string
+          schema:
+            is_unique: true
+            max_length: 50
+
+        - field: medication_name
+          type: string
+          schema:
+            is_nullable: false
+            max_length: 200
+          meta:
+            required: true
+
+        - field: medication_code
+          type: string
+          schema:
+            max_length: 50
+          meta:
+            note: NDC code
+
+        - field: dosage
+          type: string
+          schema:
+            is_nullable: false
+            max_length: 100
+
+        - field: frequency
+          type: string
+          schema:
+            max_length: 200
+          meta:
+            note: e.g., "Twice daily", "Every 8 hours"
+
+        - field: duration
+          type: string
+          schema:
+            max_length: 100
+          meta:
+            note: e.g., "7 days", "30 days"
+
+        - field: quantity
+          type: integer
+          schema:
+            is_nullable: false
+
+        - field: refills
+          type: integer
+          schema:
+            default_value: 0
+
+        - field: refills_remaining
+          type: integer
+
+        - field: instructions
+          type: text
+          meta:
+            interface: input-multiline
+
+        - field: prescribed_date
+          type: date
+          schema:
+            is_nullable: false
+            default_value: now()
+
+        - field: expiration_date
+          type: date
+
+        - field: pharmacy_id
+          type: uuid
+          meta:
+            interface: select-dropdown-m2o
+
+        - field: sent_to_pharmacy_at
+          type: timestamp
+
+        - field: picked_up_at
+          type: timestamp
+
+        - field: cancelled_at
+          type: timestamp
+
+        - field: cancellation_reason
+          type: text
+
+        - field: date_created
+          type: timestamp
+          meta:
+            special: [date-created]
+            readonly: true
+
+        - field: date_updated
+          type: timestamp
+          meta:
+            special: [date-updated]
+            readonly: true

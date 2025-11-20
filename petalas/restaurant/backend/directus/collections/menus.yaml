@@ -1,0 +1,261 @@
+# Pétala Restaurant - Menus Collection
+# Different menu types (breakfast, lunch, dinner, drinks, etc.)
+
+collections:
+  - collection: menus
+    meta:
+      group: petala_restaurant
+      icon: menu_book
+      note: Menu types and availability schedules
+      display_template: "{{restaurant.name}} - {{name}}"
+      sort: 2
+
+    schema:
+      schema:
+        name: menus
+        comment: Menu types with time-based availability
+
+      fields:
+        # Primary Identification
+        - field: id
+          type: uuid
+          schema:
+            is_primary_key: true
+            has_auto_increment: false
+            is_nullable: false
+          meta:
+            hidden: true
+            readonly: true
+
+        - field: status
+          type: string
+          schema:
+            default_value: active
+            is_nullable: false
+          meta:
+            interface: select-dropdown
+            options:
+              choices:
+                - text: Active
+                  value: active
+                - text: Inactive
+                  value: inactive
+                - text: Seasonal
+                  value: seasonal
+            width: half
+
+        - field: tenant_id
+          type: uuid
+          schema:
+            is_nullable: false
+          meta:
+            interface: select-dropdown-m2o
+            width: half
+
+        # Restaurant Relationship
+        - field: restaurant_id
+          type: uuid
+          schema:
+            is_nullable: false
+          meta:
+            interface: select-dropdown-m2o
+            special:
+              - m2o
+            required: true
+
+        # Basic Information
+        - field: name
+          type: string
+          schema:
+            is_nullable: false
+            max_length: 100
+          meta:
+            interface: input
+            required: true
+            options:
+              placeholder: "e.g., Breakfast Menu, Lunch Specials, Dinner Menu"
+            width: half
+
+        - field: slug
+          type: string
+          schema:
+            is_nullable: false
+            max_length: 100
+          meta:
+            interface: input
+            readonly: true
+            width: half
+
+        - field: description
+          type: text
+          schema:
+            is_nullable: true
+          meta:
+            interface: input-rich-text-html
+
+        - field: menu_type
+          type: string
+          schema:
+            is_nullable: false
+          meta:
+            interface: select-dropdown
+            options:
+              choices:
+                - text: Breakfast
+                  value: breakfast
+                - text: Brunch
+                  value: brunch
+                - text: Lunch
+                  value: lunch
+                - text: Dinner
+                  value: dinner
+                - text: Drinks
+                  value: drinks
+                - text: Desserts
+                  value: desserts
+                - text: Kids Menu
+                  value: kids
+                - text: Happy Hour
+                  value: happy_hour
+                - text: Wine List
+                  value: wine
+                - text: Bar Menu
+                  value: bar
+                - text: Special Events
+                  value: special_events
+            width: half
+
+        # Availability
+        - field: available_days
+          type: json
+          schema:
+            is_nullable: false
+            default_value: |
+              {
+                "monday": true,
+                "tuesday": true,
+                "wednesday": true,
+                "thursday": true,
+                "friday": true,
+                "saturday": true,
+                "sunday": true
+              }
+          meta:
+            interface: input-code
+            options:
+              language: json
+
+        - field: available_time_start
+          type: time
+          schema:
+            is_nullable: true
+          meta:
+            interface: datetime
+            display: datetime
+            width: half
+            note: "e.g., 06:00 for breakfast"
+
+        - field: available_time_end
+          type: time
+          schema:
+            is_nullable: true
+          meta:
+            interface: datetime
+            display: datetime
+            width: half
+            note: "e.g., 11:00 for breakfast"
+
+        # Seasonal Availability
+        - field: is_seasonal
+          type: boolean
+          schema:
+            is_nullable: false
+            default_value: false
+          meta:
+            interface: boolean
+            width: third
+
+        - field: season_start_date
+          type: date
+          schema:
+            is_nullable: true
+          meta:
+            interface: datetime
+            display: datetime
+            width: third
+            note: For seasonal menus
+
+        - field: season_end_date
+          type: date
+          schema:
+            is_nullable: true
+          meta:
+            interface: datetime
+            display: datetime
+            width: third
+            note: For seasonal menus
+
+        # Display & Ordering
+        - field: sort_order
+          type: integer
+          schema:
+            is_nullable: false
+            default_value: 0
+          meta:
+            interface: input
+            width: half
+            note: Display order (lower numbers first)
+
+        - field: featured
+          type: boolean
+          schema:
+            is_nullable: false
+            default_value: false
+          meta:
+            interface: boolean
+            width: half
+
+        # Media
+        - field: image
+          type: uuid
+          schema:
+            is_nullable: true
+          meta:
+            interface: file-image
+            special:
+              - file
+            display: image
+
+        # PDF Menu
+        - field: pdf_menu
+          type: uuid
+          schema:
+            is_nullable: true
+          meta:
+            interface: file
+            special:
+              - file
+            note: Downloadable PDF version of the menu
+
+        # Timestamps
+        - field: date_created
+          type: timestamp
+          schema:
+            is_nullable: false
+          meta:
+            interface: datetime
+            readonly: true
+            special:
+              - date-created
+            width: half
+
+        - field: date_updated
+          type: timestamp
+          schema:
+            is_nullable: true
+          meta:
+            interface: datetime
+            readonly: true
+            special:
+              - date-updated
+            width: half

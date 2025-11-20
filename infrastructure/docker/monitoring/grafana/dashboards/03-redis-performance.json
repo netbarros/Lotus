@@ -1,0 +1,56 @@
+{
+  "annotations": { "list": [] },
+  "editable": true,
+  "gnetId": null,
+  "graphTooltip": 0,
+  "id": null,
+  "panels": [
+    {
+      "datasource": "Prometheus",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
+      "id": 1,
+      "targets": [
+        { "expr": "rate(redis_commands_processed_total[5m])", "legendFormat": "Commands/s" }
+      ],
+      "title": "Redis - Commands Per Second",
+      "type": "graph"
+    },
+    {
+      "datasource": "Prometheus",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
+      "id": 2,
+      "targets": [
+        {
+          "expr": "redis_keyspace_hits_total / (redis_keyspace_hits_total + redis_keyspace_misses_total)",
+          "legendFormat": "Hit Rate"
+        }
+      ],
+      "title": "Redis - Cache Hit Rate",
+      "type": "gauge"
+    },
+    {
+      "datasource": "Prometheus",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 8 },
+      "id": 3,
+      "targets": [{ "expr": "redis_memory_used_bytes", "legendFormat": "Memory Used" }],
+      "title": "Redis - Memory Usage",
+      "type": "graph"
+    },
+    {
+      "datasource": "Prometheus",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 8 },
+      "id": 4,
+      "targets": [{ "expr": "redis_connected_clients", "legendFormat": "Connected Clients" }],
+      "title": "Redis - Connected Clients",
+      "type": "graph"
+    }
+  ],
+  "refresh": "10s",
+  "schemaVersion": 27,
+  "style": "dark",
+  "tags": ["magicsaas", "cache", "redis"],
+  "time": { "from": "now-1h", "to": "now" },
+  "title": "🔴 Redis Performance",
+  "uid": "redis-performance",
+  "version": 1
+}

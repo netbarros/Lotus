@@ -1,0 +1,140 @@
+# Pétala Restaurant - Tables Collection
+# Restaurant tables with capacity, location, and availability tracking
+
+collections:
+  - collection: tables
+    meta:
+      group: petala_restaurant
+      icon: table_restaurant
+      note: Restaurant tables and seating arrangements
+      display_template: "Table {{table_number}} ({{capacity}} seats)"
+      sort: 6
+
+    schema:
+      schema:
+        name: tables
+        comment: Restaurant tables for reservation and seating management
+
+      fields:
+        - field: id
+          type: uuid
+          schema:
+            is_primary_key: true
+
+        - field: status
+          type: string
+          schema:
+            default_value: available
+          meta:
+            interface: select-dropdown
+            options:
+              choices:
+                - { text: Available, value: available }
+                - { text: Occupied, value: occupied }
+                - { text: Reserved, value: reserved }
+                - { text: Out of Service, value: out_of_service }
+            display: labels
+
+        - field: tenant_id
+          type: uuid
+          schema:
+            is_nullable: false
+
+        - field: restaurant_id
+          type: uuid
+          schema:
+            is_nullable: false
+          meta:
+            required: true
+
+        - field: table_number
+          type: string
+          schema:
+            is_nullable: false
+            max_length: 20
+          meta:
+            required: true
+            note: "e.g., 'T1', 'A5', 'Patio-3'"
+
+        - field: capacity
+          type: integer
+          schema:
+            is_nullable: false
+            default_value: 4
+          meta:
+            note: Maximum number of seats
+
+        - field: min_capacity
+          type: integer
+          schema:
+            default_value: 1
+          meta:
+            note: Minimum party size for this table
+
+        - field: location
+          type: string
+          meta:
+            interface: select-dropdown
+            options:
+              choices:
+                - { text: Indoor, value: indoor }
+                - { text: Outdoor/Patio, value: outdoor }
+                - { text: Bar Area, value: bar }
+                - { text: Private Room, value: private_room }
+                - { text: Window Seat, value: window }
+                - { text: VIP Section, value: vip }
+
+        - field: shape
+          type: string
+          meta:
+            interface: select-dropdown
+            options:
+              choices:
+                - { text: Round, value: round }
+                - { text: Square, value: square }
+                - { text: Rectangular, value: rectangular }
+                - { text: Booth, value: booth }
+                - { text: Bar Counter, value: bar_counter }
+
+        - field: is_accessible
+          type: boolean
+          schema:
+            default_value: true
+          meta:
+            note: Wheelchair accessible
+
+        - field: is_combinable
+          type: boolean
+          schema:
+            default_value: false
+          meta:
+            note: Can be combined with adjacent tables
+
+        - field: qr_code
+          type: string
+          schema:
+            max_length: 255
+          meta:
+            note: QR code for table ordering
+
+        - field: sort_order
+          type: integer
+          schema:
+            default_value: 0
+
+        - field: notes
+          type: text
+          meta:
+            note: Special notes about this table
+
+        - field: date_created
+          type: timestamp
+          meta:
+            special: [date-created]
+            readonly: true
+
+        - field: date_updated
+          type: timestamp
+          meta:
+            special: [date-updated]
+            readonly: true

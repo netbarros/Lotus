@@ -1,0 +1,78 @@
+{
+  "id": "flow-healthcare-patient-registration",
+  "name": "Healthcare - Patient Registration",
+  "icon": "person_add",
+  "color": "#F59E0B",
+  "description": "New patient registration: generate MRN, welcome email, create portal account",
+  "status": "active",
+  "trigger": "event",
+  "accountability": "all",
+  "options": {
+    "type": "action",
+    "scope": ["items.create"],
+    "collections": ["patients"]
+  },
+  "operation": "pat-1a2b3c4d-5e6f-7g8h-9i0j-1k2l3m4n5o6p",
+  "date_created": "2025-11-07T00:00:00Z",
+  "operations": [
+    {
+      "id": "pat-1a2b3c4d-5e6f-7g8h-9i0j-1k2l3m4n5o6p",
+      "name": "Generate MRN",
+      "key": "generate_mrn",
+      "type": "operation",
+      "position_x": 10,
+      "position_y": 10,
+      "options": {
+        "method": "POST",
+        "url": "http://localhost:8055/petalas/healthcare/patients/generate-mrn",
+        "body": {
+          "patient_id": "{{$trigger.payload.id}}"
+        }
+      },
+      "resolve": "pat-2b3c4d5e-6f7g-8h9i-0j1k-2l3m4n5o6p7q",
+      "reject": null,
+      "flow": "flow-healthcare-patient-registration"
+    },
+    {
+      "id": "pat-2b3c4d5e-6f7g-8h9i-0j1k-2l3m4n5o6p7q",
+      "name": "Create Patient Portal Account",
+      "key": "create_portal",
+      "type": "operation",
+      "position_x": 10,
+      "position_y": 30,
+      "options": {
+        "method": "POST",
+        "url": "http://localhost:8055/petalas/healthcare/portal/create-account",
+        "body": {
+          "patient_id": "{{$trigger.payload.id}}",
+          "email": "{{$trigger.payload.email}}",
+          "mrn": "{{$last.mrn}}"
+        }
+      },
+      "resolve": "pat-3c4d5e6f-7g8h-9i0j-1k2l-3m4n5o6p7q8r",
+      "reject": null,
+      "flow": "flow-healthcare-patient-registration"
+    },
+    {
+      "id": "pat-3c4d5e6f-7g8h-9i0j-1k2l-3m4n5o6p7q8r",
+      "name": "Send Welcome Email",
+      "key": "send_welcome",
+      "type": "mail",
+      "position_x": 10,
+      "position_y": 50,
+      "options": {
+        "to": "{{$trigger.payload.email}}",
+        "subject": "Welcome to Our Healthcare System",
+        "template": "patient-welcome",
+        "data": {
+          "first_name": "{{$trigger.payload.first_name}}",
+          "mrn": "{{$last.mrn}}",
+          "portal_url": "{{$last.portal_url}}"
+        }
+      },
+      "resolve": null,
+      "reject": null,
+      "flow": "flow-healthcare-patient-registration"
+    }
+  ]
+}

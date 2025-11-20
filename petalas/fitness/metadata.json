@@ -1,0 +1,95 @@
+{
+  "name": "fitness",
+  "displayName": "Pétala Fitness",
+  "version": "1.0.0",
+  "description": "Complete fitness management platform with class scheduling, member management, workout tracking, and wearable integration",
+  "category": "fitness",
+  "icon": "💪",
+  "pricing": {
+    "starter": {
+      "price": 89,
+      "features": [
+        "Up to 100 members",
+        "Class scheduling",
+        "Member check-in",
+        "Basic analytics",
+        "Email support"
+      ]
+    },
+    "professional": {
+      "price": 169,
+      "features": [
+        "Unlimited members",
+        "Workout tracking",
+        "Wearable sync",
+        "Nutrition plans",
+        "Video workouts",
+        "Analytics",
+        "Priority support"
+      ]
+    },
+    "enterprise": {
+      "price": 449,
+      "features": [
+        "Everything in Professional",
+        "Multi-location",
+        "White-label app",
+        "API access",
+        "Custom integrations",
+        "Dedicated support"
+      ]
+    }
+  },
+  "techStack": {
+    "frontend": "Vue 3 + Vite + Metronic demo7 (Fitness)",
+    "backend": "Directus + PostgreSQL + Redis",
+    "other": {
+      "wearables": "Fitbit API / Apple HealthKit",
+      "video": "Vimeo / YouTube",
+      "payment": "Stripe"
+    }
+  },
+  "microPetalas": [
+    "auth-basic",
+    "auth-social",
+    "payment-stripe",
+    "subscriptions",
+    "appointment-booking",
+    "video-player",
+    "analytics-google"
+  ],
+  "collections": [
+    "members",
+    "classes",
+    "trainers",
+    "workouts",
+    "exercises",
+    "nutrition_plans",
+    "attendance",
+    "memberships",
+    "payments"
+  ],
+  "features": [
+    "Class scheduling and booking",
+    "Member management and check-in",
+    "Workout plan creation",
+    "Exercise library with videos",
+    "Wearable device integration",
+    "Nutrition and meal planning",
+    "Progress tracking (weight, measurements)",
+    "Video workout library",
+    "Personal training session booking",
+    "Membership billing",
+    "Analytics and reporting",
+    "Mobile app (PWA)"
+  ],
+  "integrations": {
+    "wearables": ["Fitbit", "Apple Health", "Google Fit"],
+    "video": ["Vimeo", "YouTube"],
+    "payment": ["Stripe", "PayPal"]
+  },
+  "compliance": ["GDPR", "HIPAA (optional)"],
+  "status": "production-ready",
+  "createdAt": "2025-11-10",
+  "updatedAt": "2025-11-10"
+}

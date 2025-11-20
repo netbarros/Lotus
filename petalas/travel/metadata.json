@@ -1,0 +1,83 @@
+{
+  "name": "travel",
+  "displayName": "Pétala Travel",
+  "version": "1.0.0",
+  "description": "Complete travel booking platform with flights, hotels, tours, itinerary builder, and payment processing",
+  "category": "travel",
+  "icon": "✈️",
+  "pricing": {
+    "starter": {
+      "price": 89,
+      "features": ["Up to 100 bookings/month", "Hotel booking", "Basic itinerary", "Email support"]
+    },
+    "professional": {
+      "price": 189,
+      "features": [
+        "Unlimited bookings",
+        "Flight integration",
+        "Tour packages",
+        "Itinerary builder",
+        "Analytics",
+        "Priority support"
+      ]
+    },
+    "enterprise": {
+      "price": 459,
+      "features": [
+        "Everything in Professional",
+        "White-label",
+        "API access",
+        "GDS integration",
+        "Dedicated support"
+      ]
+    }
+  },
+  "techStack": {
+    "frontend": "Vue 3 + Vite + Metronic demo1 (E-commerce adapted)",
+    "backend": "Directus + PostgreSQL + Redis",
+    "other": {
+      "flights": "Amadeus API",
+      "hotels": "Booking.com API",
+      "payment": "Stripe"
+    }
+  },
+  "microPetalas": [
+    "auth-basic",
+    "auth-social",
+    "payment-stripe",
+    "booking-calendar",
+    "maps-integration",
+    "analytics-google"
+  ],
+  "collections": [
+    "bookings",
+    "destinations",
+    "tours",
+    "hotels",
+    "flights",
+    "itineraries",
+    "travelers",
+    "reviews"
+  ],
+  "features": [
+    "Flight search and booking",
+    "Hotel reservations",
+    "Tour package creation",
+    "Itinerary builder",
+    "Travel insurance",
+    "Reviews and ratings",
+    "Multi-currency support",
+    "Payment processing",
+    "Booking management",
+    "Analytics dashboard"
+  ],
+  "integrations": {
+    "flights": ["Amadeus", "Sabre"],
+    "hotels": ["Booking.com", "Expedia"],
+    "payment": ["Stripe", "PayPal"]
+  },
+  "compliance": ["GDPR", "PCI DSS"],
+  "status": "production-ready",
+  "createdAt": "2025-11-10",
+  "updatedAt": "2025-11-10"
+}

@@ -1,0 +1,80 @@
+# ═══════════════════════════════════════════════════════════════════════════
+# MAGICSAAS SYSTEM-∞ - EditorConfig
+# Ensures consistent coding styles across different editors and IDEs
+# https://editorconfig.org
+# ═══════════════════════════════════════════════════════════════════════════
+
+root = true
+
+# All files
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 2
+
+# TypeScript/JavaScript files
+[*.{js,jsx,ts,tsx,mjs,cjs}]
+indent_size = 2
+max_line_length = 100
+
+# JSON files
+[*.json]
+indent_size = 2
+
+# YAML files
+[*.{yml,yaml}]
+indent_size = 2
+
+# Markdown files
+[*.md]
+trim_trailing_whitespace = false
+max_line_length = off
+
+# Shell scripts
+[*.sh]
+indent_size = 2
+
+# PowerShell scripts
+[*.ps1]
+indent_size = 4
+end_of_line = crlf
+
+# Python files
+[*.py]
+indent_size = 4
+
+# Go files
+[*.go]
+indent_style = tab
+indent_size = 4
+
+# Rust files
+[*.rs]
+indent_size = 4
+
+# Makefile
+[Makefile]
+indent_style = tab
+
+# Package files
+[{package.json,package-lock.json,pnpm-lock.yaml}]
+indent_size = 2
+
+# Config files
+[{.prettierrc,.eslintrc,.babelrc}]
+indent_size = 2
+
+# Docker files
+[{Dockerfile,docker-compose*.yml}]
+indent_size = 2
+
+# SQL files
+[*.sql]
+indent_size = 2
+
+# Environment files
+[.env*]
+insert_final_newline = false

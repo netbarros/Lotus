@@ -1,0 +1,27 @@
+groups:
+  - name: petala_healthcare
+    rules:
+      - alert: PetalaHealthcareDown
+        expr: up{job="petala-healthcare"} == 0
+        for: 3m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Pétala Healthcare is down"
+          description: "Healthcare service has been down for more than 3 minutes - CRITICAL"
+
+      - alert: HIPAAViolation
+        expr: petala_healthcare_hipaa_violations_total > 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "HIPAA compliance violation detected"
+
+      - alert: EncryptionFailure
+        expr: rate(petala_healthcare_encryption_operations_total{status="failed"}[5m]) > 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "PHI encryption failure detected"

@@ -1,0 +1,93 @@
+openapi: 3.0.3
+info:
+  title: Pétala Healthcare API
+  version: 1.0.0
+  description: Complete healthcare management API with EHR, appointments, prescriptions, and telemedicine
+
+servers:
+  - url: http://localhost:8055/petalas/healthcare
+    description: Development server
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+
+  schemas:
+    Patient:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        mrn: { type: string }
+        first_name: { type: string }
+        last_name: { type: string }
+        date_of_birth: { type: string, format: date }
+        gender: { type: string }
+        blood_type: { type: string }
+
+    Appointment:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        patient_id: { type: string }
+        provider_id: { type: string }
+        appointment_date: { type: string, format: date }
+        appointment_time: { type: string, format: time }
+        appointment_type: { type: string }
+        status: { type: string }
+
+    Prescription:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        prescription_number: { type: string }
+        patient_id: { type: string }
+        medication_name: { type: string }
+        dosage: { type: string }
+        quantity: { type: integer }
+
+paths:
+  /patients/{id}:
+    get:
+      tags: [Patients]
+      summary: Get patient details
+      security: [{ BearerAuth: [] }]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: Patient details
+
+  /appointments:
+    post:
+      tags: [Appointments]
+      summary: Create appointment
+      security: [{ BearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Appointment'
+      responses:
+        '200':
+          description: Appointment created
+
+  /prescriptions:
+    post:
+      tags: [Prescriptions]
+      summary: Create prescription
+      security: [{ BearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Prescription'
+      responses:
+        '200':
+          description: Prescription created

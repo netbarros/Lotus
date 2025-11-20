@@ -1,0 +1,80 @@
+{
+  "name": "finance",
+  "displayName": "Pétala Finance",
+  "version": "1.0.0",
+  "description": "Complete fintech platform with accounts, transactions, open banking, reporting, and compliance",
+  "category": "finance",
+  "icon": "💰",
+  "pricing": {
+    "starter": {
+      "price": 149,
+      "features": ["Up to 1000 transactions/month", "Basic reporting", "Email support"]
+    },
+    "professional": {
+      "price": 349,
+      "features": [
+        "Unlimited transactions",
+        "Open banking",
+        "Advanced analytics",
+        "Multi-currency",
+        "Priority support"
+      ]
+    },
+    "enterprise": {
+      "price": 799,
+      "features": [
+        "Everything in Professional",
+        "White-label",
+        "API access",
+        "Compliance tools",
+        "Dedicated support"
+      ]
+    }
+  },
+  "techStack": {
+    "frontend": "Vue 3 + Vite + Metronic demo2 (Analytics)",
+    "backend": "Directus + PostgreSQL + Redis",
+    "other": {
+      "banking": "Plaid API",
+      "payment": "Stripe"
+    }
+  },
+  "microPetalas": [
+    "auth-basic",
+    "auth-2fa",
+    "payment-stripe",
+    "invoicing",
+    "pdf-generator",
+    "analytics-google"
+  ],
+  "collections": [
+    "accounts",
+    "transactions",
+    "budgets",
+    "categories",
+    "invoices",
+    "customers",
+    "tax_records"
+  ],
+  "features": [
+    "Multi-account management",
+    "Transaction tracking",
+    "Open banking integration",
+    "Budgeting and forecasting",
+    "Invoice generation",
+    "Expense categorization",
+    "Tax reporting",
+    "Multi-currency support",
+    "Analytics dashboard",
+    "Audit trail"
+  ],
+  "integrations": {
+    "banking": ["Plaid", "Yodlee"],
+    "payment": ["Stripe", "PayPal"],
+    "accounting": ["QuickBooks", "Xero"]
+  },
+  "compliance": ["GDPR", "PCI DSS", "SOC 2", "KYC/AML"],
+  "status": "production-ready",
+  "createdAt": "2025-11-10",
+  "updatedAt": "2025-11-10"
+}

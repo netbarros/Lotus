@@ -1,0 +1,220 @@
+# Pétala Restaurant - Menu Items Collection
+# Individual dishes and items with pricing, dietary info, and availability
+
+collections:
+  - collection: menu_items
+    meta:
+      group: petala_restaurant
+      icon: fastfood
+      note: Individual dishes with complete nutritional and pricing information
+      display_template: "{{name}} - {{price_formatted}}"
+      sort: 3
+
+    schema:
+      schema:
+        name: menu_items
+        comment: Menu items with variants, pricing, and dietary information
+
+      fields:
+        - field: id
+          type: uuid
+          schema:
+            is_primary_key: true
+          meta:
+            hidden: true
+            readonly: true
+
+        - field: status
+          type: string
+          schema:
+            default_value: active
+          meta:
+            interface: select-dropdown
+            options:
+              choices:
+                - { text: Active, value: active }
+                - { text: Out of Stock, value: out_of_stock }
+                - { text: Discontinued, value: discontinued }
+
+        - field: tenant_id
+          type: uuid
+          schema:
+            is_nullable: false
+
+        - field: restaurant_id
+          type: uuid
+          schema:
+            is_nullable: false
+          meta:
+            interface: select-dropdown-m2o
+            required: true
+
+        - field: menu_id
+          type: uuid
+          schema:
+            is_nullable: false
+          meta:
+            interface: select-dropdown-m2o
+            required: true
+
+        - field: name
+          type: string
+          schema:
+            is_nullable: false
+            max_length: 200
+          meta:
+            interface: input
+            required: true
+
+        - field: slug
+          type: string
+          schema:
+            is_nullable: false
+            is_unique: true
+
+        - field: description
+          type: text
+          meta:
+            interface: input-rich-text-html
+
+        - field: price
+          type: decimal
+          schema:
+            numeric_precision: 10
+            numeric_scale: 2
+          meta:
+            interface: input
+            options:
+              iconLeft: attach_money
+
+        - field: compare_at_price
+          type: decimal
+          schema:
+            numeric_precision: 10
+            numeric_scale: 2
+            is_nullable: true
+          meta:
+            note: Original price (for discounts)
+
+        - field: category
+          type: string
+          meta:
+            interface: select-dropdown
+            options:
+              choices:
+                - { text: Appetizers, value: appetizers }
+                - { text: Salads, value: salads }
+                - { text: Soups, value: soups }
+                - { text: Main Course, value: main_course }
+                - { text: Sides, value: sides }
+                - { text: Desserts, value: desserts }
+                - { text: Beverages, value: beverages }
+                - { text: Alcoholic Drinks, value: alcoholic_drinks }
+
+        - field: preparation_time_minutes
+          type: integer
+          schema:
+            default_value: 15
+
+        - field: servings
+          type: integer
+          schema:
+            default_value: 1
+          meta:
+            note: Number of people this serves
+
+        - field: calories
+          type: integer
+          meta:
+            note: Nutritional information
+
+        - field: dietary_tags
+          type: json
+          schema:
+            default_value: |
+              {
+                "vegetarian": false,
+                "vegan": false,
+                "gluten_free": false,
+                "dairy_free": false,
+                "nut_free": false,
+                "spicy": false,
+                "organic": false,
+                "low_calorie": false
+              }
+
+        - field: allergens
+          type: json
+          meta:
+            note: "Array of allergens: ['nuts', 'dairy', 'gluten', 'shellfish']"
+
+        - field: featured_image
+          type: uuid
+          meta:
+            interface: file-image
+            special: [file]
+
+        - field: gallery
+          type: json
+          meta:
+            interface: files
+            special: [files]
+
+        - field: is_featured
+          type: boolean
+          schema:
+            default_value: false
+
+        - field: is_popular
+          type: boolean
+          schema:
+            default_value: false
+
+        - field: is_chef_special
+          type: boolean
+          schema:
+            default_value: false
+
+        - field: available
+          type: boolean
+          schema:
+            default_value: true
+
+        - field: rating_avg
+          type: float
+          schema:
+            default_value: 0
+          meta:
+            readonly: true
+
+        - field: rating_count
+          type: integer
+          schema:
+            default_value: 0
+          meta:
+            readonly: true
+
+        - field: order_count
+          type: integer
+          schema:
+            default_value: 0
+          meta:
+            readonly: true
+            note: Total times this item has been ordered
+
+        - field: sort_order
+          type: integer
+          schema:
+            default_value: 0
+
+        - field: date_created
+          type: timestamp
+          meta:
+            special: [date-created]
+            readonly: true
+
+        - field: date_updated
+          type: timestamp
+          meta:
+            special: [date-updated]
+            readonly: true

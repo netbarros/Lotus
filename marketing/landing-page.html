@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="MagicSaaS System-∞ - Plataforma Enterprise com Sofia AI v4.0. Crie SaaS verticais por intenção. 16 Pétalas prontas + ERP completo.">
+    <meta name="keywords" content="SaaS, AI, Enterprise, Sofia AI, Directus, Low-Code, Multi-tenant">
+    <title>MagicSaaS System-∞ | Enterprise SaaS Platform powered by Sofia AI v4.0</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #3699ff;
+            --success: #1bc5bd;
+            --dark: #181c32;
+            --light: #f5f8fa;
+            --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* HERO SECTION */
+        .hero {
+            background: var(--gradient);
+            color: white;
+            padding: 100px 0;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .hero .subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 40px;
+            opacity: 0.95;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: white;
+            color: var(--primary);
+            padding: 18px 40px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: transform 0.3s;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 10px 20px;
+            border-radius: 20px;
+            margin: 20px 0;
+            font-size: 0.9rem;
+        }
+
+        /* FEATURES */
+        .features {
+            padding: 80px 0;
+            background: white;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 60px;
+            color: var(--dark);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+        }
+
+        .feature-card {
+            padding: 40px;
+            border-radius: 15px;
+            background: var(--light);
+            transition: transform 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--dark);
+        }
+
+        .feature-card p {
+            color: #666;
+            line-height: 1.8;
+        }
+
+        /* PETALAS */
+        .petalas {
+            padding: 80px 0;
+            background: var(--light);
+        }
+
+        .petalas-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+
+        .petala-card {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .petala-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .petala-card h4 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-active {
+            background: #d4f4dd;
+            color: #1bc5bd;
+        }
+
+        /* STATS */
+        .stats {
+            padding: 80px 0;
+            background: var(--dark);
+            color: white;
+            text-align: center;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            margin-top: 40px;
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--success);
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            opacity: 0.8;
+            margin-top: 10px;
+        }
+
+        /* CTA SECTION */
+        .cta-section {
+            padding: 100px 0;
+            background: var(--gradient);
+            color: white;
+            text-align: center;
+        }
+
+        .cta-section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+        }
+
+        .cta-white {
+            background: white;
+            color: var(--primary);
+        }
+
+        /* FOOTER */
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 40px 0;
+            text-align: center;
+        }
+
+        footer a {
+            color: var(--success);
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <div class="container">
+            <div class="badge">🏆 Powered by Sofia AI v4.0 - Anthropic Claude Certified</div>
+            <h1>MagicSaaS System-∞</h1>
+            <p class="subtitle">
+                Plataforma Enterprise com AI Generativa<br>
+                Crie SaaS Verticais por Intenção Natural
+            </p>
+            <a href="#demo" class="cta-button">🚀 Iniciar Demo Gratuito</a>
+            <a href="#petalas" class="cta-button" style="background: transparent; border: 2px solid white; color: white; margin-left: 20px;">
+                Ver 16 Pétalas
+            </a>
+        </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section class="features">
+        <div class="container">
+            <h2 class="section-title">Por que MagicSaaS System-∞?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🧠</div>
+                    <h3>Sofia AI v4.0</h3>
+                    <p>IA generativa completa com LangChain, Langfuse, Qdrant e pgVector. Crie SaaS por intenção natural em minutos.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🌸</div>
+                    <h3>16 Pétalas Prontas</h3>
+                    <p>Healthcare, Restaurant, Fashion, Real Estate, Finance, Education e mais 10 verticais enterprise completas.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">💼</div>
+                    <h3>ERP Completo</h3>
+                    <p>Financial, Inventory, HR, CRM e Projects Management integrados. Desde o nascimento até admin enterprise.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🔗</div>
+                    <h3>MCP Protocol</h3>
+                    <p>Model Context Protocol com Directus 11+. Multi-conexões, real-time sync e cognitive mesh completo.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>Dashboards Inteligentes</h3>
+                    <p>Metronic 9 enterprise com real-time monitoring, analytics e AI-powered insights em todos os níveis.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🏢</div>
+                    <h3>Multi-tenant Enterprise</h3>
+                    <p>Row Level Security, isolamento total, escalabilidade infinita. PostgreSQL 17 + TimescaleDB + pgVector.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PETALAS -->
+    <section class="petalas" id="petalas">
+        <div class="container">
+            <h2 class="section-title">🌸 16 Pétalas Enterprise - Todas Ativas</h2>
+            <div class="petalas-grid">
+                <div class="petala-card">
+                    <div class="petala-icon">⚕️</div>
+                    <h4>Healthcare</h4>
+                    <span class="status-badge status-active">ATIVA</span>
+                </div>
+                <div class="petala-card">
+                    <div class="petala-icon">🍽️</div>
+                    <h4>Restaurant</h4>
+                    <span class="status-badge status-active">ATIVA</span>
+                </div>
+                <div class="petala-card">
+                    <div class="petala-icon">👗</div>
+                    <h4>Fashion</h4>
+                    <span class="status-badge status-active">ATIVA</span>
+                </div>
+                <div class="petala-card">
+                    <div class="petala-icon">🏠</div>
+                    <h4>Real Estate</h4>
+                    <span class="status-badge status-active">ATIVA</span>
+                </div>
+                <div class="petala-card">
+                    <div class="petala-icon">🚗</div>
+                    <h4>Automotive</h4>
+                    <span class="status-badge status-active">ATIVA</span>
+                </div>
+                <div class="petala-card">
+                    <div class="petala-icon">✨</div>
+                    <h4>Beauty</h4>
+                    <span class="status-badge status-active">ATIVA</span>
+                </div>
+                <div class="petala-card">
+                    <div class="petala-icon">🎬</div>
+                    <h4>Creator</h4>
+                    <span class="status-badge status-active">ATIVA</span>
+                </div>
+                <div class="petala-card">
+                    <div class="petala-icon">📚</div>
+                    <h4>Education</h4>
+                    <span class="status-badge status-active">ATIVA</span>
+                </div>
+                <div class="petala-card">
+                    <div class="petala-icon">🎉</div>
+                    <h4>Events</h4>
+                    <span class="status-badge status-active">ATIVA</span>
+                </div>
+                <div class="petala-card">
+                    <div class="petala-icon">💰</div>
+                    <h4>Finance</h4>
+                    <span class="status-badge status-active">ATIVA</span>
+                </div>
+                <div class="petala-card">
+                    <div class="petala-icon">💪</div>
+                    <h4>Fitness</h4>
+                    <span class="status-badge status-active">ATIVA</span>
+                </div>
+                <div class="petala-card">
+                    <div class="petala-icon">🏨</div>
+                    <h4>Hospitality</h4>
+                    <span class="status-badge status-active">ATIVA</span>
+                </div>
+                <div class="petala-card">
+                    <div class="petala-icon">⚖️</div>
+                    <h4>Legal</h4>
+                    <span class="status-badge status-active">ATIVA</span>
+                </div>
+                <div class="petala-card">
+                    <div class="petala-icon">🚚</div>
+                    <h4>Logistics</h4>
+                    <span class="status-badge status-active">ATIVA</span>
+                </div>
+                <div class="petala-card">
+                    <div class="petala-icon">🛍️</div>
+                    <h4>Retail</h4>
+                    <span class="status-badge status-active">ATIVA</span>
+                </div>
+                <div class="petala-card">
+                    <div class="petala-icon">✈️</div>
+                    <h4>Travel</h4>
+                    <span class="status-badge status-active">ATIVA</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- STATS -->
+    <section class="stats">
+        <div class="container">
+            <h2 class="section-title" style="color: white;">Enterprise em Números</h2>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">16</div>
+                    <div class="stat-label">Pétalas Verticais</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">100%</div>
+                    <div class="stat-label">Score Anthropic Claude</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">18+</div>
+                    <div class="stat-label">Serviços Integrados</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">∞</div>
+                    <div class="stat-label">Escalabilidade</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-section" id="demo">
+        <div class="container">
+            <h2>Pronto para transformar seu negócio?</h2>
+            <p style="font-size: 1.2rem; margin-bottom: 40px;">
+                Comece hoje mesmo com nossa demo gratuita.<br>
+                Sem cartão de crédito. Setup em minutos.
+            </p>
+            <a href="https://demo.magicsaas.com" class="cta-button cta-white">🚀 Iniciar Demo Gratuito</a>
+            <a href="mailto:sales@softwarelotus.com.br" class="cta-button" style="background: transparent; border: 2px solid white; margin-left: 20px;">
+                💬 Falar com Especialista
+            </a>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Software Lotus - MagicSaaS System-∞</p>
+            <p style="margin-top: 10px;">
+                Powered by <a href="https://www.anthropic.com">Sofia AI v4.0</a> |
+                <a href="https://docs.magicsaas.com">Documentação</a> |
+                <a href="https://github.com/softwarelotus">GitHub</a>
+            </p>
+        </div>
+    </footer>
+</body>
+</html>

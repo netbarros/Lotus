@@ -1,0 +1,261 @@
+{
+  "dashboard": {
+    "title": "MagicSaaS System-∞ - Overview",
+    "uid": "magicsaas-system-overview",
+    "version": 1,
+    "tags": ["magicsaas", "overview", "system-11"],
+    "timezone": "browser",
+    "editable": true,
+    "graphTooltip": 1,
+    "time": {
+      "from": "now-6h",
+      "to": "now"
+    },
+    "refresh": "30s",
+    "panels": [
+      {
+        "id": 1,
+        "title": "System Health - Cognitive Mesh OS Layer Status",
+        "type": "stat",
+        "gridPos": { "x": 0, "y": 0, "w": 24, "h": 4 },
+        "targets": [
+          {
+            "expr": "up{job=\"sofia-ai\"}",
+            "legendFormat": "Layer 10: Sofia AI",
+            "refId": "A"
+          },
+          {
+            "expr": "up{job=\"directus\"}",
+            "legendFormat": "Layer 02: Directus",
+            "refId": "B"
+          },
+          {
+            "expr": "up{job=\"postgres\"}",
+            "legendFormat": "Layer 03: PostgreSQL",
+            "refId": "C"
+          },
+          {
+            "expr": "up{job=\"redis\"}",
+            "legendFormat": "Layer 03: Redis",
+            "refId": "D"
+          }
+        ],
+        "options": {
+          "colorMode": "background",
+          "graphMode": "area",
+          "justifyMode": "auto",
+          "orientation": "horizontal",
+          "reduceOptions": {
+            "values": false,
+            "calcs": ["lastNotNull"]
+          }
+        },
+        "fieldConfig": {
+          "defaults": {
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                { "value": 0, "color": "red" },
+                { "value": 1, "color": "green" }
+              ]
+            },
+            "mappings": [
+              { "type": "value", "value": "0", "text": "DOWN" },
+              { "type": "value", "value": "1", "text": "UP" }
+            ]
+          }
+        }
+      },
+      {
+        "id": 2,
+        "title": "Request Rate (req/s)",
+        "type": "graph",
+        "gridPos": { "x": 0, "y": 4, "w": 12, "h": 8 },
+        "targets": [
+          {
+            "expr": "rate(http_requests_total{job=\"sofia-ai\"}[5m])",
+            "legendFormat": "Sofia AI - {{method}} {{path}}",
+            "refId": "A"
+          },
+          {
+            "expr": "rate(http_requests_total{job=\"directus\"}[5m])",
+            "legendFormat": "Directus - {{method}} {{path}}",
+            "refId": "B"
+          }
+        ],
+        "yaxes": [{ "format": "reqps", "label": "Requests/sec" }, { "format": "short" }]
+      },
+      {
+        "id": 3,
+        "title": "Response Time (p95, p99)",
+        "type": "graph",
+        "gridPos": { "x": 12, "y": 4, "w": 12, "h": 8 },
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, rate(http_request_duration_seconds_bucket{job=\"sofia-ai\"}[5m]))",
+            "legendFormat": "Sofia AI p95",
+            "refId": "A"
+          },
+          {
+            "expr": "histogram_quantile(0.99, rate(http_request_duration_seconds_bucket{job=\"sofia-ai\"}[5m]))",
+            "legendFormat": "Sofia AI p99",
+            "refId": "B"
+          }
+        ],
+        "yaxes": [{ "format": "s", "label": "Response Time" }, { "format": "short" }],
+        "alert": {
+          "name": "High Response Time",
+          "conditions": [
+            {
+              "evaluator": { "type": "gt", "params": [0.5] },
+              "query": { "params": ["A", "5m", "now"] }
+            }
+          ]
+        }
+      },
+      {
+        "id": 4,
+        "title": "Error Rate (%)",
+        "type": "graph",
+        "gridPos": { "x": 0, "y": 12, "w": 12, "h": 8 },
+        "targets": [
+          {
+            "expr": "rate(http_requests_total{job=\"sofia-ai\",status=~\"5..\"}[5m]) / rate(http_requests_total{job=\"sofia-ai\"}[5m]) * 100",
+            "legendFormat": "Sofia AI 5xx Rate",
+            "refId": "A"
+          },
+          {
+            "expr": "rate(http_requests_total{job=\"directus\",status=~\"5..\"}[5m]) / rate(http_requests_total{job=\"directus\"}[5m]) * 100",
+            "legendFormat": "Directus 5xx Rate",
+            "refId": "B"
+          }
+        ],
+        "yaxes": [
+          { "format": "percent", "label": "Error Rate %", "max": 10 },
+          { "format": "short" }
+        ]
+      },
+      {
+        "id": 5,
+        "title": "Database Connections",
+        "type": "graph",
+        "gridPos": { "x": 12, "y": 12, "w": 12, "h": 8 },
+        "targets": [
+          {
+            "expr": "pg_stat_database_numbackends{datname=\"magicsaas\"}",
+            "legendFormat": "Active Connections",
+            "refId": "A"
+          },
+          {
+            "expr": "pg_settings_max_connections",
+            "legendFormat": "Max Connections",
+            "refId": "B"
+          }
+        ],
+        "yaxes": [{ "format": "short", "label": "Connections" }, { "format": "short" }]
+      },
+      {
+        "id": 6,
+        "title": "CPU Usage (%)",
+        "type": "graph",
+        "gridPos": { "x": 0, "y": 20, "w": 8, "h": 8 },
+        "targets": [
+          {
+            "expr": "rate(process_cpu_seconds_total{job=\"sofia-ai\"}[5m]) * 100",
+            "legendFormat": "Sofia AI CPU",
+            "refId": "A"
+          },
+          {
+            "expr": "rate(process_cpu_seconds_total{job=\"directus\"}[5m]) * 100",
+            "legendFormat": "Directus CPU",
+            "refId": "B"
+          }
+        ],
+        "yaxes": [{ "format": "percent", "label": "CPU %", "max": 100 }, { "format": "short" }]
+      },
+      {
+        "id": 7,
+        "title": "Memory Usage (MB)",
+        "type": "graph",
+        "gridPos": { "x": 8, "y": 20, "w": 8, "h": 8 },
+        "targets": [
+          {
+            "expr": "process_resident_memory_bytes{job=\"sofia-ai\"} / 1024 / 1024",
+            "legendFormat": "Sofia AI Memory",
+            "refId": "A"
+          },
+          {
+            "expr": "process_resident_memory_bytes{job=\"directus\"} / 1024 / 1024",
+            "legendFormat": "Directus Memory",
+            "refId": "B"
+          }
+        ],
+        "yaxes": [{ "format": "decmbytes", "label": "Memory MB" }, { "format": "short" }]
+      },
+      {
+        "id": 8,
+        "title": "Redis Cache Hit Rate (%)",
+        "type": "graph",
+        "gridPos": { "x": 16, "y": 20, "w": 8, "h": 8 },
+        "targets": [
+          {
+            "expr": "rate(redis_keyspace_hits_total[5m]) / (rate(redis_keyspace_hits_total[5m]) + rate(redis_keyspace_misses_total[5m])) * 100",
+            "legendFormat": "Cache Hit Rate",
+            "refId": "A"
+          }
+        ],
+        "yaxes": [
+          { "format": "percent", "label": "Hit Rate %", "min": 0, "max": 100 },
+          { "format": "short" }
+        ]
+      },
+      {
+        "id": 9,
+        "title": "Sofia AI - Intention Processing Rate",
+        "type": "graph",
+        "gridPos": { "x": 0, "y": 28, "w": 12, "h": 8 },
+        "targets": [
+          {
+            "expr": "rate(sofia_intentions_processed_total[5m])",
+            "legendFormat": "Intentions/sec - {{type}}",
+            "refId": "A"
+          }
+        ],
+        "yaxes": [{ "format": "ops", "label": "Intentions/sec" }, { "format": "short" }]
+      },
+      {
+        "id": 10,
+        "title": "Sofia AI - Generation Success Rate (%)",
+        "type": "stat",
+        "gridPos": { "x": 12, "y": 28, "w": 12, "h": 8 },
+        "targets": [
+          {
+            "expr": "rate(sofia_generations_success_total[5m]) / rate(sofia_generations_total[5m]) * 100",
+            "legendFormat": "Success Rate",
+            "refId": "A"
+          }
+        ],
+        "options": {
+          "colorMode": "background",
+          "graphMode": "area",
+          "reduceOptions": {
+            "calcs": ["lastNotNull"]
+          }
+        },
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percent",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                { "value": 0, "color": "red" },
+                { "value": 90, "color": "yellow" },
+                { "value": 95, "color": "green" }
+              ]
+            }
+          }
+        }
+      }
+    ]
+  }
+}

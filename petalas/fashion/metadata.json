@@ -1,0 +1,301 @@
+{
+  "name": "fashion",
+  "displayName": "Pétala Fashion",
+  "version": "1.0.0",
+  "description": "Complete e-commerce solution for fashion brands with AR try-on, inventory management, and omnichannel sales",
+  "category": "e-commerce",
+  "icon": "👗",
+  "author": "Software Lotus",
+  "license": "Proprietary",
+  "homepage": "https://softwarelotus.com.br/petalas/fashion",
+  "repository": "https://github.com/netbarros/Lotus/tree/main/petalas/fashion",
+
+  "pricing": {
+    "starter": {
+      "price": 79,
+      "currency": "USD",
+      "billingPeriod": "monthly",
+      "features": [
+        "Up to 100 products",
+        "Basic inventory management",
+        "Payment processing (Stripe, PIX)",
+        "Email notifications",
+        "Mobile-responsive design",
+        "2GB storage"
+      ],
+      "limits": {
+        "products": 100,
+        "storage": 2147483648,
+        "orders_per_month": 1000,
+        "api_requests_per_minute": 100
+      }
+    },
+    "professional": {
+      "price": 149,
+      "currency": "USD",
+      "billingPeriod": "monthly",
+      "features": [
+        "Up to 1,000 products",
+        "Advanced inventory + multi-location",
+        "All payment methods (Stripe, Mercado Pago, PIX)",
+        "AR try-on",
+        "Loyalty program",
+        "Instagram integration",
+        "Email marketing (Mailchimp)",
+        "Analytics dashboard",
+        "10GB storage"
+      ],
+      "limits": {
+        "products": 1000,
+        "storage": 10737418240,
+        "orders_per_month": 10000,
+        "api_requests_per_minute": 1000
+      }
+    },
+    "enterprise": {
+      "price": 399,
+      "currency": "USD",
+      "billingPeriod": "monthly",
+      "features": [
+        "Unlimited products",
+        "Multi-store management",
+        "Custom domain + white-label",
+        "Priority support (SLA 99.95%)",
+        "Advanced analytics + BigQuery export",
+        "Custom integrations",
+        "Dedicated account manager",
+        "100GB storage"
+      ],
+      "limits": {
+        "products": -1,
+        "storage": 107374182400,
+        "orders_per_month": -1,
+        "api_requests_per_minute": 5000
+      }
+    }
+  },
+
+  "dependencies": {
+    "modules": [
+      "auth-basic",
+      "auth-social",
+      "payment-stripe",
+      "payment-mercadopago",
+      "payment-pix",
+      "subscriptions",
+      "email-templates",
+      "analytics-google",
+      "file-upload"
+    ],
+    "microPetalas": [
+      "product-reviews",
+      "wishlist",
+      "loyalty-points",
+      "ar-try-on",
+      "coupons-discounts",
+      "shipping-calculator",
+      "inventory-sync",
+      "abandoned-cart"
+    ]
+  },
+
+  "techStack": {
+    "frontend": {
+      "framework": "Vue 3",
+      "buildTool": "Vite",
+      "ui": "Metronic 9 (demo1 - E-commerce)",
+      "stateManagement": "Pinia",
+      "router": "Vue Router 4",
+      "styling": "Tailwind CSS + Metronic SCSS",
+      "i18n": "vue-i18n",
+      "http": "axios",
+      "formValidation": "vee-validate + zod"
+    },
+    "backend": {
+      "cms": "Directus 10",
+      "database": "PostgreSQL 17 + pgVector",
+      "cache": "Redis 8",
+      "orm": "Prisma",
+      "runtime": "Node.js 20"
+    },
+    "integrations": {
+      "payment": ["Stripe", "Mercado Pago", "PIX"],
+      "media": "Cloudinary",
+      "search": "Algolia",
+      "ar": "8th Wall (WebAR)",
+      "email": "SendGrid",
+      "analytics": "Google Analytics 4",
+      "instagram": "Instagram Graph API"
+    }
+  },
+
+  "features": {
+    "catalog": {
+      "enabled": true,
+      "description": "Product catalog with collections, categories, tags, variants",
+      "layers": ["02", "03", "06", "08"]
+    },
+    "arTryOn": {
+      "enabled": true,
+      "description": "Augmented reality virtual try-on for clothes",
+      "layers": ["09", "10"],
+      "requiredPlan": "professional"
+    },
+    "inventory": {
+      "enabled": true,
+      "description": "Real-time inventory tracking with low-stock alerts",
+      "layers": ["02", "06", "07", "08"]
+    },
+    "checkout": {
+      "enabled": true,
+      "description": "Multi-step checkout with guest checkout, multiple payment methods",
+      "layers": ["03", "04", "05", "06", "07"]
+    },
+    "loyalty": {
+      "enabled": true,
+      "description": "Gamified loyalty program with points and rewards",
+      "layers": ["06", "07", "08", "10"],
+      "requiredPlan": "professional"
+    },
+    "instagram": {
+      "enabled": true,
+      "description": "Instagram Shopping integration with feed sync",
+      "layers": ["03", "06", "09"],
+      "requiredPlan": "professional"
+    },
+    "analytics": {
+      "enabled": true,
+      "description": "Real-time analytics dashboard with sales, conversions, top products",
+      "layers": ["07", "08", "10", "11"]
+    }
+  },
+
+  "cognitiveMe shLayers": {
+    "layer01_infrastructure": {
+      "components": ["Metronic 9", "PostgreSQL 17", "Redis 8", "TimescaleDB"],
+      "integration": "complete"
+    },
+    "layer02_dataFoundation": {
+      "collections": 9,
+      "relationships": 12,
+      "integration": "complete"
+    },
+    "layer03_integrationHub": {
+      "apiEndpoints": 15,
+      "graphql": true,
+      "websockets": true,
+      "integration": "complete"
+    },
+    "layer04_apiGateway": {
+      "rateLimiting": true,
+      "cors": true,
+      "routing": true,
+      "integration": "complete"
+    },
+    "layer05_authentication": {
+      "jwt": true,
+      "rbac": true,
+      "rls": true,
+      "oauth": ["google", "facebook", "apple"],
+      "integration": "complete"
+    },
+    "layer06_businessLogic": {
+      "hooks": 8,
+      "flows": 5,
+      "validations": true,
+      "integration": "complete"
+    },
+    "layer07_eventSourcing": {
+      "eventTypes": 12,
+      "timescaledb": true,
+      "audit": true,
+      "integration": "complete"
+    },
+    "layer08_analytics": {
+      "prometheusMetrics": 12,
+      "grafanaDashboard": "05-petala-fashion.json",
+      "bigquery": true,
+      "integration": "complete"
+    },
+    "layer09_aiServices": {
+      "recommendations": true,
+      "searchSemantic": true,
+      "computerVision": "AR try-on",
+      "integration": "complete"
+    },
+    "layer10_intelligenceSynthesis": {
+      "solutionArchitect": true,
+      "uxValidator": true,
+      "seoOptimizer": true,
+      "integration": "complete"
+    },
+    "layer11_metaOrchestration": {
+      "autoScaling": true,
+      "healthMonitoring": true,
+      "costOptimization": true,
+      "integration": "complete"
+    }
+  },
+
+  "slo": {
+    "availability": 99.95,
+    "apiLatency": {
+      "p95": 200,
+      "p99": 500,
+      "unit": "ms"
+    },
+    "errorRate": {
+      "max": 0.1,
+      "unit": "percent"
+    }
+  },
+
+  "deployment": {
+    "vps": {
+      "provider": "Hostinger",
+      "plan": "KVM8",
+      "specs": {
+        "ram": "32GB",
+        "vcpus": 8,
+        "storage": "400GB NVMe SSD",
+        "bandwidth": "32TB",
+        "ipv4": "Dedicated"
+      },
+      "os": "Ubuntu 22.04 LTS",
+      "url": "https://hostinger.com.br/vps-hospedagem"
+    },
+    "cloud": {
+      "provider": "AWS",
+      "service": "EKS",
+      "regions": ["us-east-1", "sa-east-1"],
+      "autoScaling": {
+        "min": 3,
+        "max": 15,
+        "targetCPU": 70
+      }
+    }
+  },
+
+  "compliance": {
+    "gdpr": true,
+    "lgpd": true,
+    "pciDss": "Stripe handles",
+    "wcag": "2.1 AA"
+  },
+
+  "support": {
+    "documentation": "https://docs.softwarelotus.com.br/petalas/fashion",
+    "community": "https://community.softwarelotus.com.br",
+    "email": "support@softwarelotus.com.br",
+    "sla": {
+      "starter": "Best effort (48h response)",
+      "professional": "Business hours (12h response)",
+      "enterprise": "24/7 priority (2h response, 99.95% uptime SLA)"
+    }
+  },
+
+  "changelog": "See CHANGELOG.md",
+  "createdAt": "2025-11-06T00:00:00Z",
+  "updatedAt": "2025-11-06T00:00:00Z",
+  "status": "production-ready"
+}

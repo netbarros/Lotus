@@ -1,0 +1,792 @@
+version: '3.9'
+
+# =====================================================
+# 🧠 MAGICSAAS SYSTEM-∞ - DOCKER COMPOSE
+# Cognitive Mesh Operating System
+# Powered by Sofia AI v4.0
+# =====================================================
+
+services:
+  # ===================================================
+  # POSTGRESQL 17 + EXTENSIONS
+  # ===================================================
+  postgres:
+    image: pgvector/pgvector:pg17
+    container_name: magicsaas-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-magicsaas}
+      POSTGRES_USER: ${POSTGRES_USER:-magicsaas_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8 --locale=C"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/schemas:/docker-entrypoint-initdb.d/schemas:ro
+      - ./database/seeds:/docker-entrypoint-initdb.d/seeds:ro
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-magicsaas_user}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - magicsaas-network
+
+  # ===================================================
+  # REDIS 8 (Caching + Pub/Sub)
+  # ===================================================
+  redis:
+    image: redis:8-alpine
+    container_name: magicsaas-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-changeme}
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - magicsaas-network
+
+  # ===================================================
+  # QDRANT (Vector Database)
+  # ===================================================
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: magicsaas-qdrant
+    restart: unless-stopped
+    environment:
+      QDRANT__SERVICE__API_KEY: ${QDRANT_API_KEY:-}
+    volumes:
+      - qdrant_data:/qdrant/storage
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:6333/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - magicsaas-network
+
+  # ===================================================
+  # DIRECTUS 11 (Headless CMS + MCP)
+  # ===================================================
+  directus:
+    image: directus/directus:11
+    container_name: magicsaas-directus
+    restart: unless-stopped
+    environment:
+      KEY: ${DIRECTUS_KEY:-replace-with-random-value}
+      SECRET: ${DIRECTUS_SECRET:-replace-with-random-value}
+
+      ADMIN_EMAIL: ${DIRECTUS_ADMIN_EMAIL:-admin@example.com}
+      ADMIN_PASSWORD: ${DIRECTUS_ADMIN_PASSWORD:-changeme}
+
+      DB_CLIENT: pg
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_DATABASE: ${POSTGRES_DB:-magicsaas}
+      DB_USER: ${POSTGRES_USER:-magicsaas_user}
+      DB_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+
+      CACHE_ENABLED: "true"
+      CACHE_STORE: redis
+      REDIS: redis://:${REDIS_PASSWORD:-changeme}@redis:6379
+
+      PUBLIC_URL: ${DIRECTUS_PUBLIC_URL:-http://localhost:8055}
+
+      # Extensions
+      EXTENSIONS_AUTO_RELOAD: "true"
+
+      # File Storage
+      STORAGE_LOCATIONS: local
+      STORAGE_LOCAL_ROOT: /directus/uploads
+
+      # Email (Optional)
+      EMAIL_FROM: ${SMTP_USER:-noreply@example.com}
+      EMAIL_TRANSPORT: smtp
+      EMAIL_SMTP_HOST: ${SMTP_HOST:-}
+      EMAIL_SMTP_PORT: ${SMTP_PORT:-587}
+      EMAIL_SMTP_USER: ${SMTP_USER:-}
+      EMAIL_SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+
+    volumes:
+      - directus_uploads:/directus/uploads
+      - directus_extensions:/directus/extensions
+
+    ports:
+      - "8055:8055"
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8055/server/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+    networks:
+      - magicsaas-network
+
+  # ===================================================
+  # SOFIA AI v4.0 (The Brain)
+  # ===================================================
+  sofia-ai:
+    build:
+      context: ./backend/sofia-ai
+      dockerfile: Dockerfile
+    container_name: magicsaas-sofia-ai
+    restart: unless-stopped
+    environment:
+      NODE_ENV: ${NODE_ENV:-production}
+      PORT: 3002
+
+      # Database
+      DATABASE_URL: postgresql://${POSTGRES_USER:-magicsaas_user}:${POSTGRES_PASSWORD:-changeme}@postgres:5432/${POSTGRES_DB:-magicsaas}
+
+      # Redis
+      REDIS_URL: redis://:${REDIS_PASSWORD:-changeme}@redis:6379
+
+      # AI Services
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+
+      # Langfuse
+      LANGFUSE_PUBLIC_KEY: ${LANGFUSE_PUBLIC_KEY}
+      LANGFUSE_SECRET_KEY: ${LANGFUSE_SECRET_KEY}
+      LANGFUSE_HOST: ${LANGFUSE_HOST:-https://cloud.langfuse.com}
+
+      # Qdrant
+      QDRANT_URL: http://qdrant:6333
+      QDRANT_API_KEY: ${QDRANT_API_KEY:-}
+
+      # Security
+      JWT_SECRET: ${JWT_SECRET}
+      ENCRYPTION_KEY: ${ENCRYPTION_KEY}
+
+      # Features
+      ENABLE_LEARNING: ${ENABLE_SOFIA_LEARNING:-true}
+      ANONYMIZE_DATA: ${ANONYMIZE_DATA:-true}
+      REVEAL_STACK: ${REVEAL_STACK:-false}
+
+    volumes:
+      - ./backend/sofia-ai:/app
+      - sofia_ai_node_modules:/app/node_modules
+
+    ports:
+      - "3002:3002"
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      qdrant:
+        condition: service_healthy
+
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3002/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+    networks:
+      - magicsaas-network
+
+  # ===================================================
+  # MARKETING AI
+  # ===================================================
+  marketing-ai:
+    build:
+      context: ./backend/marketing-ai
+      dockerfile: Dockerfile
+    container_name: magicsaas-marketing-ai
+    restart: unless-stopped
+    environment:
+      NODE_ENV: ${NODE_ENV:-production}
+      PORT: 3003
+
+      DATABASE_URL: postgresql://${POSTGRES_USER:-magicsaas_user}:${POSTGRES_PASSWORD:-changeme}@postgres:5432/${POSTGRES_DB:-magicsaas}
+      REDIS_URL: redis://:${REDIS_PASSWORD:-changeme}@redis:6379
+
+      SOFIA_AI_URL: http://sofia-ai:3002
+
+    volumes:
+      - ./backend/marketing-ai:/app
+      - marketing_ai_node_modules:/app/node_modules
+
+    ports:
+      - "3003:3003"
+
+    depends_on:
+      sofia-ai:
+        condition: service_healthy
+
+    networks:
+      - magicsaas-network
+
+  # ===================================================
+  # ERP
+  # ===================================================
+  erp:
+    build:
+      context: ./backend/erp
+      dockerfile: Dockerfile
+    container_name: magicsaas-erp
+    restart: unless-stopped
+    environment:
+      NODE_ENV: ${NODE_ENV:-production}
+      PORT: 3004
+
+      DATABASE_URL: postgresql://${POSTGRES_USER:-magicsaas_user}:${POSTGRES_PASSWORD:-changeme}@postgres:5432/${POSTGRES_DB:-magicsaas}
+      REDIS_URL: redis://:${REDIS_PASSWORD:-changeme}@redis:6379
+
+      SOFIA_AI_URL: http://sofia-ai:3002
+
+    volumes:
+      - ./backend/erp:/app
+      - erp_node_modules:/app/node_modules
+
+    ports:
+      - "3004:3004"
+
+    depends_on:
+      sofia-ai:
+        condition: service_healthy
+
+    networks:
+      - magicsaas-network
+
+  # ===================================================
+  # FRONTEND ADMIN (Metronic 9)
+  # ===================================================
+  frontend-admin:
+    build:
+      context: ./frontend/admin
+      dockerfile: Dockerfile
+    container_name: magicsaas-frontend-admin
+    restart: unless-stopped
+    environment:
+      NODE_ENV: ${NODE_ENV:-production}
+      NEXT_PUBLIC_API_URL: ${API_URL:-http://localhost:3001/api}
+      NEXT_PUBLIC_DIRECTUS_URL: ${DIRECTUS_URL:-http://localhost:8055}
+      NEXT_PUBLIC_SOFIA_AI_URL: http://localhost:3002
+
+    volumes:
+      - ./frontend/admin:/app
+      - frontend_admin_node_modules:/app/node_modules
+      - frontend_admin_next:/app/.next
+
+    ports:
+      - "3000:3000"
+
+    depends_on:
+      - directus
+      - sofia-ai
+
+    networks:
+      - magicsaas-network
+
+  # ===================================================
+  # CHATWOOT (Optional - Customer Communication)
+  # ===================================================
+  chatwoot-web:
+    image: chatwoot/chatwoot:latest
+    container_name: magicsaas-chatwoot-web
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      RAILS_ENV: production
+      INSTALLATION_NAME: MagicSaaS
+
+      SECRET_KEY_BASE: ${CHATWOOT_SECRET_KEY_BASE:-replace-with-random-value}
+
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_DATABASE: chatwoot
+      POSTGRES_USERNAME: ${POSTGRES_USER:-magicsaas_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+
+      REDIS_URL: redis://:${REDIS_PASSWORD:-changeme}@redis:6379
+
+      FRONTEND_URL: ${CHATWOOT_FRONTEND_URL:-http://localhost:3001}
+
+      # Email
+      MAILER_SENDER_EMAIL: ${SMTP_USER:-noreply@example.com}
+      SMTP_ADDRESS: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_USERNAME: ${SMTP_USER:-}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+
+      # Sofia AI Integration
+      SOFIA_AI_ENABLED: ${ENABLE_CHATWOOT:-false}
+      SOFIA_AI_URL: http://sofia-ai:3002
+
+    ports:
+      - "3001:3000"
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+    profiles:
+      - chatwoot
+
+    networks:
+      - magicsaas-network
+
+  chatwoot-sidekiq:
+    image: chatwoot/chatwoot:latest
+    container_name: magicsaas-chatwoot-sidekiq
+    restart: unless-stopped
+    command: bundle exec sidekiq -C config/sidekiq.yml
+    environment:
+      NODE_ENV: production
+      RAILS_ENV: production
+
+      SECRET_KEY_BASE: ${CHATWOOT_SECRET_KEY_BASE:-replace-with-random-value}
+
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_DATABASE: chatwoot
+      POSTGRES_USERNAME: ${POSTGRES_USER:-magicsaas_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+
+      REDIS_URL: redis://:${REDIS_PASSWORD:-changeme}@redis:6379
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      chatwoot-web:
+        condition: service_started
+
+    profiles:
+      - chatwoot
+
+    networks:
+      - magicsaas-network
+
+# =====================================================
+# VOLUMES
+# =====================================================
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  qdrant_data:
+    driver: local
+  directus_uploads:
+    driver: local
+  directus_extensions:
+    driver: local
+  sofia_ai_node_modules:
+    driver: local
+  marketing_ai_node_modules:
+    driver: local
+  erp_node_modules:
+    driver: local
+  frontend_admin_node_modules:
+    driver: local
+  frontend_admin_next:
+    driver: local
+
+# =====================================================
+# NETWORKS
+# =====================================================
+networks:
+  magicsaas-network:
+    driver: bridge
+    ipam:
+      config:
+
+  # ===================================================
+  # 🌸 PÉTALAS (Industry-Specific Microservices)
+  # All 16 industry-specific extensions powered by Sofia AI
+  # ===================================================
+
+  # Pétala: Automotive
+  petala-automotive:
+    build:
+      context: ./petalas/automotive
+      dockerfile: Dockerfile
+    container_name: magicsaas-petala-automotive
+    restart: unless-stopped
+    environment:
+      DIRECTUS_URL: http://directus:8055
+      SOFIA_AI_URL: http://sofia-ai:3002
+      POSTGRES_HOST: postgres
+      POSTGRES_DB: ${POSTGRES_DB:-magicsaas}
+      POSTGRES_USER: ${POSTGRES_USER:-magicsaas_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+      PETALA_NAME: automotive
+    depends_on:
+      - postgres
+      - directus
+    networks:
+      - magicsaas-network
+
+  # Pétala: Beauty
+  petala-beauty:
+    build:
+      context: ./petalas/beauty
+      dockerfile: Dockerfile
+    container_name: magicsaas-petala-beauty
+    restart: unless-stopped
+    environment:
+      DIRECTUS_URL: http://directus:8055
+      SOFIA_AI_URL: http://sofia-ai:3002
+      POSTGRES_HOST: postgres
+      POSTGRES_DB: ${POSTGRES_DB:-magicsaas}
+      POSTGRES_USER: ${POSTGRES_USER:-magicsaas_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+      PETALA_NAME: beauty
+    depends_on:
+      - postgres
+      - directus
+    networks:
+      - magicsaas-network
+
+  # Pétala: Creator
+  petala-creator:
+    build:
+      context: ./petalas/creator
+      dockerfile: Dockerfile
+    container_name: magicsaas-petala-creator
+    restart: unless-stopped
+    environment:
+      DIRECTUS_URL: http://directus:8055
+      SOFIA_AI_URL: http://sofia-ai:3002
+      POSTGRES_HOST: postgres
+      POSTGRES_DB: ${POSTGRES_DB:-magicsaas}
+      POSTGRES_USER: ${POSTGRES_USER:-magicsaas_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+      PETALA_NAME: creator
+    depends_on:
+      - postgres
+      - directus
+    networks:
+      - magicsaas-network
+
+  # Pétala: Education
+  petala-education:
+    build:
+      context: ./petalas/education
+      dockerfile: Dockerfile
+    container_name: magicsaas-petala-education
+    restart: unless-stopped
+    environment:
+      DIRECTUS_URL: http://directus:8055
+      SOFIA_AI_URL: http://sofia-ai:3002
+      POSTGRES_HOST: postgres
+      POSTGRES_DB: ${POSTGRES_DB:-magicsaas}
+      POSTGRES_USER: ${POSTGRES_USER:-magicsaas_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+      PETALA_NAME: education
+    depends_on:
+      - postgres
+      - directus
+    networks:
+      - magicsaas-network
+
+  # Pétala: Events
+  petala-events:
+    build:
+      context: ./petalas/events
+      dockerfile: Dockerfile
+    container_name: magicsaas-petala-events
+    restart: unless-stopped
+    environment:
+      DIRECTUS_URL: http://directus:8055
+      SOFIA_AI_URL: http://sofia-ai:3002
+      POSTGRES_HOST: postgres
+      POSTGRES_DB: ${POSTGRES_DB:-magicsaas}
+      POSTGRES_USER: ${POSTGRES_USER:-magicsaas_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+      PETALA_NAME: events
+    depends_on:
+      - postgres
+      - directus
+    networks:
+      - magicsaas-network
+
+  # Pétala: Fashion
+  petala-fashion:
+    build:
+      context: ./petalas/fashion
+      dockerfile: Dockerfile
+    container_name: magicsaas-petala-fashion
+    restart: unless-stopped
+    environment:
+      DIRECTUS_URL: http://directus:8055
+      SOFIA_AI_URL: http://sofia-ai:3002
+      POSTGRES_HOST: postgres
+      POSTGRES_DB: ${POSTGRES_DB:-magicsaas}
+      POSTGRES_USER: ${POSTGRES_USER:-magicsaas_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+      PETALA_NAME: fashion
+    depends_on:
+      - postgres
+      - directus
+    networks:
+      - magicsaas-network
+
+  # Pétala: Finance
+  petala-finance:
+    build:
+      context: ./petalas/finance
+      dockerfile: Dockerfile
+    container_name: magicsaas-petala-finance
+    restart: unless-stopped
+    environment:
+      DIRECTUS_URL: http://directus:8055
+      SOFIA_AI_URL: http://sofia-ai:3002
+      POSTGRES_HOST: postgres
+      POSTGRES_DB: ${POSTGRES_DB:-magicsaas}
+      POSTGRES_USER: ${POSTGRES_USER:-magicsaas_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+      PETALA_NAME: finance
+    depends_on:
+      - postgres
+      - directus
+    networks:
+      - magicsaas-network
+
+  # Pétala: Fitness
+  petala-fitness:
+    build:
+      context: ./petalas/fitness
+      dockerfile: Dockerfile
+    container_name: magicsaas-petala-fitness
+    restart: unless-stopped
+    environment:
+      DIRECTUS_URL: http://directus:8055
+      SOFIA_AI_URL: http://sofia-ai:3002
+      POSTGRES_HOST: postgres
+      POSTGRES_DB: ${POSTGRES_DB:-magicsaas}
+      POSTGRES_USER: ${POSTGRES_USER:-magicsaas_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+      PETALA_NAME: fitness
+    depends_on:
+      - postgres
+      - directus
+    networks:
+      - magicsaas-network
+
+  # Pétala: Healthcare
+  petala-healthcare:
+    build:
+      context: ./petalas/healthcare
+      dockerfile: Dockerfile
+    container_name: magicsaas-petala-healthcare
+    restart: unless-stopped
+    environment:
+      DIRECTUS_URL: http://directus:8055
+      SOFIA_AI_URL: http://sofia-ai:3002
+      POSTGRES_HOST: postgres
+      POSTGRES_DB: ${POSTGRES_DB:-magicsaas}
+      POSTGRES_USER: ${POSTGRES_USER:-magicsaas_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+      PETALA_NAME: healthcare
+    depends_on:
+      - postgres
+      - directus
+    networks:
+      - magicsaas-network
+
+  # Pétala: Hospitality
+  petala-hospitality:
+    build:
+      context: ./petalas/hospitality
+      dockerfile: Dockerfile
+    container_name: magicsaas-petala-hospitality
+    restart: unless-stopped
+    environment:
+      DIRECTUS_URL: http://directus:8055
+      SOFIA_AI_URL: http://sofia-ai:3002
+      POSTGRES_HOST: postgres
+      POSTGRES_DB: ${POSTGRES_DB:-magicsaas}
+      POSTGRES_USER: ${POSTGRES_USER:-magicsaas_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+      PETALA_NAME: hospitality
+    depends_on:
+      - postgres
+      - directus
+    networks:
+      - magicsaas-network
+
+  # Pétala: Legal
+  petala-legal:
+    build:
+      context: ./petalas/legal
+      dockerfile: Dockerfile
+    container_name: magicsaas-petala-legal
+    restart: unless-stopped
+    environment:
+      DIRECTUS_URL: http://directus:8055
+      SOFIA_AI_URL: http://sofia-ai:3002
+      POSTGRES_HOST: postgres
+      POSTGRES_DB: ${POSTGRES_DB:-magicsaas}
+      POSTGRES_USER: ${POSTGRES_USER:-magicsaas_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+      PETALA_NAME: legal
+    depends_on:
+      - postgres
+      - directus
+    networks:
+      - magicsaas-network
+
+  # Pétala: Logistics
+  petala-logistics:
+    build:
+      context: ./petalas/logistics
+      dockerfile: Dockerfile
+    container_name: magicsaas-petala-logistics
+    restart: unless-stopped
+    environment:
+      DIRECTUS_URL: http://directus:8055
+      SOFIA_AI_URL: http://sofia-ai:3002
+      POSTGRES_HOST: postgres
+      POSTGRES_DB: ${POSTGRES_DB:-magicsaas}
+      POSTGRES_USER: ${POSTGRES_USER:-magicsaas_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+      PETALA_NAME: logistics
+    depends_on:
+      - postgres
+      - directus
+    networks:
+      - magicsaas-network
+
+  # Pétala: Real Estate
+  petala-real-estate:
+    build:
+      context: ./petalas/real-estate
+      dockerfile: Dockerfile
+    container_name: magicsaas-petala-real-estate
+    restart: unless-stopped
+    environment:
+      DIRECTUS_URL: http://directus:8055
+      SOFIA_AI_URL: http://sofia-ai:3002
+      POSTGRES_HOST: postgres
+      POSTGRES_DB: ${POSTGRES_DB:-magicsaas}
+      POSTGRES_USER: ${POSTGRES_USER:-magicsaas_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+      PETALA_NAME: real-estate
+    depends_on:
+      - postgres
+      - directus
+    networks:
+      - magicsaas-network
+
+  # Pétala: Restaurant
+  petala-restaurant:
+    build:
+      context: ./petalas/restaurant
+      dockerfile: Dockerfile
+    container_name: magicsaas-petala-restaurant
+    restart: unless-stopped
+    environment:
+      DIRECTUS_URL: http://directus:8055
+      SOFIA_AI_URL: http://sofia-ai:3002
+      POSTGRES_HOST: postgres
+      POSTGRES_DB: ${POSTGRES_DB:-magicsaas}
+      POSTGRES_USER: ${POSTGRES_USER:-magicsaas_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+      PETALA_NAME: restaurant
+    depends_on:
+      - postgres
+      - directus
+    networks:
+      - magicsaas-network
+
+  # Pétala: Retail
+  petala-retail:
+    build:
+      context: ./petalas/retail
+      dockerfile: Dockerfile
+    container_name: magicsaas-petala-retail
+    restart: unless-stopped
+    environment:
+      DIRECTUS_URL: http://directus:8055
+      SOFIA_AI_URL: http://sofia-ai:3002
+      POSTGRES_HOST: postgres
+      POSTGRES_DB: ${POSTGRES_DB:-magicsaas}
+      POSTGRES_USER: ${POSTGRES_USER:-magicsaas_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+      PETALA_NAME: retail
+    depends_on:
+      - postgres
+      - directus
+    networks:
+      - magicsaas-network
+
+  # Pétala: Travel
+  petala-travel:
+    build:
+      context: ./petalas/travel
+      dockerfile: Dockerfile
+    container_name: magicsaas-petala-travel
+    restart: unless-stopped
+    environment:
+      DIRECTUS_URL: http://directus:8055
+      SOFIA_AI_URL: http://sofia-ai:3002
+      POSTGRES_HOST: postgres
+      POSTGRES_DB: ${POSTGRES_DB:-magicsaas}
+      POSTGRES_USER: ${POSTGRES_USER:-magicsaas_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+      PETALA_NAME: travel
+    depends_on:
+      - postgres
+      - directus
+    networks:
+      - magicsaas-network
+
+# =====================================================
+# VOLUMES
+# =====================================================
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  qdrant_data:
+    driver: local
+  directus_uploads:
+    driver: local
+  directus_extensions:
+    driver: local
+  sofia_ai_node_modules:
+    driver: local
+  marketing_ai_node_modules:
+    driver: local
+  erp_node_modules:
+    driver: local
+  frontend_admin_node_modules:
+    driver: local
+  frontend_admin_next:
+    driver: local
+
+# =====================================================
+# NETWORKS
+# =====================================================
+networks:
+  magicsaas-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.25.0.0/16

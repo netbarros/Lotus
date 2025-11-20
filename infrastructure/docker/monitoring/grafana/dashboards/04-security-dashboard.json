@@ -1,0 +1,390 @@
+{
+  "dashboard": {
+    "title": "MagicSaaS System-∞ - Security & Threat Intelligence",
+    "uid": "magicsaas-security",
+    "version": 1,
+    "tags": ["magicsaas", "security", "threats", "compliance"],
+    "timezone": "browser",
+    "editable": true,
+    "time": {
+      "from": "now-24h",
+      "to": "now"
+    },
+    "refresh": "30s",
+    "panels": [
+      {
+        "id": 1,
+        "title": "Security Alerts - Critical (Last 24h)",
+        "type": "stat",
+        "gridPos": { "x": 0, "y": 0, "w": 6, "h": 4 },
+        "targets": [
+          {
+            "expr": "sum(increase(magicsaas_security_alerts_total{severity=\"critical\"}[24h]))",
+            "legendFormat": "Critical Alerts",
+            "refId": "A"
+          }
+        ],
+        "options": {
+          "colorMode": "background",
+          "graphMode": "area"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "unit": "short",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                { "value": 0, "color": "green" },
+                { "value": 1, "color": "red" }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 2,
+        "title": "Failed Login Attempts (Last 1h)",
+        "type": "stat",
+        "gridPos": { "x": 6, "y": 0, "w": 6, "h": 4 },
+        "targets": [
+          {
+            "expr": "sum(increase(magicsaas_auth_failed_attempts_total[1h]))",
+            "legendFormat": "Failed Logins",
+            "refId": "A"
+          }
+        ],
+        "options": {
+          "colorMode": "background",
+          "graphMode": "area"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "unit": "short",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                { "value": 0, "color": "green" },
+                { "value": 50, "color": "yellow" },
+                { "value": 100, "color": "red" }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 3,
+        "title": "Rate Limit Violations (Last 1h)",
+        "type": "stat",
+        "gridPos": { "x": 12, "y": 0, "w": 6, "h": 4 },
+        "targets": [
+          {
+            "expr": "sum(increase(magicsaas_rate_limit_exceeded_total[1h]))",
+            "legendFormat": "Rate Limit Hits",
+            "refId": "A"
+          }
+        ],
+        "options": {
+          "colorMode": "background",
+          "graphMode": "area"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "unit": "short",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                { "value": 0, "color": "green" },
+                { "value": 100, "color": "yellow" },
+                { "value": 500, "color": "red" }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 4,
+        "title": "Suspicious Activity Score",
+        "type": "gauge",
+        "gridPos": { "x": 18, "y": 0, "w": 6, "h": 4 },
+        "targets": [
+          {
+            "expr": "avg(magicsaas_security_threat_score)",
+            "legendFormat": "Threat Score",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "short",
+            "min": 0,
+            "max": 100,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                { "value": 0, "color": "green" },
+                { "value": 50, "color": "yellow" },
+                { "value": 80, "color": "red" }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 5,
+        "title": "Authentication Events Timeline",
+        "type": "graph",
+        "gridPos": { "x": 0, "y": 4, "w": 12, "h": 8 },
+        "targets": [
+          {
+            "expr": "rate(magicsaas_auth_success_total[5m])",
+            "legendFormat": "Successful Logins",
+            "refId": "A"
+          },
+          {
+            "expr": "rate(magicsaas_auth_failed_attempts_total[5m])",
+            "legendFormat": "Failed Attempts",
+            "refId": "B"
+          },
+          {
+            "expr": "rate(magicsaas_auth_mfa_required_total[5m])",
+            "legendFormat": "MFA Required",
+            "refId": "C"
+          },
+          {
+            "expr": "rate(magicsaas_auth_account_locked_total[5m])",
+            "legendFormat": "Account Locked",
+            "refId": "D"
+          }
+        ],
+        "yaxes": [{ "format": "ops", "label": "Events/sec" }, { "format": "short" }]
+      },
+      {
+        "id": 6,
+        "title": "Top 10 Failed Login IPs",
+        "type": "table",
+        "gridPos": { "x": 12, "y": 4, "w": 12, "h": 8 },
+        "targets": [
+          {
+            "expr": "topk(10, sum by (source_ip) (increase(magicsaas_auth_failed_attempts_total[1h])))",
+            "legendFormat": "{{source_ip}}",
+            "refId": "A",
+            "format": "table"
+          }
+        ],
+        "options": {
+          "showHeader": true,
+          "sortBy": [{ "displayName": "Value", "desc": true }]
+        }
+      },
+      {
+        "id": 7,
+        "title": "SQL Injection Attempts Detected",
+        "type": "graph",
+        "gridPos": { "x": 0, "y": 12, "w": 8, "h": 8 },
+        "targets": [
+          {
+            "expr": "rate(magicsaas_security_sql_injection_blocked_total[5m])",
+            "legendFormat": "SQL Injection Blocked",
+            "refId": "A"
+          }
+        ],
+        "yaxes": [{ "format": "ops", "label": "Attempts/sec" }, { "format": "short" }]
+      },
+      {
+        "id": 8,
+        "title": "XSS Attack Attempts Detected",
+        "type": "graph",
+        "gridPos": { "x": 8, "y": 12, "w": 8, "h": 8 },
+        "targets": [
+          {
+            "expr": "rate(magicsaas_security_xss_blocked_total[5m])",
+            "legendFormat": "XSS Blocked",
+            "refId": "A"
+          }
+        ],
+        "yaxes": [{ "format": "ops", "label": "Attempts/sec" }, { "format": "short" }]
+      },
+      {
+        "id": 9,
+        "title": "CSRF Token Validation Failures",
+        "type": "graph",
+        "gridPos": { "x": 16, "y": 12, "w": 8, "h": 8 },
+        "targets": [
+          {
+            "expr": "rate(magicsaas_security_csrf_failed_total[5m])",
+            "legendFormat": "CSRF Validation Failed",
+            "refId": "A"
+          }
+        ],
+        "yaxes": [{ "format": "ops", "label": "Failures/sec" }, { "format": "short" }]
+      },
+      {
+        "id": 10,
+        "title": "API Key & Token Security",
+        "type": "row",
+        "gridPos": { "x": 0, "y": 20, "w": 24, "h": 1 },
+        "collapsed": false
+      },
+      {
+        "id": 11,
+        "title": "Invalid API Keys (Last 24h)",
+        "type": "stat",
+        "gridPos": { "x": 0, "y": 21, "w": 6, "h": 6 },
+        "targets": [
+          {
+            "expr": "sum(increase(magicsaas_security_invalid_api_key_total[24h]))",
+            "legendFormat": "Invalid API Keys",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "short"
+          }
+        }
+      },
+      {
+        "id": 12,
+        "title": "Expired Tokens Rejected",
+        "type": "graph",
+        "gridPos": { "x": 6, "y": 21, "w": 9, "h": 6 },
+        "targets": [
+          {
+            "expr": "rate(magicsaas_security_expired_token_total[5m])",
+            "legendFormat": "Expired Tokens/sec",
+            "refId": "A"
+          }
+        ]
+      },
+      {
+        "id": 13,
+        "title": "JWT Token Validation Failures",
+        "type": "graph",
+        "gridPos": { "x": 15, "y": 21, "w": 9, "h": 6 },
+        "targets": [
+          {
+            "expr": "rate(magicsaas_security_jwt_validation_failed_total[5m])",
+            "legendFormat": "{{failure_reason}}",
+            "refId": "A"
+          }
+        ]
+      },
+      {
+        "id": 14,
+        "title": "Data Access & Compliance",
+        "type": "row",
+        "gridPos": { "x": 0, "y": 27, "w": 24, "h": 1 },
+        "collapsed": false
+      },
+      {
+        "id": 15,
+        "title": "Unauthorized Data Access Attempts",
+        "type": "graph",
+        "gridPos": { "x": 0, "y": 28, "w": 12, "h": 8 },
+        "targets": [
+          {
+            "expr": "rate(magicsaas_security_unauthorized_access_total[5m])",
+            "legendFormat": "Unauthorized Attempts - {{resource}}",
+            "refId": "A"
+          }
+        ],
+        "yaxes": [{ "format": "ops", "label": "Attempts/sec" }, { "format": "short" }]
+      },
+      {
+        "id": 16,
+        "title": "Row-Level Security (RLS) Policy Violations",
+        "type": "graph",
+        "gridPos": { "x": 12, "y": 28, "w": 12, "h": 8 },
+        "targets": [
+          {
+            "expr": "rate(postgres_rls_policy_violations_total[5m])",
+            "legendFormat": "RLS Violations - {{table}}",
+            "refId": "A"
+          }
+        ],
+        "yaxes": [{ "format": "ops", "label": "Violations/sec" }, { "format": "short" }]
+      },
+      {
+        "id": 17,
+        "title": "GDPR & Compliance Events",
+        "type": "graph",
+        "gridPos": { "x": 0, "y": 36, "w": 12, "h": 8 },
+        "targets": [
+          {
+            "expr": "rate(magicsaas_gdpr_data_export_requests_total[5m])",
+            "legendFormat": "Data Export Requests",
+            "refId": "A"
+          },
+          {
+            "expr": "rate(magicsaas_gdpr_data_deletion_requests_total[5m])",
+            "legendFormat": "Data Deletion Requests",
+            "refId": "B"
+          },
+          {
+            "expr": "rate(magicsaas_gdpr_consent_changes_total[5m])",
+            "legendFormat": "Consent Changes",
+            "refId": "C"
+          }
+        ]
+      },
+      {
+        "id": 18,
+        "title": "Encryption & TLS Security",
+        "type": "graph",
+        "gridPos": { "x": 12, "y": 36, "w": 12, "h": 8 },
+        "targets": [
+          {
+            "expr": "sum by (tls_version) (magicsaas_tls_handshakes_total)",
+            "legendFormat": "TLS {{tls_version}}",
+            "refId": "A"
+          }
+        ],
+        "description": "TLS version distribution - only TLS 1.2+ should be used"
+      },
+      {
+        "id": 19,
+        "title": "Vulnerability Scan Results",
+        "type": "table",
+        "gridPos": { "x": 0, "y": 44, "w": 12, "h": 8 },
+        "targets": [
+          {
+            "expr": "sum by (severity, scanner) (magicsaas_security_vulnerabilities_found)",
+            "legendFormat": "{{severity}} - {{scanner}}",
+            "refId": "A",
+            "format": "table"
+          }
+        ],
+        "description": "Latest vulnerability scan results from OWASP ZAP, Trivy, etc."
+      },
+      {
+        "id": 20,
+        "title": "Security Posture Score",
+        "type": "gauge",
+        "gridPos": { "x": 12, "y": 44, "w": 12, "h": 8 },
+        "targets": [
+          {
+            "expr": "magicsaas_security_posture_score",
+            "legendFormat": "Security Score",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "short",
+            "min": 0,
+            "max": 100,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                { "value": 0, "color": "red" },
+                { "value": 70, "color": "yellow" },
+                { "value": 90, "color": "green" }
+              ]
+            }
+          }
+        },
+        "description": "Composite security score based on vulnerabilities, incidents, and compliance"
+      }
+    ]
+  }
+}

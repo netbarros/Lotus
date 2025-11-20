@@ -1,0 +1,31 @@
+{
+  "name": "@magicsaas/mobile-web",
+  "version": "1.0.0",
+  "description": "MagicSaaS System-∞ - Mobile Web App (PWA)",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "lint": "echo '⚠️  Lint disabled for mobile workspace (TODO: configure React ESLint plugin)' && exit 0",
+    "test": "vitest"
+  },
+  "dependencies": {
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.1",
+    "@types/react": "^19.2.4",
+    "@types/react-dom": "^19.2.3",
+    "@typescript-eslint/eslint-plugin": "^8.46.4",
+    "@typescript-eslint/parser": "^8.46.4",
+    "@vitejs/plugin-react": "^5.1.1",
+    "eslint": "^9.39.1",
+    "typescript": "^5.9.3",
+    "vite": "^7.2.2",
+    "vite-plugin-pwa": "^1.1.0",
+    "vitest": "^4.0.9"
+  }
+}

@@ -1,0 +1,457 @@
+collection: properties
+meta:
+  collection: properties
+  icon: home
+  note: Real estate property listings
+  display_template: "{{title}} - {{address}}"
+  hidden: false
+  singleton: false
+  translations: null
+  archive_field: status
+  archive_value: archived
+  unarchive_value: active
+  sort_field: created_at
+
+schema:
+  name: properties
+  comment: Real estate properties with full details
+
+fields:
+  - field: id
+    type: uuid
+    schema:
+      is_primary_key: true
+      is_nullable: false
+      default_value: null
+    meta:
+      hidden: true
+      readonly: true
+      interface: input
+      special:
+        - uuid
+
+  - field: tenant_id
+    type: uuid
+    schema:
+      is_nullable: false
+      foreign_key_table: tenants
+      foreign_key_column: id
+    meta:
+      interface: select-dropdown-m2o
+      required: true
+      options:
+        template: "{{name}}"
+      display: related-values
+      readonly: false
+      hidden: false
+      width: full
+
+  - field: title
+    type: string
+    schema:
+      max_length: 255
+      is_nullable: false
+    meta:
+      interface: input
+      required: true
+      width: full
+      note: Property listing title
+
+  - field: slug
+    type: string
+    schema:
+      max_length: 255
+      is_unique: true
+      is_nullable: false
+    meta:
+      interface: input
+      required: true
+      readonly: true
+      width: half
+      note: URL-friendly slug (auto-generated)
+
+  - field: description
+    type: text
+    schema:
+      is_nullable: true
+    meta:
+      interface: input-rich-text-html
+      width: full
+      note: Full property description
+
+  - field: property_type
+    type: string
+    schema:
+      is_nullable: false
+      default_value: house
+    meta:
+      interface: select-dropdown
+      required: true
+      width: half
+      options:
+        choices:
+          - text: House
+            value: house
+          - text: Apartment
+            value: apartment
+          - text: Condo
+            value: condo
+          - text: Townhouse
+            value: townhouse
+          - text: Land
+            value: land
+          - text: Commercial
+            value: commercial
+          - text: Multi-family
+            value: multi_family
+
+  - field: listing_type
+    type: string
+    schema:
+      is_nullable: false
+      default_value: sale
+    meta:
+      interface: select-dropdown
+      required: true
+      width: half
+      options:
+        choices:
+          - text: For Sale
+            value: sale
+          - text: For Rent
+            value: rent
+          - text: Sold
+            value: sold
+          - text: Rented
+            value: rented
+
+  - field: price
+    type: decimal
+    schema:
+      numeric_precision: 12
+      numeric_scale: 2
+      is_nullable: false
+    meta:
+      interface: input
+      required: true
+      width: half
+      note: Property price
+
+  - field: price_per_sqft
+    type: decimal
+    schema:
+      numeric_precision: 10
+      numeric_scale: 2
+      is_nullable: true
+    meta:
+      interface: input
+      readonly: true
+      width: half
+      note: Auto-calculated
+
+  - field: currency
+    type: string
+    schema:
+      max_length: 3
+      is_nullable: false
+      default_value: USD
+    meta:
+      interface: select-dropdown
+      width: half
+      options:
+        choices:
+          - text: USD
+            value: USD
+          - text: BRL
+            value: BRL
+          - text: EUR
+            value: EUR
+
+  - field: address
+    type: json
+    schema:
+      is_nullable: false
+    meta:
+      interface: input-code
+      width: full
+      options:
+        language: json
+      note: "{street, city, state, zipcode, country, coordinates: {lat, lng}}"
+
+  - field: bedrooms
+    type: integer
+    schema:
+      is_nullable: true
+    meta:
+      interface: input
+      width: half
+
+  - field: bathrooms
+    type: decimal
+    schema:
+      numeric_precision: 3
+      numeric_scale: 1
+      is_nullable: true
+    meta:
+      interface: input
+      width: half
+
+  - field: square_feet
+    type: integer
+    schema:
+      is_nullable: true
+    meta:
+      interface: input
+      width: half
+      note: Total square footage
+
+  - field: lot_size
+    type: integer
+    schema:
+      is_nullable: true
+    meta:
+      interface: input
+      width: half
+      note: Lot size in square feet
+
+  - field: year_built
+    type: integer
+    schema:
+      is_nullable: true
+    meta:
+      interface: input
+      width: half
+
+  - field: garage
+    type: integer
+    schema:
+      is_nullable: true
+      default_value: 0
+    meta:
+      interface: input
+      width: half
+      note: Number of garage spaces
+
+  - field: features
+    type: json
+    schema:
+      is_nullable: true
+    meta:
+      interface: tags
+      width: full
+      note: Array of feature IDs
+
+  - field: amenities
+    type: json
+    schema:
+      is_nullable: true
+    meta:
+      interface: tags
+      width: full
+      note: "Array of amenities: pool, gym, security, etc."
+
+  - field: images
+    type: json
+    schema:
+      is_nullable: true
+    meta:
+      interface: input-code
+      options:
+        language: json
+      width: full
+      note: "Array of {url, alt, order, is_primary}"
+
+  - field: virtual_tour_url
+    type: string
+    schema:
+      max_length: 500
+      is_nullable: true
+    meta:
+      interface: input
+      width: full
+      note: Matterport or VR tour URL
+
+  - field: video_url
+    type: string
+    schema:
+      max_length: 500
+      is_nullable: true
+    meta:
+      interface: input
+      width: full
+      note: YouTube or Vimeo video URL
+
+  - field: floor_plan_url
+    type: string
+    schema:
+      max_length: 500
+      is_nullable: true
+    meta:
+      interface: input
+      width: full
+
+  - field: documents
+    type: json
+    schema:
+      is_nullable: true
+    meta:
+      interface: input-code
+      options:
+        language: json
+      width: full
+      note: "Array of {name, url, type}"
+
+  - field: mls_number
+    type: string
+    schema:
+      max_length: 50
+      is_nullable: true
+    meta:
+      interface: input
+      width: half
+      note: MLS listing number
+
+  - field: agent_id
+    type: uuid
+    schema:
+      is_nullable: true
+      foreign_key_table: agents
+      foreign_key_column: id
+    meta:
+      interface: select-dropdown-m2o
+      width: half
+
+  - field: agency_id
+    type: uuid
+    schema:
+      is_nullable: true
+      foreign_key_table: agencies
+      foreign_key_column: id
+    meta:
+      interface: select-dropdown-m2o
+      width: half
+
+  - field: neighborhood_id
+    type: uuid
+    schema:
+      is_nullable: true
+      foreign_key_table: neighborhoods
+      foreign_key_column: id
+    meta:
+      interface: select-dropdown-m2o
+      width: half
+
+  - field: status
+    type: string
+    schema:
+      is_nullable: false
+      default_value: draft
+    meta:
+      interface: select-dropdown
+      required: true
+      width: half
+      options:
+        choices:
+          - text: Draft
+            value: draft
+          - text: Active
+            value: active
+          - text: Pending
+            value: pending
+          - text: Sold
+            value: sold
+          - text: Rented
+            value: rented
+          - text: Archived
+            value: archived
+
+  - field: views
+    type: integer
+    schema:
+      is_nullable: false
+      default_value: 0
+    meta:
+      interface: input
+      readonly: true
+      width: half
+
+  - field: leads_count
+    type: integer
+    schema:
+      is_nullable: false
+      default_value: 0
+    meta:
+      interface: input
+      readonly: true
+      width: half
+
+  - field: featured
+    type: boolean
+    schema:
+      is_nullable: false
+      default_value: false
+    meta:
+      interface: boolean
+      width: half
+
+  - field: seo
+    type: json
+    schema:
+      is_nullable: true
+    meta:
+      interface: input-code
+      options:
+        language: json
+      width: full
+      note: "{title, description, keywords}"
+
+  - field: created_at
+    type: timestamp
+    schema:
+      is_nullable: false
+      default_value: CURRENT_TIMESTAMP
+    meta:
+      interface: datetime
+      readonly: true
+      width: half
+      special:
+        - date-created
+
+  - field: updated_at
+    type: timestamp
+    schema:
+      is_nullable: false
+      default_value: CURRENT_TIMESTAMP
+      on_update: CURRENT_TIMESTAMP
+    meta:
+      interface: datetime
+      readonly: true
+      width: half
+      special:
+        - date-updated
+
+  - field: created_by
+    type: uuid
+    schema:
+      is_nullable: true
+      foreign_key_table: directus_users
+      foreign_key_column: id
+    meta:
+      interface: select-dropdown-m2o
+      readonly: true
+      width: half
+      special:
+        - user-created
+
+  - field: updated_by
+    type: uuid
+    schema:
+      is_nullable: true
+      foreign_key_table: directus_users
+      foreign_key_column: id
+    meta:
+      interface: select-dropdown-m2o
+      readonly: true
+      width: half
+      special:
+        - user-updated

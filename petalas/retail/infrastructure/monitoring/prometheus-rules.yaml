@@ -1,0 +1,20 @@
+{
+  "groups": [
+    {
+      "name": "petala_retail",
+      "rules": [
+        {
+          "alert": "PetalaPétalaRetailDown",
+          "expr": "up{job=\"petala-retail\"} == 0",
+          "for": "5m",
+          "labels": {
+            "severity": "critical"
+          },
+          "annotations": {
+            "summary": "Pétala Pétala Retail is down"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,78 @@
+{
+  "name": "logistics",
+  "displayName": "Pétala Logistics",
+  "version": "1.0.0",
+  "description": "Complete logistics platform with order tracking, fleet GPS, route optimization, and proof of delivery",
+  "category": "logistics",
+  "icon": "🚚",
+  "pricing": {
+    "starter": {
+      "price": 99,
+      "features": ["Up to 5 vehicles", "Basic tracking", "Route planning", "Email support"]
+    },
+    "professional": {
+      "price": 199,
+      "features": [
+        "Unlimited vehicles",
+        "GPS tracking",
+        "Route optimization",
+        "POD",
+        "Analytics",
+        "Priority support"
+      ]
+    },
+    "enterprise": {
+      "price": 499,
+      "features": [
+        "Everything in Professional",
+        "White-label",
+        "API access",
+        "Custom integrations",
+        "Dedicated support"
+      ]
+    }
+  },
+  "techStack": {
+    "frontend": "Vue 3 + Vite + Metronic demo6 (Logistics)",
+    "backend": "Directus + PostgreSQL + Redis",
+    "other": {
+      "maps": "Google Maps API",
+      "tracking": "GPS devices"
+    }
+  },
+  "microPetalas": [
+    "auth-basic",
+    "payment-stripe",
+    "fleet-tracking",
+    "route-optimization",
+    "signature-capture",
+    "analytics-google"
+  ],
+  "collections": [
+    "orders",
+    "vehicles",
+    "drivers",
+    "routes",
+    "deliveries",
+    "customers",
+    "warehouses"
+  ],
+  "features": [
+    "Order management",
+    "Fleet GPS tracking",
+    "Route optimization",
+    "Proof of delivery",
+    "Driver app",
+    "Customer notifications",
+    "Warehouse management",
+    "Analytics dashboard"
+  ],
+  "integrations": {
+    "maps": ["Google Maps", "Mapbox"],
+    "tracking": ["GPS devices", "Geotab"]
+  },
+  "compliance": ["GDPR", "DOT regulations"],
+  "status": "production-ready",
+  "createdAt": "2025-11-10",
+  "updatedAt": "2025-11-10"
+}

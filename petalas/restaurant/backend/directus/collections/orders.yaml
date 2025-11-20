@@ -1,0 +1,282 @@
+# Pétala Restaurant - Orders Collection
+# Food orders for dine-in, takeout, and delivery with complete tracking
+
+collections:
+  - collection: orders
+    meta:
+      group: petala_restaurant
+      icon: shopping_cart
+      note: Food orders with multi-type support and real-time tracking
+      display_template: "Order #{{order_number}} - {{customer_name}}"
+      sort: 5
+
+    schema:
+      schema:
+        name: orders
+        comment: Restaurant orders with complete order lifecycle
+
+      fields:
+        - field: id
+          type: uuid
+          schema:
+            is_primary_key: true
+
+        - field: status
+          type: string
+          schema:
+            default_value: pending
+          meta:
+            interface: select-dropdown
+            options:
+              choices:
+                - { text: Pending, value: pending }
+                - { text: Confirmed, value: confirmed }
+                - { text: Preparing, value: preparing }
+                - { text: Ready, value: ready }
+                - { text: Out for Delivery, value: out_for_delivery }
+                - { text: Delivered, value: delivered }
+                - { text: Completed, value: completed }
+                - { text: Cancelled, value: cancelled }
+            display: labels
+
+        - field: tenant_id
+          type: uuid
+          schema:
+            is_nullable: false
+
+        - field: restaurant_id
+          type: uuid
+          schema:
+            is_nullable: false
+          meta:
+            required: true
+
+        - field: order_number
+          type: string
+          schema:
+            max_length: 50
+          meta:
+            readonly: true
+            note: Auto-generated (e.g., ORD-20250106-001)
+
+        - field: order_type
+          type: string
+          schema:
+            is_nullable: false
+          meta:
+            interface: select-dropdown
+            options:
+              choices:
+                - { text: Dine-In, value: dine_in }
+                - { text: Takeout, value: takeout }
+                - { text: Delivery, value: delivery }
+                - { text: Table QR Order, value: qr_order }
+            required: true
+
+        - field: customer_id
+          type: uuid
+          meta:
+            interface: select-dropdown-m2o
+
+        - field: customer_name
+          type: string
+          schema:
+            is_nullable: false
+            max_length: 200
+
+        - field: customer_email
+          type: string
+          schema:
+            max_length: 255
+
+        - field: customer_phone
+          type: string
+          schema:
+            is_nullable: false
+            max_length: 50
+
+        - field: table_id
+          type: uuid
+          meta:
+            note: For dine-in orders
+
+        - field: reservation_id
+          type: uuid
+          meta:
+            note: Link to reservation if applicable
+
+        # Delivery Information
+        - field: delivery_address
+          type: text
+          meta:
+            note: Required for delivery orders
+
+        - field: delivery_instructions
+          type: text
+
+        - field: delivery_latitude
+          type: float
+
+        - field: delivery_longitude
+          type: float
+
+        - field: delivery_driver_id
+          type: uuid
+          meta:
+            note: Assigned delivery driver
+
+        - field: estimated_delivery_time
+          type: timestamp
+
+        - field: actual_delivery_time
+          type: timestamp
+
+        # Order Items (handled via order_items collection)
+
+        # Pricing
+        - field: subtotal
+          type: decimal
+          schema:
+            numeric_precision: 10
+            numeric_scale: 2
+            default_value: 0
+
+        - field: tax
+          type: decimal
+          schema:
+            numeric_precision: 10
+            numeric_scale: 2
+            default_value: 0
+
+        - field: delivery_fee
+          type: decimal
+          schema:
+            numeric_precision: 10
+            numeric_scale: 2
+            default_value: 0
+
+        - field: service_fee
+          type: decimal
+          schema:
+            numeric_precision: 10
+            numeric_scale: 2
+            default_value: 0
+
+        - field: discount
+          type: decimal
+          schema:
+            numeric_precision: 10
+            numeric_scale: 2
+            default_value: 0
+
+        - field: tip_amount
+          type: decimal
+          schema:
+            numeric_precision: 10
+            numeric_scale: 2
+            default_value: 0
+
+        - field: total
+          type: decimal
+          schema:
+            numeric_precision: 10
+            numeric_scale: 2
+            is_nullable: false
+
+        # Payment
+        - field: payment_method
+          type: string
+          meta:
+            interface: select-dropdown
+            options:
+              choices:
+                - { text: Cash, value: cash }
+                - { text: Credit Card, value: credit_card }
+                - { text: Debit Card, value: debit_card }
+                - { text: PIX, value: pix }
+                - { text: Meal Voucher, value: meal_voucher }
+                - { text: Online Payment, value: online }
+
+        - field: payment_status
+          type: string
+          schema:
+            default_value: pending
+          meta:
+            interface: select-dropdown
+            options:
+              choices:
+                - { text: Pending, value: pending }
+                - { text: Paid, value: paid }
+                - { text: Failed, value: failed }
+                - { text: Refunded, value: refunded }
+            display: labels
+
+        - field: paid_at
+          type: timestamp
+
+        - field: payment_transaction_id
+          type: string
+          schema:
+            max_length: 255
+
+        # Order Timing
+        - field: scheduled_for
+          type: timestamp
+          meta:
+            note: For scheduled orders (future pickup/delivery)
+
+        - field: confirmed_at
+          type: timestamp
+
+        - field: preparing_started_at
+          type: timestamp
+
+        - field: ready_at
+          type: timestamp
+
+        - field: completed_at
+          type: timestamp
+
+        - field: cancelled_at
+          type: timestamp
+
+        - field: cancellation_reason
+          type: text
+
+        # Special Instructions
+        - field: special_instructions
+          type: text
+
+        - field: allergies_notes
+          type: text
+
+        # Internal
+        - field: internal_notes
+          type: text
+
+        - field: kitchen_notes
+          type: text
+
+        # Ratings
+        - field: rating
+          type: integer
+          meta:
+            note: 1-5 stars
+
+        - field: review_text
+          type: text
+
+        - field: reviewed_at
+          type: timestamp
+
+        - field: date_created
+          type: timestamp
+          meta:
+            special: [date-created]
+            readonly: true
+
+        - field: date_updated
+          type: timestamp
+          meta:
+            special: [date-updated]
+            readonly: true

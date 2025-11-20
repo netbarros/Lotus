@@ -1,0 +1,590 @@
+collection: products
+meta:
+  collection: products
+  icon: shopping-bag
+  display_template: "{{name}}"
+  note: "Fashion products catalog with variants, inventory, and pricing"
+  singleton: false
+  translations: null
+  archive_field: status
+  archive_value: archived
+  unarchive_value: active
+  sort_field: created_at
+
+schema:
+  name: products
+  comment: Fashion products with full variant support and inventory management
+
+fields:
+  - field: id
+    type: uuid
+    schema:
+      is_primary_key: true
+      has_auto_increment: false
+      is_nullable: false
+    meta:
+      interface: input
+      readonly: true
+      hidden: true
+      width: full
+
+  - field: tenant_id
+    type: uuid
+    schema:
+      is_nullable: false
+      foreign_key_table: tenants
+      foreign_key_column: id
+    meta:
+      interface: select-dropdown-m2o
+      display: related-values
+      display_options:
+        template: "{{name}}"
+      required: true
+      readonly: false
+      hidden: false
+      width: half
+      note: "Multi-tenant isolation via RLS"
+
+  - field: name
+    type: string
+    schema:
+      max_length: 255
+      is_nullable: false
+    meta:
+      interface: input
+      display: formatted-value
+      required: true
+      width: full
+      note: "Product name (e.g., 'Classic White T-Shirt')"
+      validation:
+        _and:
+          - name:
+              _nnull: true
+          - name:
+              _nempty: true
+
+  - field: slug
+    type: string
+    schema:
+      max_length: 255
+      is_unique: true
+      is_nullable: false
+    meta:
+      interface: input
+      display: formatted-value
+      required: true
+      width: half
+      note: "URL-friendly slug (auto-generated from name)"
+      validation:
+        _and:
+          - slug:
+              _regex: "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+
+  - field: description
+    type: text
+    schema:
+      is_nullable: true
+    meta:
+      interface: input-rich-text-html
+      display: formatted-value
+      width: full
+      note: "Full product description (supports HTML)"
+
+  - field: short_description
+    type: string
+    schema:
+      max_length: 500
+      is_nullable: true
+    meta:
+      interface: input-multiline
+      display: formatted-value
+      width: full
+      note: "Short description for product cards"
+
+  - field: price
+    type: decimal
+    schema:
+      numeric_precision: 10
+      numeric_scale: 2
+      is_nullable: false
+      default_value: 0
+    meta:
+      interface: input
+      display: formatted-value
+      display_options:
+        format: true
+        prefix: "$"
+      required: true
+      width: half
+      note: "Base price (before discounts)"
+      validation:
+        price:
+          _gte: 0
+
+  - field: compare_at_price
+    type: decimal
+    schema:
+      numeric_precision: 10
+      numeric_scale: 2
+      is_nullable: true
+    meta:
+      interface: input
+      display: formatted-value
+      display_options:
+        format: true
+        prefix: "$"
+      width: half
+      note: "Original price (for showing discount)"
+      validation:
+        _or:
+          - compare_at_price:
+              _null: true
+          - compare_at_price:
+              _gte: 0
+
+  - field: cost
+    type: decimal
+    schema:
+      numeric_precision: 10
+      numeric_scale: 2
+      is_nullable: true
+    meta:
+      interface: input
+      display: formatted-value
+      display_options:
+        format: true
+        prefix: "$"
+      width: half
+      note: "Cost per unit (for profit calculation)"
+
+  - field: sku
+    type: string
+    schema:
+      max_length: 100
+      is_nullable: true
+    meta:
+      interface: input
+      display: formatted-value
+      width: half
+      note: "Stock Keeping Unit (unique identifier)"
+
+  - field: barcode
+    type: string
+    schema:
+      max_length: 100
+      is_nullable: true
+    meta:
+      interface: input
+      display: formatted-value
+      width: half
+      note: "Product barcode (EAN, UPC, etc.)"
+
+  - field: track_inventory
+    type: boolean
+    schema:
+      is_nullable: false
+      default_value: true
+    meta:
+      interface: boolean
+      display: boolean
+      width: half
+      note: "Enable inventory tracking for this product"
+
+  - field: inventory_quantity
+    type: integer
+    schema:
+      is_nullable: false
+      default_value: 0
+    meta:
+      interface: input
+      display: formatted-value
+      width: half
+      note: "Current inventory quantity"
+      validation:
+        inventory_quantity:
+          _gte: 0
+
+  - field: low_stock_threshold
+    type: integer
+    schema:
+      is_nullable: true
+      default_value: 10
+    meta:
+      interface: input
+      display: formatted-value
+      width: half
+      note: "Alert when inventory falls below this number"
+
+  - field: weight
+    type: decimal
+    schema:
+      numeric_precision: 10
+      numeric_scale: 2
+      is_nullable: true
+    meta:
+      interface: input
+      display: formatted-value
+      display_options:
+        suffix: " kg"
+      width: half
+      note: "Product weight (for shipping calculation)"
+
+  - field: dimensions
+    type: json
+    schema:
+      is_nullable: true
+    meta:
+      interface: input-code
+      display: formatted-json-value
+      options:
+        language: json
+        template: '{"length": 0, "width": 0, "height": 0, "unit": "cm"}'
+      width: full
+      note: "Product dimensions (length, width, height in cm)"
+
+  - field: images
+    type: json
+    schema:
+      is_nullable: true
+    meta:
+      interface: list
+      display: related-values
+      options:
+        template: '[{"url": "", "alt": "", "order": 0}]'
+      width: full
+      note: "Product images (array of {url, alt, order})"
+
+  - field: featured_image
+    type: string
+    schema:
+      max_length: 500
+      is_nullable: true
+    meta:
+      interface: file-image
+      display: image
+      width: full
+      note: "Main product image (Cloudinary URL)"
+
+  - field: variants
+    type: json
+    schema:
+      is_nullable: true
+    meta:
+      interface: list
+      display: related-values
+      options:
+        template: '[{"name": "", "options": [], "values": []}]'
+      width: full
+      note: "Product variants (e.g., size, color, material)"
+
+  - field: variant_combinations
+    type: json
+    schema:
+      is_nullable: true
+    meta:
+      interface: list
+      display: related-values
+      width: full
+      note: "All variant combinations with prices and inventory"
+
+  - field: category_id
+    type: uuid
+    schema:
+      is_nullable: true
+      foreign_key_table: categories
+      foreign_key_column: id
+    meta:
+      interface: select-dropdown-m2o
+      display: related-values
+      display_options:
+        template: "{{name}}"
+      width: half
+
+  - field: brand_id
+    type: uuid
+    schema:
+      is_nullable: true
+      foreign_key_table: brands
+      foreign_key_column: id
+    meta:
+      interface: select-dropdown-m2o
+      display: related-values
+      display_options:
+        template: "{{name}}"
+      width: half
+
+  - field: tags
+    type: json
+    schema:
+      is_nullable: true
+    meta:
+      interface: tags
+      display: labels
+      width: full
+      note: "Product tags (array of strings)"
+
+  - field: season
+    type: string
+    schema:
+      max_length: 50
+      is_nullable: true
+    meta:
+      interface: select-dropdown
+      display: labels
+      options:
+        choices:
+          - value: spring
+            text: Spring
+          - value: summer
+            text: Summer
+          - value: fall
+            text: Fall
+          - value: winter
+            text: Winter
+          - value: all-season
+            text: All Season
+      width: half
+
+  - field: gender
+    type: string
+    schema:
+      max_length: 20
+      is_nullable: true
+    meta:
+      interface: select-dropdown
+      display: labels
+      options:
+        choices:
+          - value: men
+            text: Men
+          - value: women
+            text: Women
+          - value: unisex
+            text: Unisex
+          - value: kids
+            text: Kids
+      width: half
+
+  - field: materials
+    type: json
+    schema:
+      is_nullable: true
+    meta:
+      interface: tags
+      display: labels
+      width: full
+      note: "Materials used (e.g., cotton, polyester, leather)"
+
+  - field: care_instructions
+    type: text
+    schema:
+      is_nullable: true
+    meta:
+      interface: input-multiline
+      display: formatted-value
+      width: full
+      note: "How to care for the product"
+
+  - field: seo_title
+    type: string
+    schema:
+      max_length: 70
+      is_nullable: true
+    meta:
+      interface: input
+      display: formatted-value
+      width: full
+      note: "SEO title (max 70 chars)"
+
+  - field: seo_description
+    type: string
+    schema:
+      max_length: 160
+      is_nullable: true
+    meta:
+      interface: input-multiline
+      display: formatted-value
+      width: full
+      note: "SEO meta description (max 160 chars)"
+
+  - field: seo_keywords
+    type: json
+    schema:
+      is_nullable: true
+    meta:
+      interface: tags
+      display: labels
+      width: full
+      note: "SEO keywords (array of strings)"
+
+  - field: status
+    type: string
+    schema:
+      max_length: 20
+      is_nullable: false
+      default_value: draft
+    meta:
+      interface: select-dropdown
+      display: labels
+      display_options:
+        choices:
+          - value: draft
+            text: Draft
+            foreground: "#FFFFFF"
+            background: "#6C757D"
+          - value: active
+            text: Active
+            foreground: "#FFFFFF"
+            background: "#28A745"
+          - value: archived
+            text: Archived
+            foreground: "#FFFFFF"
+            background: "#FFC107"
+      required: true
+      width: half
+
+  - field: featured
+    type: boolean
+    schema:
+      is_nullable: false
+      default_value: false
+    meta:
+      interface: boolean
+      display: boolean
+      width: half
+      note: "Show in featured products section"
+
+  - field: ar_enabled
+    type: boolean
+    schema:
+      is_nullable: false
+      default_value: false
+    meta:
+      interface: boolean
+      display: boolean
+      width: half
+      note: "Enable AR try-on for this product"
+
+  - field: ar_model_url
+    type: string
+    schema:
+      max_length: 500
+      is_nullable: true
+    meta:
+      interface: input
+      display: formatted-value
+      width: full
+      note: "3D model URL for AR try-on (GLTF/GLB format)"
+
+  - field: reviews_count
+    type: integer
+    schema:
+      is_nullable: false
+      default_value: 0
+    meta:
+      interface: input
+      display: formatted-value
+      readonly: true
+      width: half
+      note: "Total number of reviews (auto-calculated)"
+
+  - field: reviews_average
+    type: decimal
+    schema:
+      numeric_precision: 3
+      numeric_scale: 2
+      is_nullable: true
+    meta:
+      interface: input
+      display: formatted-value
+      display_options:
+        suffix: " ★"
+      readonly: true
+      width: half
+      note: "Average review rating (auto-calculated)"
+
+  - field: views_count
+    type: integer
+    schema:
+      is_nullable: false
+      default_value: 0
+    meta:
+      interface: input
+      display: formatted-value
+      readonly: true
+      width: half
+      note: "Number of product views (incremented via endpoint)"
+
+  - field: orders_count
+    type: integer
+    schema:
+      is_nullable: false
+      default_value: 0
+    meta:
+      interface: input
+      display: formatted-value
+      readonly: true
+      width: half
+      note: "Number of times ordered (auto-calculated)"
+
+  - field: created_at
+    type: timestamp
+    schema:
+      is_nullable: false
+      default_value: now()
+    meta:
+      interface: datetime
+      display: datetime
+      display_options:
+        relative: true
+      readonly: true
+      width: half
+      special:
+        - date-created
+
+  - field: updated_at
+    type: timestamp
+    schema:
+      is_nullable: false
+      default_value: now()
+    meta:
+      interface: datetime
+      display: datetime
+      display_options:
+        relative: true
+      readonly: true
+      width: half
+      special:
+        - date-updated
+
+  - field: created_by
+    type: uuid
+    schema:
+      is_nullable: true
+      foreign_key_table: directus_users
+      foreign_key_column: id
+    meta:
+      interface: select-dropdown-m2o
+      display: related-values
+      display_options:
+        template: "{{first_name}} {{last_name}}"
+      readonly: true
+      width: half
+      special:
+        - user-created
+
+  - field: updated_by
+    type: uuid
+    schema:
+      is_nullable: true
+      foreign_key_table: directus_users
+      foreign_key_column: id
+    meta:
+      interface: select-dropdown-m2o
+      display: related-values
+      display_options:
+        template: "{{first_name}} {{last_name}}"
+      readonly: true
+      width: half
+      special:
+        - user-updated

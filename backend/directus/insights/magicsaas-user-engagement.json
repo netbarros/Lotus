@@ -1,0 +1,268 @@
+{
+  "name": "User Engagement & Behavior Analytics",
+  "icon": "people",
+  "color": "#6644FF",
+  "note": "Deep user engagement analysis including DAU/MAU, retention, feature adoption, and user journeys",
+  "panels": [
+    {
+      "name": "Daily Active Users (DAU)",
+      "type": "metric",
+      "width": "third",
+      "height": 8,
+      "position_x": 1,
+      "position_y": 1,
+      "options": {
+        "collection": "user_sessions",
+        "field": "user_id",
+        "function": "count_distinct",
+        "filter": {
+          "last_active": {
+            "_gte": "$NOW(-24 hours)"
+          }
+        },
+        "decimals": 0,
+        "suffix": " DAU"
+      }
+    },
+    {
+      "name": "Weekly Active Users (WAU)",
+      "type": "metric",
+      "width": "third",
+      "height": 8,
+      "position_x": 9,
+      "position_y": 1,
+      "options": {
+        "collection": "user_sessions",
+        "field": "user_id",
+        "function": "count_distinct",
+        "filter": {
+          "last_active": {
+            "_gte": "$NOW(-7 days)"
+          }
+        },
+        "decimals": 0,
+        "suffix": " WAU"
+      }
+    },
+    {
+      "name": "Monthly Active Users (MAU)",
+      "type": "metric",
+      "width": "third",
+      "height": 8,
+      "position_x": 17,
+      "position_y": 1,
+      "options": {
+        "collection": "user_sessions",
+        "field": "user_id",
+        "function": "count_distinct",
+        "filter": {
+          "last_active": {
+            "_gte": "$NOW(-30 days)"
+          }
+        },
+        "decimals": 0,
+        "suffix": " MAU"
+      }
+    },
+    {
+      "name": "User Growth Trend (6 months)",
+      "type": "time-series",
+      "width": "full",
+      "height": 16,
+      "position_x": 1,
+      "position_y": 9,
+      "options": {
+        "collection": "directus_users",
+        "dateField": "date_created",
+        "valueField": "id",
+        "function": "count",
+        "range": "6 months",
+        "precision": "week",
+        "fillArea": true,
+        "curveType": "smooth",
+        "color": "#6644FF",
+        "showTrendline": true
+      }
+    },
+    {
+      "name": "User Retention by Cohort",
+      "type": "table",
+      "width": "half",
+      "height": 20,
+      "position_x": 1,
+      "position_y": 25,
+      "options": {
+        "collection": "user_cohorts",
+        "fields": [
+          "cohort_month",
+          "users_count",
+          "retained_week1",
+          "retained_week2",
+          "retained_week4",
+          "retention_rate"
+        ],
+        "sortField": "cohort_month",
+        "sortDirection": "desc",
+        "limit": 12,
+        "template": "{{cohort_month}}: {{retention_rate}}% retention"
+      }
+    },
+    {
+      "name": "Feature Adoption Rate",
+      "type": "list",
+      "width": "half",
+      "height": 20,
+      "position_x": 13,
+      "position_y": 25,
+      "options": {
+        "collection": "feature_usage",
+        "fields": ["feature_name", "users_count", "adoption_rate"],
+        "groupBy": "feature_name",
+        "aggregate": {
+          "function": "count_distinct",
+          "field": "user_id"
+        },
+        "sortField": "adoption_rate",
+        "sortDirection": "desc",
+        "limit": 20,
+        "template": "{{feature_name}}: {{adoption_rate}}%"
+      }
+    },
+    {
+      "name": "Top User Actions (Last 7 days)",
+      "type": "list",
+      "width": "half",
+      "height": 16,
+      "position_x": 1,
+      "position_y": 45,
+      "options": {
+        "collection": "user_actions",
+        "fields": ["action_name", "count"],
+        "groupBy": "action_name",
+        "aggregate": {
+          "function": "count",
+          "field": "id"
+        },
+        "filter": {
+          "created_at": {
+            "_gte": "$NOW(-7 days)"
+          }
+        },
+        "sortField": "count",
+        "sortDirection": "desc",
+        "limit": 15
+      }
+    },
+    {
+      "name": "Session Duration Distribution",
+      "type": "metric",
+      "width": "half",
+      "height": 8,
+      "position_x": 13,
+      "position_y": 45,
+      "options": {
+        "collection": "user_sessions",
+        "field": "duration_seconds",
+        "function": "avg",
+        "filter": {
+          "created_at": {
+            "_gte": "$NOW(-7 days)"
+          },
+          "duration_seconds": {
+            "_gt": 0
+          }
+        },
+        "decimals": 0,
+        "suffix": " seconds avg"
+      }
+    },
+    {
+      "name": "Power Users (Top 10%)",
+      "type": "table",
+      "width": "full",
+      "height": 20,
+      "position_x": 1,
+      "position_y": 61,
+      "options": {
+        "collection": "directus_users",
+        "fields": [
+          "email",
+          "first_name",
+          "last_name",
+          "total_sessions",
+          "total_actions",
+          "last_access"
+        ],
+        "sortField": "total_actions",
+        "sortDirection": "desc",
+        "limit": 50,
+        "filter": {
+          "status": {
+            "_eq": "active"
+          }
+        }
+      }
+    },
+    {
+      "name": "Churn Risk Analysis",
+      "type": "list",
+      "width": "half",
+      "height": 16,
+      "position_x": 1,
+      "position_y": 81,
+      "options": {
+        "collection": "directus_users",
+        "fields": ["email", "days_since_last_active", "churn_score"],
+        "filter": {
+          "churn_score": {
+            "_gte": 70
+          },
+          "status": {
+            "_eq": "active"
+          }
+        },
+        "sortField": "churn_score",
+        "sortDirection": "desc",
+        "limit": 20,
+        "template": "{{email}} - {{days_since_last_active}} days inactive"
+      }
+    },
+    {
+      "name": "User Engagement Score Distribution",
+      "type": "metric",
+      "width": "half",
+      "height": 16,
+      "position_x": 13,
+      "position_y": 81,
+      "options": {
+        "collection": "directus_users",
+        "field": "engagement_score",
+        "function": "avg",
+        "filter": {
+          "status": {
+            "_eq": "active"
+          }
+        },
+        "decimals": 1,
+        "suffix": " / 100",
+        "conditionalFormatting": [
+          {
+            "operator": ">=",
+            "value": 80,
+            "color": "#00C897"
+          },
+          {
+            "operator": ">=",
+            "value": 50,
+            "color": "#FFC23B"
+          },
+          {
+            "operator": "<",
+            "value": 50,
+            "color": "#E35169"
+          }
+        ]
+      }
+    }
+  ]
+}

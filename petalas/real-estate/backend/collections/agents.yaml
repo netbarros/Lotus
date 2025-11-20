@@ -1,0 +1,218 @@
+collection: agents
+meta:
+  collection: agents
+  icon: badge
+  note: Real estate agents
+  display_template: "{{name}} - {{email}}"
+  hidden: false
+  singleton: false
+
+schema:
+  name: agents
+  comment: Real estate agent profiles
+
+fields:
+  - field: id
+    type: uuid
+    schema:
+      is_primary_key: true
+      is_nullable: false
+    meta:
+      hidden: true
+      readonly: true
+      interface: input
+      special:
+        - uuid
+
+  - field: tenant_id
+    type: uuid
+    schema:
+      is_nullable: false
+      foreign_key_table: tenants
+      foreign_key_column: id
+    meta:
+      interface: select-dropdown-m2o
+      required: true
+
+  - field: user_id
+    type: uuid
+    schema:
+      is_nullable: true
+      foreign_key_table: directus_users
+      foreign_key_column: id
+    meta:
+      interface: select-dropdown-m2o
+      width: half
+
+  - field: agency_id
+    type: uuid
+    schema:
+      is_nullable: true
+      foreign_key_table: agencies
+      foreign_key_column: id
+    meta:
+      interface: select-dropdown-m2o
+      width: half
+
+  - field: name
+    type: string
+    schema:
+      max_length: 255
+      is_nullable: false
+    meta:
+      interface: input
+      required: true
+      width: half
+
+  - field: email
+    type: string
+    schema:
+      max_length: 255
+      is_nullable: false
+    meta:
+      interface: input
+      required: true
+      width: half
+
+  - field: phone
+    type: string
+    schema:
+      max_length: 50
+      is_nullable: true
+    meta:
+      interface: input
+      width: half
+
+  - field: license_number
+    type: string
+    schema:
+      max_length: 100
+      is_nullable: true
+    meta:
+      interface: input
+      width: half
+
+  - field: photo
+    type: string
+    schema:
+      max_length: 500
+      is_nullable: true
+    meta:
+      interface: input
+      width: full
+      note: Profile photo URL
+
+  - field: bio
+    type: text
+    schema:
+      is_nullable: true
+    meta:
+      interface: input-rich-text-html
+      width: full
+
+  - field: specialties
+    type: json
+    schema:
+      is_nullable: true
+    meta:
+      interface: tags
+      width: full
+      note: "Array of specialties: residential, commercial, luxury, etc."
+
+  - field: languages
+    type: json
+    schema:
+      is_nullable: true
+    meta:
+      interface: tags
+      width: full
+
+  - field: social_media
+    type: json
+    schema:
+      is_nullable: true
+    meta:
+      interface: input-code
+      options:
+        language: json
+      width: full
+      note: "{linkedin, facebook, instagram, twitter}"
+
+  - field: rating
+    type: decimal
+    schema:
+      numeric_precision: 2
+      numeric_scale: 1
+      is_nullable: true
+    meta:
+      interface: input
+      readonly: true
+      width: half
+
+  - field: reviews_count
+    type: integer
+    schema:
+      is_nullable: false
+      default_value: 0
+    meta:
+      interface: input
+      readonly: true
+      width: half
+
+  - field: listings_count
+    type: integer
+    schema:
+      is_nullable: false
+      default_value: 0
+    meta:
+      interface: input
+      readonly: true
+      width: half
+
+  - field: sales_count
+    type: integer
+    schema:
+      is_nullable: false
+      default_value: 0
+    meta:
+      interface: input
+      readonly: true
+      width: half
+
+  - field: status
+    type: string
+    schema:
+      is_nullable: false
+      default_value: active
+    meta:
+      interface: select-dropdown
+      width: half
+      options:
+        choices:
+          - text: Active
+            value: active
+          - text: Inactive
+            value: inactive
+
+  - field: created_at
+    type: timestamp
+    schema:
+      is_nullable: false
+      default_value: CURRENT_TIMESTAMP
+    meta:
+      interface: datetime
+      readonly: true
+      special:
+        - date-created
+
+  - field: updated_at
+    type: timestamp
+    schema:
+      is_nullable: false
+      default_value: CURRENT_TIMESTAMP
+      on_update: CURRENT_TIMESTAMP
+    meta:
+      interface: datetime
+      readonly: true
+      special:
+        - date-updated

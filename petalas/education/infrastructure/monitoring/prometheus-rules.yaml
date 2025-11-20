@@ -1,0 +1,20 @@
+{
+  "groups": [
+    {
+      "name": "petala_education",
+      "rules": [
+        {
+          "alert": "PetalaPétalaEducationDown",
+          "expr": "up{job=\"petala-education\"} == 0",
+          "for": "5m",
+          "labels": {
+            "severity": "critical"
+          },
+          "annotations": {
+            "summary": "Pétala Pétala Education is down"
+          }
+        }
+      ]
+    }
+  ]
+}

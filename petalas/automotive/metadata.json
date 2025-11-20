@@ -1,0 +1,84 @@
+{
+  "name": "automotive",
+  "displayName": "Pétala Automotive",
+  "version": "1.0.0",
+  "description": "Complete automotive dealership and service management with inventory, CRM, service orders, and test drive booking",
+  "category": "automotive",
+  "icon": "🚗",
+  "pricing": {
+    "starter": {
+      "price": 99,
+      "features": ["Up to 100 vehicles", "Basic CRM", "Service scheduling", "Email support"]
+    },
+    "professional": {
+      "price": 199,
+      "features": [
+        "Unlimited inventory",
+        "Advanced CRM",
+        "Service orders",
+        "Parts management",
+        "Analytics",
+        "Priority support"
+      ]
+    },
+    "enterprise": {
+      "price": 499,
+      "features": [
+        "Everything in Professional",
+        "Multi-location",
+        "DMS integration",
+        "API access",
+        "Custom integrations",
+        "Dedicated support"
+      ]
+    }
+  },
+  "techStack": {
+    "frontend": "Vue 3 + Vite + Metronic demo6 (Logistics adapted)",
+    "backend": "Directus + PostgreSQL + Redis",
+    "other": {
+      "payment": "Stripe",
+      "storage": "Cloudinary"
+    }
+  },
+  "microPetalas": [
+    "auth-basic",
+    "auth-social",
+    "payment-stripe",
+    "appointment-booking",
+    "inventory-sync",
+    "analytics-google"
+  ],
+  "collections": [
+    "vehicles",
+    "customers",
+    "leads",
+    "service_orders",
+    "parts",
+    "test_drives",
+    "sales",
+    "technicians",
+    "appointments"
+  ],
+  "features": [
+    "Vehicle inventory management",
+    "VIN decoder integration",
+    "Lead and customer CRM",
+    "Test drive scheduling",
+    "Service order management",
+    "Parts inventory",
+    "Sales tracking",
+    "Customer portal",
+    "Service history",
+    "Analytics and reporting"
+  ],
+  "integrations": {
+    "dms": ["DealerSocket", "vAuto"],
+    "inventory": ["Autotrader", "Cars.com"],
+    "payment": ["Stripe", "PayPal"]
+  },
+  "compliance": ["GDPR", "Truth in Lending Act"],
+  "status": "production-ready",
+  "createdAt": "2025-11-10",
+  "updatedAt": "2025-11-10"
+}

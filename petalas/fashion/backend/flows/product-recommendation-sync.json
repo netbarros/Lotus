@@ -1,0 +1,104 @@
+{
+  "id": "flow-fashion-recommendation-sync",
+  "name": "Fashion - AI Recommendation Sync",
+  "icon": "psychology",
+  "color": "#10B981",
+  "description": "Sync product data to AI recommendation engine when products are created/updated",
+  "status": "active",
+  "trigger": "event",
+  "accountability": "all",
+  "options": {
+    "type": "action",
+    "scope": ["items.create", "items.update"],
+    "collections": ["products"]
+  },
+  "operation": "4t3x6s0w-1u9v-2x7t-s6w5-0v2u7x9w4t1u",
+  "operations": [
+    {
+      "id": "4t3x6s0w-1u9v-2x7t-s6w5-0v2u7x9w4t1u",
+      "name": "Check If Active Product",
+      "key": "check_active",
+      "type": "condition",
+      "options": {
+        "filter": {
+          "$trigger": {
+            "payload": {
+              "status": {
+                "_eq": "active"
+              }
+            }
+          }
+        }
+      },
+      "resolve": "5u4y7t1x-2v0w-3y8u-t7x6-1w3v8y0x5u2v",
+      "reject": null,
+      "flow": "flow-fashion-recommendation-sync"
+    },
+    {
+      "id": "5u4y7t1x-2v0w-3y8u-t7x6-1w3v8y0x5u2v",
+      "name": "Generate Product Embedding",
+      "key": "generate_embedding",
+      "type": "request",
+      "options": {
+        "method": "POST",
+        "url": "http://localhost:8055/petalas/fashion/ai/generate-embedding",
+        "body": {
+          "product_id": "{{$trigger.payload.id}}",
+          "text": "{{$trigger.payload.name}} {{$trigger.payload.description}} {{$trigger.payload.tags}}",
+          "metadata": {
+            "category_id": "{{$trigger.payload.category_id}}",
+            "brand_id": "{{$trigger.payload.brand_id}}",
+            "price": "{{$trigger.payload.price}}",
+            "season": "{{$trigger.payload.season}}",
+            "gender": "{{$trigger.payload.gender}}"
+          }
+        }
+      },
+      "resolve": "6v5z8u2y-3w1x-4z9v-u8y7-2x4w9z1y6v3w",
+      "flow": "flow-fashion-recommendation-sync"
+    },
+    {
+      "id": "6v5z8u2y-3w1x-4z9v-u8y7-2x4w9z1y6v3w",
+      "name": "Store Embedding in pgVector",
+      "key": "store_embedding",
+      "type": "request",
+      "options": {
+        "method": "POST",
+        "url": "http://localhost:8055/petalas/fashion/ai/store-embedding",
+        "body": {
+          "product_id": "{{$trigger.payload.id}}",
+          "tenant_id": "{{$trigger.payload.tenant_id}}",
+          "embedding": "{{$last.embedding}}",
+          "metadata": "{{$last.metadata}}"
+        }
+      },
+      "resolve": "7w6a9v3z-4x2y-5a0w-v9z8-3y5x0a2z7w4x",
+      "flow": "flow-fashion-recommendation-sync"
+    },
+    {
+      "id": "7w6a9v3z-4x2y-5a0w-v9z8-3y5x0a2z7w4x",
+      "name": "Emit Product Sync Event",
+      "key": "emit_sync_event",
+      "type": "webhook",
+      "options": {
+        "method": "POST",
+        "url": "http://localhost:8055/events",
+        "body": {
+          "type": "petala.fashion.product.recommendation_synced",
+          "aggregateId": "{{$trigger.payload.id}}",
+          "tenantId": "{{$trigger.payload.tenant_id}}",
+          "data": {
+            "product_name": "{{$trigger.payload.name}}",
+            "embedding_dimension": "{{$last.embedding.length}}"
+          },
+          "metadata": {
+            "timestamp": "{{$now}}",
+            "version": 1
+          }
+        }
+      },
+      "resolve": null,
+      "flow": "flow-fashion-recommendation-sync"
+    }
+  ]
+}

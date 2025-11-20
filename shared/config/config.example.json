@@ -1,0 +1,104 @@
+{
+  "$schema": "./config.schema.json",
+  "description": "MagicSaaS Runtime Configuration - Deploy this as /config.json on your web server",
+  "version": "3.0.0",
+
+  "petala": {
+    "name": "Fashion",
+    "type": "fashion",
+    "basePath": "/petalas/fashion"
+  },
+
+  "api": {
+    "baseUrl": "https://api.yourdomain.com",
+    "timeout": 30000,
+    "retryAttempts": 3,
+    "retryDelay": 1000
+  },
+
+  "directus": {
+    "url": "https://api.yourdomain.com",
+    "graphqlUrl": "https://api.yourdomain.com/graphql",
+    "assetsUrl": "https://api.yourdomain.com/assets"
+  },
+
+  "sofia": {
+    "enabled": true,
+    "apiUrl": "https://sofia.yourdomain.com",
+    "features": {
+      "intentionEngine": true,
+      "uxValidation": true,
+      "seoOptimization": true,
+      "voiceAssistant": false
+    }
+  },
+
+  "auth": {
+    "jwtExpiration": "7d",
+    "refreshExpiration": "30d",
+    "storageKey": "magicsaas_auth"
+  },
+
+  "features": {
+    "enablePWA": true,
+    "enableOfflineMode": false,
+    "enableAnalytics": true,
+    "enableSentry": true,
+    "enableHotjar": false
+  },
+
+  "payment": {
+    "stripe": {
+      "enabled": true,
+      "publicKey": "pk_live_..."
+    },
+    "mercadoPago": {
+      "enabled": true,
+      "publicKey": "APP_USR_..."
+    }
+  },
+
+  "media": {
+    "cloudinary": {
+      "enabled": true,
+      "cloudName": "your-cloud-name",
+      "uploadPreset": "your-preset"
+    },
+    "maxUploadSize": 10485760,
+    "allowedFormats": ["jpg", "jpeg", "png", "webp", "gif", "svg"]
+  },
+
+  "search": {
+    "algolia": {
+      "enabled": true,
+      "appId": "YOUR_APP_ID",
+      "searchKey": "your_search_only_key"
+    }
+  },
+
+  "analytics": {
+    "googleAnalytics": {
+      "enabled": true,
+      "measurementId": "G-XXXXXXXXXX"
+    },
+    "hotjar": {
+      "enabled": false,
+      "siteId": ""
+    }
+  },
+
+  "tenant": {
+    "id": "your-tenant-uuid",
+    "name": "Your Company Name",
+    "customDomain": "yourdomain.com"
+  },
+
+  "comments": {
+    "deployment": "Copy this file to your web server's public root as /config.json",
+    "localhost": "For localhost, this file is optional - smart defaults will be used",
+    "staging": "Use different config.json for staging environment",
+    "production": "Use production values and enable all security features",
+    "caching": "Configure your web server to cache this file with short TTL (5-10 minutes)",
+    "security": "Do NOT include secret keys - only public keys and URLs"
+  }
+}

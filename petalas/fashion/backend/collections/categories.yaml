@@ -1,0 +1,182 @@
+collection: categories
+meta:
+  collection: categories
+  icon: folder-tree
+  display_template: "{{name}}"
+  note: "Product categories with hierarchical support"
+  singleton: false
+  translations: null
+  archive_field: status
+  archive_value: archived
+  unarchive_value: active
+  sort_field: sort_order
+
+schema:
+  name: categories
+  comment: Hierarchical product categories
+
+fields:
+  - field: id
+    type: uuid
+    schema:
+      is_primary_key: true
+      has_auto_increment: false
+      is_nullable: false
+    meta:
+      interface: input
+      readonly: true
+      hidden: true
+
+  - field: tenant_id
+    type: uuid
+    schema:
+      is_nullable: false
+      foreign_key_table: tenants
+      foreign_key_column: id
+    meta:
+      interface: select-dropdown-m2o
+      display: related-values
+      required: true
+      width: half
+
+  - field: name
+    type: string
+    schema:
+      max_length: 255
+      is_nullable: false
+    meta:
+      interface: input
+      display: formatted-value
+      required: true
+      width: full
+
+  - field: slug
+    type: string
+    schema:
+      max_length: 255
+      is_unique: true
+      is_nullable: false
+    meta:
+      interface: input
+      display: formatted-value
+      required: true
+      width: half
+
+  - field: description
+    type: text
+    schema:
+      is_nullable: true
+    meta:
+      interface: input-rich-text-html
+      display: formatted-value
+      width: full
+
+  - field: parent_id
+    type: uuid
+    schema:
+      is_nullable: true
+      foreign_key_table: categories
+      foreign_key_column: id
+    meta:
+      interface: select-dropdown-m2o
+      display: related-values
+      display_options:
+        template: "{{name}}"
+      width: half
+      note: "Parent category (null for root categories)"
+
+  - field: image
+    type: string
+    schema:
+      max_length: 500
+      is_nullable: true
+    meta:
+      interface: file-image
+      display: image
+      width: full
+
+  - field: icon
+    type: string
+    schema:
+      max_length: 100
+      is_nullable: true
+    meta:
+      interface: input
+      display: formatted-value
+      width: half
+      note: "Icon name (e.g., 'shirt', 'dress', 'shoes')"
+
+  - field: sort_order
+    type: integer
+    schema:
+      is_nullable: false
+      default_value: 0
+    meta:
+      interface: input
+      display: formatted-value
+      width: half
+
+  - field: products_count
+    type: integer
+    schema:
+      is_nullable: false
+      default_value: 0
+    meta:
+      interface: input
+      display: formatted-value
+      readonly: true
+      width: half
+
+  - field: status
+    type: string
+    schema:
+      max_length: 20
+      is_nullable: false
+      default_value: active
+    meta:
+      interface: select-dropdown
+      display: labels
+      required: true
+      width: half
+
+  - field: seo_title
+    type: string
+    schema:
+      max_length: 70
+      is_nullable: true
+    meta:
+      interface: input
+      width: full
+
+  - field: seo_description
+    type: string
+    schema:
+      max_length: 160
+      is_nullable: true
+    meta:
+      interface: input-multiline
+      width: full
+
+  - field: created_at
+    type: timestamp
+    schema:
+      is_nullable: false
+      default_value: now()
+    meta:
+      interface: datetime
+      readonly: true
+      width: half
+      special:
+        - date-created
+
+  - field: updated_at
+    type: timestamp
+    schema:
+      is_nullable: false
+      default_value: now()
+    meta:
+      interface: datetime
+      readonly: true
+      width: half
+      special:
+        - date-updated

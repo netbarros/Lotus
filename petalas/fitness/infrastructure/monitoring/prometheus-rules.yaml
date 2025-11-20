@@ -1,0 +1,20 @@
+{
+  "groups": [
+    {
+      "name": "petala_fitness",
+      "rules": [
+        {
+          "alert": "PetalaPétalaFitnessDown",
+          "expr": "up{job=\"petala-fitness\"} == 0",
+          "for": "5m",
+          "labels": {
+            "severity": "critical"
+          },
+          "annotations": {
+            "summary": "Pétala Pétala Fitness is down"
+          }
+        }
+      ]
+    }
+  ]
+}
