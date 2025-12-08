@@ -27,7 +27,7 @@
   "author": "Sofia Lotus AI <sofia@softwarelotus.com.br>",
   "license": "PROPRIETARY",
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.68.0",
+    "@anthropic-ai/sdk": "^0.71.2",
     "chokidar": "^4.0.3",
     "dotenv": "^17.2.3",
     "fast-glob": "^3.3.3",
