@@ -35,7 +35,7 @@ jobs:
         run: npx ts-node scripts/validate-petalas.ts
 
       - name: Upload validation report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         if: always()
         with:
           name: validation-report
@@ -96,7 +96,7 @@ jobs:
           fi
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: frontend-${{ matrix.petala }}
           path: ./petalas/${{ matrix.petala }}/frontend/dist
@@ -187,7 +187,7 @@ jobs:
           fi
 
       - name: Upload test results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         if: always()
         with:
           name: e2e-results-${{ matrix.petala }}
@@ -220,7 +220,7 @@ jobs:
           fi
 
       - name: Upload performance results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         if: always()
         with:
           name: performance-${{ matrix.petala }}
