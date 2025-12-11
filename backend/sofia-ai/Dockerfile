@@ -6,7 +6,7 @@
 # ═══════════════════════════════════════════════════════════════════════════
 # STAGE 1: BUILDER
 # ═══════════════════════════════════════════════════════════════════════════
-FROM node:22-alpine AS builder
+FROM node:25-alpine AS builder
 
 # Metadata
 LABEL maintainer="Sofia Lotus AI <sofia@softwarelotus.com.br>"
@@ -44,7 +44,7 @@ RUN pnpm prune --prod
 # ═══════════════════════════════════════════════════════════════════════════
 # STAGE 2: PRODUCTION RUNNER
 # ═══════════════════════════════════════════════════════════════════════════
-FROM node:22-alpine AS runner
+FROM node:25-alpine AS runner
 
 # Metadata
 LABEL maintainer="Sofia Lotus AI <sofia@softwarelotus.com.br>"
