@@ -8,7 +8,7 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "directus": "^10.8.0",
+    "directus": "^11.13.4",
     "zod": "^3.22.4"
   },
   "devDependencies": {
