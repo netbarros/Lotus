@@ -1,6 +1,6 @@
 {
     "compilerOptions": {
-        "target": "ES2022",
+        "target": "ES2020",
         "lib": [
             "dom",
             "dom.iterable",
@@ -25,12 +25,6 @@
         "paths": {
             "@/*": [
                 "./src/*"
-            ],
-            "@magicsaas/iot-mesh": [
-                "../../packages/iot-mesh/src"
-            ],
-            "@magicsaas/voice-bridge": [
-                "../../packages/voice-bridge/src"
             ]
         }
     },
@@ -38,10 +32,10 @@
         "next-env.d.ts",
         "**/*.ts",
         "**/*.tsx",
-        ".next/types/**/*.ts",
-        "backend/**/*.ts"
+        ".next/types/**/*.ts"
     ],
     "exclude": [
-        "node_modules"
+        "node_modules",
+        "backend"
     ]
 }

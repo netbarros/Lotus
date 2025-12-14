@@ -6,7 +6,7 @@
  */
 
 import { EventEmitter } from 'events';
-import type { ZigbeeDevice, SensorEvent, SensorEventType } from '../types/iot.types.js';
+import type { ZigbeeDevice, SensorEvent } from '../types/iot.types.js';
 import { MqttMeshClient } from './mqtt-client.js';
 
 // ═══════════════════════════════════════════════════════════════════════════

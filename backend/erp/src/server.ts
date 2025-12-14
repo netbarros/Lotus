@@ -109,12 +109,12 @@ app.get('/status', async (_req: Request, res: Response) => {
 });
 
 // Financial endpoints
-app.post('/api/financial/transactions', async (req: Request, res: Response) => {
+app.post('/api/financial/invoices', async (req: Request, res: Response) => {
   try {
-    const transaction = await erp.financial.createTransaction(req.body);
-    res.status(201).json(transaction);
+    const invoice = await erp.financial.createInvoice(req.body);
+    res.status(201).json(invoice);
   } catch (error: any) {
-    res.status(500).json({ error: 'Transaction creation failed', message: error.message });
+    res.status(500).json({ error: 'Invoice creation failed', message: error.message });
   }
 });
 

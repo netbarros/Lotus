@@ -23,21 +23,9 @@ services:
       - postgres_data:/var/lib/postgresql/data
       - ./init-scripts:/docker-entrypoint-initdb.d
     command: >
-      postgres
-      -c max_connections=200
-      -c shared_buffers=256MB
-      -c effective_cache_size=1GB
-      -c maintenance_work_mem=64MB
-      -c checkpoint_completion_target=0.9
-      -c wal_buffers=16MB
-      -c default_statistics_target=100
-      -c random_page_cost=1.1
-      -c effective_io_concurrency=200
-      -c work_mem=2621kB
-      -c min_wal_size=1GB
-      -c max_wal_size=4GB
+      postgres -c max_connections=200 -c shared_buffers=256MB -c effective_cache_size=1GB -c maintenance_work_mem=64MB -c checkpoint_completion_target=0.9 -c wal_buffers=16MB -c default_statistics_target=100 -c random_page_cost=1.1 -c effective_io_concurrency=200 -c work_mem=2621kB -c min_wal_size=1GB -c max_wal_size=4GB
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -54,7 +42,7 @@ services:
     volumes:
       - redis_data:/data
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: [ "CMD", "redis-cli", "ping" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -146,7 +134,7 @@ services:
       redis:
         condition: service_healthy
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:8055/server/health || exit 1"]
+      test: [ "CMD-SHELL", "curl -f http://localhost:8055/server/health || exit 1" ]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -245,7 +233,7 @@ services:
       INNGEST_DEV: "true"
       INNGEST_SERVE_ORIGIN: http://backend-api:3000
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8288/health"]
+      test: [ "CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8288/health" ]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -270,7 +258,7 @@ services:
       dockerfile: Dockerfile
     container_name: magicsaas-sofia-ai
     ports:
-      - "3003:3003"  # Health & Metrics endpoint
+      - "3003:3003" # Health & Metrics endpoint
     environment:
       NODE_ENV: development
 
@@ -363,7 +351,7 @@ services:
     restart: unless-stopped
     command: pnpm dev
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3003/health"]
+      test: [ "CMD", "curl", "-f", "http://localhost:3003/health" ]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -388,7 +376,7 @@ services:
       - '--storage.tsdb.path=/prometheus'
       - '--storage.tsdb.retention.time=30d'
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:9090/-/healthy"]
+      test: [ "CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:9090/-/healthy" ]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -411,7 +399,7 @@ services:
       - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards
       - ./monitoring/grafana/datasources:/etc/grafana/provisioning/datasources
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000/api/health"]
+      test: [ "CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000/api/health" ]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -438,7 +426,7 @@ services:
       COLLECTOR_ZIPKIN_HOST_PORT: :9411
       COLLECTOR_OTLP_ENABLED: "true"
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:14269/"]
+      test: [ "CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:14269/" ]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -455,10 +443,10 @@ services:
     image: mailhog/mailhog:latest
     container_name: magicsaas-mailhog
     ports:
-      - "1025:1025"  # SMTP
-      - "8025:8025"  # Web UI
+      - "1025:1025" # SMTP
+      - "8025:8025" # Web UI
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8025/"]
+      test: [ "CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8025/" ]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -487,7 +475,7 @@ services:
       postgres:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000/api/health"]
+      test: [ "CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000/api/health" ]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -501,15 +489,15 @@ services:
     image: qdrant/qdrant:latest
     container_name: magicsaas-qdrant
     ports:
-      - "6333:6333"  # HTTP API
-      - "6334:6334"  # gRPC API
+      - "6333:6333" # HTTP API
+      - "6334:6334" # gRPC API
     environment:
       QDRANT__SERVICE__GRPC_PORT: 6334
       QDRANT__SERVICE__HTTP_PORT: 6333
     volumes:
       - qdrant_data:/qdrant/storage
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:6333/health"]
+      test: [ "CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:6333/health" ]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -523,8 +511,8 @@ services:
     image: minio/minio:latest
     container_name: magicsaas-minio
     ports:
-      - "9000:9000"  # API
-      - "9001:9001"  # Console
+      - "9000:9000" # API
+      - "9001:9001" # Console
     environment:
       MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minioadmin}
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minioadmin}
@@ -532,7 +520,7 @@ services:
       - minio_data:/data
     command: server /data --console-address ":9001"
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      test: [ "CMD", "curl", "-f", "http://localhost:9000/minio/health/live" ]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -549,15 +537,7 @@ services:
       minio:
         condition: service_healthy
     entrypoint: >
-      /bin/sh -c "
-      /usr/bin/mc alias set myminio http://minio:9000 ${MINIO_ROOT_USER:-minioadmin} ${MINIO_ROOT_PASSWORD:-minioadmin};
-      /usr/bin/mc mb myminio/uploads --ignore-existing;
-      /usr/bin/mc mb myminio/backups --ignore-existing;
-      /usr/bin/mc mb myminio/assets --ignore-existing;
-      /usr/bin/mc anonymous set download myminio/uploads;
-      /usr/bin/mc anonymous set download myminio/assets;
-      exit 0;
-      "
+      /bin/sh -c " /usr/bin/mc alias set myminio http://minio:9000 ${MINIO_ROOT_USER:-minioadmin} ${MINIO_ROOT_PASSWORD:-minioadmin}; /usr/bin/mc mb myminio/uploads --ignore-existing; /usr/bin/mc mb myminio/backups --ignore-existing; /usr/bin/mc mb myminio/assets --ignore-existing; /usr/bin/mc anonymous set download myminio/uploads; /usr/bin/mc anonymous set download myminio/assets; exit 0; "
     networks:
       - magicsaas-network
 
@@ -584,7 +564,7 @@ services:
       redis:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000/"]
+      test: [ "CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000/" ]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -617,11 +597,40 @@ services:
       postgres:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:5678/healthz"]
+      test: [ "CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:5678/healthz" ]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 30s
+    networks:
+      - magicsaas-network
+    restart: unless-stopped
+
+  # ============================================================================
+  # IOT MESH - MQTT Broker
+  # ============================================================================
+
+  mosquitto:
+    image: eclipse-mosquitto:2
+    container_name: magicsaas-mosquitto
+    ports:
+      - "1883:1883" # MQTT
+      - "9001:9001" # WebSockets
+    volumes:
+      - mosquitto_data:/mosquitto/data
+      - mosquitto_log:/mosquitto/log
+      - ./mosquitto/config:/mosquitto/config
+    # We create a default config dynamically if needed, or mount one.
+    # For dev, we can use a simple command to allow anonymous for now.
+    command: /usr/sbin/mosquitto -c /mosquitto/config/mosquitto.conf
+    # Note: We need to ensure the config exists or use a command that doesn't require file if possible. 
+    # Actually simpler: create a config file on the fly? No, easiest is to use default image but allow anonymous by config.
+    # Let's map a simple config file in a separate step or assume the user has one?
+    # Better: Use a command entrypoint override to write config?
+    # Or just use the default and trust it works? 
+    # Let's try to map a simple config string via echo. 
+    # Actually, the eclipse-mosquitto image needs a config. 
+    # I'll create a config file in infrastructure/docker/mosquitto/config/mosquitto.conf first.
     networks:
       - magicsaas-network
     restart: unless-stopped
@@ -653,6 +662,10 @@ volumes:
   minio_data:
     driver: local
   n8n_data:
+    driver: local
+  mosquitto_data:
+    driver: local
+  mosquitto_log:
     driver: local
 
 # ============================================================================

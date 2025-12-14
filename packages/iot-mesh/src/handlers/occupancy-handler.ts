@@ -23,8 +23,8 @@ export interface OccupancyHandlerConfig {
 
 export class RoomOccupancyHandler extends EventEmitter {
     private redis: Redis;
-    private tenantId: string;
-    private petala: string;
+    // private _tenantId: string;
+    // private _petala: string;
     private occupancyTimeout: number;
     private keyPrefix: string;
     private rooms: Map<string, RoomOccupancy> = new Map();
@@ -33,9 +33,11 @@ export class RoomOccupancyHandler extends EventEmitter {
     constructor(config: OccupancyHandlerConfig) {
         super();
         this.redis = config.redis;
-        this.tenantId = config.tenant_id;
-        this.petala = config.petala;
+        // this._tenantId = config.tenant_id;
+        // this._petala = config.petala;
         this.occupancyTimeout = config.occupancy_timeout_ms ?? 5 * 60 * 1000; // 5 minutes
+        // Initialize logging
+        // console.log(`[OccupancyHandler] Initialized for ${this._tenantId}/${this._petala}`);
         this.keyPrefix = config.redis_key_prefix ?? `magicsaas:${config.tenant_id}:${config.petala}:occupancy`;
     }
 

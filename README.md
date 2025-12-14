@@ -305,6 +305,8 @@ compliance).
 - Performance recommendations
 - ROI tracking
 
+#### 🚧 **STATUS: 🚧 Under Construction (Core Phase) 🚧**
+> *Note: This repository is actively actively complying with the System-11 Architecture. The "Vision" below acts as the Functional Spec.*
 #### 5. **A/B Testing**
 
 - Sofia AI prediz variante vencedora

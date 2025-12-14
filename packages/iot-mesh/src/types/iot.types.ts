@@ -154,7 +154,7 @@ export type SensorEvent = z.infer<typeof SensorEventSchema>;
 export const MqttMessageSchema = z.object({
     topic: z.string(),
     payload: z.union([z.string(), z.record(z.unknown())]),
-    qos: z.enum([0, 1, 2] as const).optional(),
+    qos: z.union([z.literal(0), z.literal(1), z.literal(2)]).optional(),
     retain: z.boolean().optional(),
     timestamp: z.date(),
 });
