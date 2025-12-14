@@ -1,0 +1,71 @@
+{
+    "name": "@magicsaas/core",
+    "version": "1.0.0",
+    "description": "MagicSaaS Shared Core Utilities",
+    "type": "module",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "exports": {
+        ".": {
+            "import": "./dist/index.js",
+            "types": "./dist/index.d.ts"
+        },
+        "./logger": {
+            "import": "./dist/logger.js",
+            "types": "./dist/logger.d.ts"
+        },
+        "./redis": {
+            "import": "./dist/redis.js",
+            "types": "./dist/redis.d.ts"
+        },
+        "./errors": {
+            "import": "./dist/errors.js",
+            "types": "./dist/errors.d.ts"
+        },
+        "./auth": {
+            "import": "./dist/auth.js",
+            "types": "./dist/auth.d.ts"
+        },
+        "./db": {
+            "import": "./dist/db.js",
+            "types": "./dist/db.d.ts"
+        },
+        "./context": {
+            "import": "./dist/context.js",
+            "types": "./dist/context.d.ts"
+        }
+    },
+    "scripts": {
+        "build": "tsc",
+        "dev": "tsc --watch",
+        "test": "vitest",
+        "lint": "eslint src/",
+        "typecheck": "tsc --noEmit"
+    },
+    "dependencies": {
+        "ioredis": "^5.4.1",
+        "pino": "^9.5.0",
+        "zod": "^3.23.8",
+        "jsonwebtoken": "^9.0.0",
+        "@prisma/client": "^5.7.0"
+    },
+    "devDependencies": {
+        "@types/node": "^22.10.1",
+        "typescript": "^5.6.3",
+        "vitest": "^2.1.6",
+        "prisma": "^5.7.0",
+        "@types/jsonwebtoken": "^9.0.5"
+    },
+    "peerDependencies": {
+        "ioredis": "^5.0.0"
+    },
+    "keywords": [
+        "magicsaas",
+        "core",
+        "utilities",
+        "logger",
+        "redis"
+    ],
+    "author": "Software Lotus",
+    "license": "PROPRIETARY"
+}

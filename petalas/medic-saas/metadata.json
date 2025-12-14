@@ -1,0 +1,83 @@
+{
+    "name": "MedicSaaS",
+    "slug": "medic-saas",
+    "version": "1.0.0",
+    "description": "Complete Healthcare SaaS solution powered by Cognitive Mesh OS",
+    "vertical": "healthcare",
+    "category": "medical",
+    "status": "production",
+    "tier": "enterprise",
+    "features": {
+        "core": [
+            "patient-management",
+            "appointment-scheduling",
+            "electronic-health-records",
+            "telemedicine",
+            "prescription-management",
+            "billing-integration",
+            "insurance-verification"
+        ],
+        "iot": [
+            "room-occupancy-sensors",
+            "patient-arrival-detection",
+            "vital-signs-monitoring",
+            "environmental-monitoring"
+        ],
+        "voice": [
+            "medical-dictation",
+            "alexa-skill-integration",
+            "voice-commands",
+            "hands-free-charting"
+        ],
+        "ai": [
+            "sofia-triage-assistant",
+            "clinical-decision-support",
+            "automatic-coding-icd10",
+            "prescription-validation"
+        ],
+        "whatsapp": [
+            "appointment-reminders",
+            "lab-result-notifications",
+            "patient-follow-up",
+            "medication-reminders"
+        ]
+    },
+    "integrations": {
+        "iot-mesh": {
+            "enabled": true,
+            "sensors": [
+                "occupancy",
+                "motion",
+                "temperature",
+                "air_quality"
+            ]
+        },
+        "voice-bridge": {
+            "enabled": true,
+            "providers": [
+                "whisper",
+                "alexa"
+            ]
+        },
+        "whatsapp-gateway": {
+            "enabled": true,
+            "providers": [
+                "evolution",
+                "meta_cloud",
+                "zapi"
+            ]
+        }
+    },
+    "compliance": {
+        "hipaa": true,
+        "lgpd": true,
+        "cfm": true,
+        "anvisa": false
+    },
+    "stack": {
+        "frontend": "Next.js 15 + shadcn/ui",
+        "backend": "Directus 11 + Inngest",
+        "database": "PostgreSQL 17 + pgVector",
+        "ai": "Sofia AI v4.0 + LangChain"
+    }
+}

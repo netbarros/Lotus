@@ -1,0 +1,46 @@
+{
+    "name": "@magicsaas/iot-mesh",
+    "version": "1.0.0",
+    "description": "IoT Mesh Package - MQTT/Zigbee integration for Cognitive Mesh OS",
+    "type": "module",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "exports": {
+        ".": {
+            "import": "./dist/index.js",
+            "types": "./dist/index.d.ts"
+        }
+    },
+    "scripts": {
+        "build": "tsc",
+        "dev": "tsc --watch",
+        "test": "vitest",
+        "typecheck": "tsc --noEmit"
+    },
+    "dependencies": {
+        "mqtt": "^5.10.0",
+        "ioredis": "^5.4.1",
+        "zod": "^3.23.8",
+        "pino": "^9.5.0"
+    },
+    "devDependencies": {
+        "@types/node": "^22.10.1",
+        "typescript": "^5.7.2",
+        "vitest": "^2.1.8"
+    },
+    "peerDependencies": {
+        "ioredis": "^5.0.0"
+    },
+    "engines": {
+        "node": ">=22.0.0"
+    },
+    "keywords": [
+        "iot",
+        "mqtt",
+        "zigbee",
+        "magicsaas",
+        "cognitive-mesh"
+    ],
+    "author": "Software Lotus <contato@softwarelotus.com.br>",
+    "license": "PROPRIETARY"
+}

@@ -4,4 +4,6 @@ packages:
   - 'mobile-sdk/*'
   - 'ai/*'
   - 'blockchain/*'
-  - 'universal-sdk/*'
+  - 'universal-sdk'
+  - 'petalas/restaurant/*'
+  - 'packages/*'

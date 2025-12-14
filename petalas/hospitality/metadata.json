@@ -1,0 +1,113 @@
+{
+    "name": "hospitality",
+    "displayName": "Pétala Hospitality",
+    "version": "1.0.0",
+    "description": "Complete hotel and hospitality management with reservations, room management, guest services, and housekeeping",
+    "category": "hospitality",
+    "icon": "🏨",
+    "pricing": {
+        "starter": {
+            "price": 149,
+            "features": [
+                "Up to 20 rooms",
+                "Basic reservations",
+                "Guest management",
+                "Email support"
+            ]
+        },
+        "professional": {
+            "price": 299,
+            "features": [
+                "Up to 100 rooms",
+                "Channel manager",
+                "Housekeeping management",
+                "POS integration",
+                "Analytics",
+                "Priority support"
+            ]
+        },
+        "enterprise": {
+            "price": 599,
+            "features": [
+                "Unlimited rooms",
+                "Multi-property",
+                "Revenue management",
+                "API access",
+                "Custom integrations",
+                "24/7 support"
+            ]
+        }
+    },
+    "techStack": {
+        "frontend": "Next.js 15 + React 19 + Metronic 9",
+        "backend": "Directus + PostgreSQL + Redis",
+        "other": {
+            "payment": "Stripe + PIX",
+            "storage": "Cloudinary",
+            "iot": "Room sensors + MQTT"
+        }
+    },
+    "microPetalas": [
+        "auth-basic",
+        "auth-social",
+        "payment-stripe",
+        "payment-pix",
+        "iot-room-sensors",
+        "whatsapp-notifications",
+        "analytics-google",
+        "channel-manager"
+    ],
+    "collections": [
+        "rooms",
+        "room_types",
+        "reservations",
+        "guests",
+        "housekeeping_tasks",
+        "amenities",
+        "services",
+        "invoices",
+        "payments",
+        "reviews",
+        "staff",
+        "maintenance_requests"
+    ],
+    "features": [
+        "Room inventory management",
+        "Online booking engine",
+        "Channel manager integration",
+        "Guest profiles and preferences",
+        "Housekeeping task management",
+        "Room status dashboard",
+        "Smart lock integration",
+        "IoT room sensors",
+        "Mini-bar tracking",
+        "Revenue management",
+        "Multi-property support",
+        "Analytics and reporting"
+    ],
+    "integrations": {
+        "channels": [
+            "Booking.com",
+            "Expedia",
+            "Airbnb"
+        ],
+        "payment": [
+            "Stripe",
+            "PIX",
+            "PayPal"
+        ],
+        "iot": [
+            "Smart locks",
+            "Thermostats",
+            "Motion sensors"
+        ]
+    },
+    "compliance": [
+        "LGPD",
+        "GDPR",
+        "PCI-DSS"
+    ],
+    "status": "production-ready",
+    "createdAt": "2025-12-12",
+    "updatedAt": "2025-12-12"
+}

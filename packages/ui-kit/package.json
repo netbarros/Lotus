@@ -1,0 +1,35 @@
+{
+    "name": "@magicsaas/ui-kit",
+    "version": "1.0.0",
+    "description": "MagicSaaS Shared UI Component Library (Shadcn/UI + Tailwind)",
+    "type": "module",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "scripts": {
+        "build": "tsup src/index.ts --format cjs,esm --dts",
+        "dev": "tsup src/index.ts --format cjs,esm --dts --watch",
+        "lint": "eslint src/"
+    },
+    "dependencies": {
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0",
+        "tailwindcss": "^3.4.0",
+        "class-variance-authority": "^0.7.0",
+        "clsx": "^2.1.0",
+        "tailwind-merge": "^2.2.0",
+        "lucide-react": "^0.300.0",
+        "@radix-ui/react-slot": "^1.0.2",
+        "tailwindcss-animate": "^1.0.7"
+    },
+    "devDependencies": {
+        "@types/react": "^18.2.0",
+        "@types/react-dom": "^18.2.0",
+        "tsup": "^8.0.0",
+        "typescript": "^5.3.0"
+    },
+    "peerDependencies": {
+        "react": "^18.0.0",
+        "react-dom": "^18.0.0",
+        "tailwindcss": "^3.0.0"
+    }
+}

@@ -190,7 +190,7 @@ app.post('/api/campaigns', async (req: Request, res: Response) => {
     }
 
     // Create campaign using Sofia AI
-    const campaign = await marketing.createCampaign({
+    const campaign = await marketing.campaigns.createCampaign({
       objective,
       targetAudience,
       budget,
@@ -229,9 +229,9 @@ app.post('/api/leads/score', async (req: Request, res: Response) => {
     }
 
     // Score lead using Sofia AI
-    const score = await marketing.scoreLead(leadId);
-    const conversionProbability = await marketing.predictLeadConversion(leadId);
-    const nextBestAction = await marketing.getNextBestAction(leadId);
+    const score = await marketing.leads.scoreLead(leadId);
+    const conversionProbability = await marketing.leads.predictLeadConversion(leadId);
+    const nextBestAction = await marketing.leads.getNextBestAction(leadId);
 
     res.status(200).json({
       success: true,
@@ -277,7 +277,7 @@ app.post('/api/content/generate', async (req: Request, res: Response) => {
     }
 
     // Generate content using Sofia AI
-    const content = await marketing.generateContent({
+    const content = await marketing.content.generateContent({
       type: type as any,
       topic,
       keywords: keywords || [],
@@ -317,7 +317,7 @@ app.get('/api/insights', async (req: Request, res: Response) => {
     }
 
     // Generate insights using Sofia AI analytics
-    const insights = await marketing.generateInsights(timeframe as any);
+    const insights = await marketing.analytics.generateInsights(timeframe as any);
 
     res.status(200).json({
       success: true,
@@ -354,7 +354,7 @@ app.get('/api/journeys/:leadId', async (req: Request, res: Response) => {
     }
 
     // Map journey using Sofia AI
-    const journey = await marketing.mapCustomerJourney(leadId);
+    const journey = await marketing.journeys.mapCustomerJourney(leadId);
 
     res.status(200).json({
       success: true,
@@ -386,11 +386,11 @@ app.post('/api/ab-tests', async (req: Request, res: Response) => {
     }
 
     // Create A/B test using Sofia AI
-    const abTest = await marketing.createABTest({
+    const abTest = await marketing.testing.createABTest({
       name,
       type,
       variants,
-      // @ts-expect-error - Extended type for duration parameter
+      // type checked
       duration,
     });
 

@@ -1,0 +1,43 @@
+{
+    "name": "@magicsaas/whatsapp-gateway",
+    "version": "1.0.0",
+    "description": "WhatsApp Gateway - Multi-provider failover for Cognitive Mesh OS",
+    "type": "module",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "exports": {
+        ".": {
+            "import": "./dist/index.js",
+            "types": "./dist/index.d.ts"
+        }
+    },
+    "scripts": {
+        "build": "tsc",
+        "dev": "tsc --watch",
+        "test": "vitest",
+        "typecheck": "tsc --noEmit"
+    },
+    "dependencies": {
+        "zod": "^3.23.8",
+        "pino": "^9.5.0",
+        "inngest": "^3.22.12"
+    },
+    "devDependencies": {
+        "@types/node": "^22.10.1",
+        "typescript": "^5.7.2",
+        "vitest": "^2.1.8"
+    },
+    "engines": {
+        "node": ">=22.0.0"
+    },
+    "keywords": [
+        "whatsapp",
+        "evolution-api",
+        "meta-cloud",
+        "zapi",
+        "magicsaas",
+        "cognitive-mesh"
+    ],
+    "author": "Software Lotus <contato@softwarelotus.com.br>",
+    "license": "PROPRIETARY"
+}

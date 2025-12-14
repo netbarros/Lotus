@@ -1,0 +1,107 @@
+{
+    "name": "beauty",
+    "displayName": "Pétala Beauty",
+    "version": "1.0.0",
+    "description": "Complete beauty salon and spa management with appointment booking, client management, service catalog, and inventory",
+    "category": "beauty",
+    "icon": "💅",
+    "pricing": {
+        "starter": {
+            "price": 79,
+            "features": [
+                "Up to 50 clients",
+                "Basic scheduling",
+                "Service catalog",
+                "Email support"
+            ]
+        },
+        "professional": {
+            "price": 149,
+            "features": [
+                "Unlimited clients",
+                "Advanced scheduling",
+                "Inventory management",
+                "Staff management",
+                "Analytics",
+                "SMS reminders"
+            ]
+        },
+        "enterprise": {
+            "price": 299,
+            "features": [
+                "Everything in Professional",
+                "Multi-location",
+                "Custom branding",
+                "API access",
+                "POS integration",
+                "Dedicated support"
+            ]
+        }
+    },
+    "techStack": {
+        "frontend": "Next.js 15 + React 19 + Metronic 9",
+        "backend": "Directus + PostgreSQL + Redis",
+        "other": {
+            "payment": "Stripe + PIX",
+            "storage": "Cloudinary",
+            "notifications": "WhatsApp + SMS"
+        }
+    },
+    "microPetalas": [
+        "auth-basic",
+        "auth-social",
+        "payment-stripe",
+        "payment-pix",
+        "appointment-booking",
+        "whatsapp-notifications",
+        "analytics-google"
+    ],
+    "collections": [
+        "clients",
+        "services",
+        "appointments",
+        "staff",
+        "products",
+        "inventory",
+        "transactions",
+        "reviews",
+        "promotions",
+        "packages"
+    ],
+    "features": [
+        "Online appointment booking",
+        "Service catalog management",
+        "Client profiles and history",
+        "Staff scheduling and commissions",
+        "Product inventory",
+        "Point of sale",
+        "WhatsApp appointment reminders",
+        "Client reviews and ratings",
+        "Loyalty programs",
+        "Gift cards",
+        "Multi-location support",
+        "Analytics and reporting"
+    ],
+    "integrations": {
+        "scheduling": [
+            "Google Calendar",
+            "Apple Calendar"
+        ],
+        "payment": [
+            "Stripe",
+            "PIX",
+            "Mercado Pago"
+        ],
+        "marketing": [
+            "WhatsApp Business",
+            "SMS Gateway"
+        ]
+    },
+    "compliance": [
+        "LGPD",
+        "GDPR"
+    ],
+    "status": "production-ready",
+    "createdAt": "2025-12-12",
+    "updatedAt": "2025-12-12"
+}

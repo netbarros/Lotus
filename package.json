@@ -10,6 +10,8 @@
   },
   "private": true,
   "workspaces": [
+    "packages/*",
+    "petalas/*",
     "backend/*",
     "frontend/*",
     "mobile-sdk/*",

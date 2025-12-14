@@ -1,0 +1,37 @@
+{
+    "name": "@magicsaas/medic-saas",
+    "version": "1.0.0",
+    "description": "MedicSaaS Pétala - Healthcare Vertical for MagicSaaS Cognitive Mesh OS",
+    "type": "module",
+    "private": true,
+    "scripts": {
+        "dev": "next dev",
+        "build": "next build",
+        "start": "next start",
+        "typecheck": "tsc --noEmit",
+        "test": "vitest"
+    },
+    "dependencies": {
+        "@magicsaas/iot-mesh": "workspace:*",
+        "@magicsaas/voice-bridge": "workspace:*",
+        "@directus/sdk": "^18.0.0",
+        "next": "^15.0.3",
+        "react": "^19.0.0",
+        "react-dom": "^19.0.0",
+        "ioredis": "^5.4.1",
+        "zod": "^3.23.8",
+        "inngest": "^3.22.12"
+    },
+    "devDependencies": {
+        "@types/node": "^22.10.1",
+        "@types/react": "^19.0.0",
+        "typescript": "^5.7.2",
+        "vitest": "^2.1.8",
+        "tailwindcss": "^3.4.16",
+        "autoprefixer": "^10.4.20",
+        "postcss": "^8.4.49"
+    },
+    "engines": {
+        "node": ">=22.0.0"
+    }
+}
