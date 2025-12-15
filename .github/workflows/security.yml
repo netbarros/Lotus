@@ -38,7 +38,7 @@ jobs:
           pnpm audit --json > audit-results.json || true
 
       - name: Upload audit results
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: npm-audit-results
           path: audit-results.json
@@ -210,7 +210,7 @@ jobs:
 
       - name: Upload SBOM
         if: steps.check-sbom.outputs.sbom_exists == 'true'
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: sbom
           path: sbom.json
